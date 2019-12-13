@@ -4,9 +4,6 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 target 'lunchme' do
   # Pods for lunchme
 
-  # This first section is for 3rd-party packages I'm manually linking
-  pod 'RNFBApp', :path => '../node_modules/@react-native-firebase/app' 
-
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
   pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"
