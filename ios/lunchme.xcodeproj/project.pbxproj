@@ -12,6 +12,8 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1AE8A76123A42DBF006FD65C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AE8A76023A42DBF006FD65C /* GoogleService-Info.plist */; };
+		1AE8A76223A42DBF006FD65C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AE8A76023A42DBF006FD65C /* GoogleService-Info.plist */; };
 		1E1C5ABC1B3ED17686C56A89 /* libPods-lunchme.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D989848A4B57D88A968F385 /* libPods-lunchme.a */; };
 		24D325476B2A354BDD06882A /* libPods-lunchme-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C92CC179545E1521FF1B3027 /* libPods-lunchme-tvOS.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -52,6 +54,7 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = lunchme/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = lunchme/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = lunchme/main.m; sourceTree = "<group>"; };
+		1AE8A76023A42DBF006FD65C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1F2613DFF06253CD5AF1F76F /* Pods-lunchme.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lunchme.debug.xcconfig"; path = "Target Support Files/Pods-lunchme/Pods-lunchme.debug.xcconfig"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* lunchme-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "lunchme-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* lunchme-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "lunchme-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -159,6 +162,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				1AE8A76023A42DBF006FD65C /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* lunchme */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* lunchmeTests */,
@@ -194,7 +198,6 @@
 				FA9183B7944B15CD54766975 /* Pods-lunchmeTests.debug.xcconfig */,
 				B80D54663DE9BCFF7AD7C7A0 /* Pods-lunchmeTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -308,6 +311,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -329,6 +333,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1AE8A76223A42DBF006FD65C /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,6 +343,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				1AE8A76123A42DBF006FD65C /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
