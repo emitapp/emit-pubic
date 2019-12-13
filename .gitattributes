@@ -1,0 +1,7 @@
+# Set the default behavior, in case people don't have core.autocrlf set.
+# This will set all files that haven't been specified below and are text (based off git's heuristics) to LF on checkin
+# Provided you have the right git settings (ie core.eol set to native, which is default), 
+# they should be converted back to native line endings on checkout
+* text=auto
+
+*.pbxproj -text
