@@ -10,7 +10,7 @@ export default class Login extends React.Component {
 
     handleLogin = () => {
       auth()
-      .signInWithEmailAndPassword(email, password)
+      .signInWithEmailAndPassword(this.state.email, this.state.password)
       .then(() => this.props.navigation.navigate('Main'))
       .catch(error => this.setState({ errorMessage: error.message }))
     }  

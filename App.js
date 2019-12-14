@@ -3,6 +3,7 @@ import React from 'react'
 import { createSwitchNavigator, createAppContainer} from 'react-navigation'
 import AuthDecisionLander from './#screens/Authentication/AuthDecisionLanding'
 import auth from '@react-native-firebase/auth';
+
 import SignUp from './#screens/Authentication/SignUp'
 import Login from './#screens/Authentication/Login'
 import Main from './#screens/Main'
@@ -27,6 +28,7 @@ export default class App extends React.Component {
   }
 }
 
+//Using a switch navigator 
 const Navigator = createAppContainer(
   createSwitchNavigator(
   {

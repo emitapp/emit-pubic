@@ -1,29 +1,34 @@
-// The overall partent navigator screen for the main interface
+// The overall partent tab navigator screen for the main interface
 
 import React from 'react'
 import { StyleSheet, Platform, Image, Text, View, Button } from 'react-native'
 import auth from '@react-native-firebase/auth';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
+
+import Feed from './FeedSection/Feed'
+import LogOut from "./Settings/LogOut"
+import Active from "./DashboardSection/ActiveBroadcasts"
+
+
+const Tab = createBottomTabNavigator({
+  Feed,
+  LogOut,
+  Active
+});
 
 export default class Main extends React.Component {
-    state = { currentUser: null }
-    
-    componentDidMount() {
-      const { currentUser } = auth()
-      this.setState({ currentUser })
+
+    //https://reactnavigation.org/docs/en/common-mistakes.html
+    static router = Tab.router;
+
+    constructor(props){
+      super(props)
+      global.MainTabRoot = this;
     }
 
     render() {
-      const { currentUser } = this.state
       return (
-        <View style={styles.container}>
-          <Text>
-            Hi {currentUser && currentUser.email}!
-          </Text>
-          <Button
-            title="Signout"
-            onPress={() => this.signOut()}
-          />
-        </View>
+          <Tab navigation={this.props.navigation}/>
       )
     }
 
@@ -33,11 +38,3 @@ export default class Main extends React.Component {
       .catch(() => console.error("Something went wrong with signing out!"))
     }
   }
-  
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center'
-    }
-  })
