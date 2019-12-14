@@ -29,7 +29,7 @@ export default class Main extends React.Component {
 
     signOut = () => {
       auth().signOut()
-      .then(() => this.props.navigation.navigate("AuthDecisionLanding"))
+      .then(() => this.props.navigation.navigate("AuthDecisionLander"))
       .catch(() => console.error("Something went wrong with signing out!"))
     }
   }
