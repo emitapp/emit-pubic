@@ -6,6 +6,7 @@ import auth from '@react-native-firebase/auth';
 
 import SignUp from './#screens/Authentication/SignUp'
 import Login from './#screens/Authentication/Login'
+import AccountSetUp from './#screens/Authentication/AccountSetUp'
 import Main from './#screens/Main'
 
 //This file also contains the global functions needed by the app
@@ -34,6 +35,7 @@ const Navigator = createAppContainer(
   {
     AuthDecisionLander,
     SignUp,
+    AccountSetUp,
     Login,
     Main
   },

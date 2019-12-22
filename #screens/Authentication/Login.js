@@ -8,13 +8,6 @@ export default class Login extends React.Component {
 
     state = { email: '', password: '', errorMessage: null }  
 
-    handleLogin = () => {
-      auth()
-      .signInWithEmailAndPassword(this.state.email, this.state.password)
-      .then(() => this.props.navigation.navigate('Main'))
-      .catch(error => this.setState({ errorMessage: error.message }))
-    }  
-
     render() {
       return (
         <View style={styles.container}>
@@ -46,6 +39,20 @@ export default class Login extends React.Component {
         </View>
       )
     }
+    
+    handleLogin = () => {
+      var signInPromise = auth()
+        .signInWithEmailAndPassword(this.state.email, this.state.password)
+        .then(() => {
+            this.props.navigation.navigate('Main')
+          })
+
+      timedPromise(signInPromise, 5000).catch(error => {
+          if (error == "Timed out") this.setState({ errorMessage: error})
+          else this.setState({ errorMessage: error.message })
+        })
+    }
+
   }
   
   const styles = StyleSheet.create({

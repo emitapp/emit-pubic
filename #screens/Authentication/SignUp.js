@@ -3,19 +3,10 @@
 import React from 'react'
 import auth from '@react-native-firebase/auth';
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
+import { timedPromise } from '../../#constants/helpers';
 export default class SignUp extends React.Component {
 
-    state = { email: '', password: '', errorMessage: null }
-    
-    handleSignUp = () => {
-      auth()
-      .createUserWithEmailAndPassword(this.state.email, this.state.password)
-      .then(() => {
-          global.AppRoot.sendVerificationEmail()
-          this.props.navigation.navigate('Main')
-        })
-      .catch(error => this.setState({ errorMessage: error.message }))
-    }
+  state = { email: '', password: '', errorMessage: null }
   
   render() {
       return (
@@ -48,6 +39,21 @@ export default class SignUp extends React.Component {
         </View>
       )
     }
+
+    handleSignUp = () => {
+      var signUpPromise = auth()
+        .createUserWithEmailAndPassword(this.state.email, this.state.password)
+        .then(() => {
+            global.AppRoot.sendVerificationEmail()
+            this.props.navigation.navigate('Main')
+          })
+
+      timedPromise(signUpPromise, 5000).catch(error => {
+          if (error == "Timed out") this.setState({ errorMessage: error})
+          else this.setState({ errorMessage: error.message })
+        })
+    }
+
   }
   
   const styles = StyleSheet.create({
