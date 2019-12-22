@@ -15,7 +15,7 @@ export default class Loading extends React.Component {
     //Is the user already signed in or not?
     let unsubscribe = auth().onAuthStateChanged(user => {
       unsubscribe();
-      this.makeDecision(userExists);
+      this.makeDecision(user);
     })
   }
 
@@ -38,7 +38,7 @@ export default class Loading extends React.Component {
         const ref = database().ref(`/userSnippets/${uid}`);
         const snapshot = await timedPromise(ref.once('value'), 5000);
         if (snapshot.exists()) this.props.navigation.navigate('Main');
-        else this.props.navigation.navigate('AccountSetup');
+        else this.props.navigation.navigate('AccountSetUp');
       }else{
         this.props.navigation.navigate('SignUp');
       }
