@@ -7,7 +7,7 @@ import auth from '@react-native-firebase/auth';
 import SignUp from './#screens/Authentication/SignUp'
 import Login from './#screens/Authentication/Login'
 import AccountSetUp from './#screens/Authentication/AccountSetUp'
-import Main from './#screens/Main'
+import MainTabNav from './#screens/MainTabNav'
 
 //This file also contains the global functions needed by the app
 //Hopefully there's not a lot
@@ -37,7 +37,7 @@ const Navigator = createAppContainer(
     SignUp,
     AccountSetUp,
     Login,
-    Main
+    MainTabNav
   },
   {
     initialRouteName: 'AuthDecisionLander'

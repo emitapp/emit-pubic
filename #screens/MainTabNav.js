@@ -1,19 +1,20 @@
 // The overall partent tab navigator screen for the main interface
 
 import React from 'react'
-import { StyleSheet, Platform, Image, Text, View, Button } from 'react-native'
 import auth from '@react-native-firebase/auth';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 
 import Feed from './FeedSection/Feed'
 import LogOut from "./Settings/LogOut"
 import Active from "./DashboardSection/ActiveBroadcasts"
+import FriendSwitchNav from './FriendSection/FriendSectionStackNav'
 
 
 const Tab = createBottomTabNavigator({
+  Active,
   Feed,
+  FriendSwitchNav,
   LogOut,
-  Active
 });
 
 export default class Main extends React.Component {

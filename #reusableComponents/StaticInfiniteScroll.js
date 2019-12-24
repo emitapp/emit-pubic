@@ -3,8 +3,6 @@ import { ActivityIndicator, Dimensions, FlatList, SafeAreaView, StyleSheet, Text
 import database from '@react-native-firebase/database';
 import { timedPromise } from '../#constants/helpers';
 
-const { height, width } = Dimensions.get('window');
-
 /**
  * Use this class if you want to impliment an infinite scroll
  * for some data that you don't expect to update during the time the

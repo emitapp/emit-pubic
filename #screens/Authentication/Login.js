@@ -3,6 +3,7 @@
 import React from 'react'
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
 import auth from '@react-native-firebase/auth';
+import { timedPromise } from '../../#constants/helpers';
 
 export default class Login extends React.Component {
 
@@ -44,13 +45,27 @@ export default class Login extends React.Component {
       var signInPromise = auth()
         .signInWithEmailAndPassword(this.state.email, this.state.password)
         .then(() => {
-            this.props.navigation.navigate('Main')
+            this.makeDecision(true)
           })
 
       timedPromise(signInPromise, 5000).catch(error => {
           if (error == "Timed out") this.setState({ errorMessage: error})
           else this.setState({ errorMessage: error.message })
         })
+    }
+
+    makeDecision = async () => {
+      try{
+          //Check if he's set up the account first
+          // (like with a username and dp) and whatnot
+          const uid = auth().currentUser.uid; 
+          const ref = database().ref(`/userSnippets/${uid}`);
+          const snapshot = await timedPromise(ref.once('value'), 5000);
+          if (snapshot.exists()) this.props.navigation.navigate('MainTabNav');
+          else this.props.navigation.navigate('AccountSetUp');
+      }catch(err){
+        console.log(err);
+      }
     }
 
   }

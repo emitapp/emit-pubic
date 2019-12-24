@@ -37,7 +37,7 @@ export default class Loading extends React.Component {
         const uid = auth().currentUser.uid; 
         const ref = database().ref(`/userSnippets/${uid}`);
         const snapshot = await timedPromise(ref.once('value'), 5000);
-        if (snapshot.exists()) this.props.navigation.navigate('Main');
+        if (snapshot.exists()) this.props.navigation.navigate('MainTabNav');
         else this.props.navigation.navigate('AccountSetUp');
       }else{
         this.props.navigation.navigate('SignUp');
