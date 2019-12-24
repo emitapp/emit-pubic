@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
-import { ActivityIndicator, Dimensions, FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { FlatList, Text } from 'react-native';
 import database from '@react-native-firebase/database';
 import { timedPromise } from '../#constants/helpers';
+import InfiniteScrollLoadingComponent from './InfiniteScrollLoadingComponent'
 
 /**
  * Use this class if you want to impliment an infinite scroll
@@ -11,141 +12,205 @@ import { timedPromise } from '../#constants/helpers';
  * instead of re-getting the whole dataset
  */
 
- // Required props:
- // chunkSize: Size of chunks to get from firebase rtdb 
- // databaseRef: the database ref it should use for data collection 
- //              (include querying modifyers here, like startAt and orderBy)
- // onError: what the component should do upon facing SDK errors
- // orderBy: the name of the key you're ordering by. SHould still be explicitly
- //          mentioned in the ref too
- // renderItem: same as FLatlist RenderItem
+// Required props:
+// dbref: the databse ref to use
+// chunkSize: Size of chunks to get from firebase rtdb 
+// databaseRef: the database ref it should use for data collection 
+//              (include querying modifyers here, like startAt and orderBy)
+// errorHandler: what the component should do upon facing SDK errors 
+//         (not timeout erros tho, those are handled by the compenent)
+// orderBy: the name of the key you're ordering by. SHould still be explicitly
+//          mentioned in the ref too using orderByChild or whatever
+// renderItem: same as FLatlist RenderItem
+
+//Optinal props
+//startingPoint: the value to be used for .startat in retrieveInitialChunk
+//endingPoint: the value to be used for .endat in both retrieveInitialChunk and retrieveMore
+
+// generation: used to indicate to the scrollview that it shoudl reset
+//Generation is used to prevent api calls that were called for previous
+//queries from affecting the list if they resolved too late
+//(like maybe the user started searching for something else) 
+
+//Also note that this compenent doesn't store lots of the variables it uses
+//in the state because set.state() wouldn't update them immediately
+//For data integrity, it is unsafe for the firebase api calls to be made and not having thier
+//resolved promises update the variables immediately.
 
 export default class StaticInfiniteScroll extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            listData: [],
-            loading: false, //For when it's loading for the first time
-            refreshing: false, //For when it's getting more info
-        };
 
         this.lastItemProperty = null;
         this.stopSearching = false; //Once it gets a null snapshot, it'll stop
+        this.listData = [];
+        this.isLoading = true; //For when it's loading for the first time
+        this.refreshing = false; //For when it's getting more info
+        this.timedOut = false;
     }
 
     componentDidMount = () => {
         this.initialize();
     };
 
-
-    initialize = () => {
-        try {
-            this.lastItemProperty = null;
-            this.stopSearching = false;
-            this.retrieveInitialChunk();
-        }
-        catch (error) {
-            this.props.onError(error)
+    componentDidUpdate = (prevProps) => {
+        if (this.props.generation != prevProps.generation) {
+            this.initialize();
         }
     }
 
+    requestRerender = () => {
+        this.setState({})
+    }
 
-    retrieveInitialChunk = async () => {
+    initialize = () => {
+        this.isLoading = true;
+        this.listData = [];
+        this.lastItemProperty = null;
+        this.stopSearching = false;
+        this.timedOut = false;
+        this.requestRerender();
+        this.retrieveInitialChunk(this.props.generation);
+        console.log("Scoller [re]initialized")
+    }
+
+
+    retrieveInitialChunk = async (invocationGen) => {
         try {
-            this.setState({
-                loading: true,
+            var ref = this.props.dbref.limitToFirst(this.props.chunkSize)
+            if (this.props.startingPoint) ref = ref.startAt(this.props.startingPoint)
+            if (this.props.endingPoint) ref = ref.endAt(this.props.endingPoint)
+
+            const initialSnapshot = await timedPromise(ref.once("value"), 3000);
+
+            //Checking if your snapshot is no longer relevant
+            if (this.props.generation != invocationGen) return;
+
+            var listData = []
+            initialSnapshot.forEach(childSnapshot =>{
+                if (childSnapshot.exists())
+                    listData.push(childSnapshot.val())
             });
 
-            const initialQuery = this.props.ref
-                                         .limitToFirst(this.props.chunkSize)
-                                         .once('value')
-            const initialSnapshot = await timedPromise(initialQuery, 3000);
-            var listData = []
-            initialSnapshot.forEach(childSnapshot => 
-                listData.push(childSnapshot.val()));
+            console.log("retrieveInitialChunk", listData)
 
-            if (listData.length == 0){
+            if (listData.length == 0) {
                 this.stopSearching = true;
-                this.setState({
-                    refreshing: false,
-                    loading: false
-                });
-            }else{
-                this.lastItemProperty = 
-                    listData[listData.length - 1][this.props.orderBy];  
+                this.refreshing = false,
+                    this.isLoading = false
+                this.requestRerender();
+            } else {
+                this.lastItemProperty =
+                    listData[listData.length - 1][this.props.orderBy];
 
-                this.setState({
-                    listData,
-                    loading: false,
-                });
+                this.listData = listData
+                this.isLoading = false
+                this.requestRerender()
             }
         }
         catch (error) {
-            this.props.onError(error)
+            this.onError(error)
         }
     };
 
-    retrieveMore = async () => {
-        try {   
-            if (this.stopSearching) return;       
-            this.setState({
-                refreshing: true,
+    retrieveMore = async (invocationGen) => {
+        try {
+            if (this.stopSearching || this.refreshing) return;
+            this.refreshing = true;
+            this.requestRerender();
+
+            var ref = this.props.dbref
+                .limitToFirst(this.props.chunkSize)
+                .startAt(this.lastItemProperty)
+            if (this.props.endingPoint) ref = ref.endAt(this.props.endingPoint)
+
+            const additionalSnapshot = await timedPromise(ref.once("value"), 3000);
+
+            //Checking if your snapshot is no longer relevant
+            if (this.props.generation != invocationGen) return;
+
+            var additionaListData = []
+            additionalSnapshot.forEach(childSnapshot =>{
+                if (childSnapshot.exists())
+                    additionaListData.push(childSnapshot.val())
             });
 
-            const additionalQuery = this.props.ref
-                                        .limitToFirst(this.props.chunkSize)
-                                        .startAt(this.lastItemProperty)
-                                        .once('value')   
-
-            const additionalSnapshot = await timedPromise(additionalQuery, 3000);
-            var additionaListData = []
-            additionalSnapshot.forEach(childSnapshot => 
-                additionaListData.push(childSnapshot.val()));
-
             //Removing the first element since startAt is inclusive
-            additionaListData.shift(); 
+            additionaListData.shift();
 
-            if (additionaListData.length == 0){
+            console.log("retrieveMore", additionaListData)
+
+            if (additionaListData.length == 0) {
                 this.stopSearching = true;
-                this.setState({
-                    refreshing: false,
-                });
-            }else{
+                this.refreshing = false;
+                this.requestRerender();
+            } else {
                 this.lastItemProperty =
-                    additionaListData[additionaListData.length - 1][this.props.orderBy];  
-            
-                this.setState({
-                    listData: [...this.state.listData, ...additionaListData],
-                    refreshing: false,
-                });
+                    additionaListData[additionaListData.length - 1][this.props.orderBy];
+
+                this.listData = [...this.listData, ...additionaListData]
+                this.refreshing = false;
+                this.requestRerender();
             }
         }
         catch (error) {
-            this.props.onError(error)
+            this.onError(error)
         }
-    }; 
+    };
+
+    onError = (error) => {
+        if (error.code == "timeout") {
+            this.props.timedOut = true;
+            this.requestRerender();
+        } else {
+            this.props.errorHandler(error)
+        }
+    }
 
     renderFooter = () => {
-        if (this.state.loading) {
-            return (<ActivityIndicator/>)
+        if (this.state.refreshing) {
+            return (
+                <InfiniteScrollLoadingComponent
+                    hasTimedOut={this.timedOut}
+                    retryFunction={() => {
+                        this.timedOut = false;
+                        this.refreshing = false;
+                        this.retrieveMore(this.props.generation)
+                    }}
+                />
+            )
         }
-        else {
+        else if (this.stopSearching) {
+            return (<Text>That's all folks!</Text>);
+        } else {
             return null;
         }
     }
 
     render() {
-        return (
-            <FlatList
-                data={this.state.documentData}
-                keyExtractor={(item, index) => String(index)}
-                ListFooterComponent={this.renderFooter}
-                onEndReached={this.retrieveMore}
-                onEndReachedThreshold={0}
-                refreshing={this.state.refreshing}
-                {...this.props}
-            />
-        )
+        if (this.isLoading) {
+            return (
+                <InfiniteScrollLoadingComponent
+                    hasTimedOut={this.timedOut}
+                    retryFunction={() => {
+                        this.timedOut = false;
+                        this.retrieveInitialChunk(this.props.generation)
+                    }}
+                />
+            )
+        } else {
+            return (
+                <FlatList
+                    data={this.listData}
+                    keyExtractor={(item, index) => String(index)}
+                    ListFooterComponent={this.renderFooter}
+                    onEndReached={() => this.retrieveMore(this.props.generation)}
+                    onEndReachedThreshold={0}
+                    refreshing={this.state.refreshing}
+                    {...this.props}
+                />
+            )
+        }
     }
 }

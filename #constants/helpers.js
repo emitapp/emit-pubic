@@ -7,17 +7,20 @@
 //https://italonascimento.github.io/applying-a-timeout-to-your-promises/
 export const timedPromise = (promise, ms) => {
 
-    // Create a promise that rejects in <ms> milliseconds
-    let timeout = new Promise((resolve, reject) => {
-      setTimeout(() => reject('Timed out'),
-        ms)
-    })
-  
-    // Returns a race between our timeout and the passed in promise
-    return Promise.race([
-      promise,
-      timeout
-    ])
+  // Create a promise that rejects in <ms> milliseconds
+  let timeout = new Promise((resolve, reject) => {
+    setTimeout(() => reject({
+      code: "timeout",
+      message: `Your Promise timed out after ${ms} milliseconds`
+    }),
+      ms)
+  })
+
+  // Returns a race between our timeout and the passed in promise
+  return Promise.race([
+    promise,
+    timeout
+  ])
 }
 
 

@@ -46,8 +46,7 @@ export default class AccountSetUp extends React.Component {
         timedPromise(setupPromise, 5000)
         .then(() => this.props.navigation.navigate('MainTabNav'))
         .catch(error => {
-            if (error == "Timed out") this.setState({ errorMessage: error})
-            else this.setState({ errorMessage: error.message })
+            this.setState({ errorMessage: error.message })
         })
 
     }

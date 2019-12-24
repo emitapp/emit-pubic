@@ -49,8 +49,7 @@ export default class Login extends React.Component {
           })
 
       timedPromise(signInPromise, 5000).catch(error => {
-          if (error == "Timed out") this.setState({ errorMessage: error})
-          else this.setState({ errorMessage: error.message })
+           this.setState({ errorMessage: error.message })
         })
     }
 
