@@ -6,16 +6,25 @@ import React from 'react'
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import {timedPromise} from '../../#constants/helpers' 
+import TimeoutLoadingComponent from '../../#reusableComponents/TimeoutLoadingComponent';
 
 export default class Loading extends React.Component {
 
+  constructor(props){
+    super(props);
+    this.state = {timedout: false}
+    this.loggedIn = false
+  }
+
+
   componentDidMount() {
     //Is the user already signed in or not?
-    let unsubscribe = auth().onAuthStateChanged(user => {
+    var unsubscribe = auth().onAuthStateChanged(user => {
       unsubscribe();
-      this.makeDecision(user);
+      this.loggedIn = user
+      this.makeDecision();
     })
   }
 
@@ -23,15 +32,21 @@ export default class Loading extends React.Component {
     return (
       <View style={styles.container}>
         <Text>Loading</Text>
-        <ActivityIndicator size="large" />
+        <TimeoutLoadingComponent 
+          hasTimedOut = {this.state.timedout}
+          retryFunction = {() => {
+            this.setState({timedout: false})
+            this.makeDecision()
+          }}
+        />
       </View>
     )
   }
 
   //Decides which page to navigate to next
-  makeDecision = async (userLoggedIn) => {
+  makeDecision = async () => {
     try{
-      if (userLoggedIn){
+      if (this.loggedIn){
         //Check if he's set up the account first
         // (like with a username and dp) and whatnot
         const uid = auth().currentUser.uid; 
@@ -43,7 +58,12 @@ export default class Loading extends React.Component {
         this.props.navigation.navigate('SignUp');
       }
     }catch(err){
-      console.log(err);
+      if (err.code == "timeout"){
+        console.log(err);
+        this.setState({timedout: true})
+      }else{
+        console.log(err);
+      }
     }
   }
   

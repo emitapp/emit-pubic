@@ -1,7 +1,7 @@
 import React from 'react';
 import { ActivityIndicator, StyleSheet, Text, View, Button } from 'react-native';
 
-export default class InfiniteScrollLoadingComponent extends React.Component {
+export default class TimeoutLoadingComponent extends React.Component {
     render() {
         if (!this.props.hasTimedOut) {
             return (<ActivityIndicator />)
@@ -19,7 +19,6 @@ export default class InfiniteScrollLoadingComponent extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
     }

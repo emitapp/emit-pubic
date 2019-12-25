@@ -1,16 +1,33 @@
 import React from 'react'
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native'
+import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native'
 import StaticInfiniteScroll from '../../#reusableComponents/StaticInfiniteScroll'
 import database from '@react-native-firebase/database';
 
+//import Modal from "react-native-modal";
 
 export default class UserSearch extends React.Component {
 
-  state = { query: '', attemptedQuery: '', errorMessage: null, searchGeneration: 0 }
+  state = { 
+    query: '', 
+    attemptedQuery: '', 
+    errorMessage: null, 
+    searchGeneration: 0, 
+    isModalVisible: false
+  }
 
   render() {
     return (
       <View style={styles.container}>
+
+        <Modal 
+          isVisible={this.state.isModalVisible}
+          onBackdropPress={() => this.setState({ isVisible: false })}
+        >
+          <View style={{ flex: 1 }}>
+            <Text>Hello!</Text>
+            <Button title="Hide modal" onPress={this.toggleModal} />
+          </View>
+        </Modal>
 
         <Text>User Search</Text>
         {this.state.errorMessage &&
@@ -21,17 +38,17 @@ export default class UserSearch extends React.Component {
         <TextInput
           style={styles.textInput}
           autoCapitalize="none"
-          placeholder="UserEmail"
+          placeholder="Search using a user's email"
           onChangeText={query => this.setState({ query })}
           value={this.state.query}
         />
 
         <Button title="Search" onPress={this.search} />
 
-        {(this.state.attemptedQuery.length < 3) ? (
+        {(this.state.attemptedQuery.length < 1) ? (
             <Text>Try to find users with a long enough query</Text>
         ) : (
-            <StaticInfiniteScroll
+            <StaticInfiniteScroll style = {{width: "100%"}}
               chunkSize = {10}
               errorHandler = {(err) => console.log(err)}
               renderItem = {this.itemRenderer}
@@ -40,9 +57,9 @@ export default class UserSearch extends React.Component {
               dbref = {database().ref("/testScrollingData/testScrollingData").orderByChild("name")}
               startingPoint = {this.state.attemptedQuery}
               endingPoint = {`${this.state.attemptedQuery}\uf8ff`}
+              ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
             />
-        )
-        }
+        )}
 
       </View>
     )
@@ -54,11 +71,19 @@ export default class UserSearch extends React.Component {
 
   itemRenderer = ({ item }) => {
     return (
-      <View>
+      <TouchableOpacity 
+        style = {styles.listElement}
+        onPress={this.toggleModal}
+      >
         <Text>{item.name}</Text>
-      </View>
+        <Text>{item.key}</Text>
+      </TouchableOpacity>
     );
   }
+
+  toggleModal = () => {
+    this.setState({ isModalVisible: !this.state.isModalVisible });
+  };
 }
 
 const styles = StyleSheet.create({
@@ -73,5 +98,12 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1,
     marginTop: 8
+  },
+  listElement: {
+    height: 40,
+    backgroundColor: 'ghostwhite',
+    alignItems: "flex-start",
+    marginLeft: 10,
+    marginRight: 10
   }
 })

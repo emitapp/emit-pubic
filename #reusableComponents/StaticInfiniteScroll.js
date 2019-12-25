@@ -2,7 +2,7 @@ import React from 'react';
 import { FlatList, Text } from 'react-native';
 import database from '@react-native-firebase/database';
 import { timedPromise } from '../#constants/helpers';
-import InfiniteScrollLoadingComponent from './InfiniteScrollLoadingComponent'
+import InfiniteScrollLoadingComponent from './TimeoutLoadingComponent'
 
 /**
  * Use this class if you want to impliment an infinite scroll
@@ -90,7 +90,11 @@ export default class StaticInfiniteScroll extends React.Component {
             var listData = []
             initialSnapshot.forEach(childSnapshot =>{
                 if (childSnapshot.exists())
-                    listData.push(childSnapshot.val())
+                    listData.push({
+                        key: childSnapshot.key, 
+                        ...childSnapshot.val()
+                    })
+                    
             });
 
             console.log("retrieveInitialChunk", listData)
@@ -133,7 +137,10 @@ export default class StaticInfiniteScroll extends React.Component {
             var additionaListData = []
             additionalSnapshot.forEach(childSnapshot =>{
                 if (childSnapshot.exists())
-                    additionaListData.push(childSnapshot.val())
+                    additionaListData.push({
+                        key: childSnapshot.key, 
+                        ...childSnapshot.val()
+                    })
             });
 
             //Removing the first element since startAt is inclusive
