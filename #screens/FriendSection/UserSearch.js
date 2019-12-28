@@ -2,8 +2,9 @@ import React from 'react'
 import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native'
 import StaticInfiniteScroll from '../../#reusableComponents/StaticInfiniteScroll'
 import database from '@react-native-firebase/database';
+import AddFriendDialogue from './AddFriendDialogue';
 
-//import Modal from "react-native-modal";
+import Modal from "react-native-modal";
 
 export default class UserSearch extends React.Component {
 
@@ -12,7 +13,8 @@ export default class UserSearch extends React.Component {
     attemptedQuery: '', 
     errorMessage: null, 
     searchGeneration: 0, 
-    isModalVisible: false
+    isModalVisible: false,
+    selectedUser: null
   }
 
   render() {
@@ -21,12 +23,15 @@ export default class UserSearch extends React.Component {
 
         <Modal 
           isVisible={this.state.isModalVisible}
-          onBackdropPress={() => this.setState({ isVisible: false })}
+          style = {{justifyContent: "center", alignItems: "center"}}
+          animationIn = "fadeInUp"
+          animationOut = 'fadeOutUp'
+          animationOutTiming = {0}
         >
-          <View style={{ flex: 1 }}>
-            <Text>Hello!</Text>
-            <Button title="Hide modal" onPress={this.toggleModal} />
-          </View>
+          <AddFriendDialogue 
+            selectedUser = {this.state.selectedUser}
+            closeFunction={() => this.setState({ isModalVisible: false })}
+          />
         </Modal>
 
         <Text>User Search</Text>
@@ -50,11 +55,11 @@ export default class UserSearch extends React.Component {
         ) : (
             <StaticInfiniteScroll style = {{width: "100%"}}
               chunkSize = {10}
-              errorHandler = {(err) => console.log(err)}
+              errorHandler = {this.scrollErrorHandler}
               renderItem = {this.itemRenderer}
               generation = {this.state.searchGeneration}
               orderBy = "name"
-              dbref = {database().ref("/testScrollingData/testScrollingData").orderByChild("name")}
+              dbref = {database().ref("/userSnippets").orderByChild("name")}
               startingPoint = {this.state.attemptedQuery}
               endingPoint = {`${this.state.attemptedQuery}\uf8ff`}
               ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
@@ -65,15 +70,24 @@ export default class UserSearch extends React.Component {
     )
   }
 
+
+  scrollErrorHandler = (err) => {
+    console.log(err)
+    this.setState({errorMessage: err.message})
+  }
+
   search = () => {
-    this.setState({attemptedQuery: this.state.query, searchGeneration: this.state.searchGeneration + 1})
+    this.setState({
+      attemptedQuery: this.state.query, 
+      searchGeneration: this.state.searchGeneration + 1
+    })
   }
 
   itemRenderer = ({ item }) => {
     return (
       <TouchableOpacity 
         style = {styles.listElement}
-        onPress={this.toggleModal}
+        onPress={() => this.toggleModal(item)}
       >
         <Text>{item.name}</Text>
         <Text>{item.key}</Text>
@@ -81,8 +95,8 @@ export default class UserSearch extends React.Component {
     );
   }
 
-  toggleModal = () => {
-    this.setState({ isModalVisible: !this.state.isModalVisible });
+  toggleModal = (selectedUser) => {
+    this.setState({ isModalVisible: true, selectedUser});
   };
 }
 
