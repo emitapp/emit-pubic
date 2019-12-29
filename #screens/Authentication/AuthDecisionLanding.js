@@ -7,7 +7,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 
 import { View, Text, StyleSheet } from 'react-native'
-import {timedPromise} from '../../#constants/helpers' 
+import {timedPromise, mediumTimeout} from '../../#constants/helpers' 
 import TimeoutLoadingComponent from '../../#reusableComponents/TimeoutLoadingComponent';
 
 export default class Loading extends React.Component {
@@ -51,7 +51,7 @@ export default class Loading extends React.Component {
         // (like with a username and dp) and whatnot
         const uid = auth().currentUser.uid; 
         const ref = database().ref(`/userSnippets/${uid}`);
-        const snapshot = await timedPromise(ref.once('value'), 5000);
+        const snapshot = await timedPromise(ref.once('value'), mediumTimeout);
         if (snapshot.exists()) this.props.navigation.navigate('MainTabNav');
         else this.props.navigation.navigate('AccountSetUp');
       }else{

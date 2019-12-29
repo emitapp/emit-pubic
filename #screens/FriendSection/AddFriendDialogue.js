@@ -4,7 +4,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import TimeoutLoadingComponent from '../../#reusableComponents/TimeoutLoadingComponent';
-import {timedPromise} from '../../#constants/helpers'
+import {timedPromise, mediumTimeout, longTimeout} from '../../#constants/helpers'
 
 import * as responseStatuses from '../../#constants/standardHttpsData'
 
@@ -81,7 +81,7 @@ export default class AddFriendDialogue extends React.Component {
             const uid = auth().currentUser.uid; 
             //Check if he's already a friend...
             const friendRef = database().ref(`/userFriendGroupings/${uid}/all/${this.props.selectedUser.uid}`);
-            const friendSnapshot = await timedPromise(friendRef.once('value'), 5000);
+            const friendSnapshot = await timedPromise(friendRef.once('value'), mediumTimeout);
             if (friendSnapshot.exists()){
                 this.setState({isLoadingOptions: false, option: actionOptions.REMOVE})
                 return;
@@ -89,7 +89,7 @@ export default class AddFriendDialogue extends React.Component {
 
             //Check if he's in my request outbox...
             const outboxRef = database().ref(`/friendRequests/${uid}/outbox/${this.props.selectedUser.uid}`);
-            const outboxSnapshot = await timedPromise(outboxRef.once('value'), 5000);
+            const outboxSnapshot = await timedPromise(outboxRef.once('value'), mediumTimeout);
             if (outboxSnapshot.exists()){
                 this.setState({isLoadingOptions: false, option: actionOptions.CANCELREQ})
                 return;
@@ -97,7 +97,7 @@ export default class AddFriendDialogue extends React.Component {
 
             //Check if he's in my request inbox...
             const inboxRef = database().ref(`/friendRequests/${uid}/inbox/${this.props.selectedUser.uid}`);
-            const inboxSnapshot = await timedPromise(inboxRef.once('value'), 5000);
+            const inboxSnapshot = await timedPromise(inboxRef.once('value'), mediumTimeout);
             if (inboxSnapshot.exists()){
                 this.setState({isLoadingOptions: false, option: actionOptions.ACCEPTREQ})
             }else{
@@ -133,9 +133,9 @@ export default class AddFriendDialogue extends React.Component {
 
         try {
             const response = await timedPromise(callableFunction({
-                from: auth.uid, 
+                from: auth().currentUser.uid, 
                 to: this.props.selectedUser.uid
-            }), 5000);
+            }), longTimeout);
             if (response.status === responseStatuses.returnStatuses.OK){
                 this.refreshActionOption()
                 this.setState({waitingForActionPromise: false})

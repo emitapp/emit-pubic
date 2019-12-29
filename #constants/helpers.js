@@ -1,5 +1,3 @@
-import database from '@react-native-firebase/database';
-
 /**
  * Wraps a promise in a timeout using promise.race
  * If the promise is timed out, it rejects and returns 'Timed out'
@@ -24,6 +22,10 @@ export const timedPromise = (promise, ms) => {
     timeout
   ])
 }
+
+export const shortTimeout = 3000
+export const mediumTimeout = 5000
+export const longTimeout = 7000
 
 
 /**
