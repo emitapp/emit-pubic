@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, View, Button } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
+import functions from '@react-native-firebase/functions';
 import TimeoutLoadingComponent from '../../#reusableComponents/TimeoutLoadingComponent';
 import {timedPromise} from '../../#constants/helpers'
 
@@ -117,13 +118,13 @@ export default class AddFriendDialogue extends React.Component {
         var callableFunction;
         switch (this.state.option) {
             case actionOptions.SENDREQ:
-                callableFunction =  firebase.functions().httpsCallable('sendFriendRequest');
+                callableFunction =  functions().httpsCallable('sendFriendRequest');
                 break;
             case actionOptions.CANCELREQ:
-                callableFunction =  firebase.functions().httpsCallable('cancelFriendRequest');
+                callableFunction =  functions().httpsCallable('cancelFriendRequest');
                 break;
             case actionOptions.ACCEPTREQ:
-                callableFunction =  firebase.functions().httpsCallable('acceptFriendRequest');
+                callableFunction =  functions().httpsCallable('acceptFriendRequest');
                 break;
             default:
                 this.setState({waitingForActionPromise: false})
@@ -133,7 +134,7 @@ export default class AddFriendDialogue extends React.Component {
         try {
             const response = await timedPromise(callableFunction({
                 from: auth.uid, 
-                to: selectedUser.uid
+                to: this.props.selectedUser.uid
             }), 5000);
             if (response.status === responseStatuses.returnStatuses.OK){
                 this.refreshActionOption()
