@@ -4,7 +4,8 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import TimeoutLoadingComponent from '../../#reusableComponents/TimeoutLoadingComponent';
 import {timedPromise} from '../../#constants/helpers'
-import { ThemeColors } from 'react-navigation';
+
+import * as responseStatuses from '../../#constants/standardHttpsData'
 
 export default class AddFriendDialogue extends React.Component {
 
@@ -23,7 +24,7 @@ export default class AddFriendDialogue extends React.Component {
         return (
             <View style={styles.container}>
                 <Text>User Name = {this.props.selectedUser.name}</Text>
-                <Text>User ID = {this.props.selectedUser.key}</Text>
+                <Text>User ID = {this.props.selectedUser.uid}</Text>
 
                 {this.state.fatalError &&
                     <Text>Looks like a fatal error ocurred!</Text>                
@@ -56,7 +57,7 @@ export default class AddFriendDialogue extends React.Component {
     }
 
     displayActionsPanel = () => {
-        if (this.state.isLoadingOptions) return;
+        if (this.state.isLoadingOptions || this.state.option == actionOptions.NONE) return;
         if (!this.state.waitingForActionPromise){
             return(
                 <Button title = {this.state.option} onPress = {this.performAction}/>
@@ -66,7 +67,7 @@ export default class AddFriendDialogue extends React.Component {
                 <TimeoutLoadingComponent
                     hasTimedOut={this.state.timedOut}
                     retryFunction={() => {
-                        this.setState({timedOut: false, isWaiting: false})
+                        this.setState({timedOut: false, waitingForActionPromise: false})
                         this.performAction()
                     }}
                 />
@@ -78,7 +79,7 @@ export default class AddFriendDialogue extends React.Component {
         try{
             const uid = auth().currentUser.uid; 
             //Check if he's already a friend...
-            const friendRef = database().ref(`/userFriendGroupings/${uid}/all/${this.props.selectedUser.key}`);
+            const friendRef = database().ref(`/userFriendGroupings/${uid}/all/${this.props.selectedUser.uid}`);
             const friendSnapshot = await timedPromise(friendRef.once('value'), 5000);
             if (friendSnapshot.exists()){
                 this.setState({isLoadingOptions: false, option: actionOptions.REMOVE})
@@ -86,12 +87,20 @@ export default class AddFriendDialogue extends React.Component {
             }
 
             //Check if he's in my request outbox...
-            const outboxRef = database().ref(`/friendRequests/${uid}/outbox/${this.props.selectedUser.key}`);
+            const outboxRef = database().ref(`/friendRequests/${uid}/outbox/${this.props.selectedUser.uid}`);
             const outboxSnapshot = await timedPromise(outboxRef.once('value'), 5000);
             if (outboxSnapshot.exists()){
-                this.setState({isLoadingOptions: false, option: actionOptions.CANCEL})
+                this.setState({isLoadingOptions: false, option: actionOptions.CANCELREQ})
+                return;
+            }
+
+            //Check if he's in my request inbox...
+            const inboxRef = database().ref(`/friendRequests/${uid}/inbox/${this.props.selectedUser.uid}`);
+            const inboxSnapshot = await timedPromise(inboxRef.once('value'), 5000);
+            if (inboxSnapshot.exists()){
+                this.setState({isLoadingOptions: false, option: actionOptions.ACCEPTREQ})
             }else{
-                this.setState({isLoadingOptions: false, option: actionOptions.ADD})
+                this.setState({isLoadingOptions: false, option: actionOptions.SENDREQ})
             }
         }catch (err){
             if (err.message == "timeout"){
@@ -103,16 +112,72 @@ export default class AddFriendDialogue extends React.Component {
         }
     }
 
-    performAction = () => {
-        console.log(this.state.option)
+    performAction = async () => {
+        this.setState({waitingForActionPromise: true})
+        var callableFunction;
+        switch (this.state.option) {
+            case actionOptions.SENDREQ:
+                callableFunction =  firebase.functions().httpsCallable('sendFriendRequest');
+                break;
+            case actionOptions.CANCELREQ:
+                callableFunction =  firebase.functions().httpsCallable('cancelFriendRequest');
+                break;
+            case actionOptions.ACCEPTREQ:
+                callableFunction =  firebase.functions().httpsCallable('acceptFriendRequest');
+                break;
+            default:
+                this.setState({waitingForActionPromise: false})
+                return;
+        }
+
+        try {
+            const response = await timedPromise(callableFunction({
+                from: auth.uid, 
+                to: selectedUser.uid
+            }), 5000);
+            if (response.status === responseStatuses.returnStatuses.OK){
+                this.refreshActionOption()
+                this.setState({waitingForActionPromise: false})
+            }else{
+                this.setState({waitingForActionPromise: false, option: actionOptions.NONE})
+                console.log(response)
+            }
+        } catch (err) {
+            if (err.message == "timeout"){
+                this.setState({timedOut: true, waitingForActionPromise: false})
+            }else{
+                this.setState({waitingForActionPromise: false})
+                console.log(err)          
+            }
+        }
+    }
+
+    refreshActionOption = () => {
+        var newOption = actionOptions.NONE;
+        switch (this.state.option) {
+            case actionOptions.SENDREQ:
+                newOption = actionOptions.CANCELREQ;
+                break;
+            case actionOptions.CANCELREQ:
+            case actionOptions.REMOVE:
+                newOption = actionOptions.SENDREQ;
+                break;
+            case actionOptions.ACCEPTREQ:
+                newOption = actionOptions.REMOVE;
+                break;
+        }
+
+        this.setState({option: newOption})
     }
 }
 
 
 const actionOptions = {
+    SENDREQ: 'Send Friend Request',
+    ACCEPTREQ: 'Accept Friend Request',
+    CANCELREQ: 'Cancel Friend Request',
     REMOVE: 'Remove Friend',
-    ADD: 'Add Friend',
-    CANCEL: 'Cancel Friend Request'
+    NONE: "Nothing"
 }
 
 const styles = StyleSheet.create({

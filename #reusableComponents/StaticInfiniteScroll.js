@@ -91,7 +91,7 @@ export default class StaticInfiniteScroll extends React.Component {
             initialSnapshot.forEach(childSnapshot =>{
                 if (childSnapshot.exists())
                     listData.push({
-                        key: childSnapshot.key, 
+                        uid: childSnapshot.key, 
                         ...childSnapshot.val()
                     })
                     

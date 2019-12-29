@@ -90,7 +90,7 @@ export default class UserSearch extends React.Component {
         onPress={() => this.toggleModal(item)}
       >
         <Text>{item.name}</Text>
-        <Text>{item.key}</Text>
+        <Text>{item.uid}</Text>
       </TouchableOpacity>
     );
   }
