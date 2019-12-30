@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatList, Text } from 'react-native';
 import database from '@react-native-firebase/database';
-import { timedPromise, mediumTimeout } from '../#constants/helpers';
+import { timedPromise, MEDIUM_TIMEOUT } from '../#constants/helpers';
 import InfiniteScrollLoadingComponent from './TimeoutLoadingComponent'
 
 /**
@@ -82,7 +82,7 @@ export default class StaticInfiniteScroll extends React.Component {
             if (this.props.startingPoint) ref = ref.startAt(this.props.startingPoint)
             if (this.props.endingPoint) ref = ref.endAt(this.props.endingPoint)
 
-            const initialSnapshot = await timedPromise(ref.once("value"), mediumTimeout);
+            const initialSnapshot = await timedPromise(ref.once("value"), MEDIUM_TIMEOUT);
 
             //Checking if your snapshot is no longer relevant
             if (this.props.generation != invocationGen) return;
@@ -129,7 +129,7 @@ export default class StaticInfiniteScroll extends React.Component {
                 .startAt(this.lastItemProperty)
             if (this.props.endingPoint) ref = ref.endAt(this.props.endingPoint)
 
-            const additionalSnapshot = await timedPromise(ref.once("value"), mediumTimeout);
+            const additionalSnapshot = await timedPromise(ref.once("value"), MEDIUM_TIMEOUT);
 
             //Checking if your snapshot is no longer relevant
             if (this.props.generation != invocationGen) return;

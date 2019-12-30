@@ -3,7 +3,7 @@
 import React from 'react'
 import auth from '@react-native-firebase/auth';
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
-import { timedPromise, mediumTimeout } from '../../#constants/helpers';
+import { timedPromise, MEDIUM_TIMEOUT } from '../../#constants/helpers';
 export default class SignUp extends React.Component {
 
   state = { email: '', password: '', errorMessage: null }
@@ -48,7 +48,7 @@ export default class SignUp extends React.Component {
             this.props.navigation.navigate('AccountSetUp')
           })
 
-      timedPromise(signUpPromise, mediumTimeout).catch(error => {
+      timedPromise(signUpPromise, MEDIUM_TIMEOUT).catch(error => {
            this.setState({ errorMessage: error.message })
         })
     }

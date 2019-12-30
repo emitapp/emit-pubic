@@ -4,7 +4,7 @@ import React from 'react'
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
-import { isOnlyWhitespace, timedPromise, mediumTimeout } from '../../#constants/helpers';
+import { isOnlyWhitespace, timedPromise, MEDIUM_TIMEOUT } from '../../#constants/helpers';
 
 export default class AccountSetUp extends React.Component {
 
@@ -43,7 +43,7 @@ export default class AccountSetUp extends React.Component {
         const ref = database().ref(`/userSnippets/${uid}`);
         const setupPromise = ref.set({name: this.state.name})
 
-        timedPromise(setupPromise, mediumTimeout)
+        timedPromise(setupPromise, MEDIUM_TIMEOUT)
         .then(() => this.props.navigation.navigate('MainTabNav'))
         .catch(error => {
             this.setState({ errorMessage: error.message })
