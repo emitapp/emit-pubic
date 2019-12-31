@@ -15,8 +15,6 @@ import InfiniteScrollLoadingComponent from './TimeoutLoadingComponent'
 // Required props:
 // dbref: the databse ref to use
 // chunkSize: Size of chunks to get from firebase rtdb 
-// databaseRef: the database ref it should use for data collection 
-//              (include querying modifyers here, like startAt and orderBy)
 // errorHandler: what the component should do upon facing SDK errors 
 //         (not timeout erros tho, those are handled by the compenent)
 // orderBy: the name of the key you're ordering by. SHould still be explicitly
@@ -33,9 +31,9 @@ import InfiniteScrollLoadingComponent from './TimeoutLoadingComponent'
 //(like maybe the user started searching for something else) 
 
 //Also note that this compenent doesn't store lots of the variables it uses
-//in the state because set.state() wouldn't update them immediately
+//in the state because this.setState() wouldn't update them immediately
 //For data integrity, it is unsafe for the firebase api calls to be made and not having thier
-//resolved promises update the variables immediately.
+//resolved promises update the necessary variables immediately.
 
 export default class StaticInfiniteScroll extends React.Component {
 
@@ -176,7 +174,7 @@ export default class StaticInfiniteScroll extends React.Component {
     }
 
     renderFooter = () => {
-        if (this.state.refreshing) {
+        if (this.refreshing) {
             return (
                 <InfiniteScrollLoadingComponent
                     hasTimedOut={this.timedOut}
@@ -210,11 +208,11 @@ export default class StaticInfiniteScroll extends React.Component {
             return (
                 <FlatList
                     data={this.listData}
-                    keyExtractor={(item, index) => String(index)}
+                    keyExtractor={item => item.uid}
                     ListFooterComponent={this.renderFooter}
                     onEndReached={() => this.retrieveMore(this.props.generation)}
-                    onEndReachedThreshold={0}
-                    refreshing={this.state.refreshing}
+                    onEndReachedThreshold={0.1}
+                    refreshing={this.refreshing}
                     {...this.props}
                 />
             )
