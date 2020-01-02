@@ -1,16 +1,17 @@
 import React from 'react'
-import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native'
-import StaticInfiniteScroll from '../../#reusableComponents/StaticInfiniteScroll'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import DynamicInfiniteScroll from '../../#reusableComponents/DynamicInfiniteScroll'
 import database from '@react-native-firebase/database';
+import auth from '@react-native-firebase/auth'
 import FriendReqDialogue from './FriendReqDialogue';
 
 import Modal from "react-native-modal";
+import { epochToDateString } from '../../#constants/helpers';
 
 export default class UserSearch extends React.Component {
 
   state = { 
-    query: '', 
-    attemptedQuery: '', 
+    displayingInbox: true,
     errorMessage: null, 
     searchGeneration: 0, 
     isModalVisible: false,
@@ -26,46 +27,41 @@ export default class UserSearch extends React.Component {
           style = {{justifyContent: "center", alignItems: "center"}}
           animationIn = "fadeInUp"
           animationOut = 'fadeOutUp'
-          animationOutTiming = {0}
-        >
+          animationOutTiming = {0}>
           <FriendReqDialogue 
             selectedUser = {this.state.selectedUser}
             closeFunction={() => this.setState({ isModalVisible: false })}
           />
         </Modal>
 
-        <Text>User Search</Text>
+        <View style = {{width: "100%", height: 30, flexDirection: 'row'}}>
+            <TouchableOpacity 
+                style = {this.state.displayingInbox ? styles.selectedTab : styles.dormantTab}
+                onPress={() => this.toggleBox(true)}>
+                <Text>INBOX</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+                style = {!this.state.displayingInbox ? styles.selectedTab : styles.dormantTab}
+                onPress={() => this.toggleBox(false)}>
+                <Text>OUTBOX</Text>
+            </TouchableOpacity>
+        </View>
+
         {this.state.errorMessage &&
           <Text style={{ color: 'red' }}>
             {this.state.errorMessage}
           </Text>}
 
-        <TextInput
-          style={styles.textInput}
-          autoCapitalize="none"
-          placeholder="Search using a user's email"
-          onChangeText={query => this.setState({ query })}
-          value={this.state.query}
-        />
 
-        <Button title="Search" onPress={this.search} />
-
-        {(this.state.attemptedQuery.length < 1) ? (
-            <Text>Try to find users with a long enough query</Text>
-        ) : (
-            <StaticInfiniteScroll style = {{width: "100%"}}
+            <DynamicInfiniteScroll style = {{width: "100%"}}
               chunkSize = {10}
               errorHandler = {this.scrollErrorHandler}
               renderItem = {this.itemRenderer}
               generation = {this.state.searchGeneration}
-              orderBy = "name"
-              dbref = {database().ref("/userSnippets").orderByChild("name")}
-              startingPoint = {this.state.attemptedQuery}
-              endingPoint = {`${this.state.attemptedQuery}\uf8ff`}
+              dbref = {this.getRef().orderByChild("timestamp")}
               ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
             />
-        )}
-
       </View>
     )
   }
@@ -76,19 +72,12 @@ export default class UserSearch extends React.Component {
     this.setState({errorMessage: err.message})
   }
 
-  search = () => {
-    this.setState({
-      attemptedQuery: this.state.query, 
-      searchGeneration: this.state.searchGeneration + 1
-    })
-  }
-
   itemRenderer = ({ item }) => {
     return (
       <TouchableOpacity 
         style = {styles.listElement}
-        onPress={() => this.toggleModal(item)}
-      >
+        onPress={() => this.toggleModal(item)}>
+        <Text>Date sent: {epochToDateString(item.timestamp)}</Text>
         <Text>{item.name}</Text>
         <Text>{item.uid}</Text>
       </TouchableOpacity>
@@ -97,7 +86,24 @@ export default class UserSearch extends React.Component {
 
   toggleModal = (selectedUser) => {
     this.setState({ isModalVisible: true, selectedUser});
-  };
+  }
+
+  getRef = () => {
+    if (this.state.displayingInbox)
+        return database().ref(`/friendRequests/${auth().currentUser.uid}/inbox`)
+    else
+        return database().ref(`/friendRequests/${auth().currentUser.uid}/outbox`)
+  }
+
+  toggleBox = (shouldDisplayInbox) => {
+    if (this.state.displayingInbox != shouldDisplayInbox){
+        this.setState({
+            displayingInbox: shouldDisplayInbox, 
+            searchGeneration: this.state.searchGeneration + 1
+        })
+    }
+  }
+
 }
 
 const styles = StyleSheet.create({
@@ -106,12 +112,17 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center'
   },
-  textInput: {
-    height: 40,
-    width: '90%',
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginTop: 8
+  selectedTab: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: 'center',
+    backgroundColor: "dodgerblue"
+  },
+  dormantTab: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: 'center',
+    backgroundColor: "grey"
   },
   listElement: {
     height: 40,

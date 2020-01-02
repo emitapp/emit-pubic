@@ -8,7 +8,7 @@ import {timedPromise, MEDIUM_TIMEOUT, LONG_TIMEOUT} from '../../#constants/helpe
 
 import * as responseStatuses from '../../#constants/standardHttpsData'
 
-export default class AddFriendDialogue extends React.Component {
+export default class FriendReqDialogue extends React.Component {
 
     state = {
         isLoadingOptions: true, 
@@ -136,12 +136,12 @@ export default class AddFriendDialogue extends React.Component {
                 from: auth().currentUser.uid, 
                 to: this.props.selectedUser.uid
             }), LONG_TIMEOUT);
-            if (response.status === responseStatuses.returnStatuses.OK){
+            if (response.data.status === responseStatuses.returnStatuses.OK){
                 this.refreshActionOption()
                 this.setState({waitingForActionPromise: false})
             }else{
                 this.setState({waitingForActionPromise: false, option: actionOptions.NONE})
-                console.log(response)
+                console.log(response, "problematic response")
             }
         } catch (err) {
             if (err.message == "timeout"){

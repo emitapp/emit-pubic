@@ -1,7 +1,6 @@
 import React from 'react';
 import { FlatList, Text } from 'react-native';
 import database from '@react-native-firebase/database';
-import { timedPromise, MEDIUM_TIMEOUT } from '../#constants/helpers';
 import InfiniteScrollLoadingComponent from './TimeoutLoadingComponent'
 
 /**
@@ -16,8 +15,6 @@ import InfiniteScrollLoadingComponent from './TimeoutLoadingComponent'
 // chunkSize: Size of chunks to get from firebase rtdb 
 // errorHandler: what the component should do upon facing SDK errors 
 //         (not timeout erros tho, those are handled by the compenent)
-// orderBy: the name of the key you're ordering by. SHould still be explicitly
-//          mentioned in the ref too using orderByChild or whatever
 // renderItem: same as FLatlist RenderItem
 
 //Optinal props
@@ -69,8 +66,8 @@ export default class DymanicInfiniteScroll extends React.Component {
         this.listData = [];
         this.timedOut = false;
         this.currentChunkSize = this.props.chunkSize;
+        this.requestRerender();
         this.setListener();
-        this.retrieveInitialChunk();
         console.log("Dynamic Scoller [re]initialized")
     }
 
@@ -80,6 +77,7 @@ export default class DymanicInfiniteScroll extends React.Component {
         // for this generation
         this.gettingFirstLoad = false; 
         this.gettingMoreData = false;
+        this.requestRerender();
     }
 
     retrieveMoreData = () => {

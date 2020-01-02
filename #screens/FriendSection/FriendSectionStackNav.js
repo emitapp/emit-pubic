@@ -2,12 +2,14 @@ import React from 'react'
 import { createStackNavigator } from 'react-navigation-stack';
 
 import FriendButtonHub from './FriendButtonHub'
+import FriendRequests from './FriendReqBoxes'
 import UserSearch from './UserSearch'
 
 const Navigator = createStackNavigator(
   {
+    FriendButtonHub,
     UserSearch,
-    FriendButtonHub
+    FriendRequests
   },
   {
     initialRouteName: 'FriendButtonHub'

@@ -23,6 +23,7 @@ export const timedPromise = (promise, ms) => {
   ])
 }
 
+
 export const SHORT_TIMEOUT = 3000
 export const MEDIUM_TIMEOUT = 5000
 export const LONG_TIMEOUT = 7000
@@ -35,4 +36,13 @@ export const LONG_TIMEOUT = 7000
 //https://stackoverflow.com/questions/10261986/how-to-detect-string-which-contains-only-spaces/50971250
 export const isOnlyWhitespace = (str) => {
   return str.replace(/\s/g, '').length == 0
+}
+
+/**
+ * Converts epoch timestamps to date strings
+ * @param {*} epochMillis The epoch timestamp
+ */
+export const epochToDateString = (epochMillis) =>
+{
+  return new Date(epochMillis).toString()
 }
