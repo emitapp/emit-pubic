@@ -7,15 +7,15 @@ import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 
 import Feed from './FeedSection/Feed'
 import LogOut from "./Settings/LogOut"
-import Active from "./DashboardSection/ActiveBroadcasts"
-import FriendSwitchNav from './FriendSection/FriendSectionStackNav'
+import DashboardStackNav from "./DashboardSection/DashboardStackNav"
+import FriendStackNav from './FriendSection/FriendSectionStackNav'
 
 
 const Tab = createBottomTabNavigator(
   {
-    Active,
+    DashboardStackNav,
     Feed,
-    FriendSwitchNav,
+    FriendStackNav,
     LogOut,
   },
   {
@@ -24,11 +24,11 @@ const Tab = createBottomTabNavigator(
         tabBarIcon: ({ focused, horizontal, tintColor }) => {
           const { routeName } = navigation.state;
           let iconName;
-          if (routeName === 'Active') {
+          if (routeName === 'DashboardStackNav') {
             iconName = `home`;
           } else if (routeName === 'Feed') {
             iconName = `rss`;
-          }else if (routeName === 'FriendSwitchNav') {
+          }else if (routeName === 'FriendStackNav') {
             iconName = `user-friends`;
           }else{
             iconName = `cog`;

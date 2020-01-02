@@ -68,7 +68,7 @@ export default class DymanicInfiniteScroll extends React.Component {
         this.currentChunkSize = this.props.chunkSize;
         this.requestRerender();
         this.setListener();
-        console.log("Dynamic Scoller [re]initialized")
+        //console.log("Dynamic Scoller [re]initialized")
     }
 
     refListenerCallback = (snap) => {
@@ -87,7 +87,7 @@ export default class DymanicInfiniteScroll extends React.Component {
             this.gettingMoreData = true;
             this.setListener();
         }
-        console.log("retrieveMoreData called")
+        //console.log("retrieveMoreData called")
     }
 
     setListener = () => {
