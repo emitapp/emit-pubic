@@ -3,6 +3,8 @@
 import React from 'react'
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
 import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+
 import { timedPromise, MEDIUM_TIMEOUT } from '../../#constants/helpers';
 
 export default class Login extends React.Component {
