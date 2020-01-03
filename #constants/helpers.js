@@ -46,3 +46,6 @@ export const epochToDateString = (epochMillis) =>
 {
   return new Date(epochMillis).toString()
 }
+
+export const MIN_BROADCAST_WINDOW = 2 //2 minutes
+export const MAX_BROADCAST_WINDOW = 2879 //48 hours - 1 minute
