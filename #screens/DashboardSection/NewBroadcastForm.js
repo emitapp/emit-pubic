@@ -11,7 +11,8 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 
-import { timedPromise, LONG_TIMEOUT, MIN_BROADCAST_WINDOW, MAX_BROADCAST_WINDOW } from '../../#constants/helpers';
+import { timedPromise, LONG_TIMEOUT, MEDIUM_TIMEOUT,
+     MIN_BROADCAST_WINDOW, MAX_BROADCAST_WINDOW } from '../../#constants/helpers';
 import * as responseStatuses from '../../#constants/standardHttpsData'
 
 export default class NewBroadcastForm extends React.Component {
@@ -161,14 +162,14 @@ export default class NewBroadcastForm extends React.Component {
 
             //First doing checks...
             this.recalculateDateLimits()
-            let errorMessage = this.checkTimeLimits(oldDate);
+            let errorMessage = this.checkTimeLimits(this.state.date);
             if (errorMessage){
                 this.setState({isModalVisible: false, errorMessage})
                 return;
             }
 
             //Getting the uid's of all my recepients (and making sure I have some)...
-            const friendsRef = database().ref(`/userFriendGroupings/${uid}/.masterUIDs/`);
+            const friendsRef = database().ref(`/userFriendGroupings/${uid}/_masterUIDs/`);
             const friendsSnapshot = await timedPromise(friendsRef.once('value'), MEDIUM_TIMEOUT);
             if (!friendsSnapshot.exists()){
                 this.setState({isModalVisible: false, errorMessage: "No recepients"})

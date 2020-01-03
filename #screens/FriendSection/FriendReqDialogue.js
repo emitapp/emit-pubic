@@ -85,7 +85,7 @@ export default class FriendReqDialogue extends React.Component {
             }
 
             //Check if he's already a friend...
-            const friendRef = database().ref(`/userFriendGroupings/${uid}/.masterUIDs/${this.props.selectedUser.uid}`);
+            const friendRef = database().ref(`/userFriendGroupings/${uid}/_masterUIDs/${this.props.selectedUser.uid}`);
             const friendSnapshot = await timedPromise(friendRef.once('value'), MEDIUM_TIMEOUT);
             if (friendSnapshot.exists()){
                 this.setState({isLoadingOptions: false, option: actionOptions.REMOVE})
