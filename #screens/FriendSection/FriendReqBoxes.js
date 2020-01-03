@@ -125,7 +125,6 @@ const styles = StyleSheet.create({
     backgroundColor: "grey"
   },
   listElement: {
-    height: 40,
     backgroundColor: 'ghostwhite',
     alignItems: "flex-start",
     marginLeft: 10,

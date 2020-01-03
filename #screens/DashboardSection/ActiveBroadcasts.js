@@ -78,7 +78,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   listElement: {
-    height: 40,
     backgroundColor: 'ghostwhite',
     alignItems: "flex-start",
     marginLeft: 10,
