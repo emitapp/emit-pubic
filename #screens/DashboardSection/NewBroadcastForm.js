@@ -87,6 +87,8 @@ export default class NewBroadcastForm extends React.Component {
                     <Text style={{ textAlign: "center", fontWeight: "bold", margin: 8 }}>
                         {this.state.date.toString()}
                     </Text>
+
+                    <Text>FOR NOW, BROADCASTS ARE SENT TO ALL FRIENDS</Text>
                 </View>
 
                 <TouchableOpacity
@@ -115,12 +117,8 @@ export default class NewBroadcastForm extends React.Component {
         }
 
         this.recalculateDateLimits()
-        let errorMessage = null;
-        if (oldDate.getTime() < this.minDate.getTime())
-            errorMessage = `The time of this event should be at least ${MIN_BROADCAST_WINDOW + 1} minutes away`
-        else if (oldDate.getTime() > this.maxDate.getTime())
-            errorMessage = `The time of this event should be less than ${Math.ceil(MAX_BROADCAST_WINDOW / 60)} hours away`
-
+        let errorMessage = this.checkTimeLimits(oldDate);
+ 
         this.setState({
             showPicker: Platform.OS === 'ios' ? true : false,
             date: oldDate,
@@ -133,6 +131,14 @@ export default class NewBroadcastForm extends React.Component {
             showPicker: true,
             pickerMode,
         });
+    }
+
+    //Returns an error message if there's a problem
+    checkTimeLimits = (date) => {
+        if (date.getTime() < this.minDate.getTime())
+            return`The time of this event should be at least ${MIN_BROADCAST_WINDOW + 1} minutes away`
+        else if (date.getTime() > this.maxDate.getTime())
+            return `The time of this event should be less than ${Math.ceil(MAX_BROADCAST_WINDOW / 60)} hours away`
     }
 
     recalculateDateLimits = () => {
@@ -151,11 +157,31 @@ export default class NewBroadcastForm extends React.Component {
     createBroadcast = async () => {
         try{
             this.setState({isModalVisible: true})
+            const uid = auth().currentUser.uid
+
+            //First doing checks...
+            this.recalculateDateLimits()
+            let errorMessage = this.checkTimeLimits(oldDate);
+            if (errorMessage){
+                this.setState({isModalVisible: false, errorMessage})
+                return;
+            }
+
+            //Getting the uid's of all my recepients (and making sure I have some)...
+            const friendsRef = database().ref(`/userFriendGroupings/${uid}/.masterUIDs/`);
+            const friendsSnapshot = await timedPromise(friendsRef.once('value'), MEDIUM_TIMEOUT);
+            if (!friendsSnapshot.exists()){
+                this.setState({isModalVisible: false, errorMessage: "No recepients"})
+                return;
+            }
+
+            const recepients = friendsSnapshot.val()
             const creationFunction = functions().httpsCallable('createActiveBroadcast');
             const response = await timedPromise(creationFunction({
-                ownerUid: auth().currentUser.uid, 
+                ownerUid: uid, 
                 location: this.state.location,
-                deathTimestamp: this.state.date.getTime()
+                deathTimestamp: this.state.date.getTime(),
+                recepients
             }), LONG_TIMEOUT);
 
             if (response.data.status === responseStatuses.returnStatuses.OK){
