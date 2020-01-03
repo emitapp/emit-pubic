@@ -26,7 +26,7 @@ export const timedPromise = (promise, ms) => {
 
 export const SHORT_TIMEOUT = 3000
 export const MEDIUM_TIMEOUT = 5000
-export const LONG_TIMEOUT = 7000
+export const LONG_TIMEOUT = 10000
 
 
 /**

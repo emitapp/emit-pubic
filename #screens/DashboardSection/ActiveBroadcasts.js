@@ -53,10 +53,9 @@ export default class ActiveBroadcasts extends React.Component {
   itemRenderer = ({ item }) => {
     return (
       <TouchableOpacity 
-        style = {styles.listElement}
-        onPress={() => this.toggleModal(item)}>
-        <Text>Date sent: {epochToDateString(item.timestamp)}</Text>
-        <Text>{item.name}</Text>
+        style = {styles.listElement}>
+        <Text>TTL: {epochToDateString(item.deathTimestamp)}</Text>
+        <Text>{item.ownerUid}</Text>
         <Text>{item.uid}</Text>
       </TouchableOpacity>
     );

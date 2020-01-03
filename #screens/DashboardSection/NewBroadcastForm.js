@@ -1,14 +1,18 @@
 // Self explanatory what this does
 
 import React from 'react'
-import { StyleSheet, Text, TextInput, View, Button, Platform, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, TextInput, View, Button, 
+        Platform, TouchableOpacity, ActivityIndicator } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
-
+import Modal from 'react-native-modal'
 
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
-import { timedPromise, MEDIUM_TIMEOUT, MIN_BROADCAST_WINDOW, MAX_BROADCAST_WINDOW } from '../../#constants/helpers';
+import functions from '@react-native-firebase/functions';
+
+import { timedPromise, LONG_TIMEOUT, MIN_BROADCAST_WINDOW, MAX_BROADCAST_WINDOW } from '../../#constants/helpers';
+import * as responseStatuses from '../../#constants/standardHttpsData'
 
 export default class NewBroadcastForm extends React.Component {
 
@@ -30,15 +34,26 @@ export default class NewBroadcastForm extends React.Component {
         this.state = {
             showPicker: false,
             pickerMode: "time",
-            place: '',
+            location: '',
             date: startingDate,
-            errorMessage: null
+            errorMessage: null,
+            isModalVisible: false
         }
     }
 
     render() {
         return (
             <View style={styles.container}>
+
+                <Modal 
+                    isVisible={this.state.isModalVisible}
+                    style = {{justifyContent: "center", alignItems: "center"}}
+                    animationIn = "fadeInUp"
+                    animationOut = 'fadeOutUp'
+                    animationOutTiming = {0}>
+                    <ActivityIndicator />
+                </Modal>
+
                 <Text>Create a New Broadcast</Text>
                 {this.state.errorMessage &&
                     <Text style={{ color: 'red' }}>
@@ -49,8 +64,8 @@ export default class NewBroadcastForm extends React.Component {
                         style={styles.textInput}
                         autoCapitalize="words"
                         placeholder="Place"
-                        onChangeText={place => this.setState({ place })}
-                        value={this.state.place}/>
+                        onChangeText={location => this.setState({ location })}
+                        value={this.state.location}/>
 
                     <Text> Time and Date</Text>
                     <View>
@@ -133,8 +148,29 @@ export default class NewBroadcastForm extends React.Component {
         this.maxDate.setTime(this.maxDate.getTime() + millisecondsToAdd)
     }
 
-    createBroadcast = () => {
-        console.log("Hah! I bet you thought this did something, eh?")
+    createBroadcast = async () => {
+        try{
+            this.setState({isModalVisible: true})
+            const creationFunction = functions().httpsCallable('createActiveBroadcast');
+            const response = await timedPromise(creationFunction({
+                ownerUid: auth().currentUser.uid, 
+                location: this.state.location,
+                deathTimestamp: this.state.date.getTime()
+            }), LONG_TIMEOUT);
+
+            if (response.data.status === responseStatuses.returnStatuses.OK){
+                this.setState({errorMessage: "Success (I know this isn't an error but meh)"})
+            }else{
+                console.log(response, "problematic response")
+            }
+        }catch(err){
+            if (err.message == "timeout"){
+                this.setState({errorMessage: "Timeout!"})
+            }else{
+                console.log(err)          
+            }
+        }
+        this.setState({isModalVisible: false})
     }
 }
 
