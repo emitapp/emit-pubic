@@ -6,7 +6,7 @@ import functions from '@react-native-firebase/functions';
 import TimeoutLoadingComponent from '../../#reusableComponents/TimeoutLoadingComponent';
 import {timedPromise, MEDIUM_TIMEOUT, LONG_TIMEOUT} from '../../#constants/helpers'
 
-import * as responseStatuses from '../../#constants/standardHttpsData'
+import * as responseStatuses from '../../#constants/serverValues'
 
 export default class FriendReqDialogue extends React.Component {
 

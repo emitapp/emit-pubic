@@ -28,7 +28,7 @@ export default class ActiveBroadcasts extends React.Component {
             errorHandler = {this.scrollErrorHandler}
             renderItem = {this.itemRenderer}
             generation = {0}
-            dbref = {database().ref(`/activeBroadcasts/${auth().currentUser.uid}`)}
+            dbref = {database().ref(`/activeBroadcasts/${auth().currentUser.uid}/public`)}
             ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
           />
 

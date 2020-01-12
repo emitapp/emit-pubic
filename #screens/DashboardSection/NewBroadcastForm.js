@@ -13,7 +13,7 @@ import functions from '@react-native-firebase/functions';
 
 import { timedPromise, LONG_TIMEOUT, MEDIUM_TIMEOUT,
      MIN_BROADCAST_WINDOW, MAX_BROADCAST_WINDOW } from '../../#constants/helpers';
-import * as responseStatuses from '../../#constants/standardHttpsData'
+import * as responseStatuses from '../../#constants/serverValues'
 
 export default class NewBroadcastForm extends React.Component {
 
@@ -180,6 +180,7 @@ export default class NewBroadcastForm extends React.Component {
             const creationFunction = functions().httpsCallable('createActiveBroadcast');
             const response = await timedPromise(creationFunction({
                 ownerUid: uid, 
+                autoConfirm: false,
                 location: this.state.location,
                 deathTimestamp: this.state.date.getTime(),
                 recepients

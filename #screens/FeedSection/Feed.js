@@ -44,7 +44,8 @@ export default class Feed extends React.Component {
   itemRenderer = ({ item }) => {
     return (
       <TouchableOpacity 
-        style = {styles.listElement}>
+        style = {styles.listElement}
+        onPress = {() => this.props.navigation.navigate('BroadcastViewer', {ownerSnippet: item.owner, broadcast: item.uid}) }>
         <Text>Dies at: {epochToDateString(item.deathTimestamp)}</Text>
         <Text>Location: {item.location}</Text>
         <Text>Owner name: {item.owner.name}</Text>

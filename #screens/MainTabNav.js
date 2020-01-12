@@ -5,7 +5,7 @@ import auth from '@react-native-firebase/auth';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 
-import Feed from './FeedSection/Feed'
+import FeedStackNav from './FeedSection/FeedStackNav'
 import LogOut from "./Settings/LogOut"
 import DashboardStackNav from "./DashboardSection/DashboardStackNav"
 import FriendStackNav from './FriendSection/FriendSectionStackNav'
@@ -14,7 +14,7 @@ import FriendStackNav from './FriendSection/FriendSectionStackNav'
 const Tab = createBottomTabNavigator(
   {
     DashboardStackNav,
-    Feed,
+    FeedStackNav,
     FriendStackNav,
     LogOut,
   },
@@ -26,7 +26,7 @@ const Tab = createBottomTabNavigator(
           let iconName;
           if (routeName === 'DashboardStackNav') {
             iconName = `home`;
-          } else if (routeName === 'Feed') {
+          } else if (routeName === 'FeedStackNav') {
             iconName = `rss`;
           }else if (routeName === 'FriendStackNav') {
             iconName = `user-friends`;
