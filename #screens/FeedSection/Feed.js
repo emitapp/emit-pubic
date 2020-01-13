@@ -1,7 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import DynamicInfiniteScroll from '../../#reusableComponents/DynamicInfiniteScroll'
-import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth'
@@ -45,11 +44,12 @@ export default class Feed extends React.Component {
     return (
       <TouchableOpacity 
         style = {styles.listElement}
-        onPress = {() => this.props.navigation.navigate('BroadcastViewer', {ownerSnippet: item.owner, broadcast: item.uid}) }>
+        onPress = {() => this.props.navigation.navigate('BroadcastViewer', {broadcast: item}) }>
         <Text>Dies at: {epochToDateString(item.deathTimestamp)}</Text>
         <Text>Location: {item.location}</Text>
         <Text>Owner name: {item.owner.name}</Text>
         <Text>Owner uid: {item.owner.uid}</Text>
+        {item.status &&  <Text>Status: {item.status}</Text>}
       </TouchableOpacity>
     );
   }

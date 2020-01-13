@@ -13,7 +13,7 @@ import functions from '@react-native-firebase/functions';
 
 import { timedPromise, LONG_TIMEOUT, MEDIUM_TIMEOUT,
      MIN_BROADCAST_WINDOW, MAX_BROADCAST_WINDOW } from '../../#constants/helpers';
-import * as responseStatuses from '../../#constants/serverValues'
+import {returnStatuses} from '../../#constants/serverValues'
 
 export default class NewBroadcastForm extends React.Component {
 
@@ -186,7 +186,7 @@ export default class NewBroadcastForm extends React.Component {
                 recepients
             }), LONG_TIMEOUT);
 
-            if (response.data.status === responseStatuses.returnStatuses.OK){
+            if (response.data.status === returnStatuses.OK){
                 this.setState({errorMessage: "Success (I know this isn't an error but meh)"})
             }else{
                 console.log(response, "problematic response")
