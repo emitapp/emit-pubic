@@ -1,10 +1,13 @@
+//Design for this influenced by https://github.com/invertase/react-native-firebase/issues/2558
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, PanResponder } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Platform } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import uuid from 'uuid/v4';
 
 import storage from '@react-native-firebase/storage';
 import auth from '@react-native-firebase/auth';
+import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
+var RNFS = require('react-native-fs');
 
 const options = {
   title: 'Select Image',
@@ -55,48 +58,115 @@ export default class ProfilePicChanger extends Component {
     );
   }
 
-  pickImage = () => {
-    ImagePicker.showImagePicker(options, response => {
-      if (response.didCancel) {
-        alert('You cancelled image picker 😟');
-      } else if (response.error) {
-        alert('And error occured: ', response.error);
-      } else {
-        this.setState({imageUri: response.uri});
+  pickImage = async () => {
+      try{
+        await this.checkPermissions();
+        ImagePicker.showImagePicker(options, response => {
+            if (response.didCancel) {
+              alert('You cancelled image picker 😟');
+            } else if (response.error) {
+              alert('And error occured: ', response.error);
+            } else {
+              this.setState({imageUri: response.uri});
+            }
+        });
+      }catch(err){
+          console.log(err)
       }
-    });
   };
 
-  uploadImage = () => {
+  uploadImage = async () => {
     if (!this.state.imageUri) return;
-    const ext = this.state.imageUri.split('.').pop(); // Extract image extension
-    const filename = `${uuid()}.${ext}`; // Generate unique name
+    let filename = `${uuid()}` // Generate unique name
     this.setState({ uploading: true });
-    let unsubscribe = storage()
-      .ref(`profilePictures/${auth().currentUser.uid}/${filename}`)
-      .putFile(this.state.imageUri)
-      .on(
+    let task = storage().ref(`profilePictures/${auth().currentUser.uid}/${filename}`)
+
+    if (Platform.OS = 'android'){
+        try{
+            const fileStats = await RNFS.stat(this.state.imageUri)
+            task = task.putFile(fileStats.originalFilepath)
+        }catch(err){
+            console.log(err)
+            task = task.putFile(this.stat.imageUri)
+        }
+    }else{
+        task = task,putFile(this.state.imageUri)
+    }
+
+    task.on(
         storage.TaskEvent.STATE_CHANGED,
         snapshot => {
-          let stateDeltas = {
+        let stateDeltas = {
             uploadProgress: (snapshot.bytesTransferred / snapshot.totalBytes) * 100 // Calculate progress percentage
-          };
+        };
 
-          if (snapshot.state === storage.TaskState.SUCCESS) {
+        if (snapshot.state === storage.TaskState.SUCCESS) {
             stateDeltas = {
-              uploading: false,
-              imageUri: '',
-              uploadProgress: 0
+            uploading: false,
+            imageUri: '',
+            uploadProgress: 0
             };
-          }
+        }
 
-          this.setState(stateDeltas);
+        this.setState(stateDeltas);
         },
         error => {
-          unsubscribe();
-          console.log(error)
+        unsubscribe();
+        console.log(error)
+    })
+  }
+
+    //Rejcests if there's not enough permissions
+    checkPermissions = async () => {
+        try{
+            if (Platform.OS == "android"){
+                const permissionResults = await Promise.all([
+                    check(PERMISSIONS.ANDROID.CAMERA),
+                    check(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE),
+                    check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE)])
+                const finalResults = []
+                finalResults[0] = await this.requestIfNeeded(PERMISSIONS.ANDROID.CAMERA, permissionResults[0])
+                finalResults[1] = await this.requestIfNeeded(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, permissionResults[1])
+                finalResults[2] = await this.requestIfNeeded(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, permissionResults[2])
+
+                if (finalResults[1] != RESULTS.GRANTED){
+                    console.log("Essential Permission not Granted, aborted")
+                    throw "invalid permission combination"
+                }
+            }else{
+                const permissionResults = await Promise.all([
+                    check(PERMISSIONS.IOS.CAMERA),
+                    check(PERMISSIONS.IOS.PHOTO_LIBRARY)])
+                const finalResults = []
+                finalResults[0] = await this.requestIfNeeded(PERMISSIONS.IOS.CAMERA, permissionResults[0])
+                finalResults[1] = await this.requestIfNeeded(PERMISSIONS.IOS.PHOTO_LIBRARY, permissionResults[1])
+
+                if (finalResults[1] != RESULTS.GRANTED){
+                    console.log("Essential Permission not Granted, aborted")
+                    throw "invalid permission combination"
+                }
+            }
+        }catch (err){
+            console.log(err)
+            throw "invalid permission combination"
         }
-    )}
+    }
+
+    requestIfNeeded = async (permission, checkResult) => {
+        try{
+            if (checkResult == RESULTS.GRANTED){
+                return checkResult;
+            }else if (checkResult != RESULTS.BLOCKED){
+                console.log(permission + " Permission not grantable")
+                return checkResult;
+            }else{
+                newStatus = await request(permission);
+                return newStatus;
+            }
+        }catch(err){
+            console.log(err)
+        }
+    } 
 
 }
 

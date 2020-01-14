@@ -37,6 +37,14 @@ target 'lunchme' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  # Pods for react-native-permissions
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary.podspec"
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera.podspec"
+  
+
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+
   target 'lunchmeTests' do
     inherit! :search_paths
     # Pods for testing
