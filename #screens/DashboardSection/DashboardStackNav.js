@@ -3,11 +3,13 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import ActiveBroadcasts from './ActiveBroadcasts'
 import NewBroadcastForm from './NewBroadcastForm'
+import ResponsesScreen from './ResponsesViewer'
 
 const Navigator = createStackNavigator(
   {
     ActiveBroadcasts,
     NewBroadcastForm,
+    ResponsesScreen
   },
   {
     initialRouteName: 'ActiveBroadcasts'

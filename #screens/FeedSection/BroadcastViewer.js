@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View, Button, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, Button, ActivityIndicator, TouchableOpacity } from 'react-native'
 import Modal from 'react-native-modal'
 
 import database from '@react-native-firebase/database';
@@ -111,9 +111,9 @@ export default class BroadcastViewer extends React.Component {
   sendConfirmationRequest = async () => {
     this.setState({isModalVisible: true})
     try{
+      const newStatus = (this.state.broadcastData.autoConfirm ? responderStatuses.CONFIRMED : responderStatuses.PENDING)
       const newStatuses = {}
-      newStatuses[auth().currentUser.uid] 
-        = (this.state.broadcastData.autoConfirm ? responderStatuses.CONFIRMED : responderStatuses.PENDING)
+      newStatuses[auth().currentUser.uid] = newStatus
 
       const requestFunction = functions().httpsCallable('setBroadcastResponse');
       const response = await timedPromise(requestFunction({
@@ -123,7 +123,8 @@ export default class BroadcastViewer extends React.Component {
       }), LONG_TIMEOUT);
 
       if (response.data.status === returnStatuses.OK){
-          this.setState({errorMessage: "Success (I know this isn't an error but meh)"})
+        this.broadcastSnippet.status = newStatus
+        this.setState({errorMessage: "Success (I know this isn't an error but meh)"})
       }else{
           console.log(response, "problematic response")
       }
@@ -145,8 +146,7 @@ export default class BroadcastViewer extends React.Component {
   itemRenderer = ({ item }) => {
     return (
       <TouchableOpacity 
-        style = {styles.listElement}
-        onPress={() => this.toggleModal(item)}>
+        style = {styles.listElement}>
         <Text>{item.name}</Text>
         <Text>{item.uid}</Text>
       </TouchableOpacity>

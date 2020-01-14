@@ -32,8 +32,6 @@ export default class ActiveBroadcasts extends React.Component {
             ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
           />
 
-
-
           <TouchableOpacity 
               style = {styles.newBroadcastButton}
               onPress={() => this.props.navigation.navigate('NewBroadcastForm')}>
@@ -53,7 +51,8 @@ export default class ActiveBroadcasts extends React.Component {
   itemRenderer = ({ item }) => {
     return (
       <TouchableOpacity 
-        style = {styles.listElement}>
+        style = {styles.listElement}
+        onPress = {() => this.props.navigation.navigate("ResponsesScreen", {broadcast: item})}>
         <Text>TTL: {epochToDateString(item.deathTimestamp)}</Text>
         <Text>{item.ownerUid}</Text>
         <Text>{item.uid}</Text>
