@@ -3,11 +3,15 @@
 import React from 'react'
 import { StyleSheet, Platform, Image, Text, View, Button } from 'react-native'
 import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+
 import ProfilePicChanger from '../../#reusableComponents/ProfilePicChanger'
+import {timedPromise, MEDIUM_TIMEOUT} from '../../#constants/helpers' 
+
 
 export default class LogOut extends React.Component {
 
-  state = {currentUser: null}
+  state = {currentUser: null, picPath: ""}
 
   componentDidMount() {
     const { currentUser } = auth()
