@@ -21,23 +21,23 @@ export default class ProfilePicDisplayer extends React.Component {
     }
 
     render() {
-        const { diameter } = this.props
+        const { diameter, style, ...otherProps } = this.props
         if (!this.state.downloadUrl) {
             return (
                 <Image
-                    style={{ width: diameter, height: diameter, borderRadius: diameter / 2 }}
+                    style={{ width: diameter, height: diameter, borderRadius: diameter / 2, ...style }}
                     source={require('../_media/ProfilePicPlaceholder.png')}
-                    {...this.props}
+                    {...otherProps}
                 />)
         } else {
             return (
                 <FastImage
-                    style={{ width: diameter, height: diameter, borderRadius: diameter / 2 }}
+                    style={{ width: diameter, height: diameter, borderRadius: diameter / 2, ...style }}
                     source={{
                         uri: this.state.downloadUrl,
                         priority: FastImage.priority.normal,
                     }}
-                    {...this.props}
+                    {...otherProps}
                 />)
         }
     }
@@ -46,6 +46,7 @@ export default class ProfilePicDisplayer extends React.Component {
         try{
             const listResult = 
                 await storage().ref(`profilePictures/${this.props.uid}/scaled/`).list()
+            console.log(this.props.uid)
             if (listResult._items[0]){
                 const downloadUrl = await listResult._items[0].getDownloadURL()
                 this.setState({ downloadUrl })

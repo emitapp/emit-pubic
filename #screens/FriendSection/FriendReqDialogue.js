@@ -5,6 +5,7 @@ import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import TimeoutLoadingComponent from '../../#reusableComponents/TimeoutLoadingComponent';
 import {timedPromise, MEDIUM_TIMEOUT, LONG_TIMEOUT} from '../../#constants/helpers'
+import ProfilePicDisplayer from '../../#reusableComponents/ProfilePicDisplayer';
 
 import * as responseStatuses from '../../#constants/serverValues'
 
@@ -24,6 +25,10 @@ export default class FriendReqDialogue extends React.Component {
     render() {
         return (
             <View style={styles.container}>
+                <ProfilePicDisplayer 
+                    diameter = {30} 
+                    uid = {this.props.selectedUser.uid} 
+                    style = {{marginRight: 10}} />
                 <Text>User Name = {this.props.selectedUser.name}</Text>
                 <Text>User ID = {this.props.selectedUser.uid}</Text>
 

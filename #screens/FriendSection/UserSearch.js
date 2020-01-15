@@ -5,6 +5,7 @@ import database from '@react-native-firebase/database';
 import FriendReqDialogue from './FriendReqDialogue';
 
 import Modal from "react-native-modal";
+import ProfilePicDisplayer from '../../#reusableComponents/ProfilePicDisplayer';
 
 export default class UserSearch extends React.Component {
 
@@ -87,10 +88,12 @@ export default class UserSearch extends React.Component {
     return (
       <TouchableOpacity 
         style = {styles.listElement}
-        onPress={() => this.toggleModal(item)}
-      >
-        <Text>{item.name}</Text>
-        <Text>{item.uid}</Text>
+        onPress={() => this.toggleModal(item)}>
+          <ProfilePicDisplayer diameter = {30} uid = {item.uid} style = {{marginRight: 10}} />
+          <View>
+            <Text>{item.name}</Text>
+            <Text>{item.uid}</Text>
+          </View>
       </TouchableOpacity>
     );
   }
@@ -115,7 +118,9 @@ const styles = StyleSheet.create({
   },
   listElement: {
     backgroundColor: 'ghostwhite',
-    alignItems: "flex-start",
+    paddingVertical: 5,
+    alignItems: "center",
+    flexDirection: 'row',
     marginLeft: 10,
     marginRight: 10
   }

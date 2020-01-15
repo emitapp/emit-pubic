@@ -6,6 +6,7 @@ import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth'
 
 import { epochToDateString } from '../../#constants/helpers';
+import ProfilePicDisplayer from '../../#reusableComponents/ProfilePicDisplayer';
 
 export default class Feed extends React.Component {
 
@@ -45,11 +46,16 @@ export default class Feed extends React.Component {
       <TouchableOpacity 
         style = {styles.listElement}
         onPress = {() => this.props.navigation.navigate('BroadcastViewer', {broadcast: item}) }>
-        <Text>Dies at: {epochToDateString(item.deathTimestamp)}</Text>
-        <Text>Location: {item.location}</Text>
-        <Text>Owner name: {item.owner.name}</Text>
-        <Text>Owner uid: {item.owner.uid}</Text>
-        {item.status &&  <Text>Status: {item.status}</Text>}
+          <View>
+            <ProfilePicDisplayer diameter = {30} uid = {item.owner.uid} style = {{marginRight: 10}} />
+            <Text>{item.owner.name}</Text>
+          </View>
+          <View>
+            <Text>Dies at: {epochToDateString(item.deathTimestamp)}</Text>
+            <Text>Location: {item.location}</Text>
+            <Text>Owner uid: {item.owner.uid}</Text>
+            {item.status &&  <Text>Status: {item.status}</Text>}
+          </View>
       </TouchableOpacity>
     );
   }
@@ -72,7 +78,9 @@ const styles = StyleSheet.create({
   },
   listElement: {
     backgroundColor: 'ghostwhite',
-    alignItems: "flex-start",
+    paddingVertical: 5,
+    alignItems: "center",
+    flexDirection: 'row',
     marginLeft: 10,
     marginRight: 10
   }

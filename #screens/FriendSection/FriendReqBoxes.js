@@ -7,6 +7,7 @@ import FriendReqDialogue from './FriendReqDialogue';
 
 import Modal from "react-native-modal";
 import { epochToDateString } from '../../#constants/helpers';
+import ProfilePicDisplayer from '../../#reusableComponents/ProfilePicDisplayer';
 
 export default class UserSearch extends React.Component {
 
@@ -77,9 +78,12 @@ export default class UserSearch extends React.Component {
       <TouchableOpacity 
         style = {styles.listElement}
         onPress={() => this.toggleModal(item)}>
-        <Text>Date sent: {epochToDateString(item.timestamp)}</Text>
-        <Text>{item.name}</Text>
-        <Text>{item.uid}</Text>
+        <ProfilePicDisplayer diameter = {30} uid = {item.uid} style = {{marginRight: 10}} />
+        <View>
+          <Text>Date sent: {epochToDateString(item.timestamp)}</Text>
+          <Text>{item.name}</Text>
+          <Text>{item.uid}</Text>
+        </View>
       </TouchableOpacity>
     );
   }
@@ -126,7 +130,9 @@ const styles = StyleSheet.create({
   },
   listElement: {
     backgroundColor: 'ghostwhite',
-    alignItems: "flex-start",
+    paddingVertical: 5,
+    alignItems: "center",
+    flexDirection: 'row',
     marginLeft: 10,
     marginRight: 10
   }
