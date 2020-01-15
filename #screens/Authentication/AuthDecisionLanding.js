@@ -55,7 +55,7 @@ export default class Loading extends React.Component {
         if (snapshot.exists()) this.props.navigation.navigate('MainTabNav');
         else this.props.navigation.navigate('AccountSetUp');
       }else{
-        this.props.navigation.navigate('SignUp');
+        this.props.navigation.navigate('Login');
       }
     }catch(err){
       if (err.code == "timeout"){
