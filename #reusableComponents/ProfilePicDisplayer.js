@@ -5,9 +5,8 @@ import { Image } from 'react-native'
 
 /**
  * This is a reusable component that displays profile pictues
- * Required props: `cloudStoragePath` (string indicating the path of the image to show)
- * and `diameter`
- * Be sure that it is given a proper cloudStoragePath by the time it enters the DOM
+ * Required props: `uid` (uid of the user to display) and `diameter`
+ * Be sure that it is given a proper uid by the time it enters the DOM
  */
 export default class ProfilePicDisplayer extends React.Component {
 
@@ -17,11 +16,8 @@ export default class ProfilePicDisplayer extends React.Component {
     }
 
     componentDidMount() {
-        if (!this.props.cloudStoragePath) return;
-        storage().ref(this.props.cloudStoragePath)
-            .getDownloadURL()
-            .then((downloadUrl) => this.setState({ downloadUrl }))
-            .catch((err) => console.log(err));
+        if (!this.props.uid) return;
+        this.getURL();
     }
 
     render() {
@@ -43,6 +39,19 @@ export default class ProfilePicDisplayer extends React.Component {
                     }}
                     {...this.props}
                 />)
+        }
+    }
+
+    getURL = async () => {
+        try{
+            const listResult = 
+                await storage().ref(`profilePictures/${this.props.uid}/scaled/`).list()
+            if (listResult._items[0]){
+                const downloadUrl = await listResult._items[0].getDownloadURL()
+                this.setState({ downloadUrl })
+            }
+        }catch(err){
+            console.log(err)
         }
     }
 }
