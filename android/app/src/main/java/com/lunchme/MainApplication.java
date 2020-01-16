@@ -12,7 +12,10 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-public class MainApplication extends Application implements ReactApplication {
+//Application needs ot be multidex because of all the node.js dependencies
+import androidx.multidex.MultiDexApplication;
+public class MainApplication extends MultiDexApplication implements ReactApplication {
+
 
   private final ReactNativeHost mReactNativeHost =
       new ReactNativeHost(this) {
