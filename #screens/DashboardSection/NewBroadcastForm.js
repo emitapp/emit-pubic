@@ -76,8 +76,10 @@ export default class NewBroadcastForm extends React.Component {
                         <Button onPress={() => this.showPicker('time')} title="Choose Time" />
                     </View>
 
-                    {this.state.showPicker && <DateTimePicker value={this.state.date}
-                        mode={this.state.pickerMode}
+                    {this.state.showPicker &&
+                     <DateTimePicker value={this.state.date}
+                        style={{width:'100%'}}
+                        mode={"datetime"}
                         is24Hour={false}
                         display="default"
                         onChange={this.setDate}
@@ -206,7 +208,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     mainForm: {
         flex: 1,

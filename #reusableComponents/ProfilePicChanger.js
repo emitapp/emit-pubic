@@ -22,7 +22,8 @@ export default class ProfilePicChanger extends Component {
   state = {
     imageUri: '',
     uploading: false,
-    uploadProgress: 0
+    uploadProgress: 0,
+    errorMessage: null
   };
 
   render() {
@@ -31,6 +32,10 @@ export default class ProfilePicChanger extends Component {
 
     return (
       <View style={styles.container}>
+        {this.state.errorMessage &&
+            <Text style={{ color: 'red' }}>
+              {this.state.errorMessage}
+            </Text>}
         <Text style={styles.welcome}>React Native Firebase Image Upload </Text>
         <Text style={styles.instructions}>Hello 👋, Let us upload an Image</Text>
 
@@ -81,7 +86,7 @@ export default class ProfilePicChanger extends Component {
     this.setState({ uploading: true });
     let task = storage().ref(`profilePictures/${auth().currentUser.uid}/${filename}`)
 
-    if (Platform.OS = 'android'){
+    if (Platform.OS == 'android'){
         try{
             const fileStats = await RNFS.stat(this.state.imageUri)
             task = task.putFile(fileStats.originalFilepath)
@@ -90,29 +95,31 @@ export default class ProfilePicChanger extends Component {
             task = task.putFile(this.state.imageUri)
         }
     }else{
-        task = task,putFile(this.state.imageUri)
+        task = task.putFile(this.state.imageUri)
     }
 
-    task.on(
+    let unsubscribe = task.on(
         storage.TaskEvent.STATE_CHANGED,
         snapshot => {
+          console.log(snapshot.metadata)
         let stateDeltas = {
             uploadProgress: (snapshot.bytesTransferred / snapshot.totalBytes) * 100 // Calculate progress percentage
         };
+          if (snapshot.state === storage.TaskState.SUCCESS) {
+              stateDeltas = {
+              uploading: false,
+              imageUri: '',
+              uploadProgress: 0,
+              errorMessage: null
+              };
+          }
 
-        if (snapshot.state === storage.TaskState.SUCCESS) {
-            stateDeltas = {
-            uploading: false,
-            imageUri: '',
-            uploadProgress: 0
-            };
-        }
-
-        this.setState(stateDeltas);
+          this.setState(stateDeltas);
         },
         error => {
         unsubscribe();
-        console.log(error)
+        console.log("upload error " + error)
+        this.setState({uploading: false, uploadProgress: 0, errorMessage: "Upload Error, please try again!"})
     })
   }
 
@@ -156,8 +163,8 @@ export default class ProfilePicChanger extends Component {
         try{
             if (checkResult == RESULTS.GRANTED){
                 return checkResult;
-            }else if (checkResult != RESULTS.BLOCKED){
-                console.log(permission + " Permission not grantable")
+            }else if (checkResult == RESULTS.UNAVAILABLE || checkResult == RESULTS.BLOCKED){
+                console.log(permission + "Permission " + checkResult)
                 return checkResult;
             }else{
                 newStatus = await request(permission);

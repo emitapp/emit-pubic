@@ -1,4 +1,4 @@
-import { StyleSheet, Platform, Image, Text, View } from 'react-native'
+import { SafeAreaView } from 'react-native'
 import React from 'react'
 import { createSwitchNavigator, createAppContainer} from 'react-navigation'
 import AuthDecisionLander from './#screens/Authentication/AuthDecisionLanding'
@@ -20,7 +20,11 @@ export default class App extends React.Component {
   }
 
   render() {
-      return (<Navigator/>)
+      return (
+        <SafeAreaView style = {{flex: 1}}>
+          <Navigator/>
+        </SafeAreaView>
+      )
   }
 
   sendVerificationEmail = () => {
