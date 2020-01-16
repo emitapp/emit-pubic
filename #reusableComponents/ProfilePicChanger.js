@@ -87,7 +87,7 @@ export default class ProfilePicChanger extends Component {
             task = task.putFile(fileStats.originalFilepath)
         }catch(err){
             console.log(err)
-            task = task.putFile(this.stat.imageUri)
+            task = task.putFile(this.state.imageUri)
         }
     }else{
         task = task,putFile(this.state.imageUri)
