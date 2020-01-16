@@ -46,7 +46,6 @@ export default class ProfilePicDisplayer extends React.Component {
         try{
             const listResult = 
                 await storage().ref(`profilePictures/${this.props.uid}/scaled/`).list()
-            console.log(this.props.uid)
             if (listResult._items[0]){
                 const downloadUrl = await listResult._items[0].getDownloadURL()
                 this.setState({ downloadUrl })

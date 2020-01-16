@@ -9,17 +9,44 @@ import ProfilePicDisplayer from '../../#reusableComponents/ProfilePicDisplayer';
 
 import * as responseStatuses from '../../#constants/serverValues'
 
+/**
+ * This is the standard dialogue for viewing a user if you want the user to 
+ * be able to manage their friendship status with the user they're viewing.
+ * 
+ * If the target's snippet is already available, then provide it via the selectedUserData prop.
+ * Otherwise, just provide the target's uid via the userUid prop
+ * One of these props MUST be provided
+ * 
+ * It also needs ot be given a closeFunction prop (argumentless function)
+ */
 export default class FriendReqDialogue extends React.Component {
 
-    state = {
-        isLoadingOptions: true, 
-        waitingForActionPromise: false, 
-        timedOut: false, 
-        fatalError: false,
-        option: ""}
+    constructor(props){
+        super(props)
+
+        this.userUid = ""
+        let userInfo = null
+
+        if (this.props.selectedUserData){
+            userInfo = this.props.selectedUserData
+            this.userUid = userInfo.uid
+        }else{
+            this.userUid = this.props.userUid
+        }
+
+        this.state = {
+            gettingInitialData: true, //Getting initial information from Firebase
+            waitingForFuncResponse: false,  //Waiting for a response from the Firebase Cloud Function
+            userInfo,
+            timedOut: false, //Timed out during any of the operations 
+            fatalError: false,
+            option: "" //Which cloud function the user can user for this other user
+        }
+    }
+
 
     componentDidMount(){
-        this.retrieveOptions();
+        this.getInitialData();
     }
 
     render() {
@@ -27,16 +54,18 @@ export default class FriendReqDialogue extends React.Component {
             <View style={styles.container}>
                 <ProfilePicDisplayer 
                     diameter = {30} 
-                    uid = {this.props.selectedUser.uid} 
+                    uid = {this.userUid} 
                     style = {{marginRight: 10}} />
-                <Text>User Name = {this.props.selectedUser.name}</Text>
-                <Text>User ID = {this.props.selectedUser.uid}</Text>
+
+                {this.state.userInfo !== null &&
+                    <Text>{this.state.userInfo.name}</Text>
+                }
 
                 {this.state.fatalError &&
                     <Text>Looks like a fatal error ocurred!</Text>                
                 }
 
-                {(!this.state.waitingForActionPromise || this.state.timedOut) &&
+                {(!this.state.waitingForFuncResponse || this.state.timedOut) &&
                     <Button title="Go Back" onPress={this.props.closeFunction}/>
                 }
 
@@ -49,13 +78,13 @@ export default class FriendReqDialogue extends React.Component {
     }
 
     displayOptionsLoading = () => {
-        if (this.state.isLoadingOptions){
+        if (this.state.gettingInitialData){
             return (
                 <TimeoutLoadingComponent
                     hasTimedOut={this.state.timedOut}
                     retryFunction={() => {
                         this.setState({timedOut: false})
-                        this.retrieveOptions()
+                        this.getInitialData()
                     }}
                 />
             )
@@ -63,8 +92,8 @@ export default class FriendReqDialogue extends React.Component {
     }
 
     displayActionsPanel = () => {
-        if (this.state.isLoadingOptions || this.state.option == actionOptions.NONE) return;
-        if (!this.state.waitingForActionPromise){
+        if (this.state.gettingInitialData || this.state.option == actionOptions.NONE) return;
+        if (!this.state.waitingForFuncResponse){
             return(
                 <Button title = {this.state.option} onPress = {this.performAction}/>
             )
@@ -73,7 +102,7 @@ export default class FriendReqDialogue extends React.Component {
                 <TimeoutLoadingComponent
                     hasTimedOut={this.state.timedOut}
                     retryFunction={() => {
-                        this.setState({timedOut: false, waitingForActionPromise: false})
+                        this.setState({timedOut: false, waitingForFuncResponse: false})
                         this.performAction()
                     }}
                 />
@@ -81,37 +110,54 @@ export default class FriendReqDialogue extends React.Component {
         }
     }
 
-    retrieveOptions = async () => {
+    getInitialData = async () => {
         try{
             const uid = auth().currentUser.uid; 
-            if (uid == this.props.selectedUser.uid){
-                this.setState({isLoadingOptions: false, option: actionOptions.NONE})
+            if (!this.userUid) return;
+            if (uid == this.userUid){
+                this.setState({gettingInitialData: false, option: actionOptions.NONE})
                 return;
             }
 
+            //If we already don't have the user's snippet data, let's quickly get that
+            //It can be sone asynchronously tho
+            if (!this.state.userInfo){
+                const snippetRef = database().ref(`/userSnippets/${this.userUid}`);
+                timedPromise(snippetRef.once('value'), MEDIUM_TIMEOUT)
+                    .then(snippetSnapshot => {
+                        if (snippetSnapshot.exists()){
+                            this.setState({userInfo: snippetSnapshot.val()})
+                        }else{
+                            this.setState({gettingInitialData: false, option: actionOptions.NONE})
+                        }
+                    })
+                    .catch(err => console.log(err)); //It's not a bit deal, just leave it alone
+            }
+
+
             //Check if he's already a friend...
-            const friendRef = database().ref(`/userFriendGroupings/${uid}/_masterUIDs/${this.props.selectedUser.uid}`);
+            const friendRef = database().ref(`/userFriendGroupings/${uid}/_masterUIDs/${this.userUid}`);
             const friendSnapshot = await timedPromise(friendRef.once('value'), MEDIUM_TIMEOUT);
             if (friendSnapshot.exists()){
-                this.setState({isLoadingOptions: false, option: actionOptions.REMOVE})
+                this.setState({gettingInitialData: false, option: actionOptions.REMOVE})
                 return;
             }
 
             //Check if he's in my request outbox...
-            const outboxRef = database().ref(`/friendRequests/${uid}/outbox/${this.props.selectedUser.uid}`);
+            const outboxRef = database().ref(`/friendRequests/${uid}/outbox/${this.userUid}`);
             const outboxSnapshot = await timedPromise(outboxRef.once('value'), MEDIUM_TIMEOUT);
             if (outboxSnapshot.exists()){
-                this.setState({isLoadingOptions: false, option: actionOptions.CANCELREQ})
+                this.setState({gettingInitialData: false, option: actionOptions.CANCELREQ})
                 return;
             }
 
             //Check if he's in my request inbox...
-            const inboxRef = database().ref(`/friendRequests/${uid}/inbox/${this.props.selectedUser.uid}`);
+            const inboxRef = database().ref(`/friendRequests/${uid}/inbox/${this.userUid}`);
             const inboxSnapshot = await timedPromise(inboxRef.once('value'), MEDIUM_TIMEOUT);
             if (inboxSnapshot.exists()){
-                this.setState({isLoadingOptions: false, option: actionOptions.ACCEPTREQ})
+                this.setState({gettingInitialData: false, option: actionOptions.ACCEPTREQ})
             }else{
-                this.setState({isLoadingOptions: false, option: actionOptions.SENDREQ})
+                this.setState({gettingInitialData: false, option: actionOptions.SENDREQ})
             }
         }catch (err){
             if (err.message == "timeout"){
@@ -124,7 +170,7 @@ export default class FriendReqDialogue extends React.Component {
     }
 
     performAction = async () => {
-        this.setState({waitingForActionPromise: true})
+        this.setState({waitingForFuncResponse: true})
         var callableFunction;
         switch (this.state.option) {
             case actionOptions.SENDREQ:
@@ -137,27 +183,27 @@ export default class FriendReqDialogue extends React.Component {
                 callableFunction =  functions().httpsCallable('acceptFriendRequest');
                 break;
             default:
-                this.setState({waitingForActionPromise: false})
+                this.setState({waitingForFuncResponse: false})
                 return;
         }
 
         try {
             const response = await timedPromise(callableFunction({
                 from: auth().currentUser.uid, 
-                to: this.props.selectedUser.uid
+                to: this.userUid
             }), LONG_TIMEOUT);
             if (response.data.status === responseStatuses.returnStatuses.OK){
                 this.refreshActionOption()
-                this.setState({waitingForActionPromise: false})
+                this.setState({waitingForFuncResponse: false})
             }else{
-                this.setState({waitingForActionPromise: false, option: actionOptions.NONE})
+                this.setState({waitingForFuncResponse: false, option: actionOptions.NONE})
                 console.log(response, "problematic response")
             }
         } catch (err) {
             if (err.message == "timeout"){
-                this.setState({timedOut: true, waitingForActionPromise: false})
+                this.setState({timedOut: true, waitingForFuncResponse: false})
             }else{
-                this.setState({waitingForActionPromise: false})
+                this.setState({waitingForFuncResponse: false})
                 console.log(err)          
             }
         }

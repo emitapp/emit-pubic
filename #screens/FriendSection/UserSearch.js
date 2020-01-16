@@ -30,7 +30,7 @@ export default class UserSearch extends React.Component {
           animationOutTiming = {0}
         >
           <FriendReqDialogue 
-            selectedUser = {this.state.selectedUser}
+            selectedUserData = {this.state.selectedUser}
             closeFunction={() => this.setState({ isModalVisible: false })}
           />
         </Modal>
