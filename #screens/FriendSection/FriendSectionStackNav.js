@@ -4,12 +4,14 @@ import { createStackNavigator } from 'react-navigation-stack';
 import FriendButtonHub from './FriendButtonHub'
 import FriendRequests from './FriendReqBoxes'
 import UserSearch from './UserSearch'
+import QRScanner from './QRFriendAdder'
 
 const Navigator = createStackNavigator(
   {
     FriendButtonHub,
     UserSearch,
-    FriendRequests
+    FriendRequests,
+    QRScanner
   },
   {
     initialRouteName: 'FriendButtonHub'

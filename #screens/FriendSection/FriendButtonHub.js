@@ -15,6 +15,10 @@ export default class FriendButtonHub extends React.Component {
                     title="Friend Requests"
                     onPress={() => this.props.navigation.navigate('FriendRequests')}
                 />
+                <Button
+                    title="Scan someone's QR Code"
+                    onPress={() => this.props.navigation.navigate('QRScanner')}
+                />
             </View>
         )
     }

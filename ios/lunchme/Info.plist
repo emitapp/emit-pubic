@@ -73,11 +73,11 @@
 		<string>Zocial.ttf</string>
 	</array>
 
-<!-- For react-native-image-picker-->
+<!-- For react-native-image-picker and QR reader-->
 	<key>NSPhotoLibraryUsageDescription</key>
     <string>$(PRODUCT_NAME) would like access to your photo gallery to change your profile picture</string>
     <key>NSCameraUsageDescription</key>
-    <string>$(PRODUCT_NAME) would like to use your camera to change your profile picture</string>
+    <string>$(PRODUCT_NAME) would like to use your camera</string>
     <key>NSPhotoLibraryAddUsageDescription</key>
     <string>$(PRODUCT_NAME) would like to save photos to your photo gallery (necessary for changing your profile picture)</string>
 </dict>
