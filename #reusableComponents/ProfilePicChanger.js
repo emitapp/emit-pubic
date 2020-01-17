@@ -101,7 +101,6 @@ export default class ProfilePicChanger extends Component {
     let unsubscribe = task.on(
         storage.TaskEvent.STATE_CHANGED,
         snapshot => {
-          console.log(snapshot.metadata)
         let stateDeltas = {
             uploadProgress: (snapshot.bytesTransferred / snapshot.totalBytes) * 100 // Calculate progress percentage
         };

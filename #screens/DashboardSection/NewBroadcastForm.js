@@ -79,7 +79,7 @@ export default class NewBroadcastForm extends React.Component {
                     {this.state.showPicker &&
                      <DateTimePicker value={this.state.date}
                         style={{width:'100%'}}
-                        mode={"datetime"}
+                        mode={this.state.pickerMode}
                         is24Hour={false}
                         display="default"
                         onChange={this.setDate}
