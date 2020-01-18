@@ -5,7 +5,7 @@ import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 
-import { timedPromise, MEDIUM_TIMEOUT } from '../../#constants/helpers';
+import { timedPromise, MEDIUM_TIMEOUT, logError } from '../../#constants/helpers';
 
 export default class Login extends React.Component {
 
@@ -65,7 +65,12 @@ export default class Login extends React.Component {
           if (snapshot.exists()) this.props.navigation.navigate('MainTabNav');
           else this.props.navigation.navigate('AccountSetUp');
       }catch(err){
-        console.log(err);
+        if (err.code == "timeout"){
+          logError(err, false)
+          this.setState({timedout: true})
+        }else{
+          logError(err)
+        }
       }
     }
 

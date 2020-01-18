@@ -12,7 +12,7 @@ import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 
 import { timedPromise, LONG_TIMEOUT, MEDIUM_TIMEOUT,
-     MIN_BROADCAST_WINDOW, MAX_BROADCAST_WINDOW } from '../../#constants/helpers';
+     MIN_BROADCAST_WINDOW, MAX_BROADCAST_WINDOW, logError } from '../../#constants/helpers';
 import {returnStatuses} from '../../#constants/serverValues'
 
 export default class NewBroadcastForm extends React.Component {
@@ -191,13 +191,13 @@ export default class NewBroadcastForm extends React.Component {
             if (response.data.status === returnStatuses.OK){
                 this.setState({errorMessage: "Success (I know this isn't an error but meh)"})
             }else{
-                console.log(response, "problematic response")
+                logError(new Error("Problematic createActiveBroadcast function response: " + response.data.status))
             }
         }catch(err){
             if (err.message == "timeout"){
                 this.setState({errorMessage: "Timeout!"})
             }else{
-                console.log(err)          
+                logError(err)       
             }
         }
         this.setState({isModalVisible: false})

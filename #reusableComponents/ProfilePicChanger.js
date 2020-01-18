@@ -7,6 +7,7 @@ import uuid from 'uuid/v4';
 import storage from '@react-native-firebase/storage';
 import auth from '@react-native-firebase/auth';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import { logError } from '../#constants/helpers';
 var RNFS = require('react-native-fs');
 
 const options = {
@@ -76,7 +77,7 @@ export default class ProfilePicChanger extends Component {
             }
         });
       }catch(err){
-          console.log(err)
+          logError(err)
       }
   };
 
@@ -91,14 +92,14 @@ export default class ProfilePicChanger extends Component {
             const fileStats = await RNFS.stat(this.state.imageUri)
             task = task.putFile(fileStats.originalFilepath)
         }catch(err){
-            console.log(err)
+            logError(err, false)
             task = task.putFile(this.state.imageUri)
         }
     }else{
         task = task.putFile(this.state.imageUri)
     }
-
-    let unsubscribe = task.on(
+    try{
+      let unsubscribe = task.on(
         storage.TaskEvent.STATE_CHANGED,
         snapshot => {
         let stateDeltas = {
@@ -117,9 +118,12 @@ export default class ProfilePicChanger extends Component {
         },
         error => {
         unsubscribe();
-        console.log("upload error " + error)
+        logError(err, false)
         this.setState({uploading: false, uploadProgress: 0, errorMessage: "Upload Error, please try again!"})
-    })
+       })
+    }catch(err){
+      logError(err)
+    }
   }
 
     //Rejcests if there's not enough permissions
@@ -136,7 +140,7 @@ export default class ProfilePicChanger extends Component {
                 finalResults[2] = await this.requestIfNeeded(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, permissionResults[2])
 
                 if (finalResults[1] != RESULTS.GRANTED){
-                    console.log("Essential Permission not Granted, aborted")
+                    logError(new Error ("Essential Permission not Granted, aborted"), false)
                     throw "invalid permission combination"
                 }
             }else{
@@ -148,12 +152,12 @@ export default class ProfilePicChanger extends Component {
                 finalResults[1] = await this.requestIfNeeded(PERMISSIONS.IOS.PHOTO_LIBRARY, permissionResults[1])
 
                 if (finalResults[1] != RESULTS.GRANTED){
-                    console.log("Essential Permission not Granted, aborted")
-                    throw "invalid permission combination"
+                  logError(new Error ("Essential Permission not Granted, aborted"), false)
+                  throw "invalid permission combination"
                 }
             }
         }catch (err){
-            console.log(err)
+            logError(err, err != "invalid permission combination")
             throw "invalid permission combination"
         }
     }
@@ -163,14 +167,13 @@ export default class ProfilePicChanger extends Component {
             if (checkResult == RESULTS.GRANTED){
                 return checkResult;
             }else if (checkResult == RESULTS.UNAVAILABLE || checkResult == RESULTS.BLOCKED){
-                console.log(permission + "Permission " + checkResult)
                 return checkResult;
             }else{
                 newStatus = await request(permission);
                 return newStatus;
             }
         }catch(err){
-            console.log(err)
+            logError(err)
         }
     } 
 

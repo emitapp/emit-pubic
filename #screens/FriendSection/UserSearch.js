@@ -6,6 +6,7 @@ import FriendReqDialogue from './FriendReqDialogue';
 
 import Modal from "react-native-modal";
 import ProfilePicDisplayer from '../../#reusableComponents/ProfilePicDisplayer';
+import { logError } from '../../#constants/helpers';
 
 export default class UserSearch extends React.Component {
 
@@ -73,7 +74,7 @@ export default class UserSearch extends React.Component {
 
 
   scrollErrorHandler = (err) => {
-    console.log(err)
+    logError(err)
     this.setState({errorMessage: err.message})
   }
 

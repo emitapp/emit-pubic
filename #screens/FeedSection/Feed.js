@@ -5,7 +5,7 @@ import DynamicInfiniteScroll from '../../#reusableComponents/DynamicInfiniteScro
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth'
 
-import { epochToDateString } from '../../#constants/helpers';
+import { epochToDateString, logError } from '../../#constants/helpers';
 import ProfilePicDisplayer from '../../#reusableComponents/ProfilePicDisplayer';
 
 export default class Feed extends React.Component {
@@ -37,7 +37,7 @@ export default class Feed extends React.Component {
 
 
   scrollErrorHandler = (err) => {
-    console.log(err)
+    logError(err)
     this.setState({errorMessage: err.message})
   }
 

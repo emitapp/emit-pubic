@@ -2,6 +2,7 @@ import React from 'react';
 import FastImage from 'react-native-fast-image'
 import storage from '@react-native-firebase/storage';
 import { Image } from 'react-native'
+import { logError } from '../#constants/helpers';
 
 /**
  * This is a reusable component that displays profile pictues
@@ -51,7 +52,7 @@ export default class ProfilePicDisplayer extends React.Component {
                 this.setState({ downloadUrl })
             }
         }catch(err){
-            console.log(err)
+            logError(err)
         }
     }
 }

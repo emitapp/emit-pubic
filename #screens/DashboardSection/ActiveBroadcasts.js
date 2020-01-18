@@ -6,7 +6,7 @@ import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth'
 
-import { epochToDateString } from '../../#constants/helpers';
+import { epochToDateString, logError } from '../../#constants/helpers';
 
 export default class ActiveBroadcasts extends React.Component {
 
@@ -44,7 +44,7 @@ export default class ActiveBroadcasts extends React.Component {
 
 
   scrollErrorHandler = (err) => {
-    console.log(err)
+    logError(err)
     this.setState({errorMessage: err.message})
   }
 

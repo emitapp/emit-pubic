@@ -4,7 +4,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import TimeoutLoadingComponent from '../../#reusableComponents/TimeoutLoadingComponent';
-import {timedPromise, MEDIUM_TIMEOUT, LONG_TIMEOUT} from '../../#constants/helpers'
+import {timedPromise, MEDIUM_TIMEOUT, LONG_TIMEOUT, logError} from '../../#constants/helpers'
 import ProfilePicDisplayer from '../../#reusableComponents/ProfilePicDisplayer';
 
 import * as responseStatuses from '../../#constants/serverValues'
@@ -131,7 +131,7 @@ export default class FriendReqDialogue extends React.Component {
                             this.setState({gettingInitialData: false, option: actionOptions.NONE})
                         }
                     })
-                    .catch(err => console.log(err)); //It's not a bit deal, just leave it alone
+                    .catch(err => logError(err, false)); //It's not a bit deal, just leave it alone
             }
 
 
@@ -163,7 +163,7 @@ export default class FriendReqDialogue extends React.Component {
             if (err.message == "timeout"){
                 this.setState({timedOut: true})
             }else{
-                console.log(err)
+                logError(err)
                 this.setState({fatalError: true})
             }
         }
@@ -197,14 +197,14 @@ export default class FriendReqDialogue extends React.Component {
                 this.setState({waitingForFuncResponse: false})
             }else{
                 this.setState({waitingForFuncResponse: false, option: actionOptions.NONE})
-                console.log(response, "problematic response")
+                logError(new Error(`Problematic ${this.state.option} function response: ${response.data.status}`))
             }
         } catch (err) {
             if (err.message == "timeout"){
                 this.setState({timedOut: true, waitingForFuncResponse: false})
             }else{
                 this.setState({waitingForFuncResponse: false})
-                console.log(err)          
+                logError(err)        
             }
         }
     }

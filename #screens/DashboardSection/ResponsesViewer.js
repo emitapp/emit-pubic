@@ -7,7 +7,7 @@ import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import functions from '@react-native-firebase/functions';
 
-import { epochToDateString, timedPromise, LONG_TIMEOUT } from '../../#constants/helpers';
+import { epochToDateString, timedPromise, LONG_TIMEOUT, logError } from '../../#constants/helpers';
 import {responderStatuses, returnStatuses} from '../../#constants/serverValues'
 import DynamicInfiniteScroll from '../../#reusableComponents/DynamicInfiniteScroll'
 
@@ -121,7 +121,7 @@ export default class ResponsesViewer extends React.Component {
   }
 
   scrollErrorHandler = (err) => {
-    console.log(err)
+    logError(err)
     this.setState({errorMessage: err.message})
   }
 
@@ -164,13 +164,13 @@ export default class ResponsesViewer extends React.Component {
       if (response.data.status === returnStatuses.OK){
         this.setState({errorMessage: "Success (I know this isn't an error but meh)"})
       }else{
-          console.log(response, "problematic response")
+          logError(new Error("Problematic setBroadcastResponse fucntion response: " + response.data.status))
       }
     }catch(err){
       if (err.message == "timeout"){
           this.setState({errorMessage: "Timeout!"})
       }else{
-          console.log(err)          
+          logError(err)        
       }
     }
     this.setState({isModalVisible: false, responseStatusDeltas: {}})
