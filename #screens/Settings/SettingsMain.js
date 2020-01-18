@@ -1,14 +1,12 @@
-// The overall partent navigator screen for the main interface
-
 import React from 'react'
 import { StyleSheet, Platform, Image, Text, View, Button } from 'react-native'
 import QRCode from 'react-native-qrcode-svg';
 import auth from '@react-native-firebase/auth';
+import crashlytics from '@react-native-firebase/crashlytics';
 
-import ProfilePicChanger from '../../#reusableComponents/ProfilePicChanger'
 import ProfilePicDisplayer from '../../#reusableComponents/ProfilePicDisplayer';
 
-export default class LogOut extends React.Component {
+export default class SettingsMain extends React.Component {
 
     render() {
       const { currentUser } = auth()
@@ -33,7 +31,9 @@ export default class LogOut extends React.Component {
             title="Signout"
             onPress={() => global.MainTabRoot.signOut()}/>
 
-          <ProfilePicChanger/>
+          <Button
+            title="Change Profile Picture"
+            onPress={() => this.props.navigation.navigate("ProfilePicScreen")}/>
         </View>
       )
     }

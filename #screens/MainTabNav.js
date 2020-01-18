@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from 'react-navigation-tabs';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 
 import FeedStackNav from './FeedSection/FeedStackNav'
-import LogOut from "./Settings/LogOut"
+import SettingsStackNav from "./Settings/SettingsStackNav"
 import DashboardStackNav from "./DashboardSection/DashboardStackNav"
 import FriendStackNav from './FriendSection/FriendSectionStackNav'
 
@@ -16,7 +16,7 @@ const Tab = createBottomTabNavigator(
     DashboardStackNav,
     FeedStackNav,
     FriendStackNav,
-    LogOut,
+    SettingsStackNav,
   },
   {
     defaultNavigationOptions: ({ navigation }) =>
