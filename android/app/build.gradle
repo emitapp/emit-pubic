@@ -1,5 +1,11 @@
 apply plugin: "com.android.application"
+
+//These are for Firebase Crashlytics and Performance Monitoring
+apply plugin: 'io.fabric'
 apply plugin: "com.google.firebase.firebase-perf"
+crashlytics {
+  enableNdk true
+}
 
 import com.android.build.OutputFile
 
