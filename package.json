@@ -16,6 +16,7 @@
     "@react-native-firebase/crashlytics": "^6.2.0",
     "@react-native-firebase/database": "^6.2.0",
     "@react-native-firebase/functions": "^6.2.0",
+    "@react-native-firebase/messaging": "^6.2.0",
     "@react-native-firebase/perf": "^6.2.0",
     "@react-native-firebase/storage": "^6.2.0",
     "react": "16.9.0",
