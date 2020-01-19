@@ -26,11 +26,6 @@ export default class App extends React.Component {
         </SafeAreaView>
       )
   }
-
-  sendVerificationEmail = () => {
-    auth().currentUser.sendEmailVerification()
-      .catch(error => console.error(error.message))
-  }
 }
 
 //Using a switch navigator 

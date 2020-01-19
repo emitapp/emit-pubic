@@ -55,11 +55,11 @@ export const MAX_BROADCAST_WINDOW = 2879 //48 hours - 1 minute
 
 import crashlytics from '@react-native-firebase/crashlytics';
 /**
- * This method should be the main why errors are tracked in the app 
+ * This method should be the main way errors are tracked in the app 
  * It logs the error in the device logs and (optionally) in Crashlytics
  * @param {Error} error The error object to log 
  * @param {boolean} includeCrashlytics Whether or not to perform Crashlytics logging too. DEFAULT: true
- * @param {string} extraLoggingInfo Extra info that will be logged with the Crashlytics (if enabled) report and with console.log
+ * @param {string} extraLoggingInfo Extra info that will be logged with the Crashlytics report(if enabled) and with console.log
  */
 export const logError = (error, includeCrashlytics, extraLoggingInfo) => {
   if (extraLoggingInfo) console.log(extraLoggingInfo)

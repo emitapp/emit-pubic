@@ -9,6 +9,7 @@ import FeedStackNav from './FeedSection/FeedStackNav'
 import SettingsStackNav from "./Settings/SettingsStackNav"
 import DashboardStackNav from "./DashboardSection/DashboardStackNav"
 import FriendStackNav from './FriendSection/FriendSectionStackNav'
+import { logError } from '../#constants/helpers';
 
 
 const Tab = createBottomTabNavigator(
@@ -63,6 +64,6 @@ export default class Main extends React.Component {
   signOut = () => {
     auth().signOut()
       .then(() => this.props.navigation.navigate("AuthDecisionLander"))
-      .catch(() => console.error("Something went wrong with signing out!"))
+      .catch(err => logError(err, true, "Sign out error!"))
   }
 }

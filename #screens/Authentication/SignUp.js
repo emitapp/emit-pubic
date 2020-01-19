@@ -44,7 +44,6 @@ export default class SignUp extends React.Component {
       var signUpPromise = auth()
         .createUserWithEmailAndPassword(this.state.email, this.state.password)
         .then(() => {
-            global.AppRoot.sendVerificationEmail()
             this.props.navigation.navigate('AccountSetUp')
           })
 

@@ -2,9 +2,9 @@ import React from 'react'
 import { StyleSheet, Platform, Image, Text, View, Button } from 'react-native'
 import QRCode from 'react-native-qrcode-svg';
 import auth from '@react-native-firebase/auth';
-import crashlytics from '@react-native-firebase/crashlytics';
 
 import ProfilePicDisplayer from '../../#reusableComponents/ProfilePicDisplayer';
+import { logError } from '../../#constants/helpers';
 
 export default class SettingsMain extends React.Component {
 
@@ -34,6 +34,17 @@ export default class SettingsMain extends React.Component {
           <Button
             title="Change Profile Picture"
             onPress={() => this.props.navigation.navigate("ProfilePicScreen")}/>
+
+          <Text>
+            Your email is {currentUser.emailVerified ? "" : "not"} verified
+          </Text>
+
+          <Button
+            title="Send Verification Email"
+            onPress={() => {
+                auth().currentUser.sendEmailVerification()
+                  .catch(error => logError(error))}
+            }/>
         </View>
       )
     }
