@@ -54,12 +54,23 @@ export default class App extends React.Component {
         console.log('REGISTERED')
         const fcmToken = await messaging().getToken()
         console.log(fcmToken)
+        this.setFCMListeners()
       } else {
         console.log('FAILED TO REGISTER')
       }
     }catch(err){
       console.log(err)
     }
+  }
+
+  setFCMListeners = async () => {
+    const unsubscribeFromDeletes = messaging().onDeletedMessages(() => {
+      console.log("Welp, that happened! Messages got deleted")
+    });
+
+    const unsubscribeFromOM = messaging().onMessage((remoteMessage) => {
+      console.log('FCM Message Data:', remoteMessage.data);
+    });
   }
 }
 

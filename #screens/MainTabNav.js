@@ -1,7 +1,6 @@
 // The overall partent tab navigator screen for the main interface
 
 import React from 'react'
-import auth from '@react-native-firebase/auth';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 
@@ -9,7 +8,6 @@ import FeedStackNav from './FeedSection/FeedStackNav'
 import SettingsStackNav from "./Settings/SettingsStackNav"
 import DashboardStackNav from "./DashboardSection/DashboardStackNav"
 import FriendStackNav from './FriendSection/FriendSectionStackNav'
-import { logError } from '../#constants/helpers';
 
 
 const Tab = createBottomTabNavigator(
@@ -59,11 +57,5 @@ export default class Main extends React.Component {
     return (
       <Tab navigation={this.props.navigation} />
     )
-  }
-
-  signOut = () => {
-    auth().signOut()
-      .then(() => this.props.navigation.navigate("AuthDecisionLander"))
-      .catch(err => logError(err, true, "Sign out error!"))
   }
 }

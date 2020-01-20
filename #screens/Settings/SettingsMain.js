@@ -29,7 +29,11 @@ export default class SettingsMain extends React.Component {
           </Text>
           <Button
             title="Signout"
-            onPress={() => global.MainTabRoot.signOut()}/>
+            onPress={() => {
+                auth().signOut()
+                  .then(() => this.props.navigation.navigate("AuthDecisionLander"))
+                  .catch(err => logError(err, true, "Sign out error!"))
+            }}/>
 
           <Button
             title="Change Profile Picture"
