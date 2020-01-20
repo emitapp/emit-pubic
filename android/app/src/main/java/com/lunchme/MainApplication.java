@@ -11,6 +11,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import com.wix.reactnativenotifications.RNNotificationsPackage;
 
 //Application needs ot be multidex because of all the node.js dependencies
 import androidx.multidex.MultiDexApplication;
@@ -30,6 +31,7 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
+          packages.add(new RNNotificationsPackage(MainApplication.this)); //react-native-notifications
           return packages;
         }
 

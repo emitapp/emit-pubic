@@ -141,7 +141,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        missingDimensionStrategy 'react-native-camera', 'general'
+        missingDimensionStrategy 'react-native-camera', 'general', "RNNotifications.reactNativeVersion", "reactNative60"
     }
     splits {
         abi {
@@ -191,6 +191,7 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     implementation project(':react-native-fs')
     implementation project(':react-native-vector-icons')
+    implementation project(':react-native-notifications')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
