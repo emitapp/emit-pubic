@@ -76,6 +76,10 @@ export default class App extends React.Component {
         extra: "data"
       });
     });
+
+    const unsunscribeFromTokenRefresh = messaging().onTokenRefresh(token => {
+      console.log(token)
+    });
   }
 }
 
