@@ -44,7 +44,7 @@ export default class SignUp extends React.Component {
         var signUpPromise = auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
         await timedPromise(signUpPromise, LONG_TIMEOUT)
         //If this succeeds, then the onAuthStateChanged listener set in App.js will handle navigation
-      }catch(err){
+      }catch(error){
         this.setState({ errorMessage: error.message })
         if (error.message != "timeout") logError(error)
       }

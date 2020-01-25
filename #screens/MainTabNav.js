@@ -15,7 +15,7 @@ import FeedStackNav from './FeedSection/FeedStackNav'
 import SettingsStackNav from "./Settings/SettingsStackNav"
 import DashboardStackNav from "./DashboardSection/DashboardStackNav"
 import FriendStackNav from './FriendSection/FriendSectionStackNav'
-import { logError, ASYNC_TOKEN_KEY } from '../#constants/helpers';
+import { logError, ASYNC_TOKEN_KEY, timedPromise, LONG_TIMEOUT } from '../#constants/helpers';
 
 
 const Tab = createBottomTabNavigator(
@@ -62,7 +62,7 @@ export default class Main extends React.Component {
   }
 
   componentDidMount = () => {
-    //this.setUpFCM();
+    this.setUpFCM();
   }
 
   componentWillUnmount = () => {
@@ -77,6 +77,10 @@ export default class Main extends React.Component {
 
   //Designed based on...
   //https://github.com/invertase/react-native-firebase/issues/2657#issuecomment-572906900
+  /**
+   * Asks for notification permissions, registers for remote messages (for iOS),
+   * then syncs FCM token with server and sets FCM listeners
+   */
   setUpFCM = async () => {
     try{
       const response = await requestNotifications(['alert', 'sound'])
@@ -105,7 +109,10 @@ export default class Main extends React.Component {
     }
   }
 
-
+  /**
+   * Sets the listeners needed for FCM functionality 
+   * (Note that one of these listeners is actually already set in index.js as well)
+   */
   setFCMListeners = () => {
     messaging().onDeletedMessages(() => {
       Notifications.postLocalNotification({
@@ -127,6 +134,10 @@ export default class Main extends React.Component {
     });
   }
 
+  /**
+   * Gets the app instance's current FCM token and syncs it with the server
+   * (relative to the currently signed in user)
+   */
   syncToken = async () => {
     try{
       if (!messaging().isRegisteredForRemoteNotifications) return;
@@ -134,11 +145,11 @@ export default class Main extends React.Component {
       const cachedToken = await AsyncStorage.getItem(ASYNC_TOKEN_KEY)
       const syncFunction = functions().httpsCallable('updateFCMTokenData')
       if (fcmToken != cachedToken){
-        await syncFunction(fcmToken)
+        await timedPromise(syncFunction(fcmToken), LONG_TIMEOUT)
         await AsyncStorage.setItem(ASYNC_TOKEN_KEY, fcmToken)
       }    
     }catch(err){
-      logError(err)
+      if (err.message != "timeout") logError(err)
     }
 
   }
