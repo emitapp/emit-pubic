@@ -16,7 +16,7 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
         extra: "data"
     });
 
-    //It's not in the docs, but apparently this handler should return a promise.
+    //It's not in this version's the docs, but apparently this handler should return a promise.
     //Otherwise you get a "cannot resolve .then of undefined" error
     return Promise.resolve() 
 });

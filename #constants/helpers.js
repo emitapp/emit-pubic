@@ -67,6 +67,12 @@ export const logError = (error, includeCrashlytics, extraLoggingInfo) => {
   if (includeCrashlytics === undefined) includeCrashlytics = true
   if (includeCrashlytics){
     if (extraLoggingInfo) crashlytics().log(extraLoggingInfo)
-    crashlytics.logError(error)
+    crashlytics().recordError(error)
   }
 }
+
+//This is the Async Storage key for the last cached FCM token of the app instance
+export const ASYNC_TOKEN_KEY = "stored_FCM_token";
+
+//This is the key that's used to cache whether or not the user has properly set up their account
+export const ASYNC_SETUP_KEY = "accountSetUp";

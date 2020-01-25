@@ -4,7 +4,8 @@ import React from 'react'
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
-import { isOnlyWhitespace, timedPromise, MEDIUM_TIMEOUT } from '../../#constants/helpers';
+import { isOnlyWhitespace, timedPromise, logError, LONG_TIMEOUT, ASYNC_SETUP_KEY } from '../../#constants/helpers';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class AccountSetUp extends React.Component {
 
@@ -27,30 +28,32 @@ export default class AccountSetUp extends React.Component {
             value={this.state.name}
           />
 
-          <Button title="Finish" onPress={this.setUpUserSnippet} />
+          <Button title="Finish" onPress={this.finishUserSetUp} />
 
         </View>
       )
     }
     
-    setUpUserSnippet = () => {
+    finishUserSetUp = async () => {
+      try{
         if (isOnlyWhitespace(this.state.name)){
-            this.setState({ errorMessage: "Invalid name!" })
-            return;
+          this.setState({ errorMessage: "Invalid name!" })
+          return;
         }
 
         const uid = auth().currentUser.uid; 
         const ref = database().ref(`/userSnippets/${uid}`);
-        const setupPromise = ref.set({name: this.state.name})
+        const setSnippet = ref.set({name: this.state.name})
 
-        timedPromise(setupPromise, MEDIUM_TIMEOUT)
-        .then(() => this.props.navigation.navigate('MainTabNav'))
-        .catch(error => {
-            this.setState({ errorMessage: error.message })
-        })
+        await timedPromise(setSnippet, LONG_TIMEOUT)
+        await AsyncStorage.setItem(ASYNC_SETUP_KEY, "yes")
+        this.props.navigation.navigate('MainTabNav')
 
+      }catch(error){
+        this.setState({ errorMessage: error.message })
+        if (error.message != "timeout") logError(error)
+      }
     }
-
 }
   
   const styles = StyleSheet.create({

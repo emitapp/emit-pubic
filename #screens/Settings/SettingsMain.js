@@ -29,11 +29,7 @@ export default class SettingsMain extends React.Component {
           </Text>
           <Button
             title="Signout"
-            onPress={() => {
-                auth().signOut()
-                  .then(() => this.props.navigation.navigate("AuthDecisionLander"))
-                  .catch(err => logError(err, true, "Sign out error!"))
-            }}/>
+            onPress={this.signOut}/>
 
           <Button
             title="Change Profile Picture"
@@ -48,10 +44,19 @@ export default class SettingsMain extends React.Component {
             onPress={() => {
                 auth().currentUser.sendEmailVerification()
                   .catch(error => logError(error))}
+                //If this succeeds, then the onAuthStateChanged listener set in App.js will handle navigation
             }/>
         </View>
       )
     }
+
+    signOut = async () => {
+      try{
+        await auth().signOut()
+      }catch(err){
+        logError(err, true, "Sign out error!")
+      }
+     }
   }
   
   const styles = StyleSheet.create({

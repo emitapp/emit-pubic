@@ -1,13 +1,13 @@
-//This is the first page the user "Visits" - it decides
-//whether or not the user goes to the main app interface or a sign in/up interface
-//or an account setup interface
+//This is a rerouting page. It uses firebase.auth, AsyncStorage, and the realtime database
+//to decide which page to send the user based on their auth status.
 
 import React from 'react'
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 
+import AsyncStorage from '@react-native-community/async-storage';
 import { View, Text, StyleSheet } from 'react-native'
-import {timedPromise, MEDIUM_TIMEOUT, logError} from '../../#constants/helpers' 
+import {logError, LONG_TIMEOUT, ASYNC_SETUP_KEY, timedPromise} from '../../#constants/helpers' 
 import TimeoutLoadingComponent from '../../#reusableComponents/TimeoutLoadingComponent';
 
 export default class Loading extends React.Component {
@@ -15,17 +15,10 @@ export default class Loading extends React.Component {
   constructor(props){
     super(props);
     this.state = {timedout: false}
-    this.loggedIn = false
   }
 
-
   componentDidMount() {
-    //Is the user already signed in or not?
-    var unsubscribe = auth().onAuthStateChanged(user => {
-      unsubscribe();
-      this.loggedIn = user
-      this.makeDecision();
-    })
+    this.makeDecision() 
   }
 
   render() {
@@ -46,16 +39,24 @@ export default class Loading extends React.Component {
   //Decides which page to navigate to next
   makeDecision = async () => {
     try{
-      if (this.loggedIn){
-        //Check if he's set up the account first
-        // (like with a username and dp) and whatnot
-        const uid = auth().currentUser.uid; 
-        const ref = database().ref(`/userSnippets/${uid}`);
-        const snapshot = await timedPromise(ref.once('value'), MEDIUM_TIMEOUT);
-        if (snapshot.exists()) this.props.navigation.navigate('MainTabNav');
-        else this.props.navigation.navigate('AccountSetUp');
-      }else{
+      const user = auth().currentUser
+      if (!user){ 
         this.props.navigation.navigate('Login');
+      }else{
+        const isSetUp = await AsyncStorage.getItem(ASYNC_SETUP_KEY)
+        if (isSetUp){
+          this.props.navigation.navigate('MainTabNav');
+        }else{ 
+          //Looks like he might not be set up, let's make sure first
+          const uid = auth().currentUser.uid; 
+          const ref = database().ref(`/userSnippets/${uid}`);
+          const snapshot = await timedPromise(ref.once('value'), LONG_TIMEOUT);
+          if (snapshot.exists()){
+            await AsyncStorage.setItem(ASYNC_SETUP_KEY, "yes")
+            this.props.navigation.navigate('MainTabNav');
+          } 
+          else this.props.navigation.navigate('AccountSetUp');
+        } 
       }
     }catch(err){
       if (err.code == "timeout"){
@@ -66,7 +67,6 @@ export default class Loading extends React.Component {
       }
     }
   }
-  
 }
 
 const styles = StyleSheet.create({

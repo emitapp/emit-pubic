@@ -1,9 +1,6 @@
-// Self explanatory what this does
-
 import React from 'react'
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
 import auth from '@react-native-firebase/auth';
-import database from '@react-native-firebase/database';
 
 import { timedPromise, MEDIUM_TIMEOUT, logError } from '../../#constants/helpers';
 
@@ -43,37 +40,16 @@ export default class Login extends React.Component {
       )
     }
     
-    handleLogin = () => {
-      var signInPromise = auth()
-        .signInWithEmailAndPassword(this.state.email, this.state.password)
-        .then(() => {
-            this.makeDecision(true)
-          })
-
-      timedPromise(signInPromise, MEDIUM_TIMEOUT).catch(error => {
-           this.setState({ errorMessage: error.message })
-        })
-    }
-
-    makeDecision = async () => {
+    handleLogin = async () => {
       try{
-          //Check if he's set up the account first
-          // (like with a username and dp) and whatnot
-          const uid = auth().currentUser.uid; 
-          const ref = database().ref(`/userSnippets/${uid}`);
-          const snapshot = await timedPromise(ref.once('value'), MEDIUM_TIMEOUT);
-          if (snapshot.exists()) this.props.navigation.navigate('MainTabNav');
-          else this.props.navigation.navigate('AccountSetUp');
+        var signInPromise = auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+        await timedPromise(signInPromise, MEDIUM_TIMEOUT)
+        //If this succeeds, then the onAuthStateChanged listener set in App.js will handle navigation
       }catch(err){
-        if (err.code == "timeout"){
-          logError(err, false)
-          this.setState({timedout: true})
-        }else{
-          logError(err)
-        }
-      }
+        this.setState({ errorMessage: error.message })
+        if (error.message != "timeout") logError(error)
+      }    
     }
-
   }
   
   const styles = StyleSheet.create({

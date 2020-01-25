@@ -1,9 +1,8 @@
-//Pretty self explanatory what this thing does
-
 import React from 'react'
 import auth from '@react-native-firebase/auth';
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
-import { timedPromise, MEDIUM_TIMEOUT } from '../../#constants/helpers';
+import { timedPromise, LONG_TIMEOUT } from '../../#constants/helpers';
+
 export default class SignUp extends React.Component {
 
   state = { email: '', password: '', errorMessage: null }
@@ -40,16 +39,15 @@ export default class SignUp extends React.Component {
       )
     }
 
-    handleSignUp = () => {
-      var signUpPromise = auth()
-        .createUserWithEmailAndPassword(this.state.email, this.state.password)
-        .then(() => {
-            this.props.navigation.navigate('AccountSetUp')
-          })
-
-      timedPromise(signUpPromise, MEDIUM_TIMEOUT).catch(error => {
-           this.setState({ errorMessage: error.message })
-        })
+    handleSignUp = async () => {
+      try{
+        var signUpPromise = auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+        await timedPromise(signUpPromise, LONG_TIMEOUT)
+        //If this succeeds, then the onAuthStateChanged listener set in App.js will handle navigation
+      }catch(err){
+        this.setState({ errorMessage: error.message })
+        if (error.message != "timeout") logError(error)
+      }
     }
 
   }
