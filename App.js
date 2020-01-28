@@ -10,6 +10,7 @@ import Login from './#screens/Authentication/Login'
 import AccountSetUp from './#screens/Authentication/AccountSetUp'
 import MainTabNav from './#screens/MainTabNav'
 import { logError, ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY } from './#constants/helpers';
+import ConnectionBanner from './#reusableComponents/ConnectionStatusBanner'
 
 //This file also contains the global functions needed by the app
 //Hopefully there's not a lot
@@ -22,13 +23,15 @@ export default class App extends React.Component {
   }
 
   componentDidMount = () => {
-    //Don't ubsbbscribe, so that if the user is signed out unexpectedly, he is still rerouted
+    //Don't unsubscribe, so that if the user is signed out (manually or automatically by Firebase),
+    // he is still rerouted
     auth().onAuthStateChanged(this.handleAuthChange)
   }
 
   render() {
       return (
         <SafeAreaView style = {{flex: 1}}>
+          <ConnectionBanner />
           <Navigator ref = {ref => this.topLevelNavigator = ref}/>
         </SafeAreaView>
       )
