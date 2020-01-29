@@ -6,6 +6,9 @@ buildscript {
         minSdkVersion = 16
         compileSdkVersion = 28
         targetSdkVersion = 28
+
+        //for react-native-netinfo and react-navigation
+        appCompatVersion = "1.1.0-rc01" // this maps to androidx.appcompat 
     }
     repositories {
         google()
