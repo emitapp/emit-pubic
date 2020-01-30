@@ -52,20 +52,20 @@ export default class OfflineNotice extends PureComponent {
     if (this.state.connectedToFirebase) {
       return (
       <View style={[styles.networkBanner, {'backgroundColor': "green"}]}>
-        <Text style={styles.offlineText}>Connected to Biteup servers!</Text>
+        <Text style={styles.offlineText}>Connected!</Text>
       </View>);
     }
 
     if (this.state.connectedToNetwork) {
       return (
         <View style={[styles.networkBanner, {'backgroundColor': "gold"}]}>
-        <Text style={styles.offlineText}>Attempting to reach Biteup servers...</Text>
+        <Text style={styles.offlineText}>Connecting to Biteup...</Text>
       </View>);
     }
 
     return (
       <View style={[styles.networkBanner, {'backgroundColor': "red"}]}>
-      <Text style={styles.offlineText}>No network access</Text>
+      <Text style={styles.offlineText}>Disonnected. Syncing will fail</Text>
     </View>);
   }
 }
