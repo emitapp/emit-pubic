@@ -16,6 +16,10 @@ export default class FriendButtonHub extends React.Component {
                     onPress={() => this.props.navigation.navigate('FriendSearch')}
                 />
                 <Button
+                    title="See your masks"
+                    onPress={() => this.props.navigation.navigate('GroupSearch')}
+                />
+                <Button
                     title="Friend Requests"
                     onPress={() => this.props.navigation.navigate('FriendRequests')}
                 />

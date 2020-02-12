@@ -167,7 +167,7 @@ export default class ResponsesViewer extends React.Component {
           logError(new Error("Problematic setBroadcastResponse fucntion response: " + response.data.status))
       }
     }catch(err){
-      if (err.message == "timeout"){
+      if (err.code == "timeout"){
           this.setState({errorMessage: "Timeout!"})
       }else{
           logError(err)        

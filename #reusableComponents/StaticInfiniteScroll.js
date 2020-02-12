@@ -17,8 +17,7 @@ import InfiniteScrollLoadingComponent from './TimeoutLoadingComponent'
 // chunkSize: Size of chunks to get from firebase rtdb 
 // errorHandler: what the component should do upon facing SDK errors 
 //         (not timeout erros tho, those are handled by the compenent)
-// orderBy: the name of the key you're ordering by. SHould still be explicitly
-//          mentioned in the ref too using orderByChild or whatever
+// orderBy: the name of the key you're ordering by.
 // renderItem: same as FLatlist RenderItem
 
 //Optinal props
@@ -76,7 +75,7 @@ export default class StaticInfiniteScroll extends React.Component {
 
     retrieveInitialChunk = async (invocationGen) => {
         try {
-            var ref = this.props.dbref.limitToFirst(this.props.chunkSize)
+            var ref = this.props.dbref.orderByChild(this.props.orderBy).limitToFirst(this.props.chunkSize)
             if (this.props.startingPoint) ref = ref.startAt(this.props.startingPoint)
             if (this.props.endingPoint) ref = ref.endAt(this.props.endingPoint)
 
@@ -123,6 +122,7 @@ export default class StaticInfiniteScroll extends React.Component {
             this.requestRerender();
 
             var ref = this.props.dbref
+                .orderByChild(this.props.orderBy)
                 .limitToFirst(this.props.chunkSize)
                 .startAt(this.lastItemProperty)
             if (this.props.endingPoint) ref = ref.endAt(this.props.endingPoint)

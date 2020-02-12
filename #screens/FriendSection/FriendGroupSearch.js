@@ -3,18 +3,16 @@ import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'rea
 import SearchableInfiniteScroll from '../../#reusableComponents/SearchableInfiniteScroll'
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
+import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 
-import FriendReqDialogue from './FriendReqDialogue';
-import Modal from "react-native-modal";
-import ProfilePicDisplayer from '../../#reusableComponents/ProfilePicDisplayer';
+
 import { logError } from '../../#constants/helpers';
 
-export default class FriendSearch extends React.Component {
+export default class FriendGroupSearch extends React.Component {
 
   state = { 
     errorMessage: null, 
     isModalVisible: false,
-    selectedUser: null
   }
 
   render() {
@@ -22,20 +20,7 @@ export default class FriendSearch extends React.Component {
     return (
       <View style={styles.container}>
 
-        <Modal 
-          isVisible={this.state.isModalVisible}
-          style = {{justifyContent: "center", alignItems: "center"}}
-          animationIn = "fadeInUp"
-          animationOut = 'fadeOutUp'
-          animationOutTiming = {0}
-        >
-          <FriendReqDialogue 
-            selectedUserData = {this.state.selectedUser}
-            closeFunction={() => this.setState({ isModalVisible: false })}
-          />
-        </Modal>
-
-        <Text>Friend Search</Text>
+        <Text>Friend Group Search</Text>
         {this.state.errorMessage &&
           <Text style={{ color: 'red' }}>
             {this.state.errorMessage}
@@ -44,13 +29,21 @@ export default class FriendSearch extends React.Component {
         <SearchableInfiniteScroll
           type = "static"
           queryValidator = {(query) => true}
-          queryTypes = {[{name: "Name", value: "name"}, {name: "Email", value: "email"}]}
+          queryTypes = {[{name: "Name", value: "name"}]}
           chunkSize = {10}
           errorHandler = {this.scrollErrorHandler}
           renderItem = {this.itemRenderer}
-          dbref = {database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`)}
+          dbref = {database().ref(`/userFriendGroupings/${userUid}/custom/snippets`)}
           ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
         />
+
+
+        <TouchableOpacity 
+            style = {styles.newGroupButton}
+            onPress={() => this.props.navigation.navigate('NewGroupScreen')}>
+            <AwesomeIcon name= "plus" size={18} color= "white" />
+            <Text style = {{color: "white", fontWeight: "bold"}}> CREATE NEW MASK</Text>
+        </TouchableOpacity>
 
       </View>
     )
@@ -62,30 +55,15 @@ export default class FriendSearch extends React.Component {
     this.setState({errorMessage: err.message})
   }
 
-  search = () => {
-    this.setState({
-      attemptedQuery: this.state.query, 
-      searchGeneration: this.state.searchGeneration + 1
-    })
-  }
-
   itemRenderer = ({ item }) => {
     return (
       <TouchableOpacity 
-        style = {styles.listElement}
-        onPress={() => this.toggleModal(item)}>
-          <ProfilePicDisplayer diameter = {30} uid = {item.uid} style = {{marginRight: 10}} />
-          <View>
+        style = {styles.listElement}>
             <Text>{item.name}</Text>
-            <Text>{item.uid}</Text>
-          </View>
+            <Text>{item.memberCount}</Text>
       </TouchableOpacity>
     );
   }
-
-  toggleModal = (selectedUser) => {
-    this.setState({ isModalVisible: true, selectedUser});
-  };
 }
 
 const styles = StyleSheet.create({
@@ -93,5 +71,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center'
-  }
+  },
+  newGroupButton: {
+    justifyContent: "center",
+    alignItems: 'center',
+    backgroundColor: "mediumseagreen",
+    width: "100%", 
+    height: 50,
+    flexDirection: 'row'
+  },
 })

@@ -6,6 +6,8 @@ import FriendRequests from './FriendReqBoxes'
 import UserSearch from './UserSearch'
 import QRScanner from './QRFriendAdder'
 import FriendSearch from './FriendSearch'
+import GroupSearch from './FriendGroupSearch'
+import NewGroupScreen from './NewGroupScreen'
 
 const Navigator = createStackNavigator(
   {
@@ -13,7 +15,9 @@ const Navigator = createStackNavigator(
     UserSearch,
     FriendRequests,
     QRScanner,
-    FriendSearch
+    FriendSearch,
+    GroupSearch,
+    NewGroupScreen
   },
   {
     initialRouteName: 'FriendButtonHub'

@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native'
-import StaticInfiniteScroll from '../../#reusableComponents/StaticInfiniteScroll'
+import SearchableInfiniteScroll from '../../#reusableComponents/SearchableInfiniteScroll'
 import database from '@react-native-firebase/database';
 import FriendReqDialogue from './FriendReqDialogue';
 
@@ -11,10 +11,7 @@ import { logError } from '../../#constants/helpers';
 export default class UserSearch extends React.Component {
 
   state = { 
-    query: '', 
-    attemptedQuery: '', 
     errorMessage: null, 
-    searchGeneration: 0, 
     isModalVisible: false,
     selectedUser: null
   }
@@ -42,31 +39,16 @@ export default class UserSearch extends React.Component {
             {this.state.errorMessage}
           </Text>}
 
-        <TextInput
-          style={styles.textInput}
-          autoCapitalize="none"
-          placeholder="Search using a user's email"
-          onChangeText={query => this.setState({ query })}
-          value={this.state.query}
+        <SearchableInfiniteScroll
+          type = "static"
+          queryValidator = {(query) => query.length > 0}
+          queryTypes = {[{name: "Name", value: "name"}, {name: "Email", value: "email"}]}
+          chunkSize = {10}
+          errorHandler = {this.scrollErrorHandler}
+          renderItem = {this.itemRenderer}
+          dbref = {database().ref("/userSnippets")}
+          ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
         />
-
-        <Button title="Search" onPress={this.search} />
-
-        {(this.state.attemptedQuery.length < 1) ? (
-            <Text>Try to find users with a long enough query</Text>
-        ) : (
-            <StaticInfiniteScroll style = {{width: "100%"}}
-              chunkSize = {10}
-              errorHandler = {this.scrollErrorHandler}
-              renderItem = {this.itemRenderer}
-              generation = {this.state.searchGeneration}
-              orderBy = "name"
-              dbref = {database().ref("/userSnippets").orderByChild("name")}
-              startingPoint = {this.state.attemptedQuery}
-              endingPoint = {`${this.state.attemptedQuery}\uf8ff`}
-              ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
-            />
-        )}
 
       </View>
     )
@@ -76,13 +58,6 @@ export default class UserSearch extends React.Component {
   scrollErrorHandler = (err) => {
     logError(err)
     this.setState({errorMessage: err.message})
-  }
-
-  search = () => {
-    this.setState({
-      attemptedQuery: this.state.query, 
-      searchGeneration: this.state.searchGeneration + 1
-    })
   }
 
   itemRenderer = ({ item }) => {
@@ -109,20 +84,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center'
-  },
-  textInput: {
-    height: 40,
-    width: '90%',
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginTop: 8
-  },
-  listElement: {
-    backgroundColor: 'ghostwhite',
-    paddingVertical: 5,
-    alignItems: "center",
-    flexDirection: 'row',
-    marginLeft: 10,
-    marginRight: 10
   }
 })

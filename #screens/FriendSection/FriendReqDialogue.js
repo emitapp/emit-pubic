@@ -160,7 +160,7 @@ export default class FriendReqDialogue extends React.Component {
                 this.setState({gettingInitialData: false, option: actionOptions.SENDREQ})
             }
         }catch (err){
-            if (err.message == "timeout"){
+            if (err.code == "timeout"){
                 this.setState({timedOut: true})
             }else{
                 logError(err)
@@ -200,7 +200,7 @@ export default class FriendReqDialogue extends React.Component {
                 logError(new Error(`Problematic ${this.state.option} function response: ${response.data.status}`))
             }
         } catch (err) {
-            if (err.message == "timeout"){
+            if (err.code == "timeout"){
                 this.setState({timedOut: true, waitingForFuncResponse: false})
             }else{
                 this.setState({waitingForFuncResponse: false})

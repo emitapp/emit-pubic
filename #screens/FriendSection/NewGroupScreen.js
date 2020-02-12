@@ -4,17 +4,15 @@ import SearchableInfiniteScroll from '../../#reusableComponents/SearchableInfini
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 
-import FriendReqDialogue from './FriendReqDialogue';
-import Modal from "react-native-modal";
 import ProfilePicDisplayer from '../../#reusableComponents/ProfilePicDisplayer';
 import { logError } from '../../#constants/helpers';
 
-export default class FriendSearch extends React.Component {
+export default class NewGroupScreen extends React.Component {
 
   state = { 
     errorMessage: null, 
-    isModalVisible: false,
-    selectedUser: null
+    selectedUsersUids: [],
+    groupName: ""
   }
 
   render() {
@@ -22,24 +20,18 @@ export default class FriendSearch extends React.Component {
     return (
       <View style={styles.container}>
 
-        <Modal 
-          isVisible={this.state.isModalVisible}
-          style = {{justifyContent: "center", alignItems: "center"}}
-          animationIn = "fadeInUp"
-          animationOut = 'fadeOutUp'
-          animationOutTiming = {0}
-        >
-          <FriendReqDialogue 
-            selectedUserData = {this.state.selectedUser}
-            closeFunction={() => this.setState({ isModalVisible: false })}
-          />
-        </Modal>
+              
+        <TextInput
+          style={styles.textInput}
+          autoCapitalize="none"
+          placeholder="Enter your group's name"
+          onChangeText={groupName => this.setState({ groupName })}
+          value={this.state.groupName}
+        />
 
-        <Text>Friend Search</Text>
-        {this.state.errorMessage &&
-          <Text style={{ color: 'red' }}>
-            {this.state.errorMessage}
-          </Text>}
+        <Text>ADD FRIENDS</Text>
+
+        <Text>{this.state.selectedUsersUids.map((uid) => `${uid}  `)}</Text>
 
         <SearchableInfiniteScroll
           type = "static"
@@ -51,7 +43,6 @@ export default class FriendSearch extends React.Component {
           dbref = {database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`)}
           ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
         />
-
       </View>
     )
   }
@@ -72,8 +63,8 @@ export default class FriendSearch extends React.Component {
   itemRenderer = ({ item }) => {
     return (
       <TouchableOpacity 
-        style = {styles.listElement}
-        onPress={() => this.toggleModal(item)}>
+        style = {[styles.listElement, {backgroundColor: this.state.selectedUsersUids.includes(item.uid) ? "lightgreen" : "white"}]}
+        onPress={() => this.toggleSelection(item)}>
           <ProfilePicDisplayer diameter = {30} uid = {item.uid} style = {{marginRight: 10}} />
           <View>
             <Text>{item.name}</Text>
@@ -83,9 +74,18 @@ export default class FriendSearch extends React.Component {
     );
   }
 
-  toggleModal = (selectedUser) => {
-    this.setState({ isModalVisible: true, selectedUser});
-  };
+  toggleSelection = (item) => {
+    const copiedArray = [...this.state.selectedUsersUids]
+    if (copiedArray.includes(item.uid)){
+      //Then remove the user
+      const targetIndex = copiedArray.indexOf(item.uid)
+      copiedArray.splice(targetIndex, 1)
+    }else{
+      //Add the user
+      copiedArray.push(item.uid)
+    }
+    this.setState({selectedUsersUids: copiedArray});
+  }
 }
 
 const styles = StyleSheet.create({
@@ -93,5 +93,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center'
+  },
+  textInput: {
+    height: 40,
+    width: '90%',
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginTop: 8
+  },
+  listElement: {
+    paddingVertical: 5,
+    alignItems: "center",
+    flexDirection: 'row',
+    marginLeft: 10,
+    marginRight: 10
   }
 })
