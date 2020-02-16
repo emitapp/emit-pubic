@@ -27,7 +27,7 @@ export default class FriendGroupSearch extends React.Component {
           </Text>}
 
         <SearchableInfiniteScroll
-          type = "static"
+          type = "dynamic"
           queryValidator = {(query) => true}
           queryTypes = {[{name: "Name", value: "name"}]}
           chunkSize = {10}
@@ -60,7 +60,7 @@ export default class FriendGroupSearch extends React.Component {
       <TouchableOpacity 
         style = {styles.listElement}>
             <Text>{item.name}</Text>
-            <Text>{item.memberCount}</Text>
+            <Text>Member count: {item.memberCount}</Text>
       </TouchableOpacity>
     );
   }

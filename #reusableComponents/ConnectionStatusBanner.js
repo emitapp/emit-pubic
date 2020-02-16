@@ -65,7 +65,7 @@ export default class OfflineNotice extends PureComponent {
 
     return (
       <View style={[styles.networkBanner, {'backgroundColor': "red"}]}>
-      <Text style={styles.offlineText}>Disonnected. Syncing will fail</Text>
+      <Text style={styles.offlineText}>Disonnected. Syncing won't happen until conntected</Text>
     </View>);
   }
 }

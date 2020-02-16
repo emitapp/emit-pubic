@@ -3,15 +3,16 @@ import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'rea
 import SearchableInfiniteScroll from '../../#reusableComponents/SearchableInfiniteScroll'
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
+import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 
 import ProfilePicDisplayer from '../../#reusableComponents/ProfilePicDisplayer';
-import { logError } from '../../#constants/helpers';
+import { logError, isOnlyWhitespace } from '../../#constants/helpers';
 
 export default class NewGroupScreen extends React.Component {
 
   state = { 
     errorMessage: null, 
-    selectedUsersUids: [],
+    selectedUsers: {},
     groupName: ""
   }
 
@@ -31,7 +32,7 @@ export default class NewGroupScreen extends React.Component {
 
         <Text>ADD FRIENDS</Text>
 
-        <Text>{this.state.selectedUsersUids.map((uid) => `${uid}  `)}</Text>
+        <Text>{Object.keys(this.state.selectedUsers).map((uid) => `${uid}  `)}</Text>
 
         <SearchableInfiniteScroll
           type = "static"
@@ -43,10 +44,42 @@ export default class NewGroupScreen extends React.Component {
           dbref = {database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`)}
           ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
         />
+
+        <TouchableOpacity 
+            style = {styles.newGroupButton}
+            onPress={this.createGroup}>
+            <AwesomeIcon name= "plus" size={18} color= "white" />
+            <Text style = {{color: "white", fontWeight: "bold"}}> CREATE </Text>
+        </TouchableOpacity>
+
       </View>
     )
   }
 
+  createGroup = () => {
+    const {selectedUsers, groupName} = this.state
+    const memberCount = Object.keys(selectedUsers).length
+    if (memberCount == 0 || isOnlyWhitespace(groupName)){
+      console.log("No cigar, my friend")
+    }
+    const baseSnippetPath = `/userFriendGroupings/${auth().currentUser.uid}/custom/snippets`
+    const baseInfoPath = `/userFriendGroupings/${auth().currentUser.uid}/custom/details`
+    const newKey = database().ref(baseSnippetPath).push().key
+    const newGroupSnippet = {name: groupName} //The member count is handled by cloud functions
+
+    const updates = {}
+    for (const uid in selectedUsers) {
+      updates[`${baseInfoPath}/${newKey}/memberSnippets/${uid}`] = selectedUsers[uid]
+      updates[`${baseInfoPath}/${newKey}/memberUids/${uid}`] = true
+    }
+    updates[`${baseSnippetPath}/${newKey}`] = newGroupSnippet
+
+    //We're gonna let this happen asynchronously
+    database().ref().update(updates)
+      .then(() => console.log("Name the new friend group!!"))
+      .catch((err) => logError(err));
+    this.props.navigation.goBack()
+  }
 
   scrollErrorHandler = (err) => {
     logError(err)
@@ -63,7 +96,7 @@ export default class NewGroupScreen extends React.Component {
   itemRenderer = ({ item }) => {
     return (
       <TouchableOpacity 
-        style = {[styles.listElement, {backgroundColor: this.state.selectedUsersUids.includes(item.uid) ? "lightgreen" : "white"}]}
+        style = {[styles.listElement, {backgroundColor: this.state.selectedUsers[item.uid] ? "lightgreen" : "white"}]}
         onPress={() => this.toggleSelection(item)}>
           <ProfilePicDisplayer diameter = {30} uid = {item.uid} style = {{marginRight: 10}} />
           <View>
@@ -74,17 +107,17 @@ export default class NewGroupScreen extends React.Component {
     );
   }
 
-  toggleSelection = (item) => {
-    const copiedArray = [...this.state.selectedUsersUids]
-    if (copiedArray.includes(item.uid)){
+  toggleSelection = (snippet) => {
+    const copiedObj = {...this.state.selectedUsers}
+    if (copiedObj[snippet.uid]){
       //Then remove the user
-      const targetIndex = copiedArray.indexOf(item.uid)
-      copiedArray.splice(targetIndex, 1)
+      delete copiedObj[snippet.uid]
     }else{
       //Add the user
-      copiedArray.push(item.uid)
+      const {uid, ...snippetSansUid} = snippet
+      copiedObj[snippet.uid] = snippetSansUid
     }
-    this.setState({selectedUsersUids: copiedArray});
+    this.setState({selectedUsers: copiedObj});
   }
 }
 
@@ -107,5 +140,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginLeft: 10,
     marginRight: 10
-  }
+  },
+  newGroupButton: {
+    justifyContent: "center",
+    alignItems: 'center',
+    backgroundColor: "mediumseagreen",
+    width: "100%", 
+    height: 50,
+    flexDirection: 'row'
+  },
 })
