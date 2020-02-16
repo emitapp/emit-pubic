@@ -8,6 +8,7 @@ import QRScanner from './QRFriendAdder'
 import FriendSearch from './FriendSearch'
 import GroupSearch from './FriendGroupSearch'
 import NewGroupScreen from './NewGroupScreen'
+import GroupViewer from './GroupViewer'
 
 const Navigator = createStackNavigator(
   {
@@ -17,7 +18,8 @@ const Navigator = createStackNavigator(
     QRScanner,
     FriendSearch,
     GroupSearch,
-    NewGroupScreen
+    NewGroupScreen,
+    GroupViewer
   },
   {
     initialRouteName: 'FriendButtonHub'

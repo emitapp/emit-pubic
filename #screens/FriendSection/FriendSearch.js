@@ -62,13 +62,6 @@ export default class FriendSearch extends React.Component {
     this.setState({errorMessage: err.message})
   }
 
-  search = () => {
-    this.setState({
-      attemptedQuery: this.state.query, 
-      searchGeneration: this.state.searchGeneration + 1
-    })
-  }
-
   itemRenderer = ({ item }) => {
     return (
       <TouchableOpacity 

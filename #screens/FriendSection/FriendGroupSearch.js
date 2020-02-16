@@ -58,7 +58,8 @@ export default class FriendGroupSearch extends React.Component {
   itemRenderer = ({ item }) => {
     return (
       <TouchableOpacity 
-        style = {styles.listElement}>
+        style = {styles.listElement}
+        onPress = {() => this.props.navigation.navigate('GroupViewer', {group: item}) }>
             <Text>{item.name}</Text>
             <Text>Member count: {item.memberCount}</Text>
       </TouchableOpacity>
