@@ -12,8 +12,8 @@ import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 
 import { timedPromise, LONG_TIMEOUT, MEDIUM_TIMEOUT,
-     MIN_BROADCAST_WINDOW, MAX_BROADCAST_WINDOW, logError } from '../../#constants/helpers';
-import {returnStatuses} from '../../#constants/serverValues'
+     MIN_BROADCAST_WINDOW, MAX_BROADCAST_WINDOW, logError } from 'utils/helpers';
+import {returnStatuses} from 'utils/serverValues'
 
 export default class NewBroadcastForm extends React.Component {
 

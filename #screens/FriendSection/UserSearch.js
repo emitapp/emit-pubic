@@ -1,12 +1,12 @@
 import React from 'react'
 import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native'
-import SearchableInfiniteScroll from '../../#reusableComponents/SearchableInfiniteScroll'
+import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll'
 import database from '@react-native-firebase/database';
 import FriendReqDialogue from './FriendReqDialogue';
 
 import Modal from "react-native-modal";
-import ProfilePicDisplayer from '../../#reusableComponents/ProfilePicDisplayer';
-import { logError } from '../../#constants/helpers';
+import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
+import { logError } from 'utils/helpers';
 
 export default class UserSearch extends React.Component {
 

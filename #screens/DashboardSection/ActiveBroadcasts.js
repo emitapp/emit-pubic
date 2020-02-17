@@ -1,12 +1,12 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import DynamicInfiniteScroll from '../../#reusableComponents/DynamicInfiniteScroll'
+import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll'
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth'
 
-import { epochToDateString, logError } from '../../#constants/helpers';
+import { epochToDateString, logError } from 'utils/helpers';
 
 export default class ActiveBroadcasts extends React.Component {
 

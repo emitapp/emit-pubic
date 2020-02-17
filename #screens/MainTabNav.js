@@ -14,8 +14,8 @@ import FeedStackNav from './FeedSection/FeedStackNav'
 import SettingsStackNav from "./Settings/SettingsStackNav"
 import DashboardStackNav from "./DashboardSection/DashboardStackNav"
 import FriendStackNav from './FriendSection/FriendSectionStackNav'
-import { logError, ASYNC_TOKEN_KEY, timedPromise, LONG_TIMEOUT } from '../#constants/helpers';
-import { handleFCMDeletion, handleFCMMessage } from '../#constants/fcmNotificationHandlers';
+import { logError, ASYNC_TOKEN_KEY, timedPromise, LONG_TIMEOUT } from 'utils/helpers';
+import { handleFCMDeletion, handleFCMMessage } from 'utils/fcmNotificationHandlers';
 
 
 const Tab = createBottomTabNavigator(

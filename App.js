@@ -4,13 +4,13 @@ import { createSwitchNavigator, createAppContainer, NavigationActions} from 'rea
 import auth from '@react-native-firebase/auth';
 
 import AsyncStorage from '@react-native-community/async-storage';
-import AuthDecisionLander from './#screens/Authentication/AuthDecisionLanding'
-import SignUp from './#screens/Authentication/SignUp'
-import Login from './#screens/Authentication/Login'
-import AccountSetUp from './#screens/Authentication/AccountSetUp'
-import MainTabNav from './#screens/MainTabNav'
-import { logError, ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY } from './#constants/helpers';
-import ConnectionBanner from './#reusableComponents/ConnectionStatusBanner'
+import AuthDecisionLander from 'screens/Authentication/AuthDecisionLanding'
+import SignUp from 'screens/Authentication/SignUp'
+import Login from 'screens/Authentication/Login'
+import AccountSetUp from 'screens/Authentication/AccountSetUp'
+import MainTabNav from 'screens/MainTabNav'
+import { logError, ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY } from 'utils/helpers';
+import ConnectionBanner from 'reusables/ConnectionStatusBanner'
 
 //This file also contains the global functions needed by the app
 //Hopefully there's not a lot

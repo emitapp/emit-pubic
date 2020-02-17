@@ -3,11 +3,11 @@ import {StyleSheet, Text, View, Button } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
-import TimeoutLoadingComponent from '../../#reusableComponents/TimeoutLoadingComponent';
-import {timedPromise, MEDIUM_TIMEOUT, LONG_TIMEOUT, logError} from '../../#constants/helpers'
-import ProfilePicDisplayer from '../../#reusableComponents/ProfilePicDisplayer';
+import TimeoutLoadingComponent from 'reusables/TimeoutLoadingComponent';
+import {timedPromise, MEDIUM_TIMEOUT, LONG_TIMEOUT, logError} from 'utils/helpers'
+import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
 
-import * as responseStatuses from '../../#constants/serverValues'
+import * as responseStatuses from 'utils/serverValues'
 
 /**
  * This is the standard dialogue for viewing a user if you want the user to 

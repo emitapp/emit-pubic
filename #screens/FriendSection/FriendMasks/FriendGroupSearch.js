@@ -1,12 +1,12 @@
 import React from 'react'
 import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native'
-import SearchableInfiniteScroll from '../../../#reusableComponents/SearchableInfiniteScroll'
+import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll'
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 
 
-import { logError } from '../../../#constants/helpers';
+import { logError } from 'utils/helpers';
 
 export default class FriendGroupSearch extends React.Component {
 

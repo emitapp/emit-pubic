@@ -1,12 +1,12 @@
 import React from 'react'
 import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native'
-import SearchableInfiniteScroll from '../../../#reusableComponents/SearchableInfiniteScroll'
+import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll'
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 
-import ProfilePicDisplayer from '../../../#reusableComponents/ProfilePicDisplayer';
-import { logError, isOnlyWhitespace } from '../../../#constants/helpers';
+import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
+import { logError, isOnlyWhitespace } from 'utils/helpers';
 
 export default class NewGroupScreen extends React.Component {
 

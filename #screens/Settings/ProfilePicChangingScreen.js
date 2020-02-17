@@ -1,7 +1,7 @@
 
 import React from 'react'
 import {StyleSheet, View} from 'react-native'
-import ProfilePicChanger from '../../#reusableComponents/ProfilePicChanger'
+import ProfilePicChanger from 'reusables/ProfilePicChanger'
 
 export default class ProfilePicChangingScreen extends React.Component {
 

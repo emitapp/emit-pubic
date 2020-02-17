@@ -3,8 +3,8 @@ import { StyleSheet, Platform, Image, Text, View, Button } from 'react-native'
 import QRCode from 'react-native-qrcode-svg';
 import auth from '@react-native-firebase/auth';
 
-import ProfilePicDisplayer from '../../#reusableComponents/ProfilePicDisplayer';
-import { logError } from '../../#constants/helpers';
+import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
+import { logError } from 'utils/helpers';
 
 export default class SettingsMain extends React.Component {
 

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { View, Text, Dimensions, StyleSheet } from 'react-native';
 const { width } = Dimensions.get('window');
 import database from '@react-native-firebase/database'
-import {logError} from '../#constants/helpers'
+import {logError} from 'utils/helpers'
 import NetInfo from "@react-native-community/netinfo";
 
 export default class OfflineNotice extends PureComponent {

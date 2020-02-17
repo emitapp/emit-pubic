@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatList, Text } from 'react-native';
 import database from '@react-native-firebase/database';
-import { timedPromise, MEDIUM_TIMEOUT } from '../#constants/helpers';
+import { timedPromise, MEDIUM_TIMEOUT } from 'utils/helpers';
 import InfiniteScrollLoadingComponent from './TimeoutLoadingComponent'
 
 /**

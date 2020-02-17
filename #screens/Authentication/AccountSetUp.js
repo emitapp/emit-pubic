@@ -4,7 +4,7 @@ import React from 'react'
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
-import { isOnlyWhitespace, timedPromise, logError, LONG_TIMEOUT, ASYNC_SETUP_KEY } from '../../#constants/helpers';
+import { isOnlyWhitespace, timedPromise, logError, LONG_TIMEOUT, ASYNC_SETUP_KEY } from 'utils/helpers';
 import AsyncStorage from '@react-native-community/async-storage';
 
 export default class AccountSetUp extends React.Component {

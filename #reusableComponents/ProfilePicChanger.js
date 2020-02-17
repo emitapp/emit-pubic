@@ -7,7 +7,7 @@ import uuid from 'uuid/v4';
 import storage from '@react-native-firebase/storage';
 import auth from '@react-native-firebase/auth';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
-import { logError } from '../#constants/helpers';
+import { logError } from 'utils/helpers';
 var RNFS = require('react-native-fs');
 
 const options = {

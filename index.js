@@ -7,7 +7,7 @@ import App from './App';
 import {name as appName} from './app.json';
 import 'react-native-gesture-handler' //For react-navigation
 import messaging from '@react-native-firebase/messaging';
-import { handleFCMMessage } from './#constants/fcmNotificationHandlers';
+import { handleFCMMessage } from 'utils/fcmNotificationHandlers';
 
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
     await handleFCMMessage(remoteMessage)

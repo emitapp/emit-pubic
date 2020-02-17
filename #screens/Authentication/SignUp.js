@@ -1,7 +1,7 @@
 import React from 'react'
 import auth from '@react-native-firebase/auth';
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
-import { timedPromise, LONG_TIMEOUT } from '../../#constants/helpers';
+import { timedPromise, LONG_TIMEOUT } from 'utils/helpers';
 
 export default class SignUp extends React.Component {
 

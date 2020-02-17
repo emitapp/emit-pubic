@@ -7,9 +7,9 @@ import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import functions from '@react-native-firebase/functions';
 
-import { epochToDateString, timedPromise, LONG_TIMEOUT, logError } from '../../#constants/helpers';
-import {responderStatuses, returnStatuses} from '../../#constants/serverValues'
-import DynamicInfiniteScroll from '../../#reusableComponents/DynamicInfiniteScroll'
+import { epochToDateString, timedPromise, LONG_TIMEOUT, logError } from 'utils/helpers';
+import {responderStatuses, returnStatuses} from 'utils/serverValues'
+import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll'
 
 export default class ResponsesViewer extends React.Component {
 
