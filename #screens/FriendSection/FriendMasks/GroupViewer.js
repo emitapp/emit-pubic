@@ -1,12 +1,12 @@
 import React from 'react'
 import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native'
-import SearchableInfiniteScroll from '../../#reusableComponents/SearchableInfiniteScroll'
+import SearchableInfiniteScroll from '../../../#reusableComponents/SearchableInfiniteScroll'
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 
-import ProfilePicDisplayer from '../../#reusableComponents/ProfilePicDisplayer';
-import { logError, isOnlyWhitespace } from '../../#constants/helpers';
+import ProfilePicDisplayer from '../../../#reusableComponents/ProfilePicDisplayer';
+import { logError, isOnlyWhitespace } from '../../../#constants/helpers';
 
 export default class NewGroupScreen extends React.Component {
 
@@ -30,6 +30,7 @@ export default class NewGroupScreen extends React.Component {
       <View style={styles.container}>
    
         <Button title="Delete Group" onPress={this.deleteGroup}/>
+        <Button title="Add Members" onPress={() => this.props.navigation.navigate('GroupMemberAdder', {group: this.groupSnippet})}/>
 
         <TextInput
           style={styles.textInput}

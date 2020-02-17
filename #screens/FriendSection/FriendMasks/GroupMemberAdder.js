@@ -1,34 +1,43 @@
 import React from 'react'
-import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native'
-import SearchableInfiniteScroll from '../../#reusableComponents/SearchableInfiniteScroll'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native'
+import SearchableInfiniteScroll from '../../../#reusableComponents/SearchableInfiniteScroll'
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 
-import ProfilePicDisplayer from '../../#reusableComponents/ProfilePicDisplayer';
-import { logError, isOnlyWhitespace } from '../../#constants/helpers';
+import ProfilePicDisplayer from '../../../#reusableComponents/ProfilePicDisplayer';
+import { logError, isOnlyWhitespace } from '../../../#constants/helpers';
 
 export default class NewGroupScreen extends React.Component {
 
-  state = { 
-    errorMessage: null, 
-    selectedUsers: {},
-    groupName: ""
+  constructor(props){
+    super(props)
+    this.groupSnippet = this.props.navigation.getParam('group', null)
+    this.state = { 
+      errorMessage: null, 
+      selectedUsers: {},
+      groupName: this.groupSnippet ? this.groupSnippet.name : ""
+    }
   }
+
 
   render() {
     let userUid = auth().currentUser.uid
     return (
       <View style={styles.container}>
 
+        {!this.groupSnippet ? (
+          <TextInput
+            style={styles.textInput}
+            autoCapitalize="none"
+            placeholder="Enter your group's name"
+            onChangeText={groupName => this.setState({ groupName })}
+            value={this.state.groupName}
+          />
+        ) : (
+          <Text>{this.state.groupName}</Text>
+        )}
               
-        <TextInput
-          style={styles.textInput}
-          autoCapitalize="none"
-          placeholder="Enter your group's name"
-          onChangeText={groupName => this.setState({ groupName })}
-          value={this.state.groupName}
-        />
 
         <Text>ADD FRIENDS</Text>
 
@@ -47,16 +56,16 @@ export default class NewGroupScreen extends React.Component {
 
         <TouchableOpacity 
             style = {styles.newGroupButton}
-            onPress={this.createGroup}>
+            onPress={this.createOrEditGroup}>
             <AwesomeIcon name= "plus" size={18} color= "white" />
-            <Text style = {{color: "white", fontWeight: "bold"}}> CREATE </Text>
+            <Text style = {{color: "white", fontWeight: "bold"}}> {this.groupSnippet ? "ADD" : "CREATE"} </Text>
         </TouchableOpacity>
 
       </View>
     )
   }
 
-  createGroup = () => {
+  createOrEditGroup = () => {
     const {selectedUsers, groupName} = this.state
     const memberCount = Object.keys(selectedUsers).length
     if (memberCount == 0 || isOnlyWhitespace(groupName)){
@@ -64,19 +73,20 @@ export default class NewGroupScreen extends React.Component {
     }
     const baseSnippetPath = `/userFriendGroupings/${auth().currentUser.uid}/custom/snippets`
     const baseInfoPath = `/userFriendGroupings/${auth().currentUser.uid}/custom/details`
-    const newKey = database().ref(baseSnippetPath).push().key
-    const newGroupSnippet = {name: groupName} //The member count is handled by cloud functions
+    const groupUid = this.groupSnippet? this.groupSnippet.uid : database().ref(baseSnippetPath).push().key
 
     const updates = {}
     for (const uid in selectedUsers) {
-      updates[`${baseInfoPath}/${newKey}/memberSnippets/${uid}`] = selectedUsers[uid]
-      updates[`${baseInfoPath}/${newKey}/memberUids/${uid}`] = true
+      updates[`${baseInfoPath}/${groupUid}/memberSnippets/${uid}`] = selectedUsers[uid]
+      updates[`${baseInfoPath}/${groupUid}/memberUids/${uid}`] = true
     }
-    updates[`${baseSnippetPath}/${newKey}`] = newGroupSnippet
+
+    //The member count is handled by cloud functions
+    if (!this.groupSnippet) updates[`${baseSnippetPath}/${groupUid}`] = {name: groupName}
 
     //We're gonna let this happen asynchronously
     database().ref().update(updates)
-      .then(() => console.log("Name the new friend group!!"))
+      .then(() => console.log("createOrEditGroup success!!"))
       .catch((err) => logError(err));
     this.props.navigation.goBack()
   }

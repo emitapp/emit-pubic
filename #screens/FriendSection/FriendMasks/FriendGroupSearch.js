@@ -1,12 +1,12 @@
 import React from 'react'
 import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native'
-import SearchableInfiniteScroll from '../../#reusableComponents/SearchableInfiniteScroll'
+import SearchableInfiniteScroll from '../../../#reusableComponents/SearchableInfiniteScroll'
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 
 
-import { logError } from '../../#constants/helpers';
+import { logError } from '../../../#constants/helpers';
 
 export default class FriendGroupSearch extends React.Component {
 
@@ -40,7 +40,7 @@ export default class FriendGroupSearch extends React.Component {
 
         <TouchableOpacity 
             style = {styles.newGroupButton}
-            onPress={() => this.props.navigation.navigate('NewGroupScreen')}>
+            onPress={() => this.props.navigation.navigate('GroupMemberAdder')}>
             <AwesomeIcon name= "plus" size={18} color= "white" />
             <Text style = {{color: "white", fontWeight: "bold"}}> CREATE NEW MASK</Text>
         </TouchableOpacity>
