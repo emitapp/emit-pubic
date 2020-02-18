@@ -14,6 +14,8 @@ import functions from '@react-native-firebase/functions';
 import { timedPromise, LONG_TIMEOUT, MEDIUM_TIMEOUT,
      MIN_BROADCAST_WINDOW, MAX_BROADCAST_WINDOW, logError } from 'utils/helpers';
 import {returnStatuses} from 'utils/serverValues'
+import BannerButton from 'reusables/BannerButton'
+import S from 'styling'
 
 export default class NewBroadcastForm extends React.Component {
 
@@ -44,7 +46,7 @@ export default class NewBroadcastForm extends React.Component {
 
     render() {
         return (
-            <View style={styles.container}>
+            <View style={S.styles.container}>
 
                 <Modal 
                     isVisible={this.state.isModalVisible}
@@ -62,7 +64,7 @@ export default class NewBroadcastForm extends React.Component {
                     </Text>}
                 <View style={styles.mainForm}>
                     <TextInput
-                        style={styles.textInput}
+                        style={S.styles.textInput}
                         autoCapitalize="words"
                         placeholder="Place"
                         onChangeText={location => this.setState({ location })}
@@ -94,12 +96,12 @@ export default class NewBroadcastForm extends React.Component {
                     <Text>FOR NOW, BROADCASTS ARE SENT TO ALL FRIENDS</Text>
                 </View>
 
-                <TouchableOpacity
-                    style={styles.newBroadcastButton}
-                    onPress={this.createBroadcast}>
-                    <AwesomeIcon name="plus" size={18} color="white" />
-                    <Text style={{ color: "white", fontWeight: "bold" }}> CREATE </Text>
-                </TouchableOpacity>
+                <BannerButton
+                    color = {S.colors.buttonGreen}
+                    onPress={this.createBroadcast}
+                    iconName = {S.strings.add}
+                    title = "CREATE"
+                />
 
             </View>
         )
@@ -205,31 +207,11 @@ export default class NewBroadcastForm extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     mainForm: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         width: "100%",
         margin: 8
-    },
-    textInput: {
-        height: 40,
-        width: '90%',
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginTop: 8
-    },
-    newBroadcastButton: {
-        justifyContent: "center",
-        alignItems: 'center',
-        backgroundColor: "mediumseagreen",
-        width: "100%",
-        height: 50,
-        flexDirection: 'row'
     }
 })

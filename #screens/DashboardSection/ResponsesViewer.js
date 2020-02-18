@@ -1,8 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, Button, ActivityIndicator, TouchableOpacity } from 'react-native'
 import Modal from 'react-native-modal'
-import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
-
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import functions from '@react-native-firebase/functions';
@@ -10,6 +8,8 @@ import functions from '@react-native-firebase/functions';
 import { epochToDateString, timedPromise, LONG_TIMEOUT, logError } from 'utils/helpers';
 import {responderStatuses, returnStatuses} from 'utils/serverValues'
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll'
+import S from "styling"
+import BannerButton from 'reusables/BannerButton'
 
 export default class ResponsesViewer extends React.Component {
 
@@ -46,7 +46,7 @@ export default class ResponsesViewer extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={S.styles.containerFlexStart}>
         <Modal 
           isVisible={this.state.isModalVisible}
           style = {{justifyContent: "center", alignItems: "center"}}
@@ -110,12 +110,12 @@ export default class ResponsesViewer extends React.Component {
           ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
         />
 
-        <TouchableOpacity
-          style={styles.confirmChangesButton}
-          onPress={this.confirmChanges}>
-          <AwesomeIcon name="plus" size={18} color="white" />
-          <Text style={{ color: "white", fontWeight: "bold" }}> CONFIRM CHANGES </Text>
-        </TouchableOpacity>
+        <BannerButton
+          onPress={this.confirmChanges}
+          title="CONFIRM CHANGES"
+          iconTitle = {S.strings.add}
+          color = {S.colors.buttonGreen}
+        />
       </View>
     )
   }
@@ -128,7 +128,7 @@ export default class ResponsesViewer extends React.Component {
   itemRenderer = ({ item }) => {
     return (
       <View 
-        style = {styles.listElement}>
+        style = {S.styles.listElement}>
         <Text>{item.name}</Text>
         <Text>{item.uid}</Text>
         {item.status !== responderStatuses.CONFIRMED && 
@@ -179,25 +179,6 @@ export default class ResponsesViewer extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center'
-  },
-  newBroadcastButton: {
-    justifyContent: "center",
-    alignItems: 'center',
-    backgroundColor: "mediumseagreen",
-    width: "100%", 
-    height: 50,
-    flexDirection: 'row'
-  },
-  listElement: {
-    backgroundColor: 'ghostwhite',
-    alignItems: "flex-start",
-    marginLeft: 10,
-    marginRight: 10
-  },
   selectedTab: {
     flex: 1,
     justifyContent: "center",
@@ -209,13 +190,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: 'center',
     backgroundColor: "grey"
-  },
-  confirmChangesButton: {
-    justifyContent: "center",
-    alignItems: 'center',
-    backgroundColor: "mediumseagreen",
-    width: "100%",
-    height: 50,
-    flexDirection: 'row'
   }
 })

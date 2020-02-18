@@ -1,12 +1,12 @@
-import React from 'react'
-import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native'
-import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll'
-import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
-import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
-
-
+import database from '@react-native-firebase/database';
+import React from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import { logError } from 'utils/helpers';
+import S from 'styling'
+import BannerButton from 'reusables/BannerButton'
+
 
 export default class FriendGroupSearch extends React.Component {
 
@@ -18,7 +18,7 @@ export default class FriendGroupSearch extends React.Component {
   render() {
     let userUid = auth().currentUser.uid
     return (
-      <View style={styles.container}>
+      <View style={S.styles.containerFlexStart}>
 
         <Text>Friend Group Search</Text>
         {this.state.errorMessage &&
@@ -37,13 +37,12 @@ export default class FriendGroupSearch extends React.Component {
           ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
         />
 
-
-        <TouchableOpacity 
-            style = {styles.newGroupButton}
-            onPress={() => this.props.navigation.navigate('GroupMemberAdder')}>
-            <AwesomeIcon name= "plus" size={18} color= "white" />
-            <Text style = {{color: "white", fontWeight: "bold"}}> CREATE NEW MASK</Text>
-        </TouchableOpacity>
+        <BannerButton
+          onPress={() => this.props.navigation.navigate('GroupMemberAdder')}
+          title="CREATE NEW MASK"
+          iconTitle = {S.strings.add}
+          color = {S.colors.buttonGreen}
+        />
 
       </View>
     )
@@ -58,7 +57,7 @@ export default class FriendGroupSearch extends React.Component {
   itemRenderer = ({ item }) => {
     return (
       <TouchableOpacity 
-        style = {styles.listElement}
+        style = {S.styles.listElement}
         onPress = {() => this.props.navigation.navigate('GroupViewer', {group: item}) }>
             <Text>{item.name}</Text>
             <Text>Member count: {item.memberCount}</Text>
@@ -66,19 +65,3 @@ export default class FriendGroupSearch extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center'
-  },
-  newGroupButton: {
-    justifyContent: "center",
-    alignItems: 'center',
-    backgroundColor: "mediumseagreen",
-    width: "100%", 
-    height: 50,
-    flexDirection: 'row'
-  },
-})

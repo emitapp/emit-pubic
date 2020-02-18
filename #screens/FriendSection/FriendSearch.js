@@ -8,6 +8,7 @@ import FriendReqDialogue from './FriendReqDialogue';
 import Modal from "react-native-modal";
 import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
 import { logError } from 'utils/helpers';
+import S from 'styling'
 
 export default class FriendSearch extends React.Component {
 
@@ -20,7 +21,7 @@ export default class FriendSearch extends React.Component {
   render() {
     let userUid = auth().currentUser.uid
     return (
-      <View style={styles.container}>
+      <View style={S.styles.containerFlexStart}>
 
         <Modal 
           isVisible={this.state.isModalVisible}
@@ -80,11 +81,3 @@ export default class FriendSearch extends React.Component {
     this.setState({ isModalVisible: true, selectedUser});
   };
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center'
-  }
-})

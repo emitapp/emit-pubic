@@ -6,9 +6,10 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 
 import AsyncStorage from '@react-native-community/async-storage';
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text } from 'react-native'
 import {logError, LONG_TIMEOUT, ASYNC_SETUP_KEY, timedPromise} from 'utils/helpers' 
 import TimeoutLoadingComponent from 'reusables/TimeoutLoadingComponent';
+import S from "styling"
 
 export default class Loading extends React.Component {
 
@@ -23,7 +24,7 @@ export default class Loading extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={S.styles.container}>
         <Text>Loading</Text>
         <TimeoutLoadingComponent 
           hasTimedOut = {this.state.timedout}
@@ -68,11 +69,3 @@ export default class Loading extends React.Component {
     }
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
-})

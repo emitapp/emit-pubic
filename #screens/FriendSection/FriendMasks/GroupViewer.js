@@ -7,6 +7,8 @@ import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 
 import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
 import { logError, isOnlyWhitespace } from 'utils/helpers';
+import S from 'styling';
+import BannerButton from 'reusables/BannerButton';
 
 export default class NewGroupScreen extends React.Component {
 
@@ -27,13 +29,13 @@ export default class NewGroupScreen extends React.Component {
     if (!this.groupSnippet) return null;
     const {inEditMode, newGroupName, groupName} = this.state;
     return (
-      <View style={styles.container}>
+      <View style={S.styles.containerFlexStart}>
    
         <Button title="Delete Group" onPress={this.deleteGroup}/>
         <Button title="Add Members" onPress={() => this.props.navigation.navigate('GroupMemberAdder', {group: this.groupSnippet})}/>
 
         <TextInput
-          style={styles.textInput}
+          style={S.styles.textInput}
           autoCapitalize="none"
           onChangeText={text => this.setState({ newGroupName: text })}
           value={inEditMode ? newGroupName : groupName}
@@ -54,27 +56,30 @@ export default class NewGroupScreen extends React.Component {
         
         {!inEditMode ? (
           <View style={{flexDirection: "row"}}>
-            <TouchableOpacity 
-              style = {[styles.bottomButton, {backgroundColor: "skyblue"}]}
-              onPress={() => this.setState({inEditMode: true})}>
-              <AwesomeIcon name= "edit" size={18} color= "white" />
-              <Text style = {{color: "white", fontWeight: "bold"}}> EDIT </Text>
-            </TouchableOpacity>
+            <BannerButton
+              extraStyles = {{flex: 1}}
+              color = {S.colors.buttonBlue}
+              onPress={() => this.setState({inEditMode: true})}
+              iconName = {S.strings.edit}
+              title = "EDIT"
+            />
           </View>
         ) : (
           <View style={{flexDirection: "row"}}>
-            <TouchableOpacity 
-              style = {[styles.bottomButton, {backgroundColor: "red"}]}
-              onPress={() => this.setState({inEditMode: false})}>
-              <AwesomeIcon name= "ban" size={18} color= "white" />
-              <Text style = {{color: "white", fontWeight: "bold"}}> CANCEL </Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style = {[styles.bottomButton, {backgroundColor: "green"}]}
-              onPress={this.applyEdits}>
-              <AwesomeIcon name= "check" size={18} color= "white" />
-              <Text style = {{color: "white", fontWeight: "bold"}}> SAVE CHANGES </Text>
-            </TouchableOpacity>
+            <BannerButton
+              extraStyles = {{flex: 1}}
+              color = {S.colors.buttonRed}
+              onPress={() => this.setState({inEditMode: false})}
+              iconName = {S.strings.cancel}
+              title = "CANCEL"
+            />        
+            <BannerButton
+              extraStyles = {{flex: 1}}
+              color = {S.colors.buttonGreen}
+              onPress={this.applyEdits}
+              iconName = {S.strings.confirm}
+              title = "SAVE CHANGES"
+            />
           </View>
         )}
         
@@ -136,7 +141,7 @@ export default class NewGroupScreen extends React.Component {
     const {inEditMode, selectedUserUids} = this.state
     return (
       <TouchableOpacity 
-        style = {[styles.listElement, {backgroundColor: selectedUserUids[item.uid] && inEditMode ? "red" : "white"}]}
+        style = {[S.styles.listElement, {backgroundColor: selectedUserUids[item.uid] && inEditMode ? "red" : "white"}]}
         onPress={() => this.toggleSelection(item)}
         disabled={!this.state.inEditMode}>
           <ProfilePicDisplayer diameter = {30} uid = {item.uid} style = {{marginRight: 10}} />
@@ -162,25 +167,6 @@ export default class NewGroupScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center'
-  },
-  textInput: {
-    height: 40,
-    width: '90%',
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginTop: 8
-  },
-  listElement: {
-    paddingVertical: 5,
-    alignItems: "center",
-    flexDirection: 'row',
-    marginLeft: 10,
-    marginRight: 10
-  },
   bottomButton: {
     justifyContent: "center",
     alignItems: 'center', 

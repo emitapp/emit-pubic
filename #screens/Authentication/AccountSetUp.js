@@ -1,11 +1,12 @@
 // This is the page a new user is directed to to setup their account
 
 import React from 'react'
-import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
+import {Text, TextInput, View, Button } from 'react-native'
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import { isOnlyWhitespace, timedPromise, logError, LONG_TIMEOUT, ASYNC_SETUP_KEY } from 'utils/helpers';
 import AsyncStorage from '@react-native-community/async-storage';
+import S from "styling"
 
 export default class AccountSetUp extends React.Component {
 
@@ -13,7 +14,7 @@ export default class AccountSetUp extends React.Component {
 
     render() {
       return (
-        <View style={styles.container}>
+        <View style={S.styles.container}>
           <Text>Finish setting up your Biteup Account</Text>
           {this.state.errorMessage &&
             <Text style={{ color: 'red' }}>
@@ -21,7 +22,7 @@ export default class AccountSetUp extends React.Component {
             </Text>}
 
           <TextInput
-            style={styles.textInput}
+            style={S.styles.textInput}
             autoCapitalize="none"
             placeholder="Display Name"
             onChangeText={name => this.setState({ name })}
@@ -55,18 +56,3 @@ export default class AccountSetUp extends React.Component {
       }
     }
 }
-  
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center'
-    },
-    textInput: {
-      height: 40,
-      width: '90%',
-      borderColor: 'gray',
-      borderWidth: 1,
-      marginTop: 8
-    }
-  })

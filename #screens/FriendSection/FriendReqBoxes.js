@@ -8,6 +8,7 @@ import FriendReqDialogue from './FriendReqDialogue';
 import Modal from "react-native-modal";
 import { epochToDateString, logError } from 'utils/helpers';
 import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
+import S from 'styling'
 
 export default class UserSearch extends React.Component {
 
@@ -21,7 +22,7 @@ export default class UserSearch extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={S.styles.containerFlexStart}>
 
         <Modal 
           isVisible={this.state.isModalVisible}
@@ -76,7 +77,7 @@ export default class UserSearch extends React.Component {
   itemRenderer = ({ item }) => {
     return (
       <TouchableOpacity 
-        style = {styles.listElement}
+        style = {S.styles.listElement}
         onPress={() => this.toggleModal(item)}>
         <ProfilePicDisplayer diameter = {30} uid = {item.uid} style = {{marginRight: 10}} />
         <View>
@@ -111,11 +112,6 @@ export default class UserSearch extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center'
-  },
   selectedTab: {
     flex: 1,
     justifyContent: "center",
@@ -127,13 +123,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: 'center',
     backgroundColor: "grey"
-  },
-  listElement: {
-    backgroundColor: 'ghostwhite',
-    paddingVertical: 5,
-    alignItems: "center",
-    flexDirection: 'row',
-    marginLeft: 10,
-    marginRight: 10
   }
 })

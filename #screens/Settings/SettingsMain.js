@@ -5,13 +5,14 @@ import auth from '@react-native-firebase/auth';
 
 import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
 import { logError } from 'utils/helpers';
+import S from 'styling'
 
 export default class SettingsMain extends React.Component {
 
     render() {
       const { currentUser } = auth()
       return (
-        <View style={styles.container}>
+        <View style={S.styles.container}>
           <View style = {styles.QRHolder}>
             <QRCode
               value = {currentUser.uid}
@@ -60,11 +61,6 @@ export default class SettingsMain extends React.Component {
   }
   
   const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center'
-    },
     QRHolder:{
       borderRadius: 20, 
       padding: 10, 

@@ -10,6 +10,7 @@ import { epochToDateString, timedPromise, LONG_TIMEOUT, logError } from 'utils/h
 import TimeoutLoadingComponent from 'reusables/TimeoutLoadingComponent'
 import {responderStatuses, returnStatuses} from 'utils/serverValues'
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll'
+import S from "styling"
 
 export default class BroadcastViewer extends React.Component {
 
@@ -41,7 +42,7 @@ export default class BroadcastViewer extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={S.styles.containerFlexStart}>
         <Modal 
           isVisible={this.state.isModalVisible}
           style = {{justifyContent: "center", alignItems: "center"}}
@@ -146,32 +147,10 @@ export default class BroadcastViewer extends React.Component {
   itemRenderer = ({ item }) => {
     return (
       <TouchableOpacity 
-        style = {styles.listElement}>
+        style = {S.styles.listElement}>
         <Text>{item.name}</Text>
         <Text>{item.uid}</Text>
       </TouchableOpacity>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center'
-  },
-  newBroadcastButton: {
-    justifyContent: "center",
-    alignItems: 'center',
-    backgroundColor: "mediumseagreen",
-    width: "100%", 
-    height: 50,
-    flexDirection: 'row'
-  },
-  listElement: {
-    backgroundColor: 'ghostwhite',
-    alignItems: "flex-start",
-    marginLeft: 10,
-    marginRight: 10
-  }
-})

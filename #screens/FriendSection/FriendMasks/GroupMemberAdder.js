@@ -7,6 +7,9 @@ import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 
 import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
 import { logError, isOnlyWhitespace } from 'utils/helpers';
+import S from 'styling';
+import BannerButton from 'reusables/BannerButton';
+
 
 export default class NewGroupScreen extends React.Component {
 
@@ -24,11 +27,11 @@ export default class NewGroupScreen extends React.Component {
   render() {
     let userUid = auth().currentUser.uid
     return (
-      <View style={styles.container}>
+      <View style={S.styles.containerFlexStart}>
 
         {!this.groupSnippet ? (
           <TextInput
-            style={styles.textInput}
+            style={S.styles.textInput}
             autoCapitalize="none"
             placeholder="Enter your group's name"
             onChangeText={groupName => this.setState({ groupName })}
@@ -54,12 +57,13 @@ export default class NewGroupScreen extends React.Component {
           ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
         />
 
-        <TouchableOpacity 
-            style = {styles.newGroupButton}
-            onPress={this.createOrEditGroup}>
-            <AwesomeIcon name= "plus" size={18} color= "white" />
-            <Text style = {{color: "white", fontWeight: "bold"}}> {this.groupSnippet ? "ADD" : "CREATE"} </Text>
-        </TouchableOpacity>
+
+        <BannerButton
+          color = {S.colors.buttonGreen}
+          onPress={this.createOrEditGroup}
+          iconName = {S.strings.add}
+          title = {this.groupSnippet ? "ADD" : "CREATE"}
+        />
 
       </View>
     )
@@ -99,7 +103,7 @@ export default class NewGroupScreen extends React.Component {
   itemRenderer = ({ item }) => {
     return (
       <TouchableOpacity 
-        style = {[styles.listElement, {backgroundColor: this.state.selectedUsers[item.uid] ? "lightgreen" : "white"}]}
+        style = {[S.styles.listElement, {backgroundColor: this.state.selectedUsers[item.uid] ? "lightgreen" : "white"}]}
         onPress={() => this.toggleSelection(item)}>
           <ProfilePicDisplayer diameter = {30} uid = {item.uid} style = {{marginRight: 10}} />
           <View>
@@ -123,33 +127,3 @@ export default class NewGroupScreen extends React.Component {
     this.setState({selectedUsers: copiedObj});
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center'
-  },
-  textInput: {
-    height: 40,
-    width: '90%',
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginTop: 8
-  },
-  listElement: {
-    paddingVertical: 5,
-    alignItems: "center",
-    flexDirection: 'row',
-    marginLeft: 10,
-    marginRight: 10
-  },
-  newGroupButton: {
-    justifyContent: "center",
-    alignItems: 'center',
-    backgroundColor: "mediumseagreen",
-    width: "100%", 
-    height: 50,
-    flexDirection: 'row'
-  },
-})

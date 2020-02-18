@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import {Text, View, TouchableOpacity } from 'react-native'
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll'
 
 import database from '@react-native-firebase/database';
@@ -7,6 +7,7 @@ import auth from '@react-native-firebase/auth'
 
 import { epochToDateString, logError } from 'utils/helpers';
 import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
+import S from 'styling'
 
 export default class Feed extends React.Component {
 
@@ -16,7 +17,7 @@ export default class Feed extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={S.styles.container}>
 
         {this.state.errorMessage &&
           <Text style={{ color: 'red' }}>
@@ -44,7 +45,7 @@ export default class Feed extends React.Component {
   itemRenderer = ({ item }) => {
     return (
       <TouchableOpacity 
-        style = {styles.listElement}
+        style = {S.styles.listElement}
         onPress = {() => this.props.navigation.navigate('BroadcastViewer', {broadcast: item}) }>
           <View>
             <ProfilePicDisplayer diameter = {30} uid = {item.owner.uid} style = {{marginRight: 10}} />
@@ -61,27 +62,3 @@ export default class Feed extends React.Component {
   }
 
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center'
-  },
-  newBroadcastButton: {
-    justifyContent: "center",
-    alignItems: 'center',
-    backgroundColor: "mediumseagreen",
-    width: "100%", 
-    height: 50,
-    flexDirection: 'row'
-  },
-  listElement: {
-    backgroundColor: 'ghostwhite',
-    paddingVertical: 5,
-    alignItems: "center",
-    flexDirection: 'row',
-    marginLeft: 10,
-    marginRight: 10
-  }
-})

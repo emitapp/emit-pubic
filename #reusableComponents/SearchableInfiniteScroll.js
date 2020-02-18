@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, View, Button, TextInput, Alert, TouchableOpacity, Text, FlatList } from 'react-native'
 import StaticInfiniteScroll from './StaticInfiniteScroll'
 import DynamicInfiniteScroll from './DynamicInfiniteScroll'
+import S from 'styling'
 
 
 /**
@@ -45,7 +46,7 @@ export default class SearchableInfiniteScroll extends React.Component {
         />
       
         <TextInput
-          style={styles.textInput}
+          style={S.styles.textInput}
           autoCapitalize="none"
           placeholder="Search"
           onChangeText={searchBarValue => this.setState({ searchBarValue })}
@@ -115,25 +116,9 @@ export default class SearchableInfiniteScroll extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    ...S.styles.container,
     width: "100%",
     justifyContent: 'flex-start',
-    alignItems: 'center'
-  },
-  textInput: {
-    height: 40,
-    width: '90%',
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginTop: 8
-  },
-  listElement: {
-    backgroundColor: 'ghostwhite',
-    paddingVertical: 5,
-    alignItems: "center",
-    flexDirection: 'row',
-    marginLeft: 10,
-    marginRight: 10
   },
   optionStyleDormant: {
     backgroundColor: 'white',

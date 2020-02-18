@@ -1,11 +1,10 @@
-import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll'
-import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
-
+import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
-import auth from '@react-native-firebase/auth'
-
+import React from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+import BannerButton from 'reusables/BannerButton';
+import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
+import S from 'styling';
 import { epochToDateString, logError } from 'utils/helpers';
 
 export default class ActiveBroadcasts extends React.Component {
@@ -16,7 +15,7 @@ export default class ActiveBroadcasts extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={S.styles.containerFlexStart}>
 
         {this.state.errorMessage &&
           <Text style={{ color: 'red' }}>
@@ -32,12 +31,12 @@ export default class ActiveBroadcasts extends React.Component {
             ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
           />
 
-          <TouchableOpacity 
-              style = {styles.newBroadcastButton}
-              onPress={() => this.props.navigation.navigate('NewBroadcastForm')}>
-              <AwesomeIcon name= "plus" size={18} color= "white" />
-              <Text style = {{color: "white", fontWeight: "bold"}}> CREATE NEW BROADCAST</Text>
-          </TouchableOpacity>
+          <BannerButton
+            color = {S.colors.buttonGreen}
+            onPress={() => this.props.navigation.navigate('NewBroadcastForm')}
+            iconName = {S.strings.add}
+            title = "CREATE NEW BROADCAST"
+          />
       </View>
     )
   }
@@ -51,7 +50,7 @@ export default class ActiveBroadcasts extends React.Component {
   itemRenderer = ({ item }) => {
     return (
       <TouchableOpacity 
-        style = {styles.listElement}
+        style = {S.styles.listElement}
         onPress = {() => this.props.navigation.navigate("ResponsesScreen", {broadcast: item})}>
         <Text>TTL: {epochToDateString(item.deathTimestamp)}</Text>
         <Text>{item.ownerUid}</Text>
@@ -61,25 +60,3 @@ export default class ActiveBroadcasts extends React.Component {
   }
 
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center'
-  },
-  newBroadcastButton: {
-    justifyContent: "center",
-    alignItems: 'center',
-    backgroundColor: "mediumseagreen",
-    width: "100%", 
-    height: 50,
-    flexDirection: 'row'
-  },
-  listElement: {
-    backgroundColor: 'ghostwhite',
-    alignItems: "flex-start",
-    marginLeft: 10,
-    marginRight: 10
-  }
-})

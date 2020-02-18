@@ -2,20 +2,21 @@
 
 // This is also the screen that enables FCM because it can only be accessed
 // if the user is signed in
-import React from 'react'
-import { createBottomTabNavigator } from 'react-navigation-tabs';
-import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
-import messaging from '@react-native-firebase/messaging';
-import {requestNotifications, RESULTS} from 'react-native-permissions';
-import functions from '@react-native-firebase/functions';
 import AsyncStorage from '@react-native-community/async-storage';
-
-import FeedStackNav from './FeedSection/FeedStackNav'
-import SettingsStackNav from "./Settings/SettingsStackNav"
-import DashboardStackNav from "./DashboardSection/DashboardStackNav"
-import FriendStackNav from './FriendSection/FriendSectionStackNav'
-import { logError, ASYNC_TOKEN_KEY, timedPromise, LONG_TIMEOUT } from 'utils/helpers';
+import functions from '@react-native-firebase/functions';
+import messaging from '@react-native-firebase/messaging';
+import React from 'react';
+import { requestNotifications, RESULTS } from 'react-native-permissions';
+import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { handleFCMDeletion, handleFCMMessage } from 'utils/fcmNotificationHandlers';
+import { ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
+import DashboardStackNav from "./DashboardSection/DashboardStackNav";
+import FeedStackNav from './FeedSection/FeedStackNav';
+import FriendStackNav from './FriendSection/FriendSectionStackNav';
+import SettingsStackNav from "./Settings/SettingsStackNav";
+import S from 'styling'
+
 
 
 const Tab = createBottomTabNavigator(
@@ -28,25 +29,25 @@ const Tab = createBottomTabNavigator(
   {
     defaultNavigationOptions: ({ navigation }) =>
       ({
-        tabBarIcon: ({ focused, horizontal, tintColor }) => {
+        tabBarIcon: ({tintColor }) => {
           const { routeName } = navigation.state;
           let iconName;
           if (routeName === 'DashboardStackNav') {
-            iconName = `home`;
+            iconName = S.strings.home;
           } else if (routeName === 'FeedStackNav') {
-            iconName = `rss`;
+            iconName = S.strings.feed;
           }else if (routeName === 'FriendStackNav') {
-            iconName = `user-friends`;
+            iconName = S.strings.users;
           }else{
-            iconName = `cog`;
+            iconName = S.strings.settings;
           }
 
           return <AwesomeIcon name={iconName} size={25} color={tintColor} />;
         },
       }),
     tabBarOptions: {
-      activeTintColor: 'tomato',
-      inactiveTintColor: 'gray',
+      activeTintColor: S.colors.activeMainTabColor,
+      inactiveTintColor: S.colors.inactiveMainTabColor,
     },
   }
 );

@@ -1,7 +1,8 @@
 import React from 'react'
 import auth from '@react-native-firebase/auth';
-import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
+import {Text, TextInput, View, Button } from 'react-native'
 import { timedPromise, LONG_TIMEOUT } from 'utils/helpers';
+import S from "styling"
 
 export default class SignUp extends React.Component {
 
@@ -9,7 +10,7 @@ export default class SignUp extends React.Component {
   
   render() {
       return (
-        <View style={styles.container}>
+        <View style={S.styles.container}>
           <Text>Sign Up</Text>
           {this.state.errorMessage &&
             <Text style={{ color: 'red' }}>
@@ -18,7 +19,7 @@ export default class SignUp extends React.Component {
           <TextInput
             placeholder="Email"
             autoCapitalize="none"
-            style={styles.textInput}
+            style={S.styles.textInput}
             onChangeText={email => this.setState({ email })}
             value={this.state.email}
           />
@@ -26,7 +27,7 @@ export default class SignUp extends React.Component {
             secureTextEntry
             placeholder="Password"
             autoCapitalize="none"
-            style={styles.textInput}
+            style={S.styles.textInput}
             onChangeText={password => this.setState({ password })}
             value={this.state.password}
           />
@@ -51,18 +52,3 @@ export default class SignUp extends React.Component {
     }
 
   }
-  
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center'
-    },
-    textInput: {
-      height: 40,
-      width: '90%',
-      borderColor: 'gray',
-      borderWidth: 1,
-      marginTop: 8
-    }
-  })
