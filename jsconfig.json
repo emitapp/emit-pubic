@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "module": "commonjs",
+        "baseUrl": ".",
+        "paths": {
+            "reusables/*": ["#reusableComponents/*"],
+            "screens/*": ["#screens/*"],
+            "styling/*": ["#styling/*"],
+            "utils/*": ["#constants/*"]
+        }
+    },
+    
+    "exclude": [
+        "node_modules",
+    ]
+}
