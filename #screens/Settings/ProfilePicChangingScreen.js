@@ -1,6 +1,6 @@
 
 import React from 'react'
-import {StyleSheet, View} from 'react-native'
+import { View } from 'react-native'
 import ProfilePicChanger from 'reusables/ProfilePicChanger'
 import S from 'styling'
 

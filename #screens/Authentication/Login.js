@@ -1,9 +1,9 @@
-import React from 'react'
-import {Text, TextInput, View, Button } from 'react-native'
 import auth from '@react-native-firebase/auth';
-import S from "styling"
+import React from 'react';
+import { Button, Text, TextInput, View } from 'react-native';
+import S from "styling";
+import { logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 
-import { timedPromise, MEDIUM_TIMEOUT, logError } from 'utils/helpers';
 
 export default class Login extends React.Component {
 

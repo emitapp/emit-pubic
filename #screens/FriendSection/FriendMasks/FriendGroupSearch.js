@@ -2,10 +2,10 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
+import BannerButton from 'reusables/BannerButton';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
+import S from 'styling';
 import { logError } from 'utils/helpers';
-import S from 'styling'
-import BannerButton from 'reusables/BannerButton'
 
 
 export default class FriendGroupSearch extends React.Component {

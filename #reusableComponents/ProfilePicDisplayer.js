@@ -1,7 +1,7 @@
-import React from 'react';
-import FastImage from 'react-native-fast-image'
 import storage from '@react-native-firebase/storage';
-import { Image } from 'react-native'
+import React from 'react';
+import { Image } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import { logError } from 'utils/helpers';
 
 /**

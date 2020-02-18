@@ -9,13 +9,13 @@ import React from 'react';
 import { requestNotifications, RESULTS } from 'react-native-permissions';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
+import S from 'styling';
 import { handleFCMDeletion, handleFCMMessage } from 'utils/fcmNotificationHandlers';
 import { ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import DashboardStackNav from "./DashboardSection/DashboardStackNav";
 import FeedStackNav from './FeedSection/FeedStackNav';
 import FriendStackNav from './FriendSection/FriendSectionStackNav';
 import SettingsStackNav from "./Settings/SettingsStackNav";
-import S from 'styling'
 
 
 

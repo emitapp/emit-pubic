@@ -1,11 +1,11 @@
-import React from 'react'
-import { StyleSheet, Platform, Image, Text, View, Button } from 'react-native'
-import QRCode from 'react-native-qrcode-svg';
 import auth from '@react-native-firebase/auth';
-
+import React from 'react';
+import { Button, StyleSheet, Text, View } from 'react-native';
+import QRCode from 'react-native-qrcode-svg';
 import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
+import S from 'styling';
 import { logError } from 'utils/helpers';
-import S from 'styling'
+
 
 export default class SettingsMain extends React.Component {
 

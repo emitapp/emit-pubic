@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
-
-import {
-    View,
-    StyleSheet,
-    Text,
-} from 'react-native';
-import FriendReqDialogue from './FriendReqDialogue';
+import { StyleSheet, Text, View } from 'react-native';
+import { RNCamera } from 'react-native-camera';
 import Modal from "react-native-modal";
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import { RNCamera } from 'react-native-camera';
+import FriendReqDialogue from './FriendReqDialogue';
+
 
 export default class ScanScreen extends Component {
 

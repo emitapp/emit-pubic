@@ -1,14 +1,14 @@
-import React from 'react'
-import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native'
-import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll'
-import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
-
-import FriendReqDialogue from './FriendReqDialogue';
+import database from '@react-native-firebase/database';
+import React from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
 import Modal from "react-native-modal";
 import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
+import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
+import S from 'styling';
 import { logError } from 'utils/helpers';
-import S from 'styling'
+import FriendReqDialogue from './FriendReqDialogue';
+
 
 export default class FriendSearch extends React.Component {
 

@@ -1,8 +1,8 @@
-import React from 'react'
+import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
+import BroadcastViewer from './BroadcastViewer';
+import Feed from './Feed';
 
-import BroadcastViewer from './BroadcastViewer'
-import Feed from './Feed'
 
 const Navigator = createStackNavigator(
   {

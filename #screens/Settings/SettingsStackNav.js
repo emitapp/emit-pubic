@@ -1,8 +1,8 @@
-import React from 'react'
+import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
+import ProfilePicScreen from './ProfilePicChangingScreen';
+import SettingsMain from './SettingsMain';
 
-import SettingsMain from './SettingsMain'
-import ProfilePicScreen from './ProfilePicChangingScreen'
 
 const Navigator = createStackNavigator(
   {

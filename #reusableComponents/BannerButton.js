@@ -1,7 +1,7 @@
 import React from 'react';
+import { Text, TouchableOpacity } from 'react-native';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
-import {Text, TouchableOpacity } from 'react-native'
-import styles from 'styling/styles' 
+import styles from 'styling/styles';
 
 /**
  * The reusable component for a banner button that spans the entire screen

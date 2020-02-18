@@ -1,13 +1,13 @@
-import React from 'react'
-import {Text, View, TouchableOpacity } from 'react-native'
-import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll'
-
+import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
-import auth from '@react-native-firebase/auth'
-
-import { epochToDateString, logError } from 'utils/helpers';
+import React from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
-import S from 'styling'
+import S from 'styling';
+import { epochToDateString, logError } from 'utils/helpers';
+
+
 
 export default class Feed extends React.Component {
 

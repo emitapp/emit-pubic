@@ -1,6 +1,5 @@
-import React from 'react'
-import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
-import auth from '@react-native-firebase/auth';
+import React from 'react';
+import { Button, StyleSheet, View } from 'react-native';
 
 export default class FriendButtonHub extends React.Component {
 

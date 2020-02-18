@@ -1,9 +1,9 @@
-import React from 'react'
+import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
+import ActiveBroadcasts from './ActiveBroadcasts';
+import NewBroadcastForm from './NewBroadcastForm';
+import ResponsesScreen from './ResponsesViewer';
 
-import ActiveBroadcasts from './ActiveBroadcasts'
-import NewBroadcastForm from './NewBroadcastForm'
-import ResponsesScreen from './ResponsesViewer'
 
 const Navigator = createStackNavigator(
   {

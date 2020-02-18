@@ -1,8 +1,8 @@
 import React from 'react'
-import { StyleSheet, View, Button, TextInput, Alert, TouchableOpacity, Text, FlatList } from 'react-native'
-import StaticInfiniteScroll from './StaticInfiniteScroll'
-import DynamicInfiniteScroll from './DynamicInfiniteScroll'
+import { Alert, Button, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import S from 'styling'
+import DynamicInfiniteScroll from './DynamicInfiniteScroll'
+import StaticInfiniteScroll from './StaticInfiniteScroll'
 
 
 /**

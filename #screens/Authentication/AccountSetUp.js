@@ -1,12 +1,12 @@
 // This is the page a new user is directed to to setup their account
 
-import React from 'react'
-import {Text, TextInput, View, Button } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
-import { isOnlyWhitespace, timedPromise, logError, LONG_TIMEOUT, ASYNC_SETUP_KEY } from 'utils/helpers';
-import AsyncStorage from '@react-native-community/async-storage';
-import S from "styling"
+import React from 'react';
+import { Button, Text, TextInput, View } from 'react-native';
+import S from "styling";
+import { ASYNC_SETUP_KEY, isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 
 export default class AccountSetUp extends React.Component {
 

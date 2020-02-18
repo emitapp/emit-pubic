@@ -1,7 +1,7 @@
 //This file has the methods that decide what to do upon receiving a FCM message
-import {Notifications} from 'react-native-notifications';
 import auth from '@react-native-firebase/auth';
-import {checkNotifications, RESULTS} from 'react-native-permissions';
+import { Notifications } from 'react-native-notifications';
+import { checkNotifications, RESULTS } from 'react-native-permissions';
 
 export const handleFCMMessage = async (remoteMessage) => {
     if (!auth().currentUser) return

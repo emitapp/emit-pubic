@@ -1,6 +1,6 @@
 import React from 'react';
-import { ActivityIndicator, StyleSheet, Text, View, Button } from 'react-native';
-import S from "styling"
+import { ActivityIndicator, Button, Text, View } from 'react-native';
+import S from "styling";
 
 export default class TimeoutLoadingComponent extends React.Component {
     render() {

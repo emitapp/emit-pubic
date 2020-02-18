@@ -1,7 +1,6 @@
 import React from 'react';
-import { FlatList, Text } from 'react-native';
-import database from '@react-native-firebase/database';
-import InfiniteScrollLoadingComponent from './TimeoutLoadingComponent'
+import { FlatList } from 'react-native';
+import InfiniteScrollLoadingComponent from './TimeoutLoadingComponent';
 
 /**
  * Use this class if you want to impliment an infinite scroll

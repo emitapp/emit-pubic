@@ -1,13 +1,13 @@
 //Design for this influenced by https://github.com/invertase/react-native-firebase/issues/2558
+import auth from '@react-native-firebase/auth';
+import storage from '@react-native-firebase/storage';
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, Platform } from 'react-native';
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
+import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
+import { logError } from 'utils/helpers';
 import uuid from 'uuid/v4';
 
-import storage from '@react-native-firebase/storage';
-import auth from '@react-native-firebase/auth';
-import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
-import { logError } from 'utils/helpers';
 var RNFS = require('react-native-fs');
 
 const options = {

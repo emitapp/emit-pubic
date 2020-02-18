@@ -1,21 +1,18 @@
 // Self explanatory what this does
 
-import React from 'react'
-import { StyleSheet, Text, TextInput, View, Button, 
-        Platform, TouchableOpacity, ActivityIndicator } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker';
-import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
-import Modal from 'react-native-modal'
-
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
+import React from 'react';
+import { ActivityIndicator, Button, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
+import Modal from 'react-native-modal';
+import BannerButton from 'reusables/BannerButton';
+import S from 'styling';
+import { logError, LONG_TIMEOUT, MAX_BROADCAST_WINDOW, MEDIUM_TIMEOUT, MIN_BROADCAST_WINDOW, timedPromise } from 'utils/helpers';
+import { returnStatuses } from 'utils/serverValues';
 
-import { timedPromise, LONG_TIMEOUT, MEDIUM_TIMEOUT,
-     MIN_BROADCAST_WINDOW, MAX_BROADCAST_WINDOW, logError } from 'utils/helpers';
-import {returnStatuses} from 'utils/serverValues'
-import BannerButton from 'reusables/BannerButton'
-import S from 'styling'
+
 
 export default class NewBroadcastForm extends React.Component {
 

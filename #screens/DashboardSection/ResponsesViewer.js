@@ -1,15 +1,15 @@
-import React from 'react'
-import { StyleSheet, Text, View, Button, ActivityIndicator, TouchableOpacity } from 'react-native'
-import Modal from 'react-native-modal'
-import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
+import React from 'react';
+import { ActivityIndicator, Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Modal from 'react-native-modal';
+import BannerButton from 'reusables/BannerButton';
+import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
+import S from "styling";
+import { epochToDateString, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
+import { responderStatuses, returnStatuses } from 'utils/serverValues';
 
-import { epochToDateString, timedPromise, LONG_TIMEOUT, logError } from 'utils/helpers';
-import {responderStatuses, returnStatuses} from 'utils/serverValues'
-import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll'
-import S from "styling"
-import BannerButton from 'reusables/BannerButton'
 
 export default class ResponsesViewer extends React.Component {
 

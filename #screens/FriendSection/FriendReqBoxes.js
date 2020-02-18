@@ -1,14 +1,14 @@
-import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll'
+import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
-import auth from '@react-native-firebase/auth'
+import React from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Modal from "react-native-modal";
+import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
+import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
+import S from 'styling';
+import { epochToDateString, logError } from 'utils/helpers';
 import FriendReqDialogue from './FriendReqDialogue';
 
-import Modal from "react-native-modal";
-import { epochToDateString, logError } from 'utils/helpers';
-import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
-import S from 'styling'
 
 export default class UserSearch extends React.Component {
 
