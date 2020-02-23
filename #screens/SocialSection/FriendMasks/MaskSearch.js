@@ -8,7 +8,7 @@ import S from 'styling';
 import { logError } from 'utils/helpers';
 
 
-export default class FriendGroupSearch extends React.Component {
+export default class FriendMaskSearch extends React.Component {
 
   state = { 
     errorMessage: null, 
@@ -20,7 +20,7 @@ export default class FriendGroupSearch extends React.Component {
     return (
       <View style={S.styles.containerFlexStart}>
 
-        <Text>Friend Group Search</Text>
+        <Text>Friend Mask Search</Text>
         {this.state.errorMessage &&
           <Text style={{ color: 'red' }}>
             {this.state.errorMessage}
@@ -38,9 +38,9 @@ export default class FriendGroupSearch extends React.Component {
         />
 
         <BannerButton
-          onPress={() => this.props.navigation.navigate('GroupMemberAdder')}
+          onPress={() => this.props.navigation.navigate('MaskMemberAdder')}
           title="CREATE NEW MASK"
-          iconTitle = {S.strings.add}
+          iconName = {S.strings.add}
           color = {S.colors.buttonGreen}
         />
 
@@ -58,7 +58,7 @@ export default class FriendGroupSearch extends React.Component {
     return (
       <TouchableOpacity 
         style = {S.styles.listElement}
-        onPress = {() => this.props.navigation.navigate('GroupViewer', {group: item}) }>
+        onPress = {() => this.props.navigation.navigate('MaskViewer', {mask: item}) }>
             <Text>{item.name}</Text>
             <Text>Member count: {item.memberCount}</Text>
       </TouchableOpacity>

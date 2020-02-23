@@ -66,7 +66,7 @@ export default class FriendSearch extends React.Component {
   itemRenderer = ({ item }) => {
     return (
       <TouchableOpacity 
-        style = {styles.listElement}
+        style = {S.styles.listElement}
         onPress={() => this.toggleModal(item)}>
           <ProfilePicDisplayer diameter = {30} uid = {item.uid} style = {{marginRight: 10}} />
           <View>

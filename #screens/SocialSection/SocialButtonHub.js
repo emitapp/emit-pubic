@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, StyleSheet, View } from 'react-native';
 
-export default class FriendButtonHub extends React.Component {
+export default class SocialButtonHub extends React.Component {
 
     render() {
         return (
@@ -16,7 +16,7 @@ export default class FriendButtonHub extends React.Component {
                 />
                 <Button
                     title="See your masks"
-                    onPress={() => this.props.navigation.navigate('GroupSearch')}
+                    onPress={() => this.props.navigation.navigate('MaskSearch')}
                 />
                 <Button
                     title="Friend Requests"

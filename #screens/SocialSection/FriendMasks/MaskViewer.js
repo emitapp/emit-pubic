@@ -9,35 +9,35 @@ import S from 'styling';
 import { isOnlyWhitespace, logError } from 'utils/helpers';
 
 
-export default class NewGroupScreen extends React.Component {
+export default class NewMaskScreen extends React.Component {
 
   constructor(props){
     super(props)
-    this.groupSnippet = this.props.navigation.getParam('group', null)
+    this.maskSnippet = this.props.navigation.getParam('mask', null)
     this.state = { 
       errorMessage: null, 
-      groupName: this.groupSnippet ? this.groupSnippet.name : "",
+      maskName: this.maskSnippet ? this.maskSnippet.name : "",
       selectedUserUids: {},
-      newGroupName: this.groupSnippet ? this.groupSnippet.name : "",
+      newMaskName: this.maskSnippet ? this.maskSnippet.name : "",
       inEditMode: false
     }
   }
 
   render() {
     let userUid = auth().currentUser.uid
-    if (!this.groupSnippet) return null;
-    const {inEditMode, newGroupName, groupName} = this.state;
+    if (!this.maskSnippet) return null;
+    const {inEditMode, newMaskName, maskName} = this.state;
     return (
       <View style={S.styles.containerFlexStart}>
    
-        <Button title="Delete Group" onPress={this.deleteGroup}/>
-        <Button title="Add Members" onPress={() => this.props.navigation.navigate('GroupMemberAdder', {group: this.groupSnippet})}/>
+        <Button title="Delete Mask" onPress={this.deleteMask}/>
+        <Button title="Add Members" onPress={() => this.props.navigation.navigate('MaskMemberAdder', {mask: this.maskSnippet})}/>
 
         <TextInput
           style={S.styles.textInput}
           autoCapitalize="none"
-          onChangeText={text => this.setState({ newGroupName: text })}
-          value={inEditMode ? newGroupName : groupName}
+          onChangeText={text => this.setState({ newMaskName: text })}
+          value={inEditMode ? newMaskName : maskName}
           editable={inEditMode}
         />
 
@@ -48,7 +48,7 @@ export default class NewGroupScreen extends React.Component {
           chunkSize = {10}
           errorHandler = {this.scrollErrorHandler}
           renderItem = {this.itemRenderer}
-          dbref = {database().ref(`/userFriendGroupings/${userUid}/custom/details/${this.groupSnippet.uid}/memberSnippets`)}
+          dbref = {database().ref(`/userFriendGroupings/${userUid}/custom/details/${this.maskSnippet.uid}/memberSnippets`)}
           ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
         />
 
@@ -87,12 +87,12 @@ export default class NewGroupScreen extends React.Component {
   }
 
   applyEdits = () => {
-    const {selectedUserUids, newGroupName} = this.state
-    if (isOnlyWhitespace(newGroupName)){
+    const {selectedUserUids, newMaskName} = this.state
+    if (isOnlyWhitespace(newMaskName)){
       console.log("No cigar, my friend")
     }
-    const snippetPath = `/userFriendGroupings/${auth().currentUser.uid}/custom/snippets/${this.groupSnippet.uid}`
-    const infoPath = `/userFriendGroupings/${auth().currentUser.uid}/custom/details/${this.groupSnippet.uid}`
+    const snippetPath = `/userFriendGroupings/${auth().currentUser.uid}/custom/snippets/${this.maskSnippet.uid}`
+    const infoPath = `/userFriendGroupings/${auth().currentUser.uid}/custom/details/${this.maskSnippet.uid}`
 
     const updates = {}
     for (const uid in selectedUserUids) {
@@ -100,22 +100,22 @@ export default class NewGroupScreen extends React.Component {
       updates[`${infoPath}/memberSnippets/${uid}`] = null
       updates[`${infoPath}/memberUids/${uid}`] = null
     }
-    updates[`${snippetPath}/name`] = newGroupName
+    updates[`${snippetPath}/name`] = newMaskName
  
     //We're gonna let this happen asynchronously
     database().ref().update(updates)
       .then(() => {
-        this.setState({groupName: newGroupName})
-        console.log("Edited the friend group!!")
+        this.setState({maskName: newMaskName})
+        console.log("Edited the friend mask!!")
       })
       .catch((err) => logError(err));
 
     this.setState({inEditMode: false})
   }
 
-  deleteGroup = () => {
-    const snippetPath = `/userFriendGroupings/${auth().currentUser.uid}/custom/snippets/${this.groupSnippet.uid}`
-    const infoPath = `/userFriendGroupings/${auth().currentUser.uid}/custom/details/${this.groupSnippet.uid}`
+  deleteMask = () => {
+    const snippetPath = `/userFriendGroupings/${auth().currentUser.uid}/custom/snippets/${this.maskSnippet.uid}`
+    const infoPath = `/userFriendGroupings/${auth().currentUser.uid}/custom/details/${this.maskSnippet.uid}`
     const updates = {}
     updates[infoPath] = null
     updates[snippetPath] = null
@@ -123,7 +123,7 @@ export default class NewGroupScreen extends React.Component {
     //We're gonna let this happen asynchronously
     database().ref().update(updates)
       .then(() => {
-        console.log("Deleted new friend group!!")
+        console.log("Deleted friend mask!!")
       })
       .catch((err) => logError(err));
 
