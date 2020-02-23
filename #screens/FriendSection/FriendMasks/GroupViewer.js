@@ -123,7 +123,6 @@ export default class NewGroupScreen extends React.Component {
     //We're gonna let this happen asynchronously
     database().ref().update(updates)
       .then(() => {
-        this.setState({groupName: newGroupName})
         console.log("Deleted new friend group!!")
       })
       .catch((err) => logError(err));

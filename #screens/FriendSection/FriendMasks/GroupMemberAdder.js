@@ -73,6 +73,7 @@ export default class NewGroupScreen extends React.Component {
     const memberCount = Object.keys(selectedUsers).length
     if (memberCount == 0 || isOnlyWhitespace(groupName)){
       console.log("No cigar, my friend")
+      return;
     }
     const baseSnippetPath = `/userFriendGroupings/${auth().currentUser.uid}/custom/snippets`
     const baseInfoPath = `/userFriendGroupings/${auth().currentUser.uid}/custom/details`
