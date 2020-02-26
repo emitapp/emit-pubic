@@ -8,7 +8,9 @@ import FriendRequests from './FriendReqBoxes';
 import FriendSearch from './FriendSearch';
 import QRScanner from './QRFriendAdder';
 import UserSearch from './UserSearch';
-
+import GroupMemberAdder from './UserGroups/GroupMemberAdder'
+import GroupSearch from './UserGroups/GroupSearch'
+import GroupViewer from './UserGroups/GroupViewer'
 
 const Navigator = createStackNavigator(
   {
@@ -19,7 +21,10 @@ const Navigator = createStackNavigator(
     FriendSearch,
     MaskSearch,
     MaskViewer,
-    MaskMemberAdder
+    MaskMemberAdder,
+    GroupMemberAdder,
+    GroupSearch,
+    GroupViewer
   },
   {
     initialRouteName: 'SocialButtonHub'

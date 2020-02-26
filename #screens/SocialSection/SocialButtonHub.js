@@ -19,6 +19,10 @@ export default class SocialButtonHub extends React.Component {
                     onPress={() => this.props.navigation.navigate('MaskSearch')}
                 />
                 <Button
+                    title="See your groups"
+                    onPress={() => this.props.navigation.navigate('GroupSearch')}
+                />
+                <Button
                     title="Friend Requests"
                     onPress={() => this.props.navigation.navigate('FriendRequests')}
                 />
