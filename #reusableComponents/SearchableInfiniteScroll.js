@@ -30,6 +30,15 @@ export default class SearchableInfiniteScroll extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.dbref.toString() !== prevProps.dbref.toString()) {
+      this.setState({
+        query: this.props.queryValidator("") ? "" : null, 
+        searchGeneration: this.state.searchGeneration + 1
+      })
+    }
+  }
+
   render() {
     const {type, queryTypes, queryValidator, dbref, ...otherProps } = this.props
     return (

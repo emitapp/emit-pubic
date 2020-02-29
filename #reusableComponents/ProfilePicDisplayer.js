@@ -14,11 +14,17 @@ export default class ProfilePicDisplayer extends React.Component {
     constructor(props) {
         super(props);
         this.state = { downloadUrl: '' };
+        this._isMounted = false; //Using this is an antipattern, but simple enough for now
     }
 
     componentDidMount() {
         if (!this.props.uid) return;
+        this._isMounted = true;
         this.getURL();
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     render() {
@@ -47,9 +53,9 @@ export default class ProfilePicDisplayer extends React.Component {
         try{
             const listResult = 
                 await storage().ref(`profilePictures/${this.props.uid}/scaled/`).list()
-            if (listResult._items[0]){
+            if (this._isMounted && listResult._items[0]){
                 const downloadUrl = await listResult._items[0].getDownloadURL()
-                this.setState({ downloadUrl })
+                if (this._isMounted) this.setState({ downloadUrl })
             }
         }catch(err){
             logError(err)

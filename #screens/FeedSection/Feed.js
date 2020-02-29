@@ -51,11 +51,12 @@ export default class Feed extends React.Component {
             <ProfilePicDisplayer diameter = {30} uid = {item.owner.uid} style = {{marginRight: 10}} />
             <Text>{item.owner.name}</Text>
           </View>
-          <View>
+          <View style={{marginHorizontal: 8}}>
             <Text>Dies at: {epochToDateString(item.deathTimestamp)}</Text>
             <Text>Location: {item.location}</Text>
             <Text>Owner uid: {item.owner.uid}</Text>
             {item.status &&  <Text>Status: {item.status}</Text>}
+            {item.groupInfo &&  <Text>Sent via {item.groupInfo.name} group</Text>}
           </View>
       </TouchableOpacity>
     );

@@ -5,11 +5,13 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
-import { ActivityIndicator, Button, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Button, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Modal from 'react-native-modal';
 import BannerButton from 'reusables/BannerButton';
+import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
+import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
-import { logError, LONG_TIMEOUT, MAX_BROADCAST_WINDOW, MEDIUM_TIMEOUT, MIN_BROADCAST_WINDOW, timedPromise } from 'utils/helpers';
+import { logError, LONG_TIMEOUT, MAX_BROADCAST_WINDOW, MIN_BROADCAST_WINDOW, timedPromise } from 'utils/helpers';
 import { returnStatuses } from 'utils/serverValues';
 
 
@@ -22,6 +24,8 @@ export default class NewBroadcastForm extends React.Component {
         this.minDate = null;
         this.maxDate = null;
         this.recalculateDateLimits()
+
+        this.recepientOptions = {friends: "friends", groups: "groups", masks: "masks"}
 
         //I'm starting them off with a date that should be far enough from the 
         //actual hard cutoff to give them ample time to fill the form
@@ -37,13 +41,21 @@ export default class NewBroadcastForm extends React.Component {
             location: '',
             date: startingDate,
             errorMessage: null,
-            isModalVisible: false
+            isModalVisible: false,
+
+            allFriends: false,
+            friendRecipients: {},
+            maskRecepients: {},
+            groupRecepients: {},
+
+            dispayedRecepient: this.recepientOptions.friends
         }
     }
 
     render() {
+        const {dispayedRecepient} = this.state
         return (
-            <View style={S.styles.container}>
+            <View style={S.styles.containerFlexStart}>
 
                 <Modal 
                     isVisible={this.state.isModalVisible}
@@ -68,10 +80,8 @@ export default class NewBroadcastForm extends React.Component {
                         value={this.state.location}/>
 
                     <Text> Time and Date</Text>
-                    <View>
+                    <View style = {{flexDirection: 'row'}}>
                         <Button onPress={() => this.showPicker('date')} title="Choose Date" />
-                    </View>
-                    <View>
                         <Button onPress={() => this.showPicker('time')} title="Choose Time" />
                     </View>
 
@@ -90,8 +100,31 @@ export default class NewBroadcastForm extends React.Component {
                         {this.state.date.toString()}
                     </Text>
 
-                    <Text>FOR NOW, BROADCASTS ARE SENT TO ALL FRIENDS</Text>
+                    <View style = {{width: "100%", height: 30, flexDirection: 'row'}}>
+                        <TouchableOpacity 
+                            style = {dispayedRecepient == this.recepientOptions.friends
+                                 ? styles.selectedTab : styles.dormantTab}
+                            onPress={() => this.setState({dispayedRecepient: this.recepientOptions.friends})}>
+                            <Text>Friends</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity 
+                            style = {dispayedRecepient == this.recepientOptions.masks
+                                 ? styles.selectedTab : styles.dormantTab}
+                            onPress={() => this.setState({dispayedRecepient: this.recepientOptions.masks})}>
+                            <Text>Masks</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity 
+                            style = {dispayedRecepient == this.recepientOptions.groups
+                                 ? styles.selectedTab : styles.dormantTab}
+                            onPress={() => this.setState({dispayedRecepient: this.recepientOptions.groups})}>
+                            <Text>Groups</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
+
+                {this.chooseInfiniteScroller()}
 
                 <BannerButton
                     color = {S.colors.buttonGreen}
@@ -99,9 +132,140 @@ export default class NewBroadcastForm extends React.Component {
                     iconName = {S.strings.add}
                     title = "CREATE"
                 />
-
             </View>
         )
+    }
+
+
+    chooseInfiniteScroller = () => {
+        const userUid = auth().currentUser.uid
+        if (this.state.dispayedRecepient == this.recepientOptions.friends){
+            return(
+                <View style = {[S.styles.containerFlexStart, {width: "100%"}]}>
+                    <Button onPress={() => this.selectAllFriends()} title="AllFriends" />
+                    <Text>All friends selected: {this.state.allFriends ? "yes" : "no"} </Text>
+                    <SearchableInfiniteScroll
+                    type = "static"
+                    queryValidator = {(query) => true}
+                    queryTypes = {[{name: "Name", value: "name"}, {name: "Email", value: "email"}]}
+                    chunkSize = {10}
+                    errorHandler = {this.scrollErrorHandler}
+                    renderItem = {this.friendRenderer}
+                    dbref = {database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`)}
+                    ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
+                    />    
+                </View>
+            )
+        }
+
+        if (this.state.dispayedRecepient == this.recepientOptions.groups){
+            return(
+                <SearchableInfiniteScroll
+                type = "dynamic"
+                queryValidator = {(query) => true}
+                queryTypes = {[{name: "Name", value: "name"}]}
+                chunkSize = {10}
+                errorHandler = {this.scrollErrorHandler}
+                renderItem = {this.groupRenderer}
+                dbref = {database().ref(`/userGroupMemberships/${userUid}`)}
+                ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
+              />      
+            )
+        }
+
+        return (
+            <SearchableInfiniteScroll
+            type = "dynamic"
+            queryValidator = {(query) => true}
+            queryTypes = {[{name: "GName", value: "name"}]}
+            chunkSize = {10}
+            errorHandler = {this.scrollErrorHandler}
+            renderItem = {this.maskRenderer}
+            dbref = {database().ref(`/userFriendGroupings/${userUid}/custom/snippets`)}
+            ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
+            />
+        )
+    }
+
+
+    friendRenderer = ({ item }) => {
+        return (
+          <TouchableOpacity 
+          onPress = {() => this.toggleSelection(item)}
+          style = {[S.styles.listElement, {backgroundColor: this.state.friendRecipients[item.uid] ? "lightgreen" : "white"}]}>
+              <ProfilePicDisplayer diameter = {30} uid = {item.uid} style = {{marginRight: 10}} />
+              <View>
+                <Text>{item.name}</Text>
+                <Text>{item.uid}</Text>
+              </View>
+          </TouchableOpacity>
+        );
+    }
+
+    groupRenderer = ({ item }) => {
+        return (
+          <TouchableOpacity 
+          onPress = {() => this.toggleSelection(item)}
+          style = {[S.styles.listElement, {backgroundColor: this.state.groupRecepients[item.uid] ? "lightgreen" : "white"}]}>
+                <Text>{item.name}</Text>
+          </TouchableOpacity>
+        );
+    }
+
+    maskRenderer = ({ item }) => {
+        return (
+          <TouchableOpacity 
+          onPress = {() => this.toggleSelection(item)}
+          style = {[S.styles.listElement, {backgroundColor: this.state.maskRecepients[item.uid] ? "lightgreen" : "white"}]}>
+                <Text>{item.name}</Text>
+                <Text>Member count: {item.memberCount}</Text>
+          </TouchableOpacity>
+        );
+    }
+    
+    scrollErrorHandler = (err) => {
+        logError(err)
+        this.setState({errorMessage: err.message})
+    }
+
+    toggleSelection = (snippet) => {
+        let copiedObj = {}
+        switch(this.state.dispayedRecepient){
+            case this.recepientOptions.friends:
+                copiedObj = {...this.state.friendRecipients}
+                break
+            case this.recepientOptions.masks:
+                copiedObj = {...this.state.maskRecepients}
+                break
+            default:
+                copiedObj = {...this.state.groupRecepients}
+                break
+        }
+
+        if (copiedObj[snippet.uid]){
+          //Then remove the snippet
+          delete copiedObj[snippet.uid]
+        }else{
+          //Add the snippet
+          const {uid, ...snippetSansUid} = snippet
+          copiedObj[snippet.uid] = snippetSansUid
+        }
+
+        switch(this.state.dispayedRecepient){
+            case this.recepientOptions.friends:
+                this.setState({friendRecipients: copiedObj, allFriends: false});
+                break
+            case this.recepientOptions.masks:
+                this.setState({maskRecepients: copiedObj, allFriends: false});
+                break
+            default:
+                this.setState({groupRecepients: copiedObj});
+                break
+        }
+    }
+
+    selectAllFriends = () =>{
+        this.setState({allFriends: true, friendRecipients: {}, maskRecepients: {}})
     }
 
     setDate = (event, newDate) => {
@@ -169,28 +333,44 @@ export default class NewBroadcastForm extends React.Component {
                 return;
             }
 
-            //Getting the uid's of all my recepients (and making sure I have some)...
-            const friendsRef = database().ref(`/userFriendGroupings/${uid}/_masterUIDs/`);
-            const friendsSnapshot = await timedPromise(friendsRef.once('value'), MEDIUM_TIMEOUT);
-            if (!friendsSnapshot.exists()){
-                this.setState({isModalVisible: false, errorMessage: "No recepients"})
-                return;
+            //Getting the uid's of all my recepients
+            const friendRecepients = {}
+            const maskRecepients = {}
+            const groupRecepients = {}
+
+            for (const key in this.state.friendRecipients) {
+                friendRecepients[key] = true
+            }
+            for (const key in this.state.maskRecepients) {
+                maskRecepients[key] = true
+            }
+            for (const key in this.state.groupRecepients) {
+                groupRecepients[key] = true
             }
 
-            const recepients = friendsSnapshot.val()
-            const creationFunction = functions().httpsCallable('createActiveBroadcast');
-            const response = await timedPromise(creationFunction({
-                ownerUid: uid, 
-                autoConfirm: false,
-                location: this.state.location,
-                deathTimestamp: this.state.date.getTime(),
-                recepients
-            }), LONG_TIMEOUT);
-
-            if (response.data.status === returnStatuses.OK){
-                this.setState({errorMessage: "Success (I know this isn't an error but meh)"})
+            if (!this.state.allFriends 
+                && Object.keys(friendRecepients).length == 0
+                && Object.keys(maskRecepients).length == 0
+                && Object.keys(groupRecepients).length == 0){
+                this.setState({errorMessage: "No Recepients"})
             }else{
-                logError(new Error("Problematic createActiveBroadcast function response: " + response.data.status))
+                const creationFunction = functions().httpsCallable('createActiveBroadcast');
+                const response = await timedPromise(creationFunction({
+                    ownerUid: uid, 
+                    autoConfirm: false,
+                    location: this.state.location,
+                    deathTimestamp: this.state.date.getTime(),
+                    allFriends: this.state.allFriends,
+                    friendRecepients,
+                    maskRecepients,
+                    groupRecepients
+                }), LONG_TIMEOUT);
+    
+                if (response.data.status === returnStatuses.OK){
+                    this.setState({errorMessage: "Success (I know this isn't an error but meh)"})
+                }else{
+                    logError(new Error("Problematic createActiveBroadcast function response: " + response.data.status))
+                }
             }
         }catch(err){
             if (err.code == "timeout"){
@@ -205,10 +385,21 @@ export default class NewBroadcastForm extends React.Component {
 
 const styles = StyleSheet.create({
     mainForm: {
-        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         width: "100%",
         margin: 8
+    }, 
+    selectedTab: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: 'center',
+        backgroundColor: "dodgerblue"
+    },
+    dormantTab: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: 'center',
+        backgroundColor: "grey"
     }
 })

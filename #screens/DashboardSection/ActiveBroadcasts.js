@@ -52,9 +52,10 @@ export default class ActiveBroadcasts extends React.Component {
       <TouchableOpacity 
         style = {S.styles.listElement}
         onPress = {() => this.props.navigation.navigate("ResponsesScreen", {broadcast: item})}>
-        <Text>TTL: {epochToDateString(item.deathTimestamp)}</Text>
-        <Text>{item.ownerUid}</Text>
-        <Text>{item.uid}</Text>
+        <View style={{flexDirection:"column"}}>
+          <Text>TTL: {epochToDateString(item.deathTimestamp)}</Text>
+          <Text>{item.uid}</Text>
+        </View>
       </TouchableOpacity>
     );
   }

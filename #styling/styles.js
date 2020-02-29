@@ -28,10 +28,9 @@ const defaultStyles = StyleSheet.create({
     listElement: {
         backgroundColor: 'ghostwhite',
         paddingVertical: 5,
+        paddingHorizontal: 10,
         alignItems: "center",
         flexDirection: 'row',
-        marginLeft: 10,
-        marginRight: 10
       }
   })
 
