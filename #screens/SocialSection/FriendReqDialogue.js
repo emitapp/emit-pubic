@@ -58,7 +58,10 @@ export default class FriendReqDialogue extends React.Component {
                     style = {{marginRight: 10}} />
 
                 {this.state.userInfo !== null &&
-                    <Text>{this.state.userInfo.name}</Text>
+                    <View>
+                        <Text>{this.state.userInfo.displayName}</Text>
+                        <Text>@{this.state.userInfo.username}</Text>
+                    </View>
                 }
 
                 {this.state.fatalError &&

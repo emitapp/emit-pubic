@@ -74,7 +74,7 @@ export default class GroupScreen extends React.Component {
         <SearchableInfiniteScroll
           type = "dynamic"
           queryValidator = {(query) => true}
-          queryTypes = {[{name: "Name", value: "name"}, {name: "Email", value: "email"}]}
+          queryTypes = {[{name: "Display Name", value: "displayNameQuery"}, {name: "Username", value: "usernameQuery"}]}
           chunkSize = {10}
           errorHandler = {this.scrollErrorHandler}
           renderItem = {this.itemRenderer}
@@ -163,7 +163,8 @@ export default class GroupScreen extends React.Component {
         disabled={!this.state.inEditMode}>
           <ProfilePicDisplayer diameter = {30} uid = {item.uid} style = {{marginRight: 10}} />
           <View>
-            <Text>{item.name}</Text>
+            <Text>{item.displayName}</Text>
+            <Text>@{item.username}</Text>
             <Text>{item.uid}</Text>
             <Text>{item.rank}</Text>
           </View>

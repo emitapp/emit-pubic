@@ -16,3 +16,9 @@ export const groupRanks = {
     STANDARD: "standard",
     ADMIN: "admin"
 }
+
+export const validUsername = (username) => {
+    const regexTest = RegExp(/^[a-z0-9_-]+$/)
+    const normalizedUsername = username.normalize("NFKC").toLowerCase()
+    return regexTest.test(normalizedUsername)
+}
