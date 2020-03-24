@@ -6,7 +6,7 @@ export default function navigationOptions (title) {
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
-            fontWeight: 'bold',
+            fontFamily: "NunitoSans-Regular"
         }
     }
 };
