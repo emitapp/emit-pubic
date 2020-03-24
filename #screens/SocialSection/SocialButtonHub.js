@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Button } from 'react-native-elements';
 
 export default class SocialButtonHub extends React.Component {
 

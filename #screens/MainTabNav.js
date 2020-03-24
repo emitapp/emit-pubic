@@ -1,5 +1,4 @@
 // The overall partent tab navigator screen for the main interface
-
 // This is also the screen that enables FCM because it can only be accessed
 // if the user is signed in
 import AsyncStorage from '@react-native-community/async-storage';
@@ -43,7 +42,7 @@ const Tab = createBottomTabNavigator(
           }
 
           return <AwesomeIcon name={iconName} size={25} color={tintColor} />;
-        },
+        }
       }),
     tabBarOptions: {
       activeTintColor: S.colors.activeMainTabColor,

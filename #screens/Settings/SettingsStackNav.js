@@ -2,6 +2,7 @@ import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
 import ProfilePicScreen from './ProfilePicChangingScreen';
 import SettingsMain from './SettingsMain';
+import Header from 'reusables/Header'
 
 
 const Navigator = createStackNavigator(
@@ -10,7 +11,8 @@ const Navigator = createStackNavigator(
     ProfilePicScreen,
   },
   {
-    initialRouteName: 'SettingsMain'
+    initialRouteName: 'SettingsMain',
+    defaultNavigationOptions: Header("Settings")
   });
 
 export default class FeedStackNav extends React.Component {

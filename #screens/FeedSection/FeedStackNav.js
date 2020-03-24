@@ -2,6 +2,7 @@ import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
 import BroadcastViewer from './BroadcastViewer';
 import Feed from './Feed';
+import Header from 'reusables/Header'
 
 
 const Navigator = createStackNavigator(
@@ -10,7 +11,8 @@ const Navigator = createStackNavigator(
     BroadcastViewer,
   },
   {
-    initialRouteName: 'Feed'
+    initialRouteName: 'Feed',
+    defaultNavigationOptions: Header("Feed")
   });
 
 export default class FeedStackNav extends React.Component {

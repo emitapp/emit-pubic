@@ -3,6 +3,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import ActiveBroadcasts from './ActiveBroadcasts';
 import NewBroadcastForm from './NewBroadcastForm';
 import ResponsesScreen from './ResponsesViewer';
+import Header from 'reusables/Header'
 
 
 const Navigator = createStackNavigator(
@@ -12,7 +13,8 @@ const Navigator = createStackNavigator(
     ResponsesScreen
   },
   {
-    initialRouteName: 'ActiveBroadcasts'
+    initialRouteName: 'ActiveBroadcasts',
+    defaultNavigationOptions: Header("Dashboard")
   });
 
 export default class DashboardStackNav extends React.Component {

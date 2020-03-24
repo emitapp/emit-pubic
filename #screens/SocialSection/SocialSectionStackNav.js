@@ -11,6 +11,7 @@ import UserSearch from './UserSearch';
 import GroupMemberAdder from './UserGroups/GroupMemberAdder'
 import GroupSearch from './UserGroups/GroupSearch'
 import GroupViewer from './UserGroups/GroupViewer'
+import Header from 'reusables/Header'
 
 const Navigator = createStackNavigator(
   {
@@ -27,7 +28,8 @@ const Navigator = createStackNavigator(
     GroupViewer
   },
   {
-    initialRouteName: 'SocialButtonHub'
+    initialRouteName: 'SocialButtonHub',
+    defaultNavigationOptions: Header("Community")
   });
 
 export default class SocailSectionStackNav extends React.Component {
