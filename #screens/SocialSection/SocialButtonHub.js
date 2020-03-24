@@ -1,37 +1,34 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Button, ThemeProvider } from 'react-native-elements';
+import MainTheme from 'styling/mainTheme'
 
 export default class SocialButtonHub extends React.Component {
 
     render() {
         return (
+            <ThemeProvider theme={MainTheme}>
             <View style={styles.container}>
                 <Button
                     title="Find Users"
-                    onPress={() => this.props.navigation.navigate('UserSearch')}
-                />
+                    onPress={() => this.props.navigation.navigate('UserSearch')}/>
                 <Button
                     title="See your friends"
-                    onPress={() => this.props.navigation.navigate('FriendSearch')}
-                />
+                    onPress={() => this.props.navigation.navigate('FriendSearch')}/>
                 <Button
                     title="See your masks"
-                    onPress={() => this.props.navigation.navigate('MaskSearch')}
-                />
+                    onPress={() => this.props.navigation.navigate('MaskSearch')}/>
                 <Button
                     title="See your groups"
-                    onPress={() => this.props.navigation.navigate('GroupSearch')}
-                />
+                    onPress={() => this.props.navigation.navigate('GroupSearch')}/>
                 <Button
                     title="Friend Requests"
-                    onPress={() => this.props.navigation.navigate('FriendRequests')}
-                />
+                    onPress={() => this.props.navigation.navigate('FriendRequests')}/>
                 <Button
                     title="Scan someone's QR Code"
-                    onPress={() => this.props.navigation.navigate('QRScanner')}
-                />
+                    onPress={() => this.props.navigation.navigate('QRScanner')}/>
             </View>
+            </ThemeProvider>
         )
     }
 

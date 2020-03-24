@@ -1,8 +1,10 @@
+import MainTheme from 'styling/mainTheme'
+
 export default function navigationOptions (title) {
     return {
         title,
         headerStyle: {
-            backgroundColor: '#6ACB17',
+            backgroundColor: MainTheme.colors.primary,
         },
         headerTintColor: '#fff',
         headerTitleStyle: {

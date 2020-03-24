@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import functions from '@react-native-firebase/functions';
 import messaging from '@react-native-firebase/messaging';
 import React from 'react';
+import {View} from 'react-native'
 import { requestNotifications, RESULTS } from 'react-native-permissions';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
@@ -15,6 +16,7 @@ import DashboardStackNav from "./DashboardSection/DashboardStackNav";
 import FeedStackNav from './FeedSection/FeedStackNav';
 import SocialStackNav from './SocialSection/SocialSectionStackNav'
 import SettingsStackNav from "./Settings/SettingsStackNav";
+import MainTheme from 'styling/mainTheme'
 
 
 
@@ -28,25 +30,42 @@ const Tab = createBottomTabNavigator(
   {
     defaultNavigationOptions: ({ navigation }) =>
       ({
-        tabBarIcon: ({tintColor }) => {
+        tabBarIcon: ({tintColor, focused }) => {
           const { routeName } = navigation.state;
           let iconName;
           if (routeName === 'DashboardStackNav') {
             iconName = S.strings.home;
           } else if (routeName === 'FeedStackNav') {
             iconName = S.strings.feed;
-          }else if (routeName === 'FriendStackNav') {
+          }else if (routeName === 'SocialStackNav') {
             iconName = S.strings.users;
           }else{
             iconName = S.strings.settings;
           }
 
-          return <AwesomeIcon name={iconName} size={25} color={tintColor} />;
+          return (
+            <View style = {{height: "100%", justifyContent: "center", alignItems: "center"}}>
+              <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
+                <AwesomeIcon name={iconName} size={25} color={tintColor}/>
+              </View>
+              {focused && <View style = {{
+                position: "relative", 
+                height: 5, width: 40, 
+                backgroundColor: tintColor, 
+                borderTopEndRadius: 8, 
+                borderTopStartRadius: 8}}/>}
+            </View>
+          )
         }
       }),
     tabBarOptions: {
-      activeTintColor: S.colors.activeMainTabColor,
-      inactiveTintColor: S.colors.inactiveMainTabColor,
+      style:{
+        borderTopWidth:2,
+        borderTopColor: MainTheme.colors.primary,
+      },
+      showLabel: false,
+      activeTintColor: MainTheme.colors.primary,
+      inactiveTintColor: MainTheme.colors.grey0,
     },
   }
 );
