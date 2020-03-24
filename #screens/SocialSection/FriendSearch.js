@@ -1,10 +1,10 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, View } from 'react-native';
 import Modal from "react-native-modal";
-import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
+import UserSnippetListElement from 'reusables/UserSnippetListElement';
 import S from 'styling';
 import { logError } from 'utils/helpers';
 import FriendReqDialogue from './FriendReqDialogue';
@@ -65,16 +65,9 @@ export default class FriendSearch extends React.Component {
 
   itemRenderer = ({ item }) => {
     return (
-      <TouchableOpacity 
-        style = {S.styles.listElement}
-        onPress={() => this.toggleModal(item)}>
-          <ProfilePicDisplayer diameter = {30} uid = {item.uid} style = {{marginRight: 10}} />
-          <View>
-            <Text>{item.displayName}</Text>
-            <Text>@{item.username}</Text>
-            <Text>{item.uid}</Text>
-          </View>
-      </TouchableOpacity>
+      <UserSnippetListElement 
+      snippet={item} 
+      onPress={() => this.toggleModal(item)}/>
     );
   }
 

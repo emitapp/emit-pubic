@@ -9,7 +9,7 @@ import TimeoutLoadingComponent from 'reusables/TimeoutLoadingComponent';
 import S from "styling";
 import { epochToDateString, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { responderStatuses, returnStatuses } from 'utils/serverValues';
-
+import UserSnippetListElement from 'reusables/UserSnippetListElement'
 
 
 export default class BroadcastViewer extends React.Component {
@@ -146,11 +146,9 @@ export default class BroadcastViewer extends React.Component {
 
   itemRenderer = ({ item }) => {
     return (
-      <TouchableOpacity 
-        style = {S.styles.listElement}>
-        <Text>{item.name}</Text>
-        <Text>{item.uid}</Text>
-      </TouchableOpacity>
+      <UserSnippetListElement 
+      snippet={item} 
+      onPress={null}/>
     );
   }
 }

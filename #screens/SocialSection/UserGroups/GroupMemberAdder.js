@@ -1,4 +1,4 @@
-import auth from '@react-native-firebase/auth';
+import UserSnippetListElement from 'reusables/UserSnippetListElement';
 import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
@@ -115,16 +115,10 @@ export default class NewGroupScreen extends React.Component {
 
   itemRenderer = ({ item }) => {
     return (
-      <TouchableOpacity 
-        style = {[S.styles.listElement, {backgroundColor: this.state.selectedUserUids[item.uid] ? "lightgreen" : "white"}]}
-        onPress={() => this.toggleSelection(item)}>
-          <ProfilePicDisplayer diameter = {30} uid = {item.uid} style = {{marginRight: 10}} />
-          <View>
-            <Text>{item.displayName}</Text>
-            <Text>@{item.username}</Text>
-            <Text>{item.uid}</Text>
-          </View>
-      </TouchableOpacity>
+      <UserSnippetListElement 
+      style = {{backgroundColor: this.state.selectedUserUids[item.uid] ? "lightgreen" : "white"}}
+      snippet={item} 
+      onPress={() => this.toggleSelection(item)}/>
     );
   }
 

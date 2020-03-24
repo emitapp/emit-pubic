@@ -4,10 +4,10 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Modal from "react-native-modal";
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
-import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
 import S from 'styling';
 import { epochToDateString, logError } from 'utils/helpers';
 import FriendReqDialogue from './FriendReqDialogue';
+import UserSnippetListElement from 'reusables/UserSnippetListElement'
 
 
 export default class UserSearch extends React.Component {
@@ -76,16 +76,10 @@ export default class UserSearch extends React.Component {
 
   itemRenderer = ({ item }) => {
     return (
-      <TouchableOpacity 
-        style = {S.styles.listElement}
-        onPress={() => this.toggleModal(item)}>
-        <ProfilePicDisplayer diameter = {30} uid = {item.uid} style = {{marginRight: 10}} />
-        <View>
-          <Text>Date sent: {epochToDateString(item.timestamp)}</Text>
-          <Text>{item.name}</Text>
-          <Text>{item.uid}</Text>
-        </View>
-      </TouchableOpacity>
+      <UserSnippetListElement 
+      snippet={item} 
+      onPress={() => this.toggleModal(item)}
+      extraComponents={<Text>Date sent: {epochToDateString(item.timestamp)}</Text>} />
     );
   }
 

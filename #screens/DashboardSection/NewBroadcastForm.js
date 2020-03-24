@@ -8,12 +8,11 @@ import React from 'react';
 import { ActivityIndicator, Button, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Modal from 'react-native-modal';
 import BannerButton from 'reusables/BannerButton';
-import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
 import { logError, LONG_TIMEOUT, MAX_BROADCAST_WINDOW, MIN_BROADCAST_WINDOW, timedPromise } from 'utils/helpers';
 import { returnStatuses } from 'utils/serverValues';
-
+import UserSnippetListElement from 'reusables/UserSnippetListElement'
 
 
 export default class NewBroadcastForm extends React.Component {
@@ -190,16 +189,10 @@ export default class NewBroadcastForm extends React.Component {
 
     friendRenderer = ({ item }) => {
         return (
-          <TouchableOpacity 
-          onPress = {() => this.toggleSelection(item)}
-          style = {[S.styles.listElement, {backgroundColor: this.state.friendRecipients[item.uid] ? "lightgreen" : "white"}]}>
-              <ProfilePicDisplayer diameter = {30} uid = {item.uid} style = {{marginRight: 10}} />
-              <View>
-                <Text>{item.displayName}</Text>
-                <Text>@{item.username}</Text>
-                <Text>{item.uid}</Text>
-              </View>
-          </TouchableOpacity>
+            <UserSnippetListElement 
+            style = {{backgroundColor: this.state.friendRecipients[item.uid] ? "lightgreen" : "white"}}
+            snippet={item} 
+            onPress={() => this.toggleSelection(item)}/>
         );
     }
 
