@@ -1,13 +1,11 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, ThemeProvider } from 'react-native-elements';
-import MainTheme from 'styling/mainTheme'
 
 export default class SocialButtonHub extends React.Component {
 
     render() {
         return (
-            <ThemeProvider theme={MainTheme}>
             <View style={styles.container}>
                 <Button
                     title="Find Users"
@@ -28,7 +26,6 @@ export default class SocialButtonHub extends React.Component {
                     title="Scan someone's QR Code"
                     onPress={() => this.props.navigation.navigate('QRScanner')}/>
             </View>
-            </ThemeProvider>
         )
     }
 

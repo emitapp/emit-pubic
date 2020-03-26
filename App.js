@@ -1,19 +1,18 @@
-import { SafeAreaView } from 'react-native'
-import React from 'react'
-import { createSwitchNavigator, createAppContainer, NavigationActions} from 'react-navigation'
-import auth from '@react-native-firebase/auth';
-
 import AsyncStorage from '@react-native-community/async-storage';
-import AuthDecisionLander from 'screens/Authentication/AuthDecisionLanding'
-import SignUp from 'screens/Authentication/SignUp'
-import Login from 'screens/Authentication/Login'
-import AccountSetUp from 'screens/Authentication/AccountSetUp'
-import MainTabNav from 'screens/MainTabNav'
-import { logError, ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY } from 'utils/helpers';
-import ConnectionBanner from 'reusables/ConnectionStatusBanner'
-
-//This file also contains the global functions needed by the app
-//Hopefully there's not a lot
+import auth from '@react-native-firebase/auth';
+import React from 'react';
+import { SafeAreaView } from 'react-native';
+import { ThemeProvider } from 'react-native-elements';
+import { createAppContainer, createSwitchNavigator, NavigationActions } from 'react-navigation';
+import ConnectionBanner from 'reusables/ConnectionStatusBanner';
+import AccountSetUp from 'screens/Authentication/AccountSetUp';
+import AuthDecisionPage from 'screens/Authentication/AuthDecisionPage';
+import LandingPage from 'screens/Authentication/LandingPage';
+import Login from 'screens/Authentication/Login';
+import SignUp from 'screens/Authentication/SignUp';
+import MainTabNav from 'screens/MainTabNav';
+import MainTheme from 'styling/mainTheme';
+import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError } from 'utils/helpers';
 
 export default class App extends React.Component {
 
@@ -30,10 +29,12 @@ export default class App extends React.Component {
 
   render() {
       return (
-        <SafeAreaView style = {{flex: 1}}>
-          <ConnectionBanner />
-          <Navigator ref = {ref => this.topLevelNavigator = ref}/>
-        </SafeAreaView>
+        <ThemeProvider theme={MainTheme}>
+          <SafeAreaView style = {{flex: 1}}>
+            <ConnectionBanner/>
+            <Navigator ref = {ref => this.topLevelNavigator = ref}/>
+          </SafeAreaView>
+        </ThemeProvider>
       )
   }
 
@@ -49,7 +50,7 @@ export default class App extends React.Component {
         await AsyncStorage.removeItem(ASYNC_TOKEN_KEY)
         await AsyncStorage.removeItem(ASYNC_SETUP_KEY)
       }
-      this.navigate("AuthDecisionLander")
+      this.navigate("AuthDecisionPage")
     }catch(err){
       logError(err)
     }
@@ -60,14 +61,15 @@ export default class App extends React.Component {
 const Navigator = createAppContainer(
   createSwitchNavigator(
   {
-    AuthDecisionLander,
+    AuthDecisionPage,
     SignUp,
     AccountSetUp,
     Login,
-    MainTabNav
+    MainTabNav,
+    LandingPage
   },
   {
-    initialRouteName: 'AuthDecisionLander'
+    initialRouteName: 'AuthDecisionPage'
   }
 )
 )

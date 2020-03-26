@@ -7,7 +7,8 @@
             "reusables/*": ["#reusableComponents/*"],
             "screens/*": ["#screens/*"],
             "styling/*": ["#styling/*"],
-            "utils/*": ["#constants/*"]
+            "utils/*": ["#constants/*"],
+            "media/*": ["_media/*"]
         }
     },
     
