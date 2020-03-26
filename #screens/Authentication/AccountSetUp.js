@@ -5,11 +5,13 @@ import auth from '@react-native-firebase/auth';
 import functions from '@react-native-firebase/functions';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { Button, Text, TextInput, View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, Image } from 'react-native';
 import Modal from 'react-native-modal';
 import S from "styling";
 import { ASYNC_SETUP_KEY, isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { validUsername } from 'utils/serverValues';
+import { Button, Input, Text, ThemeConsumer } from 'react-native-elements';
+import MinorActionButton from 'reusables/MinorActionButton'
 
 
 export default class AccountSetUp extends React.Component {
@@ -18,7 +20,15 @@ export default class AccountSetUp extends React.Component {
 
     render() {
       return (
-        <View style={S.styles.container}>
+        <ThemeConsumer>
+        {({ theme }) => (
+          <View style={{...S.styles.container, backgroundColor: theme.colors.primary}}>
+  
+          <Image
+          source={require('media/unDrawPizzaEating.png')}
+          style = {{position: 'absolute', bottom: 0, height: "50%", opacity: 0.3}}
+          resizeMode = 'contain'/>
+
           <Modal 
             isVisible={this.state.isModalVisible}
             style = {{justifyContent: "center", alignItems: "center"}}
@@ -27,37 +37,74 @@ export default class AccountSetUp extends React.Component {
             animationOutTiming = {0}>
             <ActivityIndicator />
           </Modal>
-          
-          <Text>Finish setting up your Biteup Account</Text>
-          {this.state.errorMessage &&
-            <Text style={{ color: 'red' }}>
-              {this.state.errorMessage}
-            </Text>}
 
-          <Text>You can change your Display Name as many times as you want</Text>
-          <TextInput
-            style={S.styles.textInput}
-            autoCapitalize="none"
-            placeholder="Display Name"
-            onChangeText={displayName => this.setState({ displayName })}
-            value={this.state.displayName}
-          />
+          <View style = {{
+            justifyContent: 'center',
+            alignItems: 'center', 
+            borderRadius: 30, 
+            backgroundColor: "white", 
+            height: "auto",
+            padding: 20,
+            marginHorizontal: 30}}>
 
-          <Text>This is your unique account identifier that people can also refer to you with. It Cannot be changed</Text>
-          <TextInput
-            style={S.styles.textInput}
-            autoCapitalize="none"
-            placeholder="Username"
-            onChangeText={username => this.setState({ username })}
-            value={this.state.username}
-          />
+            <Text h4
+              style = {{color: theme.colors.primary, marginVertical: 8, fontWeight: 'bold'}}>
+                Finish setting up your Biteup Account
+            </Text>
 
-          <Button title="Finish" onPress={this.finishUserSetUp} />
+            {this.state.errorMessage &&
+              <Text style={{ color: 'red' }}>
+                {this.state.errorMessage}
+              </Text>}
 
+            <Text style = {{marginBottom: 8}}>
+              The name that people will see associated with your account. It can be whatever you want, and you can always change it later
+            </Text>
+            <Input
+              label = "Display Name"
+              autoCapitalize="none"
+              placeholder="John Doe"
+              onChangeText={displayName => this.setState({ displayName })}
+              value={this.state.displayName}
+            />
+
+            <Text style = {{marginBottom: 8}}>
+              You’re username must be unique, and you can’t change it. It must contain only A-Z, a-z, 0-9, underscores or hyphens.
+            </Text>
+            <Input
+              label = "Username"
+              autoCapitalize="none"
+              placeholder="the_real_john"
+              onChangeText={username => this.setState({ username })}
+              value={this.state.username}
+            />
+
+            <Button 
+              title="Finish" 
+              onPress={this.finishUserSetUp} 
+              type = "outline"
+              buttonStyle = {{borderWidth: 2, width: 180, height: 50, marginTop: 22}}
+              titleStyle = {{fontSize: 22}}/>
+
+            <MinorActionButton
+              title="Log Out and Go Back"
+              onPress={this.signOut}/>
+
+          </View>
         </View>
+      )}
+      </ThemeConsumer>
       )
     }
     
+    signOut = async () => {
+      try{
+        await auth().signOut()
+      }catch(err){
+        logError(err, true, "Sign out error!")
+      }
+     }
+
     finishUserSetUp = async () => {
       try{
         this.setState({isModalVisible: true})

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Image } from 'react-native';
-import {Text, Button} from 'react-native-elements'
+import {Text, Button, Input} from 'react-native-elements'
 import S from "styling";
 
 export default class LandingPage extends React.Component {
@@ -19,9 +19,12 @@ export default class LandingPage extends React.Component {
             title = "Sign in with Email"
             buttonStyle = {{height: 50, width: 256}}
             titleStyle = {{fontSize: 22}}
+            onPress = {() => this.props.navigation.navigate("Login")}
             />
 
-            <Text style={{marginTop: 20, textDecorationLine: 'underline'}}>
+            <Text 
+            style={{marginTop: 20, textDecorationLine: 'underline'}}
+            onPress = {() => this.props.navigation.navigate("SignUp")}>
                 New to Biteup? Sign up for free
             </Text>
         </View>
