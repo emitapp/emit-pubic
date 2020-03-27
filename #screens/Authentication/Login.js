@@ -5,7 +5,7 @@ import S from "styling";
 import { logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import { ThemeConsumer } from 'react-native-elements';
 import {Text, Button, Input} from 'react-native-elements'
-import MinorActionButton from 'reusables/MinorActionButton'
+import {MinorActionButton} from 'reusables/reusableButtons'
 
 
 export default class Login extends React.Component {

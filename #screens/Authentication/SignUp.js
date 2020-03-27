@@ -4,7 +4,7 @@ import { Image, View } from 'react-native';
 import { Button, Input, Text, ThemeConsumer } from 'react-native-elements';
 import S from "styling";
 import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
-import MinorActionButton from 'reusables/MinorActionButton'
+import {MinorActionButton} from 'reusables/reusableButtons'
 
 export default class SignUp extends React.Component {
 

@@ -11,7 +11,7 @@ import S from "styling";
 import { ASYNC_SETUP_KEY, isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { validUsername } from 'utils/serverValues';
 import { Button, Input, Text, ThemeConsumer } from 'react-native-elements';
-import MinorActionButton from 'reusables/MinorActionButton'
+import {MinorActionButton} from 'reusables/reusableButtons'
 
 
 export default class AccountSetUp extends React.Component {

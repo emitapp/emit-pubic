@@ -1,9 +1,10 @@
 import React from 'react';
 import { Button, withTheme } from 'react-native-elements';
 
-function MinorActionButton(props) {
-    const { theme, updateTheme, replaceTheme } = props;
+function MinorActionButtonComponent(props) {
+    const { theme } = props;
     return <Button titleStyle = {{color: theme.colors.grey2}} type = "clear"  {...props} />;
 }
+const MinorActionButton = withTheme(MinorActionButtonComponent)
 
-export default withTheme(MinorActionButton);
+export {MinorActionButton} ;
