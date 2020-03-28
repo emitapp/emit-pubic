@@ -5,18 +5,21 @@ import S from "styling";
 import { logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import { ThemeConsumer } from 'react-native-elements';
 import {Text, Button, Input} from 'react-native-elements'
-import {MinorActionButton} from 'reusables/reusableButtons'
+import {MinorActionButton} from 'reusables/ReusableButtons'
+import {DefaultLoadingModal} from 'reusables/LoadingComponents'
 
 
 export default class Login extends React.Component {
 
-    state = { email: '', password: '', errorMessage: null }  
+    state = { email: '', password: '', errorMessage: null, modalVisible: false }  
 
     render() {
       return (
         <ThemeConsumer>
         {({ theme }) => (
           <View style={{...S.styles.container, backgroundColor: theme.colors.primary}}>
+
+          <DefaultLoadingModal isVisible={this.state.modalVisible} />
 
           <Image
             source={require('media/unDrawPizzaEating.png')}
@@ -80,12 +83,13 @@ export default class Login extends React.Component {
     
     handleLogin = async () => {
       try{
+        this.setState({modalVisible: true})
+        //If this succeeds, then the onAuthStateChanged listener set in App.js will handle navigation
         var signInPromise = auth().signInWithEmailAndPassword(this.state.email, this.state.password)
         await timedPromise(signInPromise, MEDIUM_TIMEOUT)
-        //If this succeeds, then the onAuthStateChanged listener set in App.js will handle navigation
       }catch(err){
-        this.setState({ errorMessage: error.message })
-        if (error.message != "timeout") logError(error)
+        this.setState({ errorMessage: err.message, modalVisible: false })
+        if (err.code != "timeout") logError(error)
       }    
     }
   }

@@ -2,16 +2,16 @@
 
 import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
-import functions from '@react-native-firebase/functions';
 import database from '@react-native-firebase/database';
+import functions from '@react-native-firebase/functions';
 import React from 'react';
-import { View, ActivityIndicator, Image } from 'react-native';
-import Modal from 'react-native-modal';
+import { Image, View } from 'react-native';
+import { Button, Input, Text, ThemeConsumer } from 'react-native-elements';
+import { DefaultLoadingModal } from 'reusables/LoadingComponents';
+import { MinorActionButton } from 'reusables/ReusableButtons';
 import S from "styling";
 import { ASYNC_SETUP_KEY, isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { validUsername } from 'utils/serverValues';
-import { Button, Input, Text, ThemeConsumer } from 'react-native-elements';
-import {MinorActionButton} from 'reusables/reusableButtons'
 
 
 export default class AccountSetUp extends React.Component {
@@ -29,14 +29,7 @@ export default class AccountSetUp extends React.Component {
           style = {{position: 'absolute', bottom: 0, height: "50%", opacity: 0.3}}
           resizeMode = 'contain'/>
 
-          <Modal 
-            isVisible={this.state.isModalVisible}
-            style = {{justifyContent: "center", alignItems: "center"}}
-            animationIn = "fadeInUp"
-            animationOut = 'fadeOutUp'
-            animationOutTiming = {0}>
-            <ActivityIndicator />
-          </Modal>
+          <DefaultLoadingModal isVisible={this.state.isModalVisible} />
 
           <View style = {{
             justifyContent: 'center',

@@ -73,5 +73,12 @@ export default theme = {
             fontWeight: "normal",
             textAlign: "center"
         },
+    },
+
+    Overlay: {
+        windowBackgroundColor: "rgba(0, 0, 0, .5)",
+        width: "auto",
+        height: "auto",
+        borderRadius: 16
     }
 }
