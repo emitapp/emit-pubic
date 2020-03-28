@@ -7,8 +7,8 @@
 
 @import Firebase;
 
+#import "RNNotifications.h"
 #import "AppDelegate.h"
-
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>

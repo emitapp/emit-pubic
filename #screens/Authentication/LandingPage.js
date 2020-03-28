@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Image } from 'react-native';
-import {Text, Button, Input} from 'react-native-elements'
+import { Image, View } from 'react-native';
+import { Button, Text } from 'react-native-elements';
 import S from "styling";
+import LottieView from 'lottie-react-native';
 
 export default class LandingPage extends React.Component {
 
@@ -9,6 +10,15 @@ export default class LandingPage extends React.Component {
       return (
         <View style={S.styles.container}>
             <Text h1>Biteup</Text>
+
+          <View style = {{height: 50, width: "100%"}}>
+            <LottieView source={require('media/animations/material-wave-loading.json')} autoPlay loop />
+          </View>
+
+          <View style = {{height: 50, width: "100%"}}>
+            <LottieView source={require('media/animations/fire-loading.json')} autoPlay loop />
+          </View>
+
             <Image
                 source={require('media/unDrawEatingTogether.png')}
                 style = {{height: "30%"}}
