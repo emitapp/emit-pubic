@@ -7,4 +7,4 @@ function MinorActionButtonComponent(props) {
 }
 const MinorActionButton = withTheme(MinorActionButtonComponent)
 
-export {MinorActionButton} ;
+export {MinorActionButton}
