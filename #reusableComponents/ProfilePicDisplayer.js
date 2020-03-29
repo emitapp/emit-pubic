@@ -33,7 +33,7 @@ export default class ProfilePicDisplayer extends React.Component {
             return (
                 <Image
                     style={{ width: diameter, height: diameter, borderRadius: diameter / 2, ...style }}
-                    source={require('../_media/ProfilePicPlaceholder.png')}
+                    source={require('media/ProfilePicPlaceholder.png')}
                     {...otherProps}
                 />)
         } else {

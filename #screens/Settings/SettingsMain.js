@@ -1,8 +1,6 @@
 import auth from '@react-native-firebase/auth';
 import React from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
-import QRCode from 'react-native-qrcode-svg';
-import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
+import { Button, Text, View } from 'react-native';
 import S from 'styling';
 import { logError } from 'utils/helpers';
 
@@ -13,18 +11,7 @@ export default class SettingsMain extends React.Component {
       const { currentUser } = auth()
       return (
         <View style={S.styles.container}>
-          <View style = {styles.QRHolder}>
-            <QRCode
-              value = {currentUser.uid}
-              logoBackgroundColor = 'transparent'
-              backgroundColor = "white"
-              color = "orange"
-              size = {180}
-              logo = {require('../../_media/WhiteCircle.png')}
-              logoSize = {80}
-              ecl = "H"/>
-            <ProfilePicDisplayer diameter = {70} uid = {currentUser.uid} style = {styles.profilePic} />
-          </View>
+          
           <Text>
             Hi {currentUser && currentUser.email}!
           </Text>
@@ -59,20 +46,3 @@ export default class SettingsMain extends React.Component {
       }
      }
   }
-  
-  const styles = StyleSheet.create({
-    QRHolder:{
-      borderRadius: 20, 
-      padding: 10, 
-      justifyContent: "center", 
-      alignContent: "center", 
-      borderColor: "orange", 
-      borderWidth: 8,
-      backgroundColor: "white"
-    },
-    profilePic:{
-      position: "absolute",
-      top: 65, // = QRHolder + (QRCOde size prop / 2) - radius of profile pic displayer
-      left: 65,
-    }
-  })
