@@ -6,6 +6,7 @@ import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import UserProfileSummary from 'reusables/UserProfileSummary'
 import UserBitecode from 'reusables/UserBitecode'
 import {MinorActionButton} from 'reusables/ReusableButtons'
+import AntIcon from 'react-native-vector-icons/AntDesign';
 
 export default class SocialButtonHub extends React.Component {
 
@@ -31,21 +32,24 @@ export default class SocialButtonHub extends React.Component {
             </Overlay>
 
             <Button 
-                title = "Show Bitecode" 
-                containerStyle = {{position: 'absolute', top: 8, left: 8, width: 100}}
+                icon={
+                    <AntIcon name="qrcode" size={40} color="white"/>
+                }
+                containerStyle = {{position: 'absolute', top: 16, left: 16}}
                 onPress = {() => this.setState({QRVisible: true})}/>
 
+            <View style = {styles.buttonSection}>
             <View style={styles.rowStyle}>
                 <SectionSectionButton color={theme.colors.secondary}
                 onPress={() => this.props.navigation.navigate('FriendRequests')}>
                     <FontAwesomeIcon name="inbox" size={36} color= "white" />
-                    <Text style = {styles.textStyle}>Friend Requests</Text>  
+                    <Text style = {styles.buttonTextStyle}>Friend Requests</Text>  
                 </SectionSectionButton>
 
                 <SectionSectionButton color={theme.colors.secondary}
                 onPress={() => this.props.navigation.navigate('QRScanner')}>
                     <IoniconsIcon name="md-qr-scanner" size={36} color= "white" />
-                    <Text style = {styles.textStyle}>Bitecode Scanner</Text>  
+                    <Text style = {styles.buttonTextStyle}>Bitecode Scanner</Text>  
                 </SectionSectionButton>
             </View>
 
@@ -53,13 +57,13 @@ export default class SocialButtonHub extends React.Component {
                 <SectionSectionButton color={theme.colors.secondary}
                 onPress={() => this.props.navigation.navigate('MaskSearch')}>
                     <FontAwesomeIcon name="user-friends" size={32} color= "white" />
-                    <Text style = {styles.textStyle}>Friend Masks</Text>  
+                    <Text style = {styles.buttonTextStyle}>Friend Masks</Text>  
                 </SectionSectionButton>
 
                 <SectionSectionButton color={theme.colors.secondary}
                 onPress={() => this.props.navigation.navigate('GroupSearch')}>
                     <FontAwesomeIcon name="user-friends" size={32} color= "white" />
-                    <Text style = {styles.textStyle}>FriendGroups</Text>  
+                    <Text style = {styles.buttonTextStyle}>FriendGroups</Text>  
                 </SectionSectionButton>
             </View>
 
@@ -67,14 +71,15 @@ export default class SocialButtonHub extends React.Component {
                 <SectionSectionButton color={theme.colors.secondary}
                 onPress={() => this.props.navigation.navigate('FriendSearch')}>
                     <FontAwesomeIcon name="search" size={32} color= "white" />
-                    <Text style = {styles.textStyle}>Friend Search</Text>  
+                    <Text style = {styles.buttonTextStyle}>Friend Search</Text>  
                 </SectionSectionButton>
 
                 <SectionSectionButton color={theme.colors.secondary}
                 onPress={() => this.props.navigation.navigate('UserSearch')}>
                     <FontAwesomeIcon name="search" size={32} color= "white" />
-                    <Text style = {styles.textStyle}>User Search</Text>  
+                    <Text style = {styles.buttonTextStyle}>User Search</Text>  
                 </SectionSectionButton>
+            </View>
             </View>
 
             </View>
@@ -105,36 +110,28 @@ const styles = StyleSheet.create({
     socialButton:{
         justifyContent: "center", 
         alignItems: "center",
-        height: 100,
-        width: 160,
+        height: "100%",
+        width: "45%",
         borderRadius: 10,
     },
-    textStyle:{
+    buttonTextStyle:{
         fontSize: 18, 
         fontWeight: "bold", 
         color: "white",
         textAlign: "center",
-        marginTop: 8
+        marginTop: 8,
+        marginHorizontal: 8
     },
     rowStyle: {
+        flex: 1,
         flexDirection: "row",
         width: "85%",
         justifyContent: 'space-around',
         marginVertical: 8
     },
-    QRHolder:{
-        borderRadius: 20, 
-        padding: 10, 
-        justifyContent: "center", 
-        alignContent: "center", 
-        borderColor: "orange", 
-        borderWidth: 8,
-        backgroundColor: "white"
-      },
-    profilePic:{
-        position: "absolute",
-        top: 65, // = QRHolder + (QRCOde size prop / 2) - radius of profile pic displayer
-        left: 65,
-      }
-
+    buttonSection:{
+        flex: 1,
+        maxHeight: 500,
+        maxWidth: 500
+    }
 })
