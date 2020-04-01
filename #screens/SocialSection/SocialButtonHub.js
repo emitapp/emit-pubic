@@ -40,45 +40,45 @@ export default class SocialButtonHub extends React.Component {
 
             <View style = {styles.buttonSection}>
             <View style={styles.rowStyle}>
-                <SectionSectionButton color={theme.colors.secondary}
+                <SocialSectionButton color={theme.colors.secondary}
                 onPress={() => this.props.navigation.navigate('FriendRequests')}>
                     <FontAwesomeIcon name="inbox" size={36} color= "white" />
                     <Text style = {styles.buttonTextStyle}>Friend Requests</Text>  
-                </SectionSectionButton>
+                </SocialSectionButton>
 
-                <SectionSectionButton color={theme.colors.secondary}
+                <SocialSectionButton color={theme.colors.secondary}
                 onPress={() => this.props.navigation.navigate('QRScanner')}>
                     <IoniconsIcon name="md-qr-scanner" size={36} color= "white" />
                     <Text style = {styles.buttonTextStyle}>Bitecode Scanner</Text>  
-                </SectionSectionButton>
+                </SocialSectionButton>
             </View>
 
             <View style={styles.rowStyle}>
-                <SectionSectionButton color={theme.colors.secondary}
+                <SocialSectionButton color={theme.colors.secondary}
                 onPress={() => this.props.navigation.navigate('MaskSearch')}>
                     <FontAwesomeIcon name="user-friends" size={32} color= "white" />
                     <Text style = {styles.buttonTextStyle}>Friend Masks</Text>  
-                </SectionSectionButton>
+                </SocialSectionButton>
 
-                <SectionSectionButton color={theme.colors.secondary}
+                <SocialSectionButton color={theme.colors.secondary}
                 onPress={() => this.props.navigation.navigate('GroupSearch')}>
                     <FontAwesomeIcon name="user-friends" size={32} color= "white" />
                     <Text style = {styles.buttonTextStyle}>Friend Groups</Text>  
-                </SectionSectionButton>
+                </SocialSectionButton>
             </View>
 
             <View style={styles.rowStyle}>
-                <SectionSectionButton color={theme.colors.secondary}
+                <SocialSectionButton color={theme.colors.secondary}
                 onPress={() => this.props.navigation.navigate('FriendSearch')}>
                     <FontAwesomeIcon name="search" size={32} color= "white" />
                     <Text style = {styles.buttonTextStyle}>Friend Search</Text>  
-                </SectionSectionButton>
+                </SocialSectionButton>
 
-                <SectionSectionButton color={theme.colors.secondary}
+                <SocialSectionButton color={theme.colors.secondary}
                 onPress={() => this.props.navigation.navigate('UserSearch')}>
                     <FontAwesomeIcon name="search" size={32} color= "white" />
                     <Text style = {styles.buttonTextStyle}>User Search</Text>  
-                </SectionSectionButton>
+                </SocialSectionButton>
             </View>
             </View>
 
@@ -89,7 +89,7 @@ export default class SocialButtonHub extends React.Component {
     }
 }
 
-class SectionSectionButton extends React.Component {
+class SocialSectionButton extends React.Component {
     render() {
         return (
             <TouchableOpacity 
