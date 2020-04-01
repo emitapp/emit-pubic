@@ -44,7 +44,7 @@ export default class OfflineNotice extends PureComponent {
   decideVisibility = () => {
     let shouldBeVisible = !this.state.connectedToFirebase
     if (shouldBeVisible) this.setState({isVisible: true})
-    else setTimeout(() => this.setState({isVisible: false}), 2000);
+    else setTimeout(() => this.setState({isVisible: false}), 750);
   }
 
   render() {
@@ -65,7 +65,7 @@ export default class OfflineNotice extends PureComponent {
 
     return (
       <View style={[styles.networkBanner, {'backgroundColor': "red"}]}>
-      <Text style={styles.offlineText}>Disonnected. Syncing won't happen until conntected</Text>
+      <Text style={styles.offlineText}>Disconnected. Syncing will delay until reconnected.</Text>
     </View>);
   }
 }

@@ -96,7 +96,7 @@ export default class SearchableInfiniteScroll extends React.Component {
   search = () => {
     if (this.props.queryValidator(this.state.searchBarValue)){
       this.setState({
-        query: this.state.searchBarValue, 
+        query: this.state.searchBarValue.toLowerCase(), 
         searchGeneration: this.state.searchGeneration + 1
       })
     }else{

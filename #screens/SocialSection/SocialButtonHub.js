@@ -63,7 +63,7 @@ export default class SocialButtonHub extends React.Component {
                 <SectionSectionButton color={theme.colors.secondary}
                 onPress={() => this.props.navigation.navigate('GroupSearch')}>
                     <FontAwesomeIcon name="user-friends" size={32} color= "white" />
-                    <Text style = {styles.buttonTextStyle}>FriendGroups</Text>  
+                    <Text style = {styles.buttonTextStyle}>Friend Groups</Text>  
                 </SectionSectionButton>
             </View>
 
