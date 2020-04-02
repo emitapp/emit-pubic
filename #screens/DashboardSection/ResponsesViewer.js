@@ -2,13 +2,13 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
-import { ActivityIndicator, Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Modal from 'react-native-modal';
+import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import BannerButton from 'reusables/BannerButton';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import S from "styling";
 import { epochToDateString, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { responderStatuses, returnStatuses } from 'utils/serverValues';
+import {DefaultLoadingModal} from 'reusables/LoadingComponents'
 
 
 export default class ResponsesViewer extends React.Component {
@@ -47,14 +47,7 @@ export default class ResponsesViewer extends React.Component {
   render() {
     return (
       <View style={S.styles.containerFlexStart}>
-        <Modal 
-          isVisible={this.state.isModalVisible}
-          style = {{justifyContent: "center", alignItems: "center"}}
-          animationIn = "fadeInUp"
-          animationOut = 'fadeOutUp'
-          animationOutTiming = {0}>
-          <ActivityIndicator />
-        </Modal>
+        <DefaultLoadingModal isVisible={this.state.isModalVisible} />
 
         {this.state.errorMessage &&
           <Text style={{ color: 'red' }}>

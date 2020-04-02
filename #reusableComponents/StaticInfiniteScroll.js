@@ -1,7 +1,10 @@
 import React from 'react';
-import { FlatList, Text } from 'react-native';
+import { FlatList } from 'react-native';
 import { MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
-import InfiniteScrollLoadingComponent from './TimeoutLoadingComponent';
+import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
+import {Text} from 'react-native-elements'
+import EmptyState from 'reusables/EmptyState'
+
 
 /**
  * Use this class if you want to impliment an infinite scroll
@@ -175,7 +178,7 @@ export default class StaticInfiniteScroll extends React.Component {
     renderFooter = () => {
         if (this.refreshing) {
             return (
-                <InfiniteScrollLoadingComponent
+                <TimeoutLoadingComponent
                     hasTimedOut={this.timedOut}
                     retryFunction={() => {
                         this.timedOut = false;
@@ -185,17 +188,30 @@ export default class StaticInfiniteScroll extends React.Component {
                 />
             )
         }
-        else if (this.stopSearching) {
-            return (<Text>That's all folks!</Text>);
+        else if (this.stopSearching && this.listData.length != 0) {
+            return (
+                <Text style={{width: "100%", textAlign: "center", marginTop: 8}}>
+                ~That's all folks!~
+                </Text>);
         } else {
             return null;
         }
     }
 
+    renderEmptyState = () => {
+        return (
+            <EmptyState 
+                title = "Here's a lot of empty space!" 
+                message = "Looks like we didn't find anything" 
+                style = {this.props.style}
+            />
+        )
+    }
+
     render() {
         if (this.isLoading) {
             return (
-                <InfiniteScrollLoadingComponent
+                <TimeoutLoadingComponent
                     hasTimedOut={this.timedOut}
                     retryFunction={() => {
                         this.timedOut = false;
@@ -212,6 +228,8 @@ export default class StaticInfiniteScroll extends React.Component {
                     onEndReached={() => this.retrieveMore(this.props.generation)}
                     onEndReachedThreshold={0.1}
                     refreshing={this.refreshing}
+                    contentContainerStyle = {{flex: 1}}
+                    ListEmptyComponent = {this.renderEmptyState}
                     {...this.props}
                 />
             )

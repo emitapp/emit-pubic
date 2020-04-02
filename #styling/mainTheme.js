@@ -80,5 +80,25 @@ export default theme = {
         width: "auto",
         height: "auto",
         borderRadius: 16
+    },
+
+    SearchBar:{
+        lightTheme: true,
+        round: true,
+        containerStyle: {
+            backgroundColor: "transparent", 
+            borderTopWidth: 0, 
+            borderBottomWidth: 0, 
+            paddingBottom: 0, 
+            paddingTop: 0
+        },
+        inputContainerStyle: {
+            marginTop: 0, 
+            marginBottom: 0, 
+            backgroundColor: "lightgrey"
+        },
+        inputStyle:{
+            fontFamily: "NunitoSans-Regular",
+        }
     }
 }

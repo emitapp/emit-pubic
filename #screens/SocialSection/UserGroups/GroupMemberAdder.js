@@ -2,13 +2,12 @@ import UserSnippetListElement from 'reusables/UserSnippetListElement';
 import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
-import { ActivityIndicator, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import Modal from 'react-native-modal';
+import { Text, TextInput, View } from 'react-native';
 import BannerButton from 'reusables/BannerButton';
-import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
 import { logError, LONG_TIMEOUT, timedPromise, isOnlyWhitespace } from 'utils/helpers';
+import {DefaultLoadingModal} from 'reusables/LoadingComponents'
 
 
 export default class NewGroupScreen extends React.Component {
@@ -28,14 +27,8 @@ export default class NewGroupScreen extends React.Component {
   render() {
     return (
       <View style={S.styles.containerFlexStart}>
-        <Modal 
-          isVisible={this.state.isModalVisible}
-          style = {{justifyContent: "center", alignItems: "center"}}
-          animationIn = "fadeInUp"
-          animationOut = 'fadeOutUp'
-          animationOutTiming = {0}>
-          <ActivityIndicator />
-        </Modal>
+
+        <DefaultLoadingModal isVisible={this.state.isModalVisible} />
 
         {this.state.errorMessage &&
           <Text style={{ color: 'red' }}>

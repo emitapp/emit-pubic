@@ -1,13 +1,13 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { ActivityIndicator, Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import Modal from 'react-native-modal';
+import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import BannerButton from 'reusables/BannerButton';
 import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
 import { isOnlyWhitespace, logError } from 'utils/helpers';
+import {DefaultLoadingModal} from 'reusables/LoadingComponents'
 
 
 export default class GroupScreen extends React.Component {
@@ -43,14 +43,7 @@ export default class GroupScreen extends React.Component {
     const {inEditMode, newGroupName, groupName} = this.state;
     return (
       <View style={S.styles.containerFlexStart}>
-        <Modal 
-          isVisible={this.state.isModalVisible}
-          style = {{justifyContent: "center", alignItems: "center"}}
-          animationIn = "fadeInUp"
-          animationOut = 'fadeOutUp'
-          animationOutTiming = {0}>
-          <ActivityIndicator />
-        </Modal>
+        <DefaultLoadingModal isVisible={this.state.isModalVisible} />
 
         {this.state.errorMessage &&
           <Text style={{ color: 'red' }}>

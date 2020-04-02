@@ -1,6 +1,8 @@
 import React from 'react';
 import { FlatList } from 'react-native';
-import InfiniteScrollLoadingComponent from './TimeoutLoadingComponent';
+import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
+import EmptyState from 'reusables/EmptyState'
+
 
 /**
  * Use this class if you want to impliment an infinite scroll
@@ -127,7 +129,7 @@ export default class DymanicInfiniteScroll extends React.Component {
     renderFooter = () => {
         if (this.gettingMoreData) {
             return (
-                <InfiniteScrollLoadingComponent
+                <TimeoutLoadingComponent
                     hasTimedOut={false}
                     retryFunction={() => null}
                 />
@@ -137,10 +139,20 @@ export default class DymanicInfiniteScroll extends React.Component {
         }
     }
 
+    renderEmptyState = () => {
+        return (
+            <EmptyState 
+                title = "Here's a lot of empty space!" 
+                message = "Looks like we didn't find anything" 
+                style = {this.props.style}
+            />
+        )
+    }
+
     render() {
         if (this.gettingFirstLoad) {
             return (
-                <InfiniteScrollLoadingComponent
+                <TimeoutLoadingComponent
                     hasTimedOut={false}
                     retryFunction={() => null}
                 />
@@ -154,6 +166,8 @@ export default class DymanicInfiniteScroll extends React.Component {
                     onEndReached={this.retrieveMoreData}
                     onEndReachedThreshold={0.1}
                     refreshing={this.refreshing}
+                    contentContainerStyle = {{flex: 1}}
+                    ListEmptyComponent = {this.renderEmptyState}
                     {...this.props}
                 />
             )

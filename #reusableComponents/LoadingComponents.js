@@ -1,7 +1,10 @@
 import React from 'react';
 import LottieView from 'lottie-react-native';
+import { Overlay, Text, Button } from 'react-native-elements';
+import S from "styling";
 import { View } from 'react-native';
-import { Overlay, Text } from 'react-native-elements';
+
+
 
 export class SmallLoadingComponent extends React.Component {
     static defaultProps = {
@@ -52,5 +55,29 @@ export class DefaultLoadingModal extends React.Component {
                 </View>
             </Overlay>
         )
+    }
+}
+
+export class TimeoutLoadingComponent extends React.Component {
+    render() {
+        if (!this.props.hasTimedOut) {
+            return (
+                <View style={S.styles.container}>
+                    <SmallLoadingComponent />
+                </View>
+            )
+        } else {
+            return (
+                <View style={{ ...S.styles.container, flexDirection: "row" }}>
+                    <View style={{ width: 70, height: 70 }}>
+                        <LottieView source={require('media/animations/timeout-animation.json')} autoPlay loop={false} />
+                    </View>
+                    <View>
+                        <Text style={{ color: 'red', fontWeight: "bold" }}>Timed Out!</Text>
+                        <Button title="Retry" onPress={this.props.retryFunction} />
+                    </View>
+                </View>
+            )
+        }
     }
 }

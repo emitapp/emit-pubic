@@ -1,8 +1,11 @@
 import React from 'react'
-import { Alert, Button, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Alert, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native'
+import {Text, SearchBar, ThemeConsumer} from 'react-native-elements'
 import S from 'styling'
 import DynamicInfiniteScroll from './DynamicInfiniteScroll'
 import StaticInfiniteScroll from './StaticInfiniteScroll'
+import EmptyState from 'reusables/EmptyState'
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 
 
 /**
@@ -42,30 +45,37 @@ export default class SearchableInfiniteScroll extends React.Component {
   render() {
     const {type, queryTypes, queryValidator, dbref, ...otherProps } = this.props
     return (
-      <View style={styles.container}>
-
-        <Text>Search by...</Text>
-
-        <FlatList
-          style = {{maxHeight: 30}}
-          horizontal={true}
-          renderItem = {this.queryOptionRenerer}
-          data={this.props.queryTypes}
-          keyExtractor = {(item, index) => item.value}
-        />
+      <ThemeConsumer>
+      {({ theme }) => (
+      <View style={{...S.styles.containerFlexStart, width: "100%"}}>
       
-        <TextInput
-          style={S.styles.textInput}
+        <SearchBar
           autoCapitalize="none"
           placeholder="Search"
           onChangeText={searchBarValue => this.setState({ searchBarValue })}
           value={this.state.searchBarValue}
+          onSubmitEditing = {this.search}
         />
 
-        <Button title="Search" onPress={this.search} />
+        <View style = {{flexDirection: "row", alignItems: "center", marginBottom: 16}}>
+          <Text style = {{marginHorizontal: 16}}>Search by...</Text>
+
+          <FlatList
+            style = {{height: 30}}
+            horizontal={true}
+            renderItem = {({item}) => this.queryOptionRenerer(item, theme.colors.secondary)}
+            data={this.props.queryTypes}
+            keyExtractor = {(item, index) => item.value}
+          />
+        </View>
 
       {(this.state.query == null) ? (
-        <Text>Search</Text>
+        <EmptyState 
+          style = {{flex: 1}}
+          image = {<FontAwesomeIcon name="search" size={50} color = {theme.colors.grey1} />}
+          title = "Search for something"
+          message="We'll do our best to find it!"
+        />
       ) : (
         this.props.type == "static" ? (   
           <StaticInfiniteScroll style = {{width: "100%", flex: 1}}
@@ -74,7 +84,6 @@ export default class SearchableInfiniteScroll extends React.Component {
             orderBy = {this.state.currentSorter}
             startingPoint = {this.state.query}
             endingPoint = {`${this.state.query}\uf8ff`}
-            ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
             {...otherProps}
           />
         ) : (
@@ -83,13 +92,14 @@ export default class SearchableInfiniteScroll extends React.Component {
             dbref = {this.props.dbref.orderByChild(this.state.currentSorter)}
             startingPoint = {this.state.query}
             endingPoint = {`${this.state.query}\uf8ff`}
-            ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
             {...otherProps}
           />
         )
       )}
 
       </View>
+      )}
+      </ThemeConsumer>
     )
   }
 
@@ -104,12 +114,25 @@ export default class SearchableInfiniteScroll extends React.Component {
     }   
   }
 
-  queryOptionRenerer = ({item}) => {
+  queryOptionRenerer = (item, mainColor) => {
+    var mainTheme, backgroundColor, borderColor, color = null;
+    if (item.value === this.state.currentSorter){
+      mainTheme = styles.optionStyleSelected
+      backgroundColor = mainColor
+      borderColor = mainColor
+      color = "white"
+    }else{
+      mainTheme = styles.optionStyleDormant
+      backgroundColor = "transparent"
+      borderColor = mainColor
+      color = mainColor
+    }
+
     return (
       <TouchableOpacity 
         onPress = {() => this.updateSearchOption(item)}
-        style = {item.value === this.state.currentSorter ? styles.optionStyleSelected : styles.optionStyleDormant}>
-        <Text style = {{color: "blue"}}>{item.name}</Text>
+        style = {{...mainTheme, borderColor, backgroundColor}}>
+        <Text style = {{color, fontWeight: "bold"}}>{item.name}</Text>
       </TouchableOpacity>
   )}
 
@@ -124,15 +147,8 @@ export default class SearchableInfiniteScroll extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    ...S.styles.container,
-    width: "100%",
-    justifyContent: 'flex-start',
-  },
   optionStyleDormant: {
-    backgroundColor: 'white',
     marginRight: 10,
-    borderColor: "blue",
     borderWidth: 2,
     borderRadius: 10,
     justifyContent: 'center',
@@ -140,9 +156,7 @@ const styles = StyleSheet.create({
     padding: 8
   },
   optionStyleSelected: {
-    backgroundColor: 'skyblue',
     marginRight: 10,
-    borderColor: "blue",
     borderWidth: 2,
     borderRadius: 10,
     justifyContent: 'center',

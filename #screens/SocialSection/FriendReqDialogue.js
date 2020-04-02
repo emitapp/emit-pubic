@@ -4,7 +4,7 @@ import functions from '@react-native-firebase/functions';
 import React from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
-import TimeoutLoadingComponent from 'reusables/TimeoutLoadingComponent';
+import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
 import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import * as responseStatuses from 'utils/serverValues';
 

@@ -5,8 +5,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { Text, View } from 'react-native';
-import TimeoutLoadingComponent from 'reusables/TimeoutLoadingComponent';
+import { View } from 'react-native';
+import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
+
 import S from "styling";
 import { ASYNC_SETUP_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 
@@ -25,7 +26,6 @@ export default class Loading extends React.Component {
   render() {
     return (
       <View style={S.styles.container}>
-        <Text>Loading</Text>
         <TimeoutLoadingComponent 
           hasTimedOut = {this.state.timedout}
           retryFunction = {() => {
