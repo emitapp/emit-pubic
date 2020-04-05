@@ -3,6 +3,10 @@ import { View } from 'react-native';
 import { Text, withTheme } from 'react-native-elements';
 
 class EmptyState extends React.Component {
+    static defaultProps = {
+        style: { flex: 1, width: "100%" }  
+    }
+
     render() {
         return (
             <View style = {{...this.props.style, alignItems: "center", justifyContent: "center"}}>

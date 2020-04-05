@@ -76,7 +76,7 @@ export default class BroadcastViewer extends React.Component {
         }
 
         {this.state.showConfirmed &&
-          <DynamicInfiniteScroll style = {{width: "100%", flex: 1}}
+          <DynamicInfiniteScroll
             chunkSize = {10}
             errorHandler = {this.scrollErrorHandler}
             renderItem = {this.itemRenderer}

@@ -6,6 +6,7 @@ import BannerButton from 'reusables/BannerButton';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import S from 'styling';
 import { epochToDateString, logError } from 'utils/helpers';
+import EmptyState from 'reusables/EmptyState'
 
 export default class ActiveBroadcasts extends React.Component {
 
@@ -22,13 +23,19 @@ export default class ActiveBroadcasts extends React.Component {
             {this.state.errorMessage}
           </Text>}
 
-          <DynamicInfiniteScroll style = {{width: "100%", flex: 1}}
+          <DynamicInfiniteScroll
             chunkSize = {10}
             errorHandler = {this.scrollErrorHandler}
             renderItem = {this.itemRenderer}
             generation = {0}
             dbref = {database().ref(`/activeBroadcasts/${auth().currentUser.uid}/public`)}
             ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
+            emptyStateComponent = {
+              <EmptyState 
+                title = "Pretty chill day, huh?" 
+                message = "You haven't made any broadcasts yet." 
+              />
+            }
           />
 
           <BannerButton

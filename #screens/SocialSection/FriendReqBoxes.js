@@ -8,6 +8,7 @@ import S from 'styling';
 import { epochToDateString, logError } from 'utils/helpers';
 import FriendReqDialogue from './FriendReqDialogue';
 import UserSnippetListElement from 'reusables/UserSnippetListElement'
+import EmptyState from 'reusables/EmptyState'
 
 
 export default class UserSearch extends React.Component {
@@ -56,13 +57,19 @@ export default class UserSearch extends React.Component {
           </Text>}
 
 
-            <DynamicInfiniteScroll style = {{width: "100%", flex: 1}}
+            <DynamicInfiniteScroll
               chunkSize = {10}
               errorHandler = {this.scrollErrorHandler}
               renderItem = {this.itemRenderer}
               generation = {this.state.searchGeneration}
               dbref = {this.getRef().orderByChild("timestamp")}
               ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
+              emptyStateComponent = {
+                <EmptyState 
+                  title = "It's all clear!" 
+                  message = {`You have no friend requests in your ${this.state.displayingInbox? "inbox" : "outbox"}.`}
+                />
+              }
             />
       </View>
     )

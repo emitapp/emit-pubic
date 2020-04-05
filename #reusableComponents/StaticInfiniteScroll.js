@@ -25,6 +25,7 @@ import EmptyState from 'reusables/EmptyState'
 //Optinal props
 //startingPoint: the value to be used for .startat in retrieveInitialChunk
 //endingPoint: the value to be used for .endat in both retrieveInitialChunk and retrieveMore
+//emptyStateComponent: Will be rendered when the list is empty 
 
 // generation: used to indicate to the scrollview that it shoudl reset
 //Generation is used to prevent api calls that were called for previous
@@ -37,6 +38,10 @@ import EmptyState from 'reusables/EmptyState'
 //resolved promises update the necessary variables immediately.
 
 export default class StaticInfiniteScroll extends React.Component {
+
+    static defaultProps = {
+        style: { flex: 1, width: "100%" }  
+    }
 
     constructor(props) {
         super(props);
@@ -199,11 +204,12 @@ export default class StaticInfiniteScroll extends React.Component {
     }
 
     renderEmptyState = () => {
+        if (this.props.emptyStateComponent) 
+            return this.props.emptyStateComponent
         return (
             <EmptyState 
                 title = "Here's a lot of empty space!" 
                 message = "Looks like we didn't find anything" 
-                style = {this.props.style}
             />
         )
     }

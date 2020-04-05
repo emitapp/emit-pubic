@@ -6,6 +6,7 @@ import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
 import S from 'styling';
 import { epochToDateString, logError } from 'utils/helpers';
+import EmptyState from 'reusables/EmptyState'
 
 
 
@@ -24,13 +25,19 @@ export default class Feed extends React.Component {
             {this.state.errorMessage}
           </Text>}
 
-          <DynamicInfiniteScroll style = {{width: "100%", flex: 1}}
+          <DynamicInfiniteScroll
             chunkSize = {10}
             errorHandler = {this.scrollErrorHandler}
             renderItem = {this.itemRenderer}
             generation = {0}
             dbref = {database().ref(`/feeds/${auth().currentUser.uid}`)}
             ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
+            emptyStateComponent = {
+              <EmptyState 
+                title = "It's pretty quiet here" 
+                message = "You have no broadcasts in your feed right now." 
+              />
+            }
           />
       </View>
     )

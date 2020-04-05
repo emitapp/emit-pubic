@@ -1,11 +1,11 @@
 import React from 'react'
 import { Alert, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native'
-import {Text, SearchBar, ThemeConsumer} from 'react-native-elements'
+import { SearchBar, Text, ThemeConsumer } from 'react-native-elements'
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5'
+import EmptyState from 'reusables/EmptyState'
 import S from 'styling'
 import DynamicInfiniteScroll from './DynamicInfiniteScroll'
 import StaticInfiniteScroll from './StaticInfiniteScroll'
-import EmptyState from 'reusables/EmptyState'
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 
 
 /**
@@ -71,14 +71,13 @@ export default class SearchableInfiniteScroll extends React.Component {
 
       {(this.state.query == null) ? (
         <EmptyState 
-          style = {{flex: 1}}
           image = {<FontAwesomeIcon name="search" size={50} color = {theme.colors.grey1} />}
           title = "Search for something"
           message="We'll do our best to find it!"
         />
       ) : (
         this.props.type == "static" ? (   
-          <StaticInfiniteScroll style = {{width: "100%", flex: 1}}
+          <StaticInfiniteScroll
             generation = {this.state.searchGeneration}
             dbref = {this.props.dbref}
             orderBy = {this.state.currentSorter}
@@ -87,7 +86,7 @@ export default class SearchableInfiniteScroll extends React.Component {
             {...otherProps}
           />
         ) : (
-          <DynamicInfiniteScroll style = {{width: "100%", flex: 1}}
+          <DynamicInfiniteScroll
             generation = {this.state.searchGeneration}
             dbref = {this.props.dbref.orderByChild(this.state.currentSorter)}
             startingPoint = {this.state.query}

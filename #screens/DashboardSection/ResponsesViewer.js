@@ -89,7 +89,7 @@ export default class ResponsesViewer extends React.Component {
             </TouchableOpacity>
         </View>
 
-        <DynamicInfiniteScroll style = {{width: "100%", flex: 1}}
+        <DynamicInfiniteScroll
           chunkSize = {10}
           errorHandler = {this.scrollErrorHandler}
           renderItem = {this.itemRenderer}

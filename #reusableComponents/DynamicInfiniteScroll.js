@@ -21,8 +21,8 @@ import EmptyState from 'reusables/EmptyState'
 //Optinal props
 //startingPoint: the value to be used for .startat in retrieveInitialChunk
 //endingPoint: the value to be used for .endat in both retrieveInitialChunk and retrieveMore
-
-// generation: used to indicate to the scrollview that it shouldd reset
+//generation: used to indicate to the scrollview that it shouldd reset
+//emptyStateComponent: Will be rendered when the list is empty 
 
 //Also note that this compenent doesn't store lots of the variables it uses
 //in the state because this.setState() wouldn't update them immediately
@@ -30,6 +30,10 @@ import EmptyState from 'reusables/EmptyState'
 //resolved promises update the necessary variables immediately.
 
 export default class DymanicInfiniteScroll extends React.Component {
+
+    static defaultProps = {
+        style: { flex: 1, width: "100%" }  
+    }
 
     constructor(props) {
         super(props);
@@ -140,11 +144,12 @@ export default class DymanicInfiniteScroll extends React.Component {
     }
 
     renderEmptyState = () => {
+        if (this.props.emptyStateComponent) 
+            return this.props.emptyStateComponent
         return (
             <EmptyState 
                 title = "Here's a lot of empty space!" 
                 message = "Looks like we didn't find anything" 
-                style = {this.props.style}
             />
         )
     }
