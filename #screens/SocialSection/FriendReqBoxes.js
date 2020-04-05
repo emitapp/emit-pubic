@@ -56,7 +56,7 @@ export default class UserSearch extends React.Component {
           </Text>}
 
 
-            <DynamicInfiniteScroll style = {{width: "100%"}}
+            <DynamicInfiniteScroll style = {{width: "100%", flex: 1}}
               chunkSize = {10}
               errorHandler = {this.scrollErrorHandler}
               renderItem = {this.itemRenderer}

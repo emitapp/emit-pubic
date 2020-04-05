@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
 import React from 'react';
-import { SafeAreaView } from 'react-native';
+import { StatusBar } from 'react-native';
 import { ThemeProvider } from 'react-native-elements';
 import { createAppContainer, createSwitchNavigator, NavigationActions } from 'react-navigation';
 import ConnectionBanner from 'reusables/ConnectionStatusBanner';
@@ -30,10 +30,9 @@ export default class App extends React.Component {
   render() {
       return (
         <ThemeProvider theme={MainTheme}>
-          <SafeAreaView style = {{flex: 1}}>
-            <ConnectionBanner/>
-            <Navigator ref = {ref => this.topLevelNavigator = ref}/>
-          </SafeAreaView>
+          <StatusBar backgroundColor={MainTheme.colors.statusBar} barStyle="light-content"/>
+          <Navigator ref = {ref => this.topLevelNavigator = ref}/>
+          <ConnectionBanner/>
         </ThemeProvider>
       )
   }

@@ -3,7 +3,8 @@ export default theme = {
 
     colors:{
         primary: "#6ACB17",
-        secondary: "#01BAEF"
+        secondary: "#01BAEF",
+        statusBar: "#008000"
     },
 
     Button:{
