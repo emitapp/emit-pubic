@@ -2,13 +2,14 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import BannerButton from 'reusables/BannerButton';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import S from "styling";
 import { epochToDateString, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { responderStatuses, returnStatuses } from 'utils/serverValues';
 import {DefaultLoadingModal} from 'reusables/LoadingComponents'
+import {Button, ButtonGroup} from 'react-native-elements'
 
 
 export default class ResponsesViewer extends React.Component {
@@ -18,11 +19,15 @@ export default class ResponsesViewer extends React.Component {
         this.broadcastData = this.props.navigation.getParam('broadcast', {uid: " "})
         this.respondersListPath = `activeBroadcasts/${auth().currentUser.uid}/responders/${this.broadcastData.uid}`
 
+        this.PENDING_INDEX = 0
+        this.CONFIRMED_INDEX = 1
+        this.IGNORED_INDEX = 2
+
         this.state = { 
             errorMessage: null, 
             responseStatusDeltas: {},
             isModalVisible: false,
-            currentTargetStatus: this.broadcastData.autoConfirm ? responderStatuses.CONFIRMED : responderStatuses.PENDING,
+            currentTargetIndex: this.broadcastData.autoConfirm ? this.CONFIRMED_INDEX : this.PENDING_INDEX,
             searchGeneration: 0
         }
     }
@@ -60,34 +65,11 @@ export default class ResponsesViewer extends React.Component {
             <Text>Death Time: {epochToDateString(this.broadcastData.deathTimestamp)}</Text>
         </View>
 
-        <View style = {{width: "100%", height: 30, flexDirection: 'row'}}>
-            <TouchableOpacity 
-                style = {this.buttonThemeChooser(responderStatuses.PENDING)}
-                onPress={() => this.setState({
-                  currentTargetStatus: responderStatuses.PENDING,
-                  searchGeneration: ++this.state.searchGeneration
-                })}>
-                <Text>PENDING</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-                style = {this.buttonThemeChooser(responderStatuses.CONFIRMED)}
-                onPress={() => this.setState({
-                  currentTargetStatus: responderStatuses.CONFIRMED,
-                  searchGeneration: ++this.state.searchGeneration
-                })}>                
-                <Text>CONFIRMED</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-                style = {this.buttonThemeChooser(responderStatuses.IGNORED)}
-                onPress={() => this.setState({
-                  currentTargetStatus: responderStatuses.IGNORED,
-                  searchGeneration: ++this.state.searchGeneration
-                })}>   
-                <Text>IGNORED</Text>
-            </TouchableOpacity>
-        </View>
+        <ButtonGroup
+          onPress={this.changeTargetIndex}
+          selectedIndex={this.state.currentTargetIndex}
+          buttons={["Pending", "Confirmed", "Ignored"]}
+        />
 
         <DynamicInfiniteScroll
           chunkSize = {10}
@@ -98,7 +80,7 @@ export default class ResponsesViewer extends React.Component {
             database()
             .ref(this.respondersListPath)
             .orderByChild("status")
-            .equalTo(this.state.currentTargetStatus)
+            .equalTo(this.getTargetName(this.state.currentTargetStatus))
           }
           ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
         />
@@ -111,6 +93,24 @@ export default class ResponsesViewer extends React.Component {
         />
       </View>
     )
+  }
+
+  changeTargetIndex = (newIndex) => {
+    this.setState({
+      currentTargetIndex: newIndex,
+      searchGeneration: ++this.state.searchGeneration
+    })
+  }
+
+  getTargetName = (index) => {
+    switch (index) {
+      case this.CONFIRMED_INDEX:
+        return responderStatuses.CONFIRMED;
+      case this.PENDING_INDEX:
+        return responderStatuses.PENDING
+      default:
+        return responderStatuses.IGNORED
+    }
   }
 
   scrollErrorHandler = (err) => {
@@ -131,10 +131,6 @@ export default class ResponsesViewer extends React.Component {
           <Text>Pending Change: {this.state.responseStatusDeltas[item.uid]}</Text>
       </View>
     )
-  }
-
-  buttonThemeChooser = (targetStatus) => {
-    return this.state.currentTargetStatus == targetStatus ? styles.selectedTab : styles.dormantTab
   }
 
   createDelta = (targetUid, newStatus) => {
@@ -170,18 +166,3 @@ export default class ResponsesViewer extends React.Component {
   }
 
 }
-
-const styles = StyleSheet.create({
-  selectedTab: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: 'center',
-    backgroundColor: "dodgerblue"
-  },
-  dormantTab: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: 'center',
-    backgroundColor: "grey"
-  }
-})

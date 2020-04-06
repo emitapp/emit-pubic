@@ -1,24 +1,30 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
+import { ButtonGroup, Text } from 'react-native-elements';
 import Modal from "react-native-modal";
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
+import EmptyState from 'reusables/EmptyState';
+import UserSnippetListElement from 'reusables/UserSnippetListElement';
 import S from 'styling';
 import { epochToDateString, logError } from 'utils/helpers';
 import FriendReqDialogue from './FriendReqDialogue';
-import UserSnippetListElement from 'reusables/UserSnippetListElement'
-import EmptyState from 'reusables/EmptyState'
 
 
 export default class UserSearch extends React.Component {
 
-  state = { 
-    displayingInbox: true,
-    errorMessage: null, 
-    searchGeneration: 0, 
-    isModalVisible: false,
-    selectedUser: null
+  constructor(props){
+    super(props)
+    this.INBOX_INDEX = 0
+    this.OUTBOX_INDEX = 1
+    this.state = { 
+      boxIndex: this.INBOX_INDEX,
+      errorMessage: null, 
+      searchGeneration: 0, 
+      isModalVisible: false,
+      selectedUser: null
+    }
   }
 
   render() {
@@ -37,19 +43,11 @@ export default class UserSearch extends React.Component {
           />
         </Modal>
 
-        <View style = {{width: "100%", height: 30, flexDirection: 'row'}}>
-            <TouchableOpacity 
-                style = {this.state.displayingInbox ? styles.selectedTab : styles.dormantTab}
-                onPress={() => this.toggleBox(true)}>
-                <Text>INBOX</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-                style = {!this.state.displayingInbox ? styles.selectedTab : styles.dormantTab}
-                onPress={() => this.toggleBox(false)}>
-                <Text>OUTBOX</Text>
-            </TouchableOpacity>
-        </View>
+        <ButtonGroup
+          onPress={this.toggleBox}
+          selectedIndex={this.state.boxIndex}
+          buttons={["Inbox", "Outbox"]}
+        />
 
         {this.state.errorMessage &&
           <Text style={{ color: 'red' }}>
@@ -67,7 +65,7 @@ export default class UserSearch extends React.Component {
               emptyStateComponent = {
                 <EmptyState 
                   title = "It's all clear!" 
-                  message = {`You have no friend requests in your ${this.state.displayingInbox? "inbox" : "outbox"}.`}
+                  message = {`You have no friend requests in your ${this.state.boxIndex ? "outbox" : "inbox"}.`}
                 />
               }
             />
@@ -95,34 +93,19 @@ export default class UserSearch extends React.Component {
   }
 
   getRef = () => {
-    if (this.state.displayingInbox)
+    if (this.state.boxIndex === this.INBOX_INDEX)
         return database().ref(`/friendRequests/${auth().currentUser.uid}/inbox`)
     else
         return database().ref(`/friendRequests/${auth().currentUser.uid}/outbox`)
   }
 
-  toggleBox = (shouldDisplayInbox) => {
-    if (this.state.displayingInbox != shouldDisplayInbox){
+  toggleBox = (selectedIndex) => {
+    if (this.state.boxIndex != selectedIndex){
         this.setState({
-            displayingInbox: shouldDisplayInbox, 
+            boxIndex: selectedIndex, 
             searchGeneration: this.state.searchGeneration + 1
         })
     }
   }
 
 }
-
-const styles = StyleSheet.create({
-  selectedTab: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: 'center',
-    backgroundColor: "dodgerblue"
-  },
-  dormantTab: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: 'center',
-    backgroundColor: "grey"
-  }
-})

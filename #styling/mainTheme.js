@@ -19,6 +19,20 @@ export default theme = {
         }
     },
 
+    ButtonGroup: {
+        containerStyle: {
+            height: 34,
+            marginRight: 0,
+            marginLeft: 0,
+            marginTop: 0,
+            borderRadius: 0
+        },
+        containerBorderRadius: 0,
+        selectedButtonStyle: {
+            backgroundColor: "grey"
+        }
+    },
+
     Input:{
         containerStyle: {
             width: "80%", 
