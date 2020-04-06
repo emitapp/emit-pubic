@@ -1,5 +1,5 @@
 module.exports = {
-  assets: ['./#styling/fonts/'],
+  assets: ['./src/styling/fonts/'],
   dependencies: {
     'react-native-notifications': {
       platforms: {

@@ -4,11 +4,11 @@
         "module": "commonjs",
         "baseUrl": ".",
         "paths": {
-            "reusables/*": ["#reusableComponents/*"],
-            "screens/*": ["#screens/*"],
-            "styling/*": ["#styling/*"],
-            "utils/*": ["#constants/*"],
-            "media/*": ["_media/*"]
+            "reusables/*": ["src/reusableComponents/*"],
+            "screens/*": ["src/screens/*"],
+            "styling/*": ["src/styling/*"],
+            "utils/*": ["src/constants/*"],
+            "media/*": ["src/media/*"]
         }
     },
     
