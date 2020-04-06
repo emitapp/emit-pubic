@@ -115,5 +115,15 @@ export default theme = {
         inputStyle:{
             fontFamily: "NunitoSans-Regular",
         }
+    },
+
+    Badge: {
+        textStyle: {
+            fontSize: 16
+        },
+        badgeStyle: {
+            padding: 8,
+            height: 30,
+        }
     }
 }

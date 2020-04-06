@@ -1,12 +1,14 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import BannerButton from 'reusables/BannerButton';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import S from 'styling';
 import { epochToDateString, logError } from 'utils/helpers';
 import EmptyState from 'reusables/EmptyState'
+import {Badge, Text} from 'react-native-elements'
+import TimeoutComponent from 'reusables/TimeoutComponent'
 
 export default class ActiveBroadcasts extends React.Component {
 
@@ -59,12 +61,32 @@ export default class ActiveBroadcasts extends React.Component {
       <TouchableOpacity 
         style = {S.styles.listElement}
         onPress = {() => this.props.navigation.navigate("ResponsesScreen", {broadcast: item})}>
-        <View style={{flexDirection:"column"}}>
-          <Text>TTL: {epochToDateString(item.deathTimestamp)}</Text>
-          <Text>{item.uid}</Text>
+        <View style={{flexDirection:"column", flex: 1}}>
+          <Text style = {{fontSize: 18, fontWeight: "bold"}}>{item.location}</Text>
+          <Text>{epochToDateString(item.deathTimestamp)}</Text>
+          <TimeoutComponent
+            deadLine = {item.deathTimestamp} 
+            renderer = {this.timeLeftRenderer}
+          />
+          <Text style = {{marginTop: 8}}>{item.totalConfirmations} confirmations</Text>
         </View>
+       
+       {item.pendingResponses != 0 && <Badge value={item.pendingResponses} status="error"/>}
       </TouchableOpacity>
     );
   }
 
+  timeLeftRenderer = (time) => {
+    let string = ""
+    string += time.h ? `${time.h} hours, ` : ""
+    string += time.m ? `${time.m} minutes, ` : ""
+    string += time.s ? `${time.s} seconds` : ""
+    return(
+      <View>
+        <Text>
+          {string}
+        </Text>
+      </View>
+    );
+  }
 }

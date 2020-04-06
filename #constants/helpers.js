@@ -46,7 +46,8 @@ export const isOnlyWhitespace = (str) => {
  */
 export const epochToDateString = (epochMillis) =>
 {
-  return new Date(epochMillis).toString()
+  let options = {timeStyle: "short", dateStyle: "medium"}
+  return new Date(epochMillis).toLocaleString(undefined, options)
 }
 
 export const MIN_BROADCAST_WINDOW = 2 //2 minutes
