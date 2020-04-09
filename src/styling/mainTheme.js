@@ -4,7 +4,10 @@ export default theme = {
     colors:{
         primary: "#6ACB17",
         secondary: "#01BAEF",
-        statusBar: "#008000"
+        statusBar: "#008000",
+
+        gradientStart: "#6ACB17",
+        gradientEnd: "#A8CB17"
     },
 
     Button:{
@@ -125,5 +128,18 @@ export default theme = {
             padding: 8,
             height: 30,
         }
+    },
+
+    CheckBox: {
+        containerStyle: {
+            backgroundColor: "transparent", 
+            borderWidth: 0
+        },
+        textStyle: {
+            fontSize: 18,
+            color: "black",
+            fontWeight: "normal"
+        },
+        fontFamily: "NunitoSans-SemiBold",
     }
 }

@@ -8,7 +8,8 @@ export default function navigationOptions (title) {
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
-            fontFamily: "NunitoSans-Regular"
+            fontFamily: "NunitoSans-Regular",
+            color: "white"
         }
     }
 };

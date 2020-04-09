@@ -1,12 +1,12 @@
 import React from 'react'
-import { Alert, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Alert, FlatList, View } from 'react-native'
 import { SearchBar, Text, ThemeConsumer } from 'react-native-elements'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5'
+import Chip from 'reusables/Chip'
 import EmptyState from 'reusables/EmptyState'
 import S from 'styling'
 import DynamicInfiniteScroll from './DynamicInfiniteScroll'
 import StaticInfiniteScroll from './StaticInfiniteScroll'
-
 
 /**
  * This class is a wrapper for either a DynamicInifiteScroll or a StaticInfiniteScroll
@@ -114,25 +114,13 @@ export default class SearchableInfiniteScroll extends React.Component {
   }
 
   queryOptionRenerer = (item, mainColor) => {
-    var mainTheme, backgroundColor, borderColor, color = null;
-    if (item.value === this.state.currentSorter){
-      mainTheme = styles.optionStyleSelected
-      backgroundColor = mainColor
-      borderColor = mainColor
-      color = "white"
-    }else{
-      mainTheme = styles.optionStyleDormant
-      backgroundColor = "transparent"
-      borderColor = mainColor
-      color = mainColor
-    }
-
     return (
-      <TouchableOpacity 
+      <Chip
         onPress = {() => this.updateSearchOption(item)}
-        style = {{...mainTheme, borderColor, backgroundColor}}>
-        <Text style = {{color, fontWeight: "bold"}}>{item.name}</Text>
-      </TouchableOpacity>
+        mainColor = {mainColor}
+        selected = {item.value === this.state.currentSorter}>
+          <Text>{item.name}</Text>
+      </Chip>
   )}
 
   updateSearchOption = (option) => {
@@ -144,22 +132,3 @@ export default class SearchableInfiniteScroll extends React.Component {
   }
 
 }
-
-const styles = StyleSheet.create({
-  optionStyleDormant: {
-    marginRight: 10,
-    borderWidth: 2,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 8
-  },
-  optionStyleSelected: {
-    marginRight: 10,
-    borderWidth: 2,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 8
-  }
-})
