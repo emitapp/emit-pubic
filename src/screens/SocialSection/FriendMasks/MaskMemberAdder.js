@@ -3,7 +3,7 @@ import database from '@react-native-firebase/database';
 import React from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import BannerButton from 'reusables/BannerButton';
-import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
+import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
 import { isOnlyWhitespace, logError } from 'utils/helpers';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
+import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
 import S from 'styling';
 
 /**

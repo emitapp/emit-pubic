@@ -3,13 +3,12 @@ import database from '@react-native-firebase/database';
 import React from 'react';
 import { View } from 'react-native';
 import { ButtonGroup, Text } from 'react-native-elements';
-import Modal from "react-native-modal";
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import EmptyState from 'reusables/EmptyState';
 import UserSnippetListElement from 'reusables/UserSnippetListElement';
 import S from 'styling';
 import { epochToDateString, logError } from 'utils/helpers';
-import FriendReqDialogue from './FriendReqDialogue';
+import FriendReqModal from './FriendReqModal';
 
 
 export default class UserSearch extends React.Component {
@@ -23,7 +22,6 @@ export default class UserSearch extends React.Component {
       errorMessage: null, 
       searchGeneration: 0, 
       isModalVisible: false,
-      selectedUser: null
     }
   }
 
@@ -31,17 +29,9 @@ export default class UserSearch extends React.Component {
     return (
       <View style={S.styles.containerFlexStart}>
 
-        <Modal 
-          isVisible={this.state.isModalVisible}
-          style = {{justifyContent: "center", alignItems: "center"}}
-          animationIn = "fadeInUp"
-          animationOut = 'fadeOutUp'
-          animationOutTiming = {0}>
-          <FriendReqDialogue 
-            selectedUserData = {this.state.selectedUser}
-            closeFunction={() => this.setState({ isModalVisible: false })}
-          />
-        </Modal>
+
+        <FriendReqModal 
+          ref={modal => this.modal = modal} /> 
 
         <ButtonGroup
           onPress={this.toggleBox}
@@ -83,13 +73,9 @@ export default class UserSearch extends React.Component {
     return (
       <UserSnippetListElement 
       snippet={item} 
-      onPress={() => this.toggleModal(item)}
+      onPress={() => this.modal.open(item)}
       extraComponents={<Text>Date sent: {epochToDateString(item.timestamp)}</Text>} />
     );
-  }
-
-  toggleModal = (selectedUser) => {
-    this.setState({ isModalVisible: true, selectedUser});
   }
 
   getRef = () => {

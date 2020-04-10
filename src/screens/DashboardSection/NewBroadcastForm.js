@@ -6,14 +6,13 @@ import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
 import { Button, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import Modal from 'react-native-modal';
 import BannerButton from 'reusables/BannerButton';
+import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
+import UserSnippetListElement from 'reusables/UserSnippetListElement';
 import S from 'styling';
 import { logError, LONG_TIMEOUT, MAX_BROADCAST_WINDOW, MIN_BROADCAST_WINDOW, timedPromise } from 'utils/helpers';
 import { returnStatuses } from 'utils/serverValues';
-import UserSnippetListElement from 'reusables/UserSnippetListElement'
-import {DefaultLoadingModal} from 'reusables/LoadingComponents'
 
 
 export default class NewBroadcastForm extends React.Component {

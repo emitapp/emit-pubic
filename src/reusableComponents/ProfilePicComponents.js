@@ -9,7 +9,22 @@ import { logError } from 'utils/helpers';
  * Required props: `uid` (uid of the user to display) and `diameter`
  * Be sure that it is given a proper uid by the time it enters the DOM
  */
-export default class ProfilePicDisplayer extends React.Component {
+export default class ProfilePicCircle extends React.Component {
+
+    render(){
+        const {uid, diameter, style, ...otherProps} = this.props
+        return(
+            <ProfilePicRaw 
+                style={{ width: diameter, height: diameter, borderRadius: diameter / 2, ...style }}
+                uid = {uid}
+                {...otherProps}
+            />
+        )
+    }
+
+}
+
+export class ProfilePicRaw extends React.Component {
 
     constructor(props) {
         super(props);
@@ -28,18 +43,18 @@ export default class ProfilePicDisplayer extends React.Component {
     }
 
     render() {
-        const { diameter, style, ...otherProps } = this.props
+        const {style, ...otherProps} = this.props
         if (!this.state.downloadUrl) {
             return (
                 <Image
-                    style={{ width: diameter, height: diameter, borderRadius: diameter / 2, ...style }}
+                    style={style}
                     source={require('media/ProfilePicPlaceholder.png')}
                     {...otherProps}
                 />)
         } else {
             return (
                 <FastImage
-                    style={{ width: diameter, height: diameter, borderRadius: diameter / 2, ...style }}
+                    style={style}
                     source={{
                         uri: this.state.downloadUrl,
                         priority: FastImage.priority.normal,

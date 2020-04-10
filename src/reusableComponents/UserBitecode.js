@@ -6,7 +6,7 @@ import auth from '@react-native-firebase/auth';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
-import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
+import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
 
 export default class UserBitecode extends React.Component {
     render() {

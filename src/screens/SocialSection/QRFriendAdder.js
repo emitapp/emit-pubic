@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { RNCamera } from 'react-native-camera';
-import Modal from "react-native-modal";
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import FriendReqDialogue from './FriendReqDialogue';
+import FriendReqModal from './FriendReqModal';
 
 
 export default class ScanScreen extends Component {
@@ -12,6 +11,7 @@ export default class ScanScreen extends Component {
 
     setQRData = (e) => {
         this.setState({ QRData: e.data })
+        this.modal.open(e.data)
     }
 
     render() {
@@ -31,19 +31,9 @@ export default class ScanScreen extends Component {
                             </Text>}
                     />}
 
-                {this.state.QRData !== "" &&
-                    <Modal
-                        isVisible={true}
-                        style={{ justifyContent: "center", alignItems: "center" }}
-                        animationIn="fadeInUp"
-                        animationOut='fadeOutUp'
-                        animationOutTiming={0}>
-                        <FriendReqDialogue
-                            userUid={this.state.QRData}
-                            closeFunction={() => this.setState({ QRData: "" })}
-                        />
-                    </Modal>
-                }
+                <FriendReqModal 
+                    ref={modal => this.modal = modal} 
+                    onClosed = {() => this.setState({ QRData: "" })}/>
             </View>
         );
     }

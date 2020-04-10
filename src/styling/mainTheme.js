@@ -141,5 +141,14 @@ export default theme = {
             fontWeight: "normal"
         },
         fontFamily: "NunitoSans-SemiBold",
+    },
+
+    SocialIcon: {
+        style:{
+            marginRight: 0,
+            marginLeft: 0,
+            backgroundColor: "grey"
+        },
+        iconSize: 20,
     }
 }

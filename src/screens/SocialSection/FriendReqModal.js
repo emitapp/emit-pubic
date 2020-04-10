@@ -2,11 +2,14 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
-import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer';
-import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
+import { StyleSheet, View, Dimensions } from 'react-native';
+import { Button, Overlay, SocialIcon, Text, ThemeConsumer } from 'react-native-elements';
+import { TimeoutLoadingComponent } from 'reusables/LoadingComponents';
+import { ProfilePicRaw } from 'reusables/ProfilePicComponents';
+import { MinorActionButton } from 'reusables/ReusableButtons';
 import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import * as responseStatuses from 'utils/serverValues';
+import MaskedView from '@react-native-community/masked-view';
 
 
 /**
@@ -19,7 +22,8 @@ import * as responseStatuses from 'utils/serverValues';
  * 
  * It also needs ot be given a closeFunction prop (argumentless function)
  */
-export default class FriendReqDialogue extends React.Component {
+//This is not used directly, but is instead wrapped in a modal and exported as a FriendReqModal
+class FriendReqDialogue extends React.Component {
 
     constructor(props){
         super(props)
@@ -51,16 +55,42 @@ export default class FriendReqDialogue extends React.Component {
 
     render() {
         return (
+            <ThemeConsumer>
+            {({ theme }) => (
             <View style={styles.container}>
-                <ProfilePicDisplayer 
-                    diameter = {30} 
+
+                <MaskedView
+                    style = {{
+                        width: ModalWidth, 
+                        height: ProfilePicHeight, 
+                        marginTop: -12,
+                    }}
+                    maskElement={
+                    <View
+                        style={{
+                            // Mask is based off alpha channel.
+                            backgroundColor: 'black',
+                            width: "100%", 
+                            height: "100%",
+                            borderTopRightRadius: theme.Overlay.borderRadius,
+                            borderTopLeftRadius: theme.Overlay.borderRadius
+                        }}
+                    />
+                }>
+                    
+                <ProfilePicRaw
                     uid = {this.userUid} 
-                    style = {{marginRight: 10}} />
+                    style = {{width: ModalWidth, height: ProfilePicHeight}} />
+                </MaskedView>
 
                 {this.state.userInfo !== null &&
-                    <View>
-                        <Text>{this.state.userInfo.displayName}</Text>
-                        <Text>@{this.state.userInfo.username}</Text>
+                    <View style = {{alignSelf: "flex-start"}}>
+                        <Text h4 h4Style = {{fontWeight: "bold", textAlign: "left"}}>
+                            {this.state.userInfo.displayName}
+                        </Text>
+                        <Text style = {{fontSize: 20, fontStyle: "italic", color: theme.colors.grey1}}>
+                            @{this.state.userInfo.username}
+                        </Text>
                     </View>
                 }
 
@@ -68,47 +98,88 @@ export default class FriendReqDialogue extends React.Component {
                     <Text>Looks like a fatal error ocurred!</Text>                
                 }
 
-                {(!this.state.waitingForFuncResponse || this.state.timedOut) &&
-                    <Button title="Go Back" onPress={this.props.closeFunction}/>
-                }
-
                 {this.displayOptionsLoading()}
 
-                {this.displayActionsPanel()}
+                {this.displayActionsPanel(theme)}
+
+
+                {this.state.userInfo !== null &&
+                    <Text style = {{alignSelf: "flex-start"}}>Other Socials:</Text>                
+                }
+
+                {this.state.userInfo !== null &&
+                    <View style = {styles.buttonPanelContainer}>
+                        <SocialIcon
+                            raised={false}
+                            type='facebook'
+                        />
+                        <SocialIcon
+                            raised={false}
+                            type='twitter'
+                        />
+                        <SocialIcon
+                            raised={false}
+                            type='instagram'
+                        />
+                        <SocialIcon
+                            raised={false}
+                            type='github'
+                        />
+                    </View>
+                }
+
+                {(!this.state.waitingForFuncResponse || this.state.timedOut) &&
+                    <MinorActionButton title="Go Back" onPress={this.props.closeFunction}/>
+                }
 
             </View>
+            )}
+            </ThemeConsumer>
         )       
     }
 
     displayOptionsLoading = () => {
         if (this.state.gettingInitialData){
             return (
-                <TimeoutLoadingComponent
-                    hasTimedOut={this.state.timedOut}
-                    retryFunction={() => {
-                        this.setState({timedOut: false})
-                        this.getInitialData()
-                    }}
-                />
+                <View style = {{height: 120}}>
+                    <TimeoutLoadingComponent
+                        hasTimedOut={this.state.timedOut}
+                        retryFunction={() => {
+                            this.setState({timedOut: false})
+                            this.getInitialData()
+                        }}
+                    />
+                </View>
             )
         }
     }
 
-    displayActionsPanel = () => {
+    displayActionsPanel = (theme) => {
         if (this.state.gettingInitialData || this.state.option == actionOptions.NONE) return;
+        let isWarningButton = 
+            this.state.option === actionOptions.REMOVE || this.state.option === actionOptions.CANCELREQ
         if (!this.state.waitingForFuncResponse){
             return(
-                <Button title = {this.state.option} onPress = {this.performAction}/>
+                <Button 
+                    title = {this.state.option} 
+                    onPress = {this.performAction}
+                    containerStyle = {{marginVertical: 16}}
+                    buttonStyle = {{
+                        backgroundColor: isWarningButton ? theme.colors.error : theme.colors.primary
+                    }}
+                />
             )
         }else{
             return(
-                <TimeoutLoadingComponent
-                    hasTimedOut={this.state.timedOut}
-                    retryFunction={() => {
-                        this.setState({timedOut: false, waitingForFuncResponse: false})
-                        this.performAction()
-                    }}
-                />
+                <View style = {{height: 120}}>
+                    <TimeoutLoadingComponent
+                        hasTimedOut={this.state.timedOut}
+                        retryFunction={() => {
+                            this.setState({timedOut: false, waitingForFuncResponse: false})
+                            this.performAction()
+                        }}
+                    />
+                </View>
             )
         }
     }
@@ -123,7 +194,7 @@ export default class FriendReqDialogue extends React.Component {
             }
 
             //If we already don't have the user's snippet data, let's quickly get that
-            //It can be sone asynchronously tho
+            //It can be dome asynchronously tho since it's not essential
             if (!this.state.userInfo){
                 const snippetRef = database().ref(`/userSnippets/${this.userUid}`);
                 timedPromise(snippetRef.once('value'), MEDIUM_TIMEOUT)
@@ -190,6 +261,7 @@ export default class FriendReqDialogue extends React.Component {
                 return;
         }
 
+        this.props.disableClosing()
         try {
             const response = await timedPromise(callableFunction({
                 from: auth().currentUser.uid, 
@@ -210,6 +282,7 @@ export default class FriendReqDialogue extends React.Component {
                 logError(err)        
             }
         }
+        this.props.enableClosing()
     }
 
     refreshActionOption = () => {
@@ -231,6 +304,53 @@ export default class FriendReqDialogue extends React.Component {
     }
 }
 
+//This component can also be given the onClosed prop if 
+//you want to trigger something when it's been closed
+export default class FriendReqModal extends React.Component{
+
+    constructor(){
+        super()
+        this.state = { 
+            isModalVisible: false,
+            selectedUser: null
+        }
+        this.canBeClosed = true;
+    }
+
+
+    render(){
+        return(
+            <Overlay 
+                isVisible={this.state.isModalVisible}
+                style = {{justifyContent: "center", alignItems: "center"}}
+                onRequestClose = {this.attemptClose}
+                onBackdropPress = {this.attemptClose}
+                width = {ModalWidth}
+            >
+            <FriendReqDialogue 
+              selectedUserData = {this.state.selectedUser}
+              closeFunction={this.attemptClose}
+              disableClosing = {() => this.canBeClosed = false}
+              enableClosing = {() => this.canBeClosed = true}
+            />
+          </Overlay>
+        )
+    }
+
+    attemptClose = () => {
+        if (this.canBeClosed){
+            this.setState({ isModalVisible: false })
+            if (this.props.onClosed) this.props.onClosed()
+        }
+    }
+
+    open = (user) => {
+        this.setState({ isModalVisible: true, selectedUser: user })
+    }
+}
+
+const ModalWidth = Dimensions.get('window').width * 0.7
+const ProfilePicHeight = Dimensions.get('window').width * 0.6
 
 const actionOptions = {
     SENDREQ: 'Send Friend Request',
@@ -242,10 +362,16 @@ const actionOptions = {
 
 const styles = StyleSheet.create({
     container: {
-        width: "70%",
-        height: "50%",
+        width: "100%",
         backgroundColor: "white",
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    buttonPanelContainer: {
+        flexDirection: "row", 
+        marginTop: 8, 
+        width: "100%", 
+        justifyContent: 'space-evenly', 
+        alignContent: "center",
     }
 })

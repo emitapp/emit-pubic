@@ -2,7 +2,7 @@ import auth from '@react-native-firebase/auth'
 import database from '@react-native-firebase/database'
 import React from 'react'
 import { View } from "react-native"
-import ProfilePicDisplayer from 'reusables/ProfilePicDisplayer'
+import ProfilePicDisplayer from 'reusables/ProfilePicComponents'
 import { Text, ThemeConsumer } from 'react-native-elements'
 import { logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import { SmallLoadingComponent } from 'reusables/LoadingComponents'

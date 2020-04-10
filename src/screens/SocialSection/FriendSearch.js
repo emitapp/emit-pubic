@@ -2,12 +2,11 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
 import { Text, View } from 'react-native';
-import Modal from "react-native-modal";
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import UserSnippetListElement from 'reusables/UserSnippetListElement';
 import S from 'styling';
 import { logError } from 'utils/helpers';
-import FriendReqDialogue from './FriendReqDialogue';
+import FriendReqModal from './FriendReqModal';
 
 
 export default class FriendSearch extends React.Component {
@@ -15,7 +14,6 @@ export default class FriendSearch extends React.Component {
   state = { 
     errorMessage: null, 
     isModalVisible: false,
-    selectedUser: null
   }
 
   render() {
@@ -23,18 +21,8 @@ export default class FriendSearch extends React.Component {
     return (
       <View style={S.styles.containerFlexStart}>
 
-        <Modal 
-          isVisible={this.state.isModalVisible}
-          style = {{justifyContent: "center", alignItems: "center"}}
-          animationIn = "fadeInUp"
-          animationOut = 'fadeOutUp'
-          animationOutTiming = {0}
-        >
-          <FriendReqDialogue 
-            selectedUserData = {this.state.selectedUser}
-            closeFunction={() => this.setState({ isModalVisible: false })}
-          />
-        </Modal>
+        <FriendReqModal 
+          ref={modal => this.modal = modal} />
 
         <Text>Friend Search</Text>
         {this.state.errorMessage &&
@@ -67,11 +55,7 @@ export default class FriendSearch extends React.Component {
     return (
       <UserSnippetListElement 
       snippet={item} 
-      onPress={() => this.toggleModal(item)}/>
+      onPress={() => this.modal.open(item)}/>
     );
   }
-
-  toggleModal = (selectedUser) => {
-    this.setState({ isModalVisible: true, selectedUser});
-  };
 }

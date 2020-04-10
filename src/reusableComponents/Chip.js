@@ -32,7 +32,6 @@ export default class Chip extends React.PureComponent {
 
     mapTextChild = (child, color) => {
       var style = {...child.props.style, color, fontWeight: "bold" };
-      console.log(child.props.style)
       return React.cloneElement(child, {style}, child.props.children)
     }
 }

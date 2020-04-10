@@ -22,7 +22,8 @@ export default class SocialButtonHub extends React.Component {
 
             <Overlay 
                 isVisible={this.state.QRVisible}
-                onBackdropPress = {() => this.setState({QRVisible: false})}>
+                onBackdropPress = {() => this.setState({QRVisible: false})}
+                onRequestClose = {() => this.setState({QRVisible: false})}>
                 <View>
                     <UserBitecode color = {theme.colors.primary}/>
                     <MinorActionButton
