@@ -8,7 +8,7 @@ import S from 'styling';
 import { epochToDateString, logError } from 'utils/helpers';
 import EmptyState from 'reusables/EmptyState'
 import {Badge, Text} from 'react-native-elements'
-import TimeoutComponent from 'reusables/TimeoutComponent'
+import CountdownComponent from 'reusables/CountdownComponent'
 
 export default class ActiveBroadcasts extends React.Component {
 
@@ -26,12 +26,10 @@ export default class ActiveBroadcasts extends React.Component {
           </Text>}
 
           <DynamicInfiniteScroll
-            chunkSize = {10}
             errorHandler = {this.scrollErrorHandler}
             renderItem = {this.itemRenderer}
             generation = {0}
             dbref = {database().ref(`/activeBroadcasts/${auth().currentUser.uid}/public`)}
-            ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
             emptyStateComponent = {
               <EmptyState 
                 title = "Pretty chill day, huh?" 
@@ -64,7 +62,7 @@ export default class ActiveBroadcasts extends React.Component {
         <View style={{flexDirection:"column", flex: 1}}>
           <Text style = {{fontSize: 18, fontWeight: "bold"}}>{item.location}</Text>
           <Text>{epochToDateString(item.deathTimestamp)}</Text>
-          <TimeoutComponent
+          <CountdownComponent
             deadLine = {item.deathTimestamp} 
             renderer = {this.timeLeftRenderer}
           />

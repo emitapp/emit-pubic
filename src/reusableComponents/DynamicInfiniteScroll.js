@@ -2,6 +2,7 @@ import React from 'react';
 import { FlatList } from 'react-native';
 import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
 import EmptyState from 'reusables/EmptyState'
+import {Divider} from 'react-native-elements'
 
 
 /**
@@ -13,7 +14,6 @@ import EmptyState from 'reusables/EmptyState'
 
 // Required props:
 // dbref: the databse ref to use
-// chunkSize: Size of chunks to get from firebase rtdb 
 // errorHandler: what the component should do upon facing SDK errors 
 //         (not timeout erros tho, those are handled by the compenent)
 // renderItem: same as FLatlist RenderItem
@@ -23,6 +23,7 @@ import EmptyState from 'reusables/EmptyState'
 //endingPoint: the value to be used for .endat in both retrieveInitialChunk and retrieveMore
 //generation: used to indicate to the scrollview that it shouldd reset
 //emptyStateComponent: Will be rendered when the list is empty 
+// chunkSize: Size of chunks to get from firebase rtdb (default 10)
 
 //Also note that this compenent doesn't store lots of the variables it uses
 //in the state because this.setState() wouldn't update them immediately
@@ -32,7 +33,10 @@ import EmptyState from 'reusables/EmptyState'
 export default class DymanicInfiniteScroll extends React.Component {
 
     static defaultProps = {
-        style: { flex: 1, width: "100%" }  
+        style: { flex: 1, width: "100%"},
+        contentContainerStyle: {flex: 1, marginHorizontal: 8},
+        ItemSeparatorComponent: (() => <Divider />),
+        chunkSize: 10
     }
 
     constructor(props) {

@@ -4,7 +4,7 @@ import React from 'react';
 //Required Props:
 //deadLine : number
 //renderer: ({h: number, m: number, s: number}) -> Component
-export default class TimeoutComponent extends React.Component {
+export default class CountdownComponent extends React.Component {
     constructor(props) {
       super(props);
       var milliDifference = props.deadLine - Date.now()

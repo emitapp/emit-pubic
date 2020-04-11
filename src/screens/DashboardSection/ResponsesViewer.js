@@ -72,7 +72,6 @@ export default class ResponsesViewer extends React.Component {
         />
 
         <DynamicInfiniteScroll
-          chunkSize = {10}
           errorHandler = {this.scrollErrorHandler}
           renderItem = {this.itemRenderer}
           generation = {this.state.searchGeneration}
@@ -82,7 +81,6 @@ export default class ResponsesViewer extends React.Component {
             .orderByChild("status")
             .equalTo(this.getTargetName(this.state.currentTargetStatus))
           }
-          ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
         />
 
         <BannerButton

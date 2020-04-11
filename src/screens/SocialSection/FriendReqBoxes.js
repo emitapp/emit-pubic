@@ -5,7 +5,7 @@ import { View } from 'react-native';
 import { ButtonGroup, Text } from 'react-native-elements';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import EmptyState from 'reusables/EmptyState';
-import UserSnippetListElement from 'reusables/UserSnippetListElement';
+import {UserSnippetListElement} from 'reusables/ListElements';
 import S from 'styling';
 import { epochToDateString, logError } from 'utils/helpers';
 import FriendReqModal from './FriendReqModal';
@@ -46,12 +46,10 @@ export default class UserSearch extends React.Component {
 
 
             <DynamicInfiniteScroll
-              chunkSize = {10}
               errorHandler = {this.scrollErrorHandler}
               renderItem = {this.itemRenderer}
               generation = {this.state.searchGeneration}
               dbref = {this.getRef().orderByChild("timestamp")}
-              ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
               emptyStateComponent = {
                 <EmptyState 
                   title = "It's all clear!" 

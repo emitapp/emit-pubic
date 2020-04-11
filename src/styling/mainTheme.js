@@ -150,5 +150,11 @@ export default theme = {
             backgroundColor: "grey"
         },
         iconSize: 20,
+    },
+
+    Divider: {
+        style:{
+            height: 1
+        }
     }
 }

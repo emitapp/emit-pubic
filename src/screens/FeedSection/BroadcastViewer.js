@@ -8,7 +8,7 @@ import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
 import S from "styling";
 import { epochToDateString, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { responderStatuses, returnStatuses } from 'utils/serverValues';
-import UserSnippetListElement from 'reusables/UserSnippetListElement'
+import {UserSnippetListElement} from 'reusables/ListElements'
 import {DefaultLoadingModal} from 'reusables/LoadingComponents'
 
 
@@ -77,7 +77,7 @@ export default class BroadcastViewer extends React.Component {
 
         {this.state.showConfirmed &&
           <DynamicInfiniteScroll
-            chunkSize = {10}
+            
             errorHandler = {this.scrollErrorHandler}
             renderItem = {this.itemRenderer}
             generation = {0}
@@ -87,7 +87,6 @@ export default class BroadcastViewer extends React.Component {
               .orderByChild("status")
               .equalTo(responderStatuses.CONFIRMED)
             }
-            ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
           />
         }
       </View>

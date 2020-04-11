@@ -68,11 +68,9 @@ export default class GroupScreen extends React.Component {
           type = "dynamic"
           queryValidator = {(query) => true}
           queryTypes = {[{name: "Display Name", value: "displayNameQuery"}, {name: "Username", value: "usernameQuery"}]}
-          chunkSize = {10}
           errorHandler = {this.scrollErrorHandler}
           renderItem = {this.itemRenderer}
           dbref = {database().ref(`/userGroups/${this.groupSnippet.uid}/memberSnippets`)}
-          ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
         />
 
         

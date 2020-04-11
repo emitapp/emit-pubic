@@ -1,13 +1,13 @@
-import UserSnippetListElement from 'reusables/UserSnippetListElement';
 import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
 import { Text, TextInput, View } from 'react-native';
 import BannerButton from 'reusables/BannerButton';
+import { UserSnippetListElement } from 'reusables/ListElements';
+import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
-import { logError, LONG_TIMEOUT, timedPromise, isOnlyWhitespace } from 'utils/helpers';
-import {DefaultLoadingModal} from 'reusables/LoadingComponents'
+import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 
 
 export default class NewGroupScreen extends React.Component {
@@ -56,11 +56,9 @@ export default class NewGroupScreen extends React.Component {
           type = "static"
           queryValidator = {(query) => true}
           queryTypes = {[{name: "Display Name", value: "displayNameQuery"}, {name: "Username", value: "usernameQuery"}]}
-          chunkSize = {10}
           errorHandler = {this.scrollErrorHandler}
           renderItem = {this.itemRenderer}
           dbref = {database().ref("/userSnippets")}
-          ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
         />
 
 

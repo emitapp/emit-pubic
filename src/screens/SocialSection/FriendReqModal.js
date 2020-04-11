@@ -88,7 +88,7 @@ class FriendReqDialogue extends React.Component {
                         <Text h4 h4Style = {{fontWeight: "bold", textAlign: "left"}}>
                             {this.state.userInfo.displayName}
                         </Text>
-                        <Text style = {{fontSize: 20, fontStyle: "italic", color: theme.colors.grey1}}>
+                        <Text style = {{fontSize: 16, fontStyle: "italic", color: theme.colors.grey1}}>
                             @{this.state.userInfo.username}
                         </Text>
                     </View>

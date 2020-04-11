@@ -26,12 +26,10 @@ export default class Feed extends React.Component {
           </Text>}
 
           <DynamicInfiniteScroll
-            chunkSize = {10}
             errorHandler = {this.scrollErrorHandler}
             renderItem = {this.itemRenderer}
             generation = {0}
             dbref = {database().ref(`/feeds/${auth().currentUser.uid}`)}
-            ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
             emptyStateComponent = {
               <EmptyState 
                 title = "It's pretty quiet here" 

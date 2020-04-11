@@ -7,9 +7,9 @@ import functions from '@react-native-firebase/functions';
 import React from 'react';
 import { Button, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import BannerButton from 'reusables/BannerButton';
+import { UserSnippetListElement } from 'reusables/ListElements';
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
-import UserSnippetListElement from 'reusables/UserSnippetListElement';
 import S from 'styling';
 import { logError, LONG_TIMEOUT, MAX_BROADCAST_WINDOW, MIN_BROADCAST_WINDOW, timedPromise } from 'utils/helpers';
 import { returnStatuses } from 'utils/serverValues';
@@ -139,11 +139,9 @@ export default class NewBroadcastForm extends React.Component {
                     type = "static"
                     queryValidator = {(query) => true}
                     queryTypes = {[{name: "Display Name", value: "displayNameQuery"}, {name: "Username", value: "usernameQuery"}]}
-                    chunkSize = {10}
                     errorHandler = {this.scrollErrorHandler}
                     renderItem = {this.friendRenderer}
                     dbref = {database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`)}
-                    ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
                     />    
                 </View>
             )
@@ -155,11 +153,9 @@ export default class NewBroadcastForm extends React.Component {
                 type = "dynamic"
                 queryValidator = {(query) => true}
                 queryTypes = {[{name: "Name", value: "name"}]}
-                chunkSize = {10}
                 errorHandler = {this.scrollErrorHandler}
                 renderItem = {this.groupRenderer}
                 dbref = {database().ref(`/userGroupMemberships/${userUid}`)}
-                ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
               />      
             )
         }
@@ -169,11 +165,9 @@ export default class NewBroadcastForm extends React.Component {
             type = "dynamic"
             queryValidator = {(query) => true}
             queryTypes = {[{name: "GName", value: "name"}]}
-            chunkSize = {10}
             errorHandler = {this.scrollErrorHandler}
             renderItem = {this.maskRenderer}
             dbref = {database().ref(`/userFriendGroupings/${userUid}/custom/snippets`)}
-            ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
             />
         )
     }

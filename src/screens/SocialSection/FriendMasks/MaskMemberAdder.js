@@ -1,13 +1,12 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Text, TextInput, View } from 'react-native';
 import BannerButton from 'reusables/BannerButton';
-import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
+import { UserSnippetListElement } from 'reusables/ListElements';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
 import { isOnlyWhitespace, logError } from 'utils/helpers';
-import UserSnippetListElement from 'reusables/UserSnippetListElement';
 
 
 export default class NewMaskScreen extends React.Component {
@@ -49,11 +48,9 @@ export default class NewMaskScreen extends React.Component {
           type = "static"
           queryValidator = {(query) => true}
           queryTypes = {[{name: "Display Name", value: "displayNameQuery"}, {name: "Username", value: "usernameQuery"}]}
-          chunkSize = {10}
           errorHandler = {this.scrollErrorHandler}
           renderItem = {this.itemRenderer}
           dbref = {database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`)}
-          ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
         />
 
 

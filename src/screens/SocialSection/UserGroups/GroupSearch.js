@@ -30,11 +30,9 @@ export default class GroupSearch extends React.Component {
           type = "dynamic"
           queryValidator = {(query) => true}
           queryTypes = {[{name: "Name", value: "name"}]}
-          chunkSize = {10}
           errorHandler = {this.scrollErrorHandler}
           renderItem = {this.itemRenderer}
           dbref = {database().ref(`/userGroupMemberships/${userUid}`)}
-          ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
         />
 
         <BannerButton

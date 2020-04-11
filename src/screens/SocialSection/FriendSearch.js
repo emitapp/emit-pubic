@@ -3,11 +3,10 @@ import database from '@react-native-firebase/database';
 import React from 'react';
 import { Text, View } from 'react-native';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
-import UserSnippetListElement from 'reusables/UserSnippetListElement';
+import {UserSnippetListElement} from 'reusables/ListElements';
 import S from 'styling';
 import { logError } from 'utils/helpers';
 import FriendReqModal from './FriendReqModal';
-
 
 export default class FriendSearch extends React.Component {
 
@@ -34,11 +33,9 @@ export default class FriendSearch extends React.Component {
           type = "static"
           queryValidator = {(query) => true}
           queryTypes = {[{name: "Display Name", value: "displayNameQuery"}, {name: "Username", value: "usernameQuery"}]}
-          chunkSize = {10}
           errorHandler = {this.scrollErrorHandler}
           renderItem = {this.itemRenderer}
           dbref = {database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`)}
-          ItemSeparatorComponent = {() => <View style = {{height: 10, backgroundColor: "grey"}}/>}
         />
 
       </View>

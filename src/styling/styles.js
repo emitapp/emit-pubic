@@ -26,9 +26,7 @@ const defaultStyles = StyleSheet.create({
         flexDirection: 'row'
     },
     listElement: {
-        backgroundColor: 'ghostwhite',
-        paddingVertical: 5,
-        paddingHorizontal: 10,
+        paddingVertical: 8,
         alignItems: "center",
         flexDirection: 'row',
       }

@@ -4,6 +4,7 @@ import { MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
 import {Text} from 'react-native-elements'
 import EmptyState from 'reusables/EmptyState'
+import { Divider } from "react-native-elements"
 
 
 /**
@@ -16,7 +17,6 @@ import EmptyState from 'reusables/EmptyState'
 
 // Required props:
 // dbref: the databse ref to use
-// chunkSize: Size of chunks to get from firebase rtdb 
 // errorHandler: what the component should do upon facing SDK errors 
 //         (not timeout erros tho, those are handled by the compenent)
 // orderBy: the name of the key you're ordering by.
@@ -26,6 +26,7 @@ import EmptyState from 'reusables/EmptyState'
 //startingPoint: the value to be used for .startat in retrieveInitialChunk
 //endingPoint: the value to be used for .endat in both retrieveInitialChunk and retrieveMore
 //emptyStateComponent: Will be rendered when the list is empty 
+// chunkSize: Size of chunks to get from firebase rtdb  (default 10)
 
 // generation: used to indicate to the scrollview that it shoudl reset
 //Generation is used to prevent api calls that were called for previous
@@ -40,7 +41,10 @@ import EmptyState from 'reusables/EmptyState'
 export default class StaticInfiniteScroll extends React.Component {
 
     static defaultProps = {
-        style: { flex: 1, width: "100%" }  
+        style: { flex: 1, width: "100%"},
+        contentContainerStyle: {flex: 1, marginHorizontal: 8},
+        ItemSeparatorComponent: (() => <Divider />),
+        chunkSize: 10
     }
 
     constructor(props) {
@@ -234,7 +238,6 @@ export default class StaticInfiniteScroll extends React.Component {
                     onEndReached={() => this.retrieveMore(this.props.generation)}
                     onEndReachedThreshold={0.1}
                     refreshing={this.refreshing}
-                    contentContainerStyle = {{flex: 1}}
                     ListEmptyComponent = {this.renderEmptyState}
                     {...this.props}
                 />
