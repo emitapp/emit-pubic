@@ -43,11 +43,11 @@ export default class SearchableInfiniteScroll extends React.Component {
   }
 
   render() {
-    const {type, queryTypes, queryValidator, dbref, ...otherProps } = this.props
+    const {type, queryTypes, queryValidator, dbref, style, ...otherProps } = this.props
     return (
       <ThemeConsumer>
       {({ theme }) => (
-      <View style={{...S.styles.containerFlexStart, width: "100%"}}>
+      <View style={{...S.styles.containerFlexStart, width: "100%", ...style}}>
       
         <SearchBar
           autoCapitalize="none"

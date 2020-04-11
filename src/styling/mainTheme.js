@@ -154,7 +154,8 @@ export default theme = {
 
     Divider: {
         style:{
-            height: 1
+            height: 1,
+            width: "100%"
         }
     }
 }

@@ -4,12 +4,14 @@ const defaultStyles = StyleSheet.create({
     container: {
       flex: 1,
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
+      marginTop: 8
     },
     containerFlexStart: {
         flex: 1,
         justifyContent: 'flex-start',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: 8
     },
     textInput: {
       height: 40,

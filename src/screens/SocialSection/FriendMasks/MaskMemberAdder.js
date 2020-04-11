@@ -1,12 +1,13 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { Text, TextInput, View } from 'react-native';
+import { View } from 'react-native';
 import BannerButton from 'reusables/BannerButton';
 import { UserSnippetListElement } from 'reusables/ListElements';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
 import { isOnlyWhitespace, logError } from 'utils/helpers';
+import {Text, Input, CheckBox} from 'react-native-elements'
 
 
 export default class NewMaskScreen extends React.Component {
@@ -28,21 +29,25 @@ export default class NewMaskScreen extends React.Component {
       <View style={S.styles.containerFlexStart}>
 
         {!this.maskSnippet ? (
-          <TextInput
-            style={S.styles.textInput}
+          <Input
             autoCapitalize="none"
-            placeholder="Enter your mask's name"
+            label="Enter your mask's name"
+            placeholder = "Best group name ever"
             onChangeText={maskName => this.setState({ maskName })}
             value={this.state.maskName}
           />
         ) : (
-          <Text>{this.state.maskName}</Text>
+          <Text h4>{this.state.maskName}</Text>
         )}
               
 
-        <Text>ADD FRIENDS</Text>
+        <Text style = {{fontWeight: "bold"}}>Select the people you want to add</Text>
 
-        <Text>{Object.keys(this.state.selectedUsers).map((uid) => `${uid}  `)}</Text>
+        {Object.keys(this.state.selectedUsers).length != 0 && 
+          <Text style = {{textAlign: "center", marginTop: 8}}>
+            Adding {Object.values(this.state.selectedUsers).map(({username}) => `@${username} `)}
+          </Text>
+        }
 
         <SearchableInfiniteScroll
           type = "static"
@@ -99,10 +104,14 @@ export default class NewMaskScreen extends React.Component {
 
   itemRenderer = ({ item }) => {
     return (
+      <View style = {{alignItems: "center", width: "100%", flexDirection: "row"}}>
         <UserSnippetListElement 
-        style = {{backgroundColor: this.state.selectedUsers[item.uid] ? "lightgreen" : "white"}}
-        snippet={item} 
-        onPress={() => this.toggleSelection(item)}/>
+          style = {{flex: 1}}
+          snippet={item} 
+          onPress={() => this.toggleSelection(item)}
+        />
+        {this.state.selectedUsers[item.uid] && <CheckBox checked = {true} /> }
+      </View>
     );
   }
 

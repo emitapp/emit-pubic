@@ -42,7 +42,7 @@ export default class StaticInfiniteScroll extends React.Component {
 
     static defaultProps = {
         style: { flex: 1, width: "100%"},
-        contentContainerStyle: {flex: 1, marginHorizontal: 8},
+        contentContainerStyle: {flexGrow: 1, marginHorizontal: 8},
         ItemSeparatorComponent: (() => <Divider />),
         chunkSize: 10
     }

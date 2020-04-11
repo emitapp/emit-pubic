@@ -1,9 +1,11 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
+import { Button, Divider, Icon, Input, Overlay, Text, ThemeConsumer } from 'react-native-elements';
 import BannerButton from 'reusables/BannerButton';
-import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
+import { UserSnippetListElement } from 'reusables/ListElements';
+import { MinorActionButton, AdditionalOptionsButton } from 'reusables/ReusableButtons';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
 import { isOnlyWhitespace, logError } from 'utils/helpers';
@@ -17,29 +19,92 @@ export default class NewMaskScreen extends React.Component {
     this.state = { 
       errorMessage: null, 
       maskName: this.maskSnippet ? this.maskSnippet.name : "",
-      selectedUserUids: {},
+      usersToBeRemoved: {},
+      currentlySelectedUser: null,
       newMaskName: this.maskSnippet ? this.maskSnippet.name : "",
-      inEditMode: false
+      inEditMode: false,
+      extraOptionsModalOpen: false
     }
   }
 
   render() {
     let userUid = auth().currentUser.uid
     if (!this.maskSnippet) return null;
-    const {inEditMode, newMaskName, maskName} = this.state;
+    const {inEditMode, newMaskName, currentlySelectedUser, extraOptionsModalOpen} = this.state;
     return (
+      <ThemeConsumer>
+      {({ theme }) => (
       <View style={S.styles.containerFlexStart}>
-   
-        <Button title="Delete Mask" onPress={this.deleteMask}/>
-        <Button title="Add Members" onPress={() => this.props.navigation.navigate('MaskMemberAdder', {mask: this.maskSnippet})}/>
 
-        <TextInput
-          style={S.styles.textInput}
-          autoCapitalize="none"
-          onChangeText={text => this.setState({ newMaskName: text })}
-          value={inEditMode ? newMaskName : maskName}
-          editable={inEditMode}
-        />
+        <Overlay 
+          isVisible = {currentlySelectedUser !== null}
+          onBackdropPress = {this.deselectUser}
+          onRequestClose = {this.deselectUser}>         
+          <>
+            {currentlySelectedUser !== null && 
+              <Text style = {{fontWeight: "bold", fontSize: 18, marginBottom: 8}}>
+                @{currentlySelectedUser.username}
+              </Text>
+            }
+            <Button 
+              buttonStyle = {{backgroundColor: theme.colors.error}}
+              title = "Remove User" 
+              onPress = {() => this.queueForRemoval(currentlySelectedUser)}
+            />
+            <MinorActionButton 
+              title = "Close" 
+              onPress = {this.deselectUser}
+            />
+          </>
+        </Overlay>
+
+
+        <Overlay 
+          isVisible = {extraOptionsModalOpen}
+          onBackdropPress = {() => this.closeExtraOptionsModal()}
+          onRequestClose = {() => this.closeExtraOptionsModal()}>         
+          <>
+          <Button 
+              title = "Add Members" 
+              onPress={() => 
+                this.closeExtraOptionsModal(
+                  () => this.props.navigation.navigate('MaskMemberAdder', {mask: this.maskSnippet})
+                )}
+            />
+            <Button 
+              buttonStyle = {{backgroundColor: theme.colors.error}}
+              title = "Delete Mask" 
+              onPress = {() => this.deleteMask}
+            />
+            <MinorActionButton 
+              title = "Close" 
+              onPress = {() => this.closeExtraOptionsModal()}
+            />
+          </>
+        </Overlay>
+   
+        {inEditMode &&
+          <>
+            <View style = {{
+              flexDirection: "row", 
+              width: "100%", 
+              justifyContent: "center", 
+              marginBottom: 8,
+              alignItems: "center"}}
+            >
+              <View style = {{flex: 1}}>
+                <Input
+                  label = "Mask Name"
+                  autoCapitalize="none"
+                  onChangeText={text => this.setState({ newMaskName: text })}
+                  value={newMaskName}
+                /> 
+              </View>
+              <AdditionalOptionsButton onPress={this.openExtraOptionsModal} />
+            </View>
+            <Divider />
+          </>
+        }
 
         <SearchableInfiniteScroll
           type = "dynamic"
@@ -66,7 +131,11 @@ export default class NewMaskScreen extends React.Component {
             <BannerButton
               extraStyles = {{flex: 1}}
               color = {S.colors.buttonRed}
-              onPress={() => this.setState({inEditMode: false})}
+              onPress={() => this.setState({
+                inEditMode: false, 
+                usersToBeRemoved: {}, 
+                newMaskName: this.maskSnippet ? this.maskSnippet.name : ""
+              })}
               iconName = {S.strings.cancel}
               title = "CANCEL"
             />        
@@ -81,11 +150,13 @@ export default class NewMaskScreen extends React.Component {
         )}
         
       </View>
+      )}
+      </ThemeConsumer>
     )
   }
 
   applyEdits = () => {
-    const {selectedUserUids, newMaskName} = this.state
+    const {usersToBeRemoved, newMaskName} = this.state
     if (isOnlyWhitespace(newMaskName)){
       console.log("No cigar, my friend")
     }
@@ -93,7 +164,7 @@ export default class NewMaskScreen extends React.Component {
     const infoPath = `/userFriendGroupings/${auth().currentUser.uid}/custom/details/${this.maskSnippet.uid}`
 
     const updates = {}
-    for (const uid in selectedUserUids) {
+    for (const uid in usersToBeRemoved) {
       //Deleting all selected users
       updates[`${infoPath}/memberSnippets/${uid}`] = null
       updates[`${infoPath}/memberUids/${uid}`] = null
@@ -134,24 +205,39 @@ export default class NewMaskScreen extends React.Component {
   }
 
   itemRenderer = ({ item }) => {
-    const {inEditMode, selectedUserUids} = this.state
+    const {inEditMode, usersToBeRemoved} = this.state
+    if (usersToBeRemoved[item.uid]) return null; //Stop rendering this user if he's queued for deletion
     return (
-      <TouchableOpacity 
-        style = {[S.styles.listElement, {backgroundColor: selectedUserUids[item.uid] && inEditMode ? "red" : "white"}]}
-        onPress={() => this.toggleSelection(item)}
-        disabled={!this.state.inEditMode}>
-          <ProfilePicDisplayer diameter = {30} uid = {item.uid} style = {{marginRight: 10}} />
-          <View>
-            <Text>{item.displayName}</Text>
-            <Text>@{item.username}</Text>
-            <Text>{item.uid}</Text>
-          </View>
-      </TouchableOpacity>
+      <View style = {{width: "100%", flexDirection: "row", alignItems: "center"}}>
+        <UserSnippetListElement snippet = {item} style = {{flex: 1}} />
+        {inEditMode && 
+          <AdditionalOptionsButton
+            onPress={() => this.selectUser(item)} />
+          }
+      </View>
     );
   }
 
-  toggleSelection = (snippet) => {
-    const copiedObj = {...this.state.selectedUserUids}
+  selectUser = (user) => {
+    this.setState({currentlySelectedUser: user})
+  }
+
+  deselectUser = () => {
+    this.setState({currentlySelectedUser: null})
+  }
+
+  closeExtraOptionsModal = (callback) => {
+    console.log(callback)
+    if (callback) this.setState({extraOptionsModalOpen: false}, callback)
+    else this.setState({extraOptionsModalOpen: false})
+  }
+
+  openExtraOptionsModal = () => {
+    this.setState({extraOptionsModalOpen: true})
+  }
+
+  queueForRemoval = (snippet) => {
+    const copiedObj = {...this.state.usersToBeRemoved}
     if (copiedObj[snippet.uid]){
       //Then remove the user's uid
       delete copiedObj[snippet.uid]
@@ -159,16 +245,7 @@ export default class NewMaskScreen extends React.Component {
       //Add the user's uid
       copiedObj[snippet.uid] = true
     }
-    this.setState({selectedUserUids: copiedObj});
+    this.setState({usersToBeRemoved: copiedObj});
+    this.deselectUser()
   }
 }
-
-const styles = StyleSheet.create({
-  bottomButton: {
-    justifyContent: "center",
-    alignItems: 'center', 
-    height: 50,
-    flexDirection: 'row',
-    flex: 1
-  },
-})

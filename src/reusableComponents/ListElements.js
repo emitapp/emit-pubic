@@ -44,7 +44,7 @@ export class FriendMaskListElement extends React.PureComponent {
       <ThemeConsumer>
       {({ theme }) => (
         <TouchableOpacity 
-          style = {S.styles.listElement}
+          style = {{...S.styles.listElement, ...this.props.style}}
           onPress = {onPress}>
             <View style = {{marginLeft: 8}}>
               <Text style = {{fontWeight: 'bold', fontSize: 18}} >{maskInfo.name}</Text>
@@ -67,7 +67,7 @@ export class UserGroupListElement extends React.PureComponent {
     const {groupInfo, onPress} = this.props
     return (
       <TouchableOpacity 
-        style = {S.styles.listElement}
+        style = {{...S.styles.listElement, ...this.props.style}}
         onPress = {onPress}>
           <View style = {{marginLeft: 8}}>
             <Text style = {{fontWeight: 'bold', fontSize: 18}} >{groupInfo.name}</Text>
