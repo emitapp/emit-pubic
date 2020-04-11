@@ -227,7 +227,6 @@ export default class NewMaskScreen extends React.Component {
   }
 
   closeExtraOptionsModal = (callback) => {
-    console.log(callback)
     if (callback) this.setState({extraOptionsModalOpen: false}, callback)
     else this.setState({extraOptionsModalOpen: false})
   }
