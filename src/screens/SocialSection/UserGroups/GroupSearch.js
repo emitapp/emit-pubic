@@ -6,6 +6,7 @@ import BannerButton from 'reusables/BannerButton';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
 import { logError } from 'utils/helpers';
+import {UserGroupListElement} from 'reusables/ListElements'
 
 
 export default class GroupSearch extends React.Component {
@@ -54,11 +55,10 @@ export default class GroupSearch extends React.Component {
 
   itemRenderer = ({ item }) => {
     return (
-      <TouchableOpacity 
-        style = {S.styles.listElement}
-        onPress = {() => this.props.navigation.navigate('GroupViewer', {group: item}) }>
-            <Text>{item.name}</Text>
-      </TouchableOpacity>
+      <UserGroupListElement
+        groupInfo = {item}
+        onPress = {() => this.props.navigation.navigate('GroupViewer', {group: item}) }
+      />
     );
   }
 }

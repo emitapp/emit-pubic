@@ -6,6 +6,7 @@ import BannerButton from 'reusables/BannerButton';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
 import { logError } from 'utils/helpers';
+import {FriendMaskListElement} from 'reusables/ListElements'
 
 
 export default class FriendMaskSearch extends React.Component {
@@ -54,12 +55,11 @@ export default class FriendMaskSearch extends React.Component {
 
   itemRenderer = ({ item }) => {
     return (
-      <TouchableOpacity 
-        style = {S.styles.listElement}
-        onPress = {() => this.props.navigation.navigate('MaskViewer', {mask: item}) }>
-            <Text>{item.name}</Text>
-            <Text>Member count: {item.memberCount}</Text>
-      </TouchableOpacity>
+      <FriendMaskListElement
+        maskInfo = {item}
+        onPress = {() => this.props.navigation.navigate('MaskViewer', {mask: item}) }
+      />
+
     );
   }
 }
