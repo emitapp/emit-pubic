@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { RNCamera } from 'react-native-camera';
+import { ThemeConsumer, Text } from 'react-native-elements';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import FriendReqModal from './FriendReqModal';
-
 
 export default class ScanScreen extends Component {
 
@@ -16,53 +16,48 @@ export default class ScanScreen extends Component {
 
     render() {
         return (
+            <ThemeConsumer>
+            {({ theme }) => (
             <View style = {styles.container}>
+                
                 {this.state.QRData == "" &&
-                    <QRCodeScanner
-                        onRead={this.setQRData}
-                        flashMode={RNCamera.Constants.FlashMode.off}
-                        cameraProps={{ ratio: '1:1' }}
-                        checkAndroid6Permissions={true}
-                        showMarker={true}
-                        markerStyle={styles.cameraBorder}
-                        topContent={
-                            <Text style={styles.centerText}>
-                                Scan a Biteup QR Code to add someone!
-                            </Text>}
-                    />}
+                <>
+                    <Text style={styles.centerText}>
+                        Scan a Bitecode to send a friend request!
+                    </Text>
+                    <View style = {{width: "100%", flex: 1}}>
+                        <QRCodeScanner
+                            onRead={this.setQRData}
+                            flashMode={RNCamera.Constants.FlashMode.off}
+                            checkAndroid6Permissions={true}
+                            showMarker={true}
+                            markerStyle={{...styles.cameraBorder, color: theme.colors.primary}}
+                        />
+                    </View>
+                </>
+                }
 
                 <FriendReqModal 
                     ref={modal => this.modal = modal} 
                     onClosed = {() => this.setState({ QRData: "" })}/>
             </View>
-        );
+            )}
+            </ThemeConsumer>
+        )
     }
 }
 
 const styles = StyleSheet.create({
     centerText: {
-        flex: 1,
         fontSize: 18,
-        padding: 32,
-        color: '#777',
-    },
-    textBold: {
-        fontWeight: '500',
-        color: '#000',
-    },
-    buttonText: {
-        fontSize: 21,
-        color: 'rgb(0,122,255)',
-    },
-    buttonTouchable: {
-        padding: 16,
+        textAlign: "center"
     },
     cameraBorder: {
-        borderColor: "orange",
         borderRadius: 20
     },
     container: {
         flex: 1,
+        marginTop: 16,
         justifyContent: 'flex-start',
         alignItems: 'center'
     },
