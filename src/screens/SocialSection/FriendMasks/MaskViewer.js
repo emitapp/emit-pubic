@@ -86,7 +86,7 @@ export default class NewMaskScreen extends React.Component {
               titleStyle = {{color: theme.colors.error}}
               type = "clear"
               title = "Delete Mask" 
-              onPress = {() => this.deleteMask}
+              onPress = {() => this.deleteMask()}
             />
             <MinorActionButton 
               title = "Close" 
