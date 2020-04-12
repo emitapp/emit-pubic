@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Button } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { ThemeConsumer, Text } from 'react-native-elements';
 import QRCodeScanner from 'react-native-qrcode-scanner';
@@ -11,7 +11,7 @@ export default class ScanScreen extends Component {
 
     setQRData = (e) => {
         this.setState({ QRData: e.data })
-        this.modal.open(e.data)
+        this.modal.openUsingUid(e.data)
     }
 
     render() {

@@ -5,13 +5,13 @@ const defaultStyles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      marginTop: 8
+      paddingTop: 8
     },
     containerFlexStart: {
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        marginTop: 8
+        paddingTop: 8
     },
     textInput: {
       height: 40,

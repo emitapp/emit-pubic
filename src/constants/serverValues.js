@@ -22,3 +22,13 @@ export const validUsername = (username) => {
     const normalizedUsername = username.normalize("NFKC").toLowerCase()
     return regexTest.test(normalizedUsername)
 }
+
+export const isValidDBPath = (path) => {
+    if (path === "") return false
+    const forbiddenChars = [".", "#", "$", "[", "]"]
+    let valid = true
+    forbiddenChars.forEach(char => {
+        if (path.includes(char)) valid = false
+    });
+    return valid
+}

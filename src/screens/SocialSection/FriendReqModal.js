@@ -1,15 +1,16 @@
+import MaskedView from '@react-native-community/masked-view';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
-import { StyleSheet, View, Dimensions } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import { Button, Overlay, SocialIcon, Text, ThemeConsumer } from 'react-native-elements';
 import { TimeoutLoadingComponent } from 'reusables/LoadingComponents';
 import { ProfilePicRaw } from 'reusables/ProfilePicComponents';
 import { MinorActionButton } from 'reusables/ReusableButtons';
 import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import * as responseStatuses from 'utils/serverValues';
-import MaskedView from '@react-native-community/masked-view';
+import { isValidDBPath } from 'utils/serverValues';
 
 
 /**
@@ -43,7 +44,7 @@ class FriendReqDialogue extends React.Component {
             waitingForFuncResponse: false,  //Waiting for a response from the Firebase Cloud Function
             userInfo,
             timedOut: false, //Timed out during any of the operations 
-            fatalError: false,
+            extraMessage: false,
             option: "" //Which cloud function the user can user for this other user
         }
     }
@@ -94,8 +95,8 @@ class FriendReqDialogue extends React.Component {
                     </View>
                 }
 
-                {this.state.fatalError &&
-                    <Text>Looks like a fatal error ocurred!</Text>                
+                {this.state.extraMessage &&
+                    <Text>{this.state.extraMessage}</Text>                
                 }
 
                 {this.displayOptionsLoading()}
@@ -187,25 +188,42 @@ class FriendReqDialogue extends React.Component {
     getInitialData = async () => {
         try{
             const uid = auth().currentUser.uid; 
-            if (!this.userUid) return;
+            if (!this.userUid){
+                this.setState({extraMessage: "No data"})
+                return;
+            } 
             if (uid == this.userUid){
-                this.setState({gettingInitialData: false, option: actionOptions.NONE})
+                this.setState({
+                    gettingInitialData: false, 
+                    option: actionOptions.NONE,
+                    extraMessage: "This is you!"
+                })
+                return;
+            }
+            if (!isValidDBPath(this.userUid)){
+                this.setState({
+                    gettingInitialData: false, 
+                    option: actionOptions.NONE,
+                    extraMessage: "Invalid Bitecode"
+                })
                 return;
             }
 
             //If we already don't have the user's snippet data, let's quickly get that
-            //It can be dome asynchronously tho since it's not essential
+            //This is also a good way to chekc if this user even exists in the first place
             if (!this.state.userInfo){
                 const snippetRef = database().ref(`/userSnippets/${this.userUid}`);
-                timedPromise(snippetRef.once('value'), MEDIUM_TIMEOUT)
-                    .then(snippetSnapshot => {
-                        if (snippetSnapshot.exists()){
-                            this.setState({userInfo: snippetSnapshot.val()})
-                        }else{
-                            this.setState({gettingInitialData: false, option: actionOptions.NONE})
-                        }
+                const snippetSnapshot = await timedPromise(snippetRef.once('value'), MEDIUM_TIMEOUT)
+                if (snippetSnapshot.exists()){
+                    this.setState({userInfo: snippetSnapshot.val()})
+                }else{
+                    this.setState({
+                        gettingInitialData: false, 
+                        option: actionOptions.NONE,
+                        extraMessage: "Looks like this user doesn't exist."
                     })
-                    .catch(err => logError(err, false)); //It's not a bit deal, just leave it alone
+                    return
+                }
             }
 
 
@@ -238,7 +256,11 @@ class FriendReqDialogue extends React.Component {
                 this.setState({timedOut: true})
             }else{
                 logError(err)
-                this.setState({fatalError: true})
+                this.setState({
+                    gettingInitialData: false, 
+                    option: actionOptions.NONE,
+                    extraMessage: "Looks like something went wrong!"
+                })
             }
         }
     }
@@ -312,7 +334,8 @@ export default class FriendReqModal extends React.Component{
         super()
         this.state = { 
             isModalVisible: false,
-            selectedUser: null
+            selectedUser: null,
+            selectedUserUid: null
         }
         this.canBeClosed = true;
     }
@@ -329,6 +352,7 @@ export default class FriendReqModal extends React.Component{
             >
             <FriendReqDialogue 
               selectedUserData = {this.state.selectedUser}
+              userUid = {this.state.selectedUserUid}
               closeFunction={this.attemptClose}
               disableClosing = {() => this.canBeClosed = false}
               enableClosing = {() => this.canBeClosed = true}
@@ -346,6 +370,10 @@ export default class FriendReqModal extends React.Component{
 
     open = (user) => {
         this.setState({ isModalVisible: true, selectedUser: user })
+    }
+
+    openUsingUid = (uid) => {
+        this.setState({ isModalVisible: true, selectedUserUid: uid })
     }
 }
 
