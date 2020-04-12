@@ -61,7 +61,6 @@ export default class SearchableInfiniteScroll extends React.Component {
           <Text style = {{marginHorizontal: 16}}>Search by...</Text>
 
           <FlatList
-            style = {{height: 30}}
             horizontal={true}
             renderItem = {({item}) => this.queryOptionRenerer(item, theme.colors.secondary)}
             data={this.props.queryTypes}

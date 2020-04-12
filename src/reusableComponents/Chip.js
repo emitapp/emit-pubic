@@ -43,7 +43,8 @@ const styles = StyleSheet.create({
       borderRadius: 10,
       justifyContent: 'center',
       alignItems: 'center',
-      padding: 8
+      paddingHorizontal: 8,
+      paddingVertical: 4
     },
     selected: {
       marginRight: 10,
@@ -51,6 +52,7 @@ const styles = StyleSheet.create({
       borderRadius: 10,
       justifyContent: 'center',
       alignItems: 'center',
-      padding: 8
+      paddingHorizontal: 8,
+      paddingVertical: 4
     }
   })
