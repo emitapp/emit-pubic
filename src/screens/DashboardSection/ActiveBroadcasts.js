@@ -2,7 +2,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
-import BannerButton from 'reusables/BannerButton';
+import { BannerButton } from 'reusables/ReusableButtons';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import S from 'styling';
 import { epochToDateString, logError } from 'utils/helpers';

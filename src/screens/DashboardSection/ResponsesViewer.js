@@ -3,7 +3,7 @@ import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import BannerButton from 'reusables/BannerButton';
+import { BannerButton } from 'reusables/ReusableButtons';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import S from "styling";
 import { epochToDateString, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';

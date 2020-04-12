@@ -2,7 +2,7 @@ import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
 import { Text, TextInput, View } from 'react-native';
-import BannerButton from 'reusables/BannerButton';
+import { BannerButton } from 'reusables/ReusableButtons';
 import { UserSnippetListElement } from 'reusables/ListElements';
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';

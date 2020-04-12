@@ -2,7 +2,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
 import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import BannerButton from 'reusables/BannerButton';
+import { BannerButton } from 'reusables/ReusableButtons';
 import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';

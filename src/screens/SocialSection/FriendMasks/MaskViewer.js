@@ -2,10 +2,10 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
 import { View } from 'react-native';
-import { Button, Divider, Icon, Input, Overlay, Text, ThemeConsumer } from 'react-native-elements';
-import BannerButton from 'reusables/BannerButton';
+import { Button, Divider, Input, Overlay, Text, ThemeConsumer } from 'react-native-elements';
+import { BannerButton } from 'reusables/ReusableButtons';
 import { UserSnippetListElement } from 'reusables/ListElements';
-import { MinorActionButton, AdditionalOptionsButton } from 'reusables/ReusableButtons';
+import { AdditionalOptionsButton, MinorActionButton } from 'reusables/ReusableButtons';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
 import { isOnlyWhitespace, logError } from 'utils/helpers';
@@ -23,14 +23,14 @@ export default class NewMaskScreen extends React.Component {
       currentlySelectedUser: null,
       newMaskName: this.maskSnippet ? this.maskSnippet.name : "",
       inEditMode: false,
-      extraOptionsModalOpen: false
+      editingModalOpen: false
     }
   }
 
   render() {
     let userUid = auth().currentUser.uid
     if (!this.maskSnippet) return null;
-    const {inEditMode, newMaskName, currentlySelectedUser, extraOptionsModalOpen} = this.state;
+    const {inEditMode, newMaskName, currentlySelectedUser, editingModalOpen} = this.state;
     return (
       <ThemeConsumer>
       {({ theme }) => (
@@ -60,25 +60,37 @@ export default class NewMaskScreen extends React.Component {
 
 
         <Overlay 
-          isVisible = {extraOptionsModalOpen}
-          onBackdropPress = {() => this.closeExtraOptionsModal()}
-          onRequestClose = {() => this.closeExtraOptionsModal()}>         
+          isVisible = {editingModalOpen}
+          onBackdropPress = {() => this.closeEditingModal()}
+          onRequestClose = {() => this.closeEditingModal()}>         
           <>
           <Button 
-              title = "Add Members" 
+              title = "Edit Name and Current Members" 
+              type = "clear"
+              titleStyle = {{color: theme.colors.black}}
               onPress={() => 
-                this.closeExtraOptionsModal(
+                this.closeEditingModal(
+                  () => this.setState({inEditMode: true})
+                )}
+          />
+          <Button 
+              title = "Add Members" 
+              titleStyle = {{color: theme.colors.black}}
+              type = "clear"
+              onPress={() => 
+                this.closeEditingModal(
                   () => this.props.navigation.navigate('MaskMemberAdder', {mask: this.maskSnippet})
                 )}
             />
             <Button 
-              buttonStyle = {{backgroundColor: theme.colors.error}}
+              titleStyle = {{color: theme.colors.error}}
+              type = "clear"
               title = "Delete Mask" 
               onPress = {() => this.deleteMask}
             />
             <MinorActionButton 
               title = "Close" 
-              onPress = {() => this.closeExtraOptionsModal()}
+              onPress = {() => this.closeEditingModal()}
             />
           </>
         </Overlay>
@@ -90,17 +102,13 @@ export default class NewMaskScreen extends React.Component {
               width: "100%", 
               justifyContent: "center", 
               marginBottom: 8,
-              alignItems: "center"}}
-            >
-              <View style = {{flex: 1}}>
-                <Input
-                  label = "Mask Name"
-                  autoCapitalize="none"
-                  onChangeText={text => this.setState({ newMaskName: text })}
-                  value={newMaskName}
-                /> 
-              </View>
-              <AdditionalOptionsButton onPress={this.openExtraOptionsModal} />
+              alignItems: "center"}}>
+              <Input
+                label = "Mask Name"
+                autoCapitalize="none"
+                onChangeText={text => this.setState({ newMaskName: text })}
+                value={newMaskName}
+              /> 
             </View>
             <Divider />
           </>
@@ -121,7 +129,7 @@ export default class NewMaskScreen extends React.Component {
             <BannerButton
               extraStyles = {{flex: 1}}
               color = {S.colors.buttonBlue}
-              onPress={() => this.setState({inEditMode: true})}
+              onPress={this.openEditingModal}
               iconName = {S.strings.edit}
               title = "EDIT"
             />
@@ -226,13 +234,13 @@ export default class NewMaskScreen extends React.Component {
     this.setState({currentlySelectedUser: null})
   }
 
-  closeExtraOptionsModal = (callback) => {
-    if (callback) this.setState({extraOptionsModalOpen: false}, callback)
-    else this.setState({extraOptionsModalOpen: false})
+  closeEditingModal = (callback) => {
+    if (callback) this.setState({editingModalOpen: false}, callback)
+    else this.setState({editingModalOpen: false})
   }
 
-  openExtraOptionsModal = () => {
-    this.setState({extraOptionsModalOpen: true})
+  openEditingModal = () => {
+    this.setState({editingModalOpen: true})
   }
 
   queueForRemoval = (snippet) => {
