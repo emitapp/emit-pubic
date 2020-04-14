@@ -64,7 +64,7 @@ import crashlytics from '@react-native-firebase/crashlytics';
  */
 export const logError = (error, includeCrashlytics, extraLoggingInfo) => {
   if (extraLoggingInfo) console.log(extraLoggingInfo)
-  console.error(error)
+  console.log(error)
   if (includeCrashlytics === undefined) includeCrashlytics = true
   if (includeCrashlytics){
     if (extraLoggingInfo) crashlytics().log(extraLoggingInfo)

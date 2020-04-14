@@ -2,13 +2,17 @@
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import React, { Component } from 'react';
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Platform, StyleSheet, View, Image } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import { logError } from 'utils/helpers';
 import uuid from 'uuid/v4';
-
+import {Text, Button} from 'react-native-elements'
+import {SmallLoadingComponent} from 'reusables/LoadingComponents'
+import Snackbar from 'react-native-snackbar';
 var RNFS = require('react-native-fs');
+import ProfilePicCircle from 'reusables/ProfilePicComponents';
+
 
 const options = {
   title: 'Select Image',
@@ -23,43 +27,61 @@ export default class ProfilePicChanger extends Component {
   state = {
     imageUri: '',
     uploading: false,
+    pickingImage: false,
     uploadProgress: 0,
-    errorMessage: null
+    errorMessage: null,
+    //Stays true the moment the user successfully picked a pic at least once
+    hasSuccessfullyPicked: false 
   };
 
   render() {
-    const disabledStyle = this.state.uploading ? styles.disabledBtn : {};
-    const actionBtnStyles = [styles.btn, disabledStyle];
-
     return (
       <View style={styles.container}>
-        {this.state.errorMessage &&
-            <Text style={{ color: 'red' }}>
-              {this.state.errorMessage}
-            </Text>}
-        <Text style={styles.welcome}>React Native Firebase Image Upload </Text>
-        <Text style={styles.instructions}>Hello 👋, Let us upload an Image</Text>
 
-        <TouchableOpacity style={actionBtnStyles} onPress={this.pickImage} disabled = {this.state.uploading}>
-            <Text style={styles.btnTxt}>Pick image</Text>
-        </TouchableOpacity>
+        {this.state.errorMessage &&
+          <Text style={{ color: 'red' }}>
+            {this.state.errorMessage}
+          </Text>
+        }
+
+        <Text style = {{textAlign: "center", marginBottom: 16}}>
+          Note that your updated profile pic might take a few seconds to appear everywhere in the app
+        </Text>
+
+        {(!this.state.hasSuccessfullyPicked && !this.state.pickingImage) ? (
+          <ProfilePicCircle 
+            diameter = {styles.image.width} 
+            uid = {auth().currentUser.uid}/>
+        ): null}
+
+        {this.state.pickingImage && (
+          <View style = {{...styles.image, alignItems: "center", justifyContent: "center"}}> 
+            <SmallLoadingComponent />
+          </View>
+        )}
 
         {this.state.imageUri ? (
           <Image
             source={{ uri: this.state.imageUri }}
-            style={styles.image}/>
-        ) : (
-          <Text>Select an Image!</Text>
-        )}
+            style = {styles.image}/>
+        ): null}
 
-        <View style={[styles.progressBar, { width: `${this.state.uploadProgress}%` }]}/>
+        <View style = {styles.progressBarParent}>
+          <View style={{...styles.progressBar,  width: `${this.state.uploadProgress}%` }}/>
+        </View>
+       
+        <View style = {{flexDirection: "row", justifyContent: "center", width: "100%", marginTop: 16}}>
+          <Button 
+            title = "Pick Image" 
+            onPress={this.pickImage} 
+            disabled = {this.state.uploading}/>
 
-        <TouchableOpacity
-            style={actionBtnStyles}
-            onPress={this.uploadImage}
-            disabled={this.state.uploading}>
-            <Text style={styles.btnTxt}>{(this.state.uploading) ? "Uploading ..." : "Upload image"}</Text>
-        </TouchableOpacity>
+          <Button 
+            title = {(this.state.uploading) ? "Uploading ..." : "Upload image"} 
+            onPress={this.uploadImage} 
+            disabled = {this.state.uploading}/>
+        </View>
+
       </View>
     );
   }
@@ -67,17 +89,20 @@ export default class ProfilePicChanger extends Component {
   pickImage = async () => {
       try{
         await this.checkPermissions();
+        this.setState({pickingImage: true})
         ImagePicker.showImagePicker(options, response => {
-            if (response.didCancel) {
-              alert('You cancelled image picker 😟');
-            } else if (response.error) {
-              alert('And error occured: ', response.error);
-            } else {
-              this.setState({imageUri: response.uri});
-            }
+          if (response.didCancel) {
+            alert('Image selection cancelled');
+          } else if (response.error) {
+            alert('An error occured: ', response.error);
+          } else {
+            this.setState({imageUri: response.uri, hasSuccessfullyPicked: true});
+          }
+          this.setState({pickingImage: false})
         });
       }catch(err){
-          logError(err)
+        this.setState({errorMessage: err.message, pickingImage: false})
+        logError(err)
       }
   };
 
@@ -101,32 +126,39 @@ export default class ProfilePicChanger extends Component {
     try{
       let unsubscribe = task.on(
         storage.TaskEvent.STATE_CHANGED,
-        snapshot => {
-        let stateDeltas = {
-            uploadProgress: (snapshot.bytesTransferred / snapshot.totalBytes) * 100 // Calculate progress percentage
-        };
+        (snapshot) => {
+          // Calculate progress percentage
+          let stateDeltas = {
+            uploadProgress: (snapshot.bytesTransferred / snapshot.totalBytes) * 100 
+          };
           if (snapshot.state === storage.TaskState.SUCCESS) {
               stateDeltas = {
-              uploading: false,
-              imageUri: '',
-              uploadProgress: 0,
-              errorMessage: null
+                uploading: false,
+                uploadProgress: 0,
+                errorMessage: null,
               };
+              Snackbar.show({
+                text: 'Profile picture change successful', 
+                duration: Snackbar.LENGTH_SHORT
+              });
           }
-
           this.setState(stateDeltas);
         },
-        error => {
-        unsubscribe();
-        logError(err, false)
-        this.setState({uploading: false, uploadProgress: 0, errorMessage: "Upload Error, please try again!"})
+        (err) => {
+          unsubscribe();
+          logError(err, false)
+          this.setState({
+            uploading: false, 
+            uploadProgress: 0, 
+            errorMessage: "Upload Error, please try again!"
+          })
        })
     }catch(err){
       logError(err)
     }
   }
 
-    //Rejcests if there's not enough permissions
+    //This promise rejects if there's not enough permissions
     checkPermissions = async () => {
         try{
             if (Platform.OS == "android"){
@@ -141,7 +173,7 @@ export default class ProfilePicChanger extends Component {
 
                 if (finalResults[1] != RESULTS.GRANTED){
                     logError(new Error ("Essential Permission not Granted, aborted"), false)
-                    throw "invalid permission combination"
+                    throw new Error("Invalid permissions")
                 }
             }else{
                 const permissionResults = await Promise.all([
@@ -153,12 +185,13 @@ export default class ProfilePicChanger extends Component {
 
                 if (finalResults[1] != RESULTS.GRANTED){
                   logError(new Error ("Essential Permission not Granted, aborted"), false)
-                  throw "invalid permission combination"
+                  throw new Error("Invalid permissions")
                 }
             }
         }catch (err){
-            logError(err, err != "invalid permission combination")
-            throw "invalid permission combination"
+            logError(err, err.message != "Invalid permissions")
+            this.setState({errorMessage: "Invalid permissions!"})
+            throw new Error("Invalid permissions")
         }
     }
 
@@ -181,45 +214,25 @@ export default class ProfilePicChanger extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF'
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5
-  },
-  btn: {
-    borderWidth: 1,
-    paddingLeft: 20,
-    paddingRight: 20,
-    paddingTop: 10,
-    paddingBottom: 10,
-    borderRadius: 20,
-    borderColor: 'rgba(0,0,0,0.3)',
-    backgroundColor: 'rgb(68, 99, 147)'
-  },
-  btnTxt: {
-    color: '#fff'
-  },
-  disabledBtn: {
-    backgroundColor: 'rgba(3,155,229,0.5)'
+    width: "100%",
   },
   image: {
-    marginTop: 20,
-    minWidth: 200,
-    height: 200
+    width: 200,
+    height: 200,
+    borderRadius: 100
   },
   progressBar: {  
-      backgroundColor: 'rgb(3, 154, 229)',  
-      height: 3,  
-      shadowColor: '#000'
+      backgroundColor: 'deepskyblue',  
+      height: 3,
+      borderRadius: 3,
+      marginHorizontal: 16,
+      marginTop: 8
+  },
+  progressBarParent:{
+    width: "100%", 
+    paddingHorizontal: 16, 
+    alignItems: "center"
   }
 });

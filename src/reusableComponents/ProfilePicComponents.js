@@ -76,4 +76,8 @@ export class ProfilePicRaw extends React.Component {
             logError(err)
         }
     }
+
+    reset = () => {
+        this.setState({downloadUrl: ''}, this.getURL)
+    }
 }
