@@ -1,6 +1,6 @@
 import auth from '@react-native-firebase/auth';
 import React from 'react';
-import { View } from 'react-native';
+import { View, ScrollView, RefreshControl } from 'react-native';
 import {Button, Text, ThemeConsumer} from 'react-native-elements'
 import S from 'styling';
 import { logError } from 'utils/helpers';
@@ -12,14 +12,21 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 export default class SettingsMain extends React.Component {
 
+    state = {refreshing: false}
+
     render() {
       const { currentUser } = auth()
       return (
         <ThemeConsumer>
         {({ theme }) => (
-        <View style={S.styles.containerFlexStart}>
+        <ScrollView 
+          style={{flex: 1, marginTop: 8}} 
+          contentContainerStyle = {{justifyContent: 'center', alignItems: 'center'}}
+          refreshControl={
+            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+          }>
 
-          <UserProfileSummary style={{marginTop: 16}}/>
+          <UserProfileSummary style={{marginTop: 16}} ref = {ref => this.summaryComponent = ref}/>
           
           <Text>
             Your email is {currentUser.emailVerified ? "" : "not"} verified
@@ -59,7 +66,7 @@ export default class SettingsMain extends React.Component {
             color = "red" 
             onPress={this.signOut}
           />
-        </View>
+        </ScrollView>
         )}
         </ThemeConsumer>
       )
@@ -73,6 +80,17 @@ export default class SettingsMain extends React.Component {
         logError(err, true, "Sign out error!")
       }
      }
+
+    wait = (timeout) => {
+      return new Promise(resolve => {
+        setTimeout(resolve, timeout);
+      });
+    }
+
+    onRefresh = () => {
+      this.summaryComponent.refresh()
+      this.wait(500).then(this.setState({refreshing: false}))
+    }
   }
 
 

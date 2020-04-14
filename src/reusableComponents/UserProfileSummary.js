@@ -29,7 +29,10 @@ export default class Summary extends React.Component {
             <ThemeConsumer>
             {({ theme }) => (
                 <View style = {{justifyContent: "center", alignItems: "center", ...this.props.style}}>
-                    <ProfilePicDisplayer diameter = {150} uid = {auth().currentUser.uid}/>
+                    <ProfilePicDisplayer 
+                        diameter = {150} 
+                        uid = {auth().currentUser.uid} 
+                        ref = {ref => this.pictureComponet = ref}/>
                     {this.state.snippet && 
                         <View>
                             <Text h4 h4Style={{fontFamily: "NunitoSans-Black", marginTop: 8}}>
@@ -60,5 +63,10 @@ export default class Summary extends React.Component {
         }catch(err){
             if (err.code != "timeout") logError(err)
         }
+    }
+
+    refresh = () => {
+        if (!this.pictureComponet) return;
+        this.pictureComponet.refresh()
     }
 }

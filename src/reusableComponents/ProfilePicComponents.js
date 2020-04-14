@@ -17,9 +17,14 @@ export default class ProfilePicCircle extends React.Component {
             <ProfilePicRaw 
                 style={{ width: diameter, height: diameter, borderRadius: diameter / 2, ...style }}
                 uid = {uid}
+                ref = {ref => this.picComponent = ref}
                 {...otherProps}
             />
         )
+    }
+
+    refresh = () => {
+        this.picComponent.refresh()
     }
 
 }
@@ -77,7 +82,7 @@ export class ProfilePicRaw extends React.Component {
         }
     }
 
-    reset = () => {
+    refresh = () => {
         this.setState({downloadUrl: ''}, this.getURL)
     }
 }

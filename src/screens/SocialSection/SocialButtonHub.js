@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, ScrollView, RefreshControl } from 'react-native';
 import { Text, ThemeConsumer, Button, Overlay } from 'react-native-elements';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
@@ -10,15 +10,20 @@ import AntIcon from 'react-native-vector-icons/AntDesign';
 
 export default class SocialButtonHub extends React.Component {
 
-    state = {QRVisible: false}
+    state = {QRVisible: false, refreshing: false}
 
     render() {
         return (
             <ThemeConsumer>
             {({ theme }) => (
-            <View style={styles.container}>
+            <ScrollView 
+            style={{flex: 1, marginTop: 8, width: "100%"}} 
+            contentContainerStyle = {{height: "100%", justifyContent: "center", alignItems: "center"}}
+            refreshControl={
+                <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+            }>
 
-            <UserProfileSummary style={{marginTop: 8}}/>
+            <UserProfileSummary style={{marginTop: 8}} ref = {ref => this.summaryComponent = ref}/>
 
             <Overlay 
                 isVisible={this.state.QRVisible}
@@ -82,11 +87,21 @@ export default class SocialButtonHub extends React.Component {
                 </SocialSectionButton>
             </View>
             </View>
-
-            </View>
+            </ScrollView>
             )}
             </ThemeConsumer>
         )
+    }
+
+    wait = (timeout) => {
+        return new Promise(resolve => {
+          setTimeout(resolve, timeout);
+        });
+      }
+  
+    onRefresh = () => {
+        this.summaryComponent.refresh()
+        this.wait(500).then(this.setState({refreshing: false}))
     }
 }
 
@@ -103,11 +118,6 @@ class SocialSectionButton extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
     socialButton:{
         justifyContent: "center", 
         alignItems: "center",
