@@ -43,7 +43,7 @@ export default class SettingsMain extends React.Component {
             title = "Edit Profile"
             icon = {<FontAwesomeIcon name="edit" />}
             color = {theme.colors.grey0} 
-            onPress={() => this.props.navigation.navigate("ProfilePicScreen")}
+            onPress={() => this.props.navigation.navigate("EditProfileScreen")}
           />
           <SettingSectionButton 
             title = "Notifications"

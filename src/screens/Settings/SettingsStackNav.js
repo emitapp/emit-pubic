@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
-import ProfilePicScreen from './ProfilePicChangingScreen';
+import EditProfileScreen from './EditProfileScreen';
 import SettingsMain from './SettingsMain';
 import Header from 'reusables/Header'
 
@@ -8,7 +8,7 @@ import Header from 'reusables/Header'
 const Navigator = createStackNavigator(
   {
     SettingsMain,
-    ProfilePicScreen,
+    EditProfileScreen,
   },
   {
     initialRouteName: 'SettingsMain',

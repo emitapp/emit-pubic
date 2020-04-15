@@ -61,11 +61,13 @@ export default class Summary extends React.Component {
                 if (this._isMounted) this.setState({ snippet: snapshot.val() })
             }
         }catch(err){
+            this.setState({ snippet: {displayName: "-", username: "-"} })
             if (err.code != "timeout") logError(err)
         }
     }
 
     refresh = () => {
+        this.getSnippet()
         if (!this.pictureComponet) return;
         this.pictureComponet.refresh()
     }
