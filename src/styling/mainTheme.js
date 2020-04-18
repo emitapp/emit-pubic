@@ -7,7 +7,7 @@ export default theme = {
         statusBar: "#008000",
 
         gradientStart: "#6ACB17",
-        gradientEnd: "#A8CB17"
+        gradientEnd: "#03925e"
     },
 
     Button:{
