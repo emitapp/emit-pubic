@@ -7,7 +7,12 @@ import { Text, ThemeConsumer } from 'react-native-elements'
 import { logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import { SmallLoadingComponent } from 'reusables/LoadingComponents'
 
+//Optional Props: imageDiameter
 export default class Summary extends React.Component {
+
+    static defaultProps = {
+        imageDiameter: 150,
+    }
 
     constructor(props) {
         super(props);
@@ -30,7 +35,7 @@ export default class Summary extends React.Component {
             {({ theme }) => (
                 <View style = {{justifyContent: "center", alignItems: "center", ...this.props.style}}>
                     <ProfilePicDisplayer 
-                        diameter = {150} 
+                        diameter = {this.props.imageDiameter} 
                         uid = {auth().currentUser.uid} 
                         ref = {ref => this.pictureComponet = ref}/>
                     {this.state.snippet && 

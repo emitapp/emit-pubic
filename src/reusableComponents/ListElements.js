@@ -7,9 +7,13 @@ import {Text, ThemeConsumer} from 'react-native-elements'
 /**
  * Standard ListView element component for viewing user snippets.
  * Required props: snippet (the snippet to display) and onPress 
- * Optional props: extraComponents, style
+ * Optional props: extraComponents, style, imageDiameter
  */
 export class UserSnippetListElement extends React.PureComponent {
+
+  static defaultProps = {
+    imageDiameter: 55
+  }
 
   render() {
     const snippet = this.props.snippet
@@ -19,7 +23,7 @@ export class UserSnippetListElement extends React.PureComponent {
         <TouchableOpacity 
         style = {{...S.styles.listElement, ...this.props.style}}
         onPress={this.props.onPress}>
-          <ProfilePicDisplayer diameter = {55} uid = {snippet.uid} style = {{marginRight: 16}} />
+          <ProfilePicDisplayer diameter = {this.props.imageDiameter} uid = {snippet.uid} style = {{marginRight: 16}} />
           <View>
             <Text style = {{fontWeight: 'bold', fontSize: 18}}>{snippet.displayName}</Text>
             <Text style = {{color: theme.colors.grey2}}>@{snippet.username}</Text>

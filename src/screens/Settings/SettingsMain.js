@@ -1,6 +1,6 @@
 import auth from '@react-native-firebase/auth';
 import React from 'react';
-import { View, ScrollView, RefreshControl } from 'react-native';
+import { View, ScrollView, RefreshControl, StyleSheet } from 'react-native';
 import {Button, Text, ThemeConsumer} from 'react-native-elements'
 import S from 'styling';
 import { logError } from 'utils/helpers';
@@ -20,52 +20,64 @@ export default class SettingsMain extends React.Component {
         <ThemeConsumer>
         {({ theme }) => (
         <ScrollView 
-          style={{flex: 1, marginTop: 8}} 
-          contentContainerStyle = {{justifyContent: 'center', alignItems: 'center'}}
+          style={{...styles.scrollView, backgroundColor: theme.colors.grey5}}
+          contentContainerStyle = {styles.scrollContainer}
           refreshControl={
             <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
           }>
 
-          <UserProfileSummary style={{marginTop: 16}} ref = {ref => this.summaryComponent = ref}/>
-          
-          <Text>
-            Your email is {currentUser.emailVerified ? "" : "not"} verified
-          </Text>
-          <Button
-          title="Send Verification Email"
-          onPress={() => {
-              auth().currentUser.sendEmailVerification()
-                .catch(error => logError(error))}
-          }/>
-        
+          <View style = {{...styles.section, borderTopWidth: 0}}>
+            <UserProfileSummary 
+              style={{marginTop: 16}} 
+              ref = {ref => this.summaryComponent = ref}
+              imageDiameter = {120}/>
+          </View>
 
-          <SettingSectionButton 
-            title = "Edit Profile"
-            icon = {<FontAwesomeIcon name="edit" />}
-            color = {theme.colors.grey0} 
-            onPress={() => this.props.navigation.navigate("EditProfileScreen")}
-          />
-          <SettingSectionButton 
-            title = "Notifications"
-            icon = {<FontAwesomeIcon name="bell" />}
-            color = {theme.colors.grey0}  
-          />
-          <SettingSectionButton 
-            title = "Data and Privacy"
-            icon = {<FeatherIcon name="lock" />}
-            color = {theme.colors.grey0}  
-          />
-          <SettingSectionButton 
-            title = "Help or Feedback"
-            icon = {<FeatherIcon name="help-circle" />}
-            color = {theme.colors.grey0}  
-          />   
-          <SettingSectionButton 
-            title = "Logout"
-            icon = {<MaterialIcon name="logout" />}
-            color = "red" 
-            onPress={this.signOut}
-          />
+          <View style = {styles.section}>
+            <Text>
+              Your email is {currentUser.emailVerified ? "" : "not"} verified
+            </Text>
+            {!currentUser.emailVerified && 
+              <Button
+                title="Send Verification Email"
+                onPress={this.sendEmailVerification}
+                type = "clear"
+                containerStyle = {{margin: 0}}
+              />
+            }
+          </View>
+        
+          <View style = {styles.section}>
+            <SettingSectionButton 
+              title = "Edit Profile"
+              icon = {<FontAwesomeIcon name="edit" />}
+              color = {theme.colors.grey0} 
+              onPress={() => this.props.navigation.navigate("EditProfileScreen")}
+            />
+            <SettingSectionButton 
+              title = "Notifications"
+              icon = {<FontAwesomeIcon name="bell" />}
+              color = {theme.colors.grey0}  
+            />
+            <SettingSectionButton 
+              title = "Data and Privacy"
+              icon = {<FeatherIcon name="lock" />}
+              color = {theme.colors.grey0}  
+            />
+            <SettingSectionButton 
+              title = "Help or Feedback"
+              icon = {<FeatherIcon name="help-circle" />}
+              color = {theme.colors.grey0}  
+            />   
+            <SettingSectionButton 
+              title = "Logout"
+              icon = {<MaterialIcon name="logout" />}
+              color = "red" 
+              onPress={this.signOut}
+              style = {{borderBottomWidth: 0}}
+            />
+          </View>
+
         </ScrollView>
         )}
         </ThemeConsumer>
@@ -91,12 +103,17 @@ export default class SettingsMain extends React.Component {
       this.summaryComponent.refresh()
       this.wait(500).then(this.setState({refreshing: false}))
     }
+
+    sendEmailVerification = () => {
+      auth().currentUser.sendEmailVerification()
+      .catch(error => logError(error))
+    }
   }
 
 
 class SettingSectionButton extends React.Component {
   render() {
-    const {icon, title, color, onPress} = this.props
+    const {icon, title, color, onPress, style} = this.props
       return (
         <Button
           title={title}
@@ -105,10 +122,34 @@ class SettingSectionButton extends React.Component {
             <icon.type {...icon.props} color={color} size={20} />
           }
           titleStyle={{marginLeft: 8, color: color}}
-          containerStyle = {{width: "90%", borderBottomColor: color, borderBottomWidth: 0.5, paddingBottom: 4}}
+          containerStyle = {{...styles.settingsButton, ...style, borderBottomColor: color}}
           buttonStyle = {{ justifyContent: "flex-start"}}
           onPress = {onPress}
         />
       )
   }
 }
+
+const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1
+  },
+  scrollContainer: {
+    justifyContent: 'center', 
+    alignItems: 'stretch', 
+  },
+  section: {
+    marginBottom: 6,
+    backgroundColor: "white",
+    alignItems: "center",
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: "grey",
+  },
+  settingsButton: {
+    width: "90%", 
+    borderBottomWidth: 0.5, 
+    paddingBottom: 4
+  }
+})

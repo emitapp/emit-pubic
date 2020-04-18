@@ -28,31 +28,29 @@ export default class NewMaskScreen extends React.Component {
     return (
       <View style={S.styles.containerFlexStart}>
 
-        {!this.maskSnippet ? (
+        {!this.maskSnippet && 
           <Input
             autoCapitalize="none"
             label="Enter your mask's name"
             placeholder = "Best mask name ever"
             onChangeText={maskName => this.setState({ maskName })}
             value={this.state.maskName}
-          />
-        ) : (
-          <Text h4>{this.state.maskName}</Text>
-        )}
+          />}
               
 
-        <Text style = {{fontWeight: "bold"}}>Select the people you want to add</Text>
+        <Text style = {{fontWeight: "bold"}}>
+          Select the people you want to add to
+          {this.maskSnippet ? (" " + this.maskSnippet.name) : " this new mask"}
+        </Text>
 
-        <View style = {{height: 55, width: "100%"}}>
             <ScrollView 
-              style = {{height: "100%", width: "100%"}}>
+              style = {{maxHeight: 55, width: "100%"}}>
               {Object.keys(this.state.selectedUsers).length != 0 && 
                 <Text style = {{textAlign: "center", marginTop: 8}}>
                   Adding {Object.values(this.state.selectedUsers).map(({username}) => `@${username} `)}
                 </Text>
               }
             </ScrollView>
-        </View>
 
         <SearchableInfiniteScroll
           type = "static"
@@ -114,6 +112,7 @@ export default class NewMaskScreen extends React.Component {
           style = {{flex: 1}}
           snippet={item} 
           onPress={() => this.toggleSelection(item)}
+          imageDiameter = {45}
         />
         {this.state.selectedUsers[item.uid] && <CheckBox checked = {true} /> }
       </View>

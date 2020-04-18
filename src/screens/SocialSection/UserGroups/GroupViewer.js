@@ -67,8 +67,8 @@ export default class GroupScreen extends React.Component {
 
         <Overlay 
           isVisible = {currentlySelectedUser !== null}
-          onBackdropPress = {this.deselectUser}
-          onRequestClose = {this.deselectUser}>  
+          onBackdropPress = {() => this.deselectUser()}
+          onRequestClose = {() => this.deselectUser()}>  
           <>       
             {currentlySelectedUser !== null && 
               <>
@@ -92,7 +92,7 @@ export default class GroupScreen extends React.Component {
               />
               <MinorActionButton 
                 title = "Close" 
-                onPress = {this.deselectUser}
+                onPress = {() => this.deselectUser()}
               />
               </>
             }
@@ -160,12 +160,13 @@ export default class GroupScreen extends React.Component {
           </>
         }
 
-        <View style = {{flexDirection: "row"}}>
+        <View style = {{flexDirection: "row", alignSelf: "stretch", justifyContent: "center", alignItems: "center"}}>
+          <Divider style = {{marginHorizontal: 16, flex: 1}}/>
           <Tooltip 
             popover={<Text>Member Count</Text>}>
             <View style = {{flexDirection: "row", marginRight: 16}}>
               <FontAwesomeIcon name="users" size={24} color= "grey" style = {{marginHorizontal: 8}}/>
-              <Text>: {this.groupSnapshot?.memberCount}</Text>
+              <Text>{this.groupSnapshot?.memberCount}</Text>
             </View>
           </Tooltip>
 
@@ -173,9 +174,10 @@ export default class GroupScreen extends React.Component {
             popover={<Text>Admin Count</Text>}>
             <View style = {{flexDirection: "row"}}>
               <FontAwesomeIcon name="star" size={24} color= "grey" style = {{marginHorizontal: 8}}/>
-              <Text>: {this.groupSnapshot?.adminCount}</Text>
+              <Text>{this.groupSnapshot?.adminCount}</Text>
             </View>
           </Tooltip>
+          <Divider style = {{marginHorizontal: 16, flex: 1}}/>
         </View>
 
         <SearchableInfiniteScroll
@@ -324,7 +326,7 @@ export default class GroupScreen extends React.Component {
   }
 
   enterEditingMode = () => {
-    if (this.state.userRank == groupRanks.ADMIN){
+    if (this.state.userRank !== groupRanks.ADMIN){
       this.displayPermissionsMessage()
       return;
     }

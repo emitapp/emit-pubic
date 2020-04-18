@@ -37,30 +37,28 @@ export default class NewGroupScreen extends React.Component {
             {this.state.errorMessage}
           </Text>}
 
-        {!this.groupSnippet ? (
+        {!this.groupSnippet && 
           <Input
             autoCapitalize="none"
             label="Enter your grops's name"
             placeholder = "Best group name ever"
             onChangeText={groupName => this.setState({ groupName })}
             value={this.state.groupName}
-          />
-        ) : (
-          <Text h4>{this.state.groupName}</Text>
-        )}
+          />}
+        
+        <Text style = {{fontWeight: "bold"}}>
+          Select the people you want to add to
+          {this.groupSnippet ? (" " + this.groupSnippet.name) : " this new group"}
+        </Text>
 
-        <Text style = {{fontWeight: "bold"}}>Select the people you want to add</Text>
-
-          <View style = {{height: 55, width: "100%"}}>
             <ScrollView 
-              style = {{height: "100%", width: "100%"}}>
+              style = {{maxHeight: 55, width: "100%"}}>
               {Object.keys(this.state.selectedUsers).length != 0 && 
                 <Text style = {{textAlign: "center", marginTop: 8}}>
                   Adding {Object.values(this.state.selectedUsers).map(({username}) => `@${username} `)}
                 </Text>
               }
             </ScrollView>
-          </View>
 
         <SearchableInfiniteScroll
           type = "static"
@@ -125,6 +123,7 @@ export default class NewGroupScreen extends React.Component {
           style = {{flex: 1}}
           snippet={item} 
           onPress={() => this.toggleSelection(item)}
+          imageDiameter = {45}
         />
         {this.state.selectedUsers[item.uid] && <CheckBox checked = {true} /> }
       </View>
