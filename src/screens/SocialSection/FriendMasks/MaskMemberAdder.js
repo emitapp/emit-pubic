@@ -1,7 +1,7 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { View } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { BannerButton } from 'reusables/ReusableButtons';
 import { UserSnippetListElement } from 'reusables/ListElements';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
@@ -32,7 +32,7 @@ export default class NewMaskScreen extends React.Component {
           <Input
             autoCapitalize="none"
             label="Enter your mask's name"
-            placeholder = "Best group name ever"
+            placeholder = "Best mask name ever"
             onChangeText={maskName => this.setState({ maskName })}
             value={this.state.maskName}
           />
@@ -43,11 +43,16 @@ export default class NewMaskScreen extends React.Component {
 
         <Text style = {{fontWeight: "bold"}}>Select the people you want to add</Text>
 
-        {Object.keys(this.state.selectedUsers).length != 0 && 
-          <Text style = {{textAlign: "center", marginTop: 8}}>
-            Adding {Object.values(this.state.selectedUsers).map(({username}) => `@${username} `)}
-          </Text>
-        }
+        <View style = {{height: 55, width: "100%"}}>
+            <ScrollView 
+              style = {{height: "100%", width: "100%"}}>
+              {Object.keys(this.state.selectedUsers).length != 0 && 
+                <Text style = {{textAlign: "center", marginTop: 8}}>
+                  Adding {Object.values(this.state.selectedUsers).map(({username}) => `@${username} `)}
+                </Text>
+              }
+            </ScrollView>
+        </View>
 
         <SearchableInfiniteScroll
           type = "static"

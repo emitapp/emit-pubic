@@ -1,13 +1,15 @@
 import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
-import { Text, TextInput, View } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { BannerButton } from 'reusables/ReusableButtons';
 import { UserSnippetListElement } from 'reusables/ListElements';
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
 import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
+import {Text, Input, CheckBox} from 'react-native-elements'
+
 
 
 export default class NewGroupScreen extends React.Component {
@@ -17,7 +19,7 @@ export default class NewGroupScreen extends React.Component {
     this.groupSnippet = this.props.navigation.getParam('group', null)
     this.state = { 
       errorMessage: null, 
-      selectedUserUids: {},
+      selectedUsers: {},
       groupName: this.groupSnippet ? this.groupSnippet.name : "",
       isModalVisible: false
     }
@@ -36,21 +38,29 @@ export default class NewGroupScreen extends React.Component {
           </Text>}
 
         {!this.groupSnippet ? (
-          <TextInput
-            style={S.styles.textInput}
+          <Input
             autoCapitalize="none"
-            placeholder="Enter your group's name"
+            label="Enter your grops's name"
+            placeholder = "Best group name ever"
             onChangeText={groupName => this.setState({ groupName })}
             value={this.state.groupName}
           />
         ) : (
-          <Text>{this.state.groupName}</Text>
+          <Text h4>{this.state.groupName}</Text>
         )}
-              
 
-        <Text>ADD USERS</Text>
+        <Text style = {{fontWeight: "bold"}}>Select the people you want to add</Text>
 
-        <Text>{Object.keys(this.state.selectedUserUids).map((uid) => `${uid}  `)}</Text>
+          <View style = {{height: 55, width: "100%"}}>
+            <ScrollView 
+              style = {{height: "100%", width: "100%"}}>
+              {Object.keys(this.state.selectedUsers).length != 0 && 
+                <Text style = {{textAlign: "center", marginTop: 8}}>
+                  Adding {Object.values(this.state.selectedUsers).map(({username}) => `@${username} `)}
+                </Text>
+              }
+            </ScrollView>
+          </View>
 
         <SearchableInfiniteScroll
           type = "static"
@@ -78,18 +88,22 @@ export default class NewGroupScreen extends React.Component {
       return;
     }
     this.setState({isModalVisible: true})
+    let selectedUserUids = {}
+    for (const uid in this.state.selectedUsers) {
+      selectedUserUids[uid] = true
+    }
     try{
       if (!this.groupSnippet){
         const cloudFunc = functions().httpsCallable('createGroup')
         await timedPromise(cloudFunc({
           name: this.state.groupName, 
-          usersToAdd: this.state.selectedUserUids
+          usersToAdd: selectedUserUids
         }), LONG_TIMEOUT);
       }else{
         const cloudFunc = functions().httpsCallable('editGroup')
         await timedPromise(cloudFunc({
           groupUid: this.groupSnippet.uid,
-          usersToAdd: this.state.selectedUserUids
+          usersToAdd: selectedUserUids
         }), LONG_TIMEOUT);
       }
       this.props.navigation.goBack()
@@ -106,22 +120,27 @@ export default class NewGroupScreen extends React.Component {
 
   itemRenderer = ({ item }) => {
     return (
-      <UserSnippetListElement 
-      style = {{backgroundColor: this.state.selectedUserUids[item.uid] ? "lightgreen" : "white"}}
-      snippet={item} 
-      onPress={() => this.toggleSelection(item)}/>
+      <View style = {{alignItems: "center", width: "100%", flexDirection: "row"}}>
+        <UserSnippetListElement 
+          style = {{flex: 1}}
+          snippet={item} 
+          onPress={() => this.toggleSelection(item)}
+        />
+        {this.state.selectedUsers[item.uid] && <CheckBox checked = {true} /> }
+      </View>
     );
   }
 
   toggleSelection = (snippet) => {
-    const copiedObj = {...this.state.selectedUserUids}
+    const copiedObj = {...this.state.selectedUsers}
     if (copiedObj[snippet.uid]){
       //Then remove the user
       delete copiedObj[snippet.uid]
     }else{
       //Add the user
-      copiedObj[snippet.uid] = true
+      const {uid, ...snippetSansUid} = snippet
+      copiedObj[snippet.uid] = snippetSansUid
     }
-    this.setState({selectedUserUids: copiedObj});
+    this.setState({selectedUsers: copiedObj});
   }
 }

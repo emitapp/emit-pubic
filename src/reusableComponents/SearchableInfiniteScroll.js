@@ -27,7 +27,7 @@ export default class SearchableInfiniteScroll extends React.Component {
     super(props)
     this.state = { 
       searchBarValue: '', 
-      query: this.props.queryValidator("") ? "" : null, 
+      query: this.getInitialQueryValue(), 
       searchGeneration: 0, 
       currentSorter: this.props.queryTypes[0].value
     }
@@ -36,7 +36,7 @@ export default class SearchableInfiniteScroll extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.dbref.toString() !== prevProps.dbref.toString()) {
       this.setState({
-        query: this.props.queryValidator("") ? "" : null, 
+        query: this.getInitialQueryValue(), 
         searchGeneration: this.state.searchGeneration + 1
       })
     }
@@ -125,9 +125,16 @@ export default class SearchableInfiniteScroll extends React.Component {
   updateSearchOption = (option) => {
     this.setState({
       searchBarValue: "",
-      query: null,
-      currentSorter: option.value
+      query: this.getInitialQueryValue(),
+      currentSorter: option.value,
+      searchGeneration: this.state.searchGeneration + 1
     })
+  }
+
+  //This way when we're starting with an empty query, we can
+  //decide whether or not to actually query firebase using the provided queryValidator
+  getInitialQueryValue = () => {
+    return this.props.queryValidator("") ? "" : null
   }
 
 }

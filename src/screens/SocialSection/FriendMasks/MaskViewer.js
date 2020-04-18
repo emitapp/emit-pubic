@@ -42,12 +42,13 @@ export default class NewMaskScreen extends React.Component {
           onRequestClose = {this.deselectUser}>         
           <>
             {currentlySelectedUser !== null && 
-              <Text style = {{fontWeight: "bold", fontSize: 18, marginBottom: 8}}>
+              <Text style = {{fontSize: 18, marginBottom: 16, textAlign: "center"}}>
                 @{currentlySelectedUser.username}
               </Text>
             }
             <Button 
-              buttonStyle = {{backgroundColor: theme.colors.error}}
+              titleStyle = {{color: theme.colors.error}}
+              type = "clear"
               title = "Remove User" 
               onPress = {() => this.queueForRemoval(currentlySelectedUser)}
             />
@@ -182,7 +183,7 @@ export default class NewMaskScreen extends React.Component {
     //We're gonna let this happen asynchronously
     database().ref().update(updates)
       .then(() => {
-        this.setState({maskName: newMaskName})
+        this.setState({maskName: newMaskName, usersToBeRemoved: {}})
         console.log("Edited the friend mask!!")
       })
       .catch((err) => logError(err));
@@ -214,7 +215,7 @@ export default class NewMaskScreen extends React.Component {
 
   itemRenderer = ({ item }) => {
     const {inEditMode, usersToBeRemoved} = this.state
-    if (usersToBeRemoved[item.uid]) return null; //Stop rendering this user if he's queued for deletion
+    if (inEditMode && usersToBeRemoved[item.uid]) return null; //Stop rendering this user if he's queued for deletion
     return (
       <View style = {{width: "100%", flexDirection: "row", alignItems: "center"}}>
         <UserSnippetListElement snippet = {item} style = {{flex: 1}} />
