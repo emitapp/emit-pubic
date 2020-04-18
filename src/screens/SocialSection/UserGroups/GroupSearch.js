@@ -27,7 +27,6 @@ export default class GroupSearch extends React.Component {
     return (
       <View style={S.styles.containerFlexStart}>
 
-        <Text>Group Search</Text>
         {this.state.errorMessage &&
           <Text style={{ color: 'red' }}>
             {this.state.errorMessage}

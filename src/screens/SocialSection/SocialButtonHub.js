@@ -38,54 +38,54 @@ export default class SocialButtonHub extends React.Component {
             </Overlay>
 
             <Button 
-                icon={
-                    <AntIcon name="qrcode" size={40} color="white"/>
-                }
+                icon={<AntIcon name="qrcode" size={40} color="white"/>}
                 containerStyle = {{position: 'absolute', top: 16, left: 16}}
-                onPress = {() => this.setState({QRVisible: true})}/>
+                onPress = {() => this.setState({QRVisible: true})}
+            />
 
             <View style = {styles.buttonSection}>
             <View style={styles.rowStyle}>
                 <SocialSectionButton color={theme.colors.secondary}
-                onPress={() => this.props.navigation.navigate('FriendRequests')}>
-                    <FontAwesomeIcon name="inbox" size={36} color= "white" />
-                    <Text style = {styles.buttonTextStyle}>Friend Requests</Text>  
-                </SocialSectionButton>
+                    onPress={() => this.props.navigation.navigate('FriendRequests')}
+                    icon = {<FontAwesomeIcon name="inbox" size={36} />}
+                    text = {<Text>Friend Requests</Text>}  
+                />
 
                 <SocialSectionButton color={theme.colors.secondary}
-                onPress={() => this.props.navigation.navigate('QRScanner')}>
-                    <IoniconsIcon name="md-qr-scanner" size={36} color= "white" />
-                    <Text style = {styles.buttonTextStyle}>Bitecode Scanner</Text>  
-                </SocialSectionButton>
+                    onPress={() => this.props.navigation.navigate('QRScanner')}
+                    icon = {<IoniconsIcon name="md-qr-scanner" size={36} />}
+                    text = {<Text>Bitecode Scanner</Text>}
+                />
             </View>
 
             <View style={styles.rowStyle}>
                 <SocialSectionButton color={theme.colors.secondary}
-                onPress={() => this.props.navigation.navigate('MaskSearch')}>
-                    <FontAwesomeIcon name="user-friends" size={32} color= "white" />
-                    <Text style = {styles.buttonTextStyle}>Friend Masks</Text>  
-                </SocialSectionButton>
+                    onPress={() => this.props.navigation.navigate('MaskSearch')}
+                    icon = {<FontAwesomeIcon name="user-friends" size={32}/>}
+                    text = {<Text>Friend Masks</Text> } 
+                />
 
                 <SocialSectionButton color={theme.colors.secondary}
-                onPress={() => this.props.navigation.navigate('GroupSearch')}>
-                    <FontAwesomeIcon name="user-friends" size={32} color= "white" />
-                    <Text style = {styles.buttonTextStyle}>Friend Groups</Text>  
-                </SocialSectionButton>
+                    onPress={() => this.props.navigation.navigate('GroupSearch')}
+                    icon = {<FontAwesomeIcon name="user-friends" size={32}/>}
+                    text = {<Text>Friend Groups</Text>}
+                />
             </View>
 
             <View style={styles.rowStyle}>
                 <SocialSectionButton color={theme.colors.secondary}
-                onPress={() => this.props.navigation.navigate('FriendSearch')}>
-                    <FontAwesomeIcon name="search" size={32} color= "white" />
-                    <Text style = {styles.buttonTextStyle}>Friend Search</Text>  
-                </SocialSectionButton>
+                    onPress={() => this.props.navigation.navigate('FriendSearch')}
+                    icon = {<FontAwesomeIcon name="search" size={32} />}
+                    text = {<Text>Friend Search</Text>}
+                />
 
                 <SocialSectionButton color={theme.colors.secondary}
-                onPress={() => this.props.navigation.navigate('UserSearch')}>
-                    <FontAwesomeIcon name="search" size={32} color= "white" />
-                    <Text style = {styles.buttonTextStyle}>User Search</Text>  
-                </SocialSectionButton>
-            </View>
+                    onPress={() => this.props.navigation.navigate('UserSearch')}
+                    icon = {<FontAwesomeIcon name="search" size={32}/>}
+                    text = {<Text style = {styles.buttonTextStyle}>User Search</Text> }
+                />
+             </View>
+
             </View>
             </ScrollView>
             )}
@@ -105,13 +105,17 @@ export default class SocialButtonHub extends React.Component {
     }
 }
 
-class SocialSectionButton extends React.Component {
+class SocialSectionButton extends React.Component { 
     render() {
+        const {icon, text, color} = this.props
+        let iconProps = {color}
+        let textProps = {style: {...styles.buttonTextStyle, color: this.props.color}}
         return (
             <TouchableOpacity 
-                style = {{...styles.socialButton, backgroundColor: this.props.color}}
+                style = {{...styles.socialButton, borderColor: this.props.color, backgroundColor: "#EEF8FE"}}
                 onPress = {this.props.onPress}>
-                {this.props.children}
+                {React.cloneElement(icon, iconProps)}
+                {React.cloneElement(text, textProps)}
             </TouchableOpacity>
         )
     }
@@ -124,11 +128,11 @@ const styles = StyleSheet.create({
         height: "100%",
         width: "45%",
         borderRadius: 10,
+        borderWidth: 2
     },
     buttonTextStyle:{
         fontSize: 18, 
         fontWeight: "bold", 
-        color: "white",
         textAlign: "center",
         marginTop: 8,
         marginHorizontal: 8

@@ -29,7 +29,6 @@ export default class FriendSearch extends React.Component {
         <FriendReqModal 
           ref={modal => this.modal = modal} />
 
-        <Text>Friend Search</Text>
         {this.state.errorMessage &&
           <Text style={{ color: 'red' }}>
             {this.state.errorMessage}

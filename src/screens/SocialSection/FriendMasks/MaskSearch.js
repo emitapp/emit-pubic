@@ -27,7 +27,6 @@ export default class FriendMaskSearch extends React.Component {
     return (
       <View style={S.styles.containerFlexStart}>
 
-        <Text>Friend Mask Search</Text>
         {this.state.errorMessage &&
           <Text style={{ color: 'red' }}>
             {this.state.errorMessage}
