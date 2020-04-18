@@ -11,6 +11,12 @@ import {UserGroupListElement} from 'reusables/ListElements'
 
 export default class GroupSearch extends React.Component {
 
+  static navigationOptions = ({ navigation }) => {
+    return {
+        title: "Group Search",    
+    };
+  };
+
   state = { 
     errorMessage: null, 
     isModalVisible: false,

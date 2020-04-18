@@ -12,8 +12,14 @@ import { isOnlyWhitespace, logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/
 import { returnStatuses } from 'utils/serverValues'
 
 
-export default class ProfilePicChangingScreen extends React.Component {
+export default class EditProfileScreen extends React.Component {
 
+  static navigationOptions = ({ navigation }) => {
+    return {
+        title: "Edit Profile",    
+    };
+  };
+  
   constructor(props) {
     super(props);
     this.state = {

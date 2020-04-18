@@ -11,6 +11,12 @@ import {FriendMaskListElement} from 'reusables/ListElements'
 
 export default class FriendMaskSearch extends React.Component {
 
+  static navigationOptions = ({ navigation }) => {
+    return {
+        title: "Mask Search",    
+    };
+  };
+
   state = { 
     errorMessage: null, 
     isModalVisible: false,

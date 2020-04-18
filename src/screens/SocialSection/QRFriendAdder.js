@@ -7,6 +7,12 @@ import FriendReqModal from './FriendReqModal';
 
 export default class ScanScreen extends Component {
 
+  static navigationOptions = ({ navigation }) => {
+    return {
+        title: "Bitecode Scanner",    
+    };
+  };
+
     state = { QRData: "" }
 
     setQRData = (e) => {

@@ -13,6 +13,12 @@ import FriendReqModal from './FriendReqModal';
 
 export default class UserSearch extends React.Component {
 
+  static navigationOptions = ({ navigation }) => {
+    return {
+        title: "Friend Requests",    
+    };
+  };
+
   constructor(props){
     super(props)
     this.INBOX_INDEX = 0

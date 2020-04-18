@@ -9,6 +9,12 @@ import FriendReqModal from './FriendReqModal';
 
 export default class UserSearch extends React.Component {
 
+  static navigationOptions = ({ navigation }) => {
+    return {
+        title: "User Search",    
+    };
+  };
+
   state = { 
     errorMessage: null, 
   }
