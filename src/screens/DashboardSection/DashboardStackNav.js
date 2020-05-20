@@ -4,6 +4,8 @@ import ActiveBroadcasts from './ActiveBroadcasts';
 import NewBroadcastForm from './NewBroadcastForm2';
 import ResponsesScreen from './ResponsesViewer';
 import Header from 'reusables/Header'
+import {Alert} from 'react-native'
+import NavigationService from 'utils/NavigationService';
 
 
 const Navigator = createStackNavigator(
@@ -29,8 +31,36 @@ export default class DashboardStackNav extends React.Component {
     }
   }
 
-  //https://reactnavigation.org/docs/en/common-mistakes.html
-  static router = Navigator.router;
+  //Show an alert if the user is navigating out of a screen with a "needUserConfirmation" 
+  //navigation param
+  static router = {
+    ...Navigator.router,
+    getStateForAction: (action, lastState) => {
+      if (!lastState) return Navigator.router.getStateForAction(action, lastState);
+      const currentRoute = lastState.routes[lastState.index]
+      if (!currentRoute.params) return Navigator.router.getStateForAction(action, lastState);
+
+      const leavingActions = ['Navigation/BACK', 'Navigation/NAVIGATE']
+      const leavingCurrentScreen = leavingActions.includes(action.type)
+      if (leavingCurrentScreen && currentRoute.params.needUserConfirmation){
+        Alert.alert('Are you sure?', "If you go back your broadcast data will be erased", [
+          {
+            text: 'Confirm',
+            onPress: () => {
+              delete currentRoute.params.needUserConfirmation;
+              NavigationService.dispatch(action);
+            },
+          },
+          {
+            text: 'Close',
+            onPress: () => {},
+          }
+        ]);
+        return null;
+      }
+      return Navigator.router.getStateForAction(action, lastState);
+    },
+  };
 
   render() {
     return (

@@ -3,7 +3,7 @@ import auth from '@react-native-firebase/auth';
 import React from 'react';
 import { StatusBar } from 'react-native';
 import { ThemeProvider } from 'react-native-elements';
-import { createAppContainer, createSwitchNavigator, NavigationActions } from 'react-navigation';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import ConnectionBanner from 'reusables/ConnectionStatusBanner';
 import AccountSetUp from 'screens/Authentication/AccountSetUp';
 import AuthDecisionPage from 'screens/Authentication/AuthDecisionPage';
@@ -13,6 +13,7 @@ import SignUp from 'screens/Authentication/SignUp';
 import MainTabNav from 'screens/MainTabNav';
 import MainTheme from 'styling/mainTheme';
 import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError } from 'utils/helpers';
+import NavigationService from 'utils/NavigationService';
 
 export default class App extends React.Component {
 
@@ -31,16 +32,10 @@ export default class App extends React.Component {
       return (
         <ThemeProvider theme={MainTheme}>
           <StatusBar backgroundColor={MainTheme.colors.statusBar} barStyle="light-content"/>
-          <Navigator ref = {ref => this.topLevelNavigator = ref}/>
+          <Navigator ref = {ref => NavigationService.setTopLevelNavigator(ref)}/>
           <ConnectionBanner/>
         </ThemeProvider>
       )
-  }
-
-  navigate = (routeName, params) => {
-    this.topLevelNavigator.dispatch(
-      NavigationActions.navigate({routeName, params})
-    );
   }
 
   handleAuthChange = async (user) => {
@@ -49,7 +44,7 @@ export default class App extends React.Component {
         await AsyncStorage.removeItem(ASYNC_TOKEN_KEY)
         await AsyncStorage.removeItem(ASYNC_SETUP_KEY)
       }
-      this.navigate("AuthDecisionPage")
+      NavigationService.navigate("AuthDecisionPage")
     }catch(err){
       logError(err)
     }

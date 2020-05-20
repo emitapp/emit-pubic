@@ -40,7 +40,7 @@ export default class ActiveBroadcasts extends React.Component {
 
           <BannerButton
             color = {S.colors.buttonGreen}
-            onPress={() => this.props.navigation.navigate('NewBroadcastForm')}
+            onPress={() => this.props.navigation.navigate('NewBroadcastForm', {needUserConfirmation: true})}
             iconName = {S.strings.add}
             title = "CREATE NEW BROADCAST"
           />
