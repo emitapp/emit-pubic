@@ -3,6 +3,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import ActiveBroadcasts from './ActiveBroadcasts';
 import NewBroadcastForm from './NewBroadcastForm2';
 import ResponsesScreen from './ResponsesViewer';
+import NewBroadcastFormTime from './NewBroadcastFormTime'
 import Header from 'reusables/Header'
 import {Alert} from 'react-native'
 import NavigationService from 'utils/NavigationService';
@@ -12,6 +13,7 @@ const Navigator = createStackNavigator(
   {
     ActiveBroadcasts,
     NewBroadcastForm,
+    NewBroadcastFormTime,
     ResponsesScreen
   },
   {
@@ -24,8 +26,8 @@ export default class DashboardStackNav extends React.Component {
   //The tab view shouldn't show for certain screens in this section...
   static navigationOptions = ({navigation}) => {
     const routeName = navigation.state ? navigation.state.routes[navigation.state.index].routeName : "default"
-    let showTabView = true
-    if (routeName == "NewBroadcastForm") showTabView = false
+    var targetScreens = ["NewBroadcastFormTime", "NewBroadcastForm"]
+    let showTabView = !targetScreens.includes(routeName)
     return {
       tabBarVisible: showTabView, 
     }
@@ -38,11 +40,9 @@ export default class DashboardStackNav extends React.Component {
     getStateForAction: (action, lastState) => {
       if (!lastState) return Navigator.router.getStateForAction(action, lastState);
       const currentRoute = lastState.routes[lastState.index]
-      if (!currentRoute.params) return Navigator.router.getStateForAction(action, lastState);
-
-      const leavingActions = ['Navigation/BACK', 'Navigation/NAVIGATE']
-      const leavingCurrentScreen = leavingActions.includes(action.type)
-      if (leavingCurrentScreen && currentRoute.params.needUserConfirmation){
+      if (!currentRoute.params?.needUserConfirmation) return Navigator.router.getStateForAction(action, lastState);
+    
+      if (action.type == 'Navigation/BACK' ){
         Alert.alert('Are you sure?', "If you go back your broadcast data will be erased", [
           {
             text: 'Confirm',

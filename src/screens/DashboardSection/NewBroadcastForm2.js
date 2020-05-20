@@ -5,18 +5,39 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import Chip from 'reusables/Chip';
 import { ClearHeader } from 'reusables/Header';
 import MainLinearGradient from 'reusables/MainLinearGradient';
+import { withNavigation } from 'react-navigation';
 
 
-export default class NewBroadcastForm extends React.Component {
+class NewBroadcastForm extends React.Component {
 
     constructor(props){
         super(props)
-        this.state = {showingMore: false}
+        this.passableBroadcastInfo = { //Information that's directly edited by other screens
+            timeText: "In 5 minutes",
+            broadcastTTL: 1000 * 60 * 5,
+            TTLRelative: true
+        }
+        this.state = {
+            showingMore: false,
+            passableBroadcastInfo: this.passableBroadcastInfo
+        }
+
     }
 
     static navigationOptions = ({ navigationOptions }) => {
         return ClearHeader(navigationOptions, "New Broadcast")
     };
+
+    componentDidMount() {
+        const { navigation } = this.props;
+        this.focusListener = navigation.addListener('didFocus', () => {
+            this.setState({}) //Just call for a rerender
+        });
+    }
+    
+    componentWillUnmount() {
+        this.focusListener.remove();
+    }
 
     render() {
       return (
@@ -26,12 +47,14 @@ export default class NewBroadcastForm extends React.Component {
 
             <ScrollView 
                 style = {{width: "100%", flex: 1}}
-                showsVerticalScrollIndicator={false}>
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle = {{paddingHorizontal: 16}}>
             
             <FormSubtitle title = "Time" />
 
             <FormInput
-                value = "In 5 minutes"
+                onPress = {() => this.props.navigation.navigate("NewBroadcastFormTime", this.passableBroadcastInfo)}
+                value = {this.state.passableBroadcastInfo.timeText}
             />
 
             <FormSubtitle title = "Place" />
@@ -139,7 +162,9 @@ export default class NewBroadcastForm extends React.Component {
         </ThemeConsumer>
       )
     }
-  }
+}
+
+export default withNavigation(NewBroadcastForm);
 
 
 class FormInput extends React.PureComponent {
@@ -147,11 +172,13 @@ class FormInput extends React.PureComponent {
         const {onPress, ...otherProps} = this.props
         return (
             <TouchableOpacity onPress = {onPress} style = {{height: "auto", width: "100%"}}>
-                <Input
-                    {...otherProps}                
-                    inputContainerStyle = {{backgroundColor: "white"}}
-                    editable = {false}
-                />
+                <View pointerEvents='none'>
+                    <Input
+                        {...otherProps}                
+                        inputContainerStyle = {{backgroundColor: "white"}}
+                        editable = {false}
+                    />
+                </View>
             </TouchableOpacity>
         )
     }

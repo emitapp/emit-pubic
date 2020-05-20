@@ -38,7 +38,7 @@ export default theme = {
 
     Input:{
         containerStyle: {
-            width: "80%", 
+            marginBottom: 8 
         },
         inputContainerStyle: {
             width: "100%", 
@@ -61,9 +61,6 @@ export default theme = {
             fontFamily: "NunitoSans-Semibold",
             fontSize: 14,
         },
-        containerStyle:{
-            marginBottom:8,
-        }
     },
 
     Text:{
