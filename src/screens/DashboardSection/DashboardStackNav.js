@@ -52,7 +52,7 @@ export default class DashboardStackNav extends React.Component {
             },
           },
           {
-            text: 'Close',
+            text: 'Cancel',
             onPress: () => {},
           }
         ]);

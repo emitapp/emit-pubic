@@ -1,6 +1,6 @@
 import MainTheme from 'styling/mainTheme'
 
-export default function navigationOptions (title) {
+export default function StandardHeader (title) {
     return {
         title,
         headerStyle: {
@@ -13,3 +13,15 @@ export default function navigationOptions (title) {
         }
     }
 };
+
+export function ClearHeader (navigationOptions, title) {
+    return {
+        title,
+        headerStyle: {
+            ...navigationOptions.headerStyle,
+            elevation: 0,
+            shadowOpacity: 0,
+        },
+        headerTintColor: navigationOptions.headerTintColor,
+    };
+}

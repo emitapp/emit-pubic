@@ -1,11 +1,10 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
-import { ThemeConsumer, Button } from 'react-native-elements';
-import S from 'styling';
-import LinearGradient from 'react-native-linear-gradient';
-import {Text, Input, CheckBox} from 'react-native-elements'
+import { ScrollView, View } from 'react-native';
+import { Button, CheckBox, Input, Text, ThemeConsumer } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import Chip from 'reusables/Chip'
+import Chip from 'reusables/Chip';
+import { ClearHeader } from 'reusables/Header';
+import MainLinearGradient from 'reusables/MainLinearGradient';
 
 
 export default class NewBroadcastForm extends React.Component {
@@ -16,25 +15,14 @@ export default class NewBroadcastForm extends React.Component {
     }
 
     static navigationOptions = ({ navigationOptions }) => {
-        return {
-            title: "New Broadcast",
-            headerStyle: {
-                ...navigationOptions.headerStyle,
-                elevation: 0,
-                shadowOpacity: 0,
-            },
-            headerTintColor: navigationOptions.headerTintColor,
-        };
+        return ClearHeader(navigationOptions, "New Broadcast")
     };
 
     render() {
       return (
         <ThemeConsumer>
         {({ theme }) => (
-        <LinearGradient 
-            style={{...S.styles.containerFlexStart, paddingHorizontal: 16}}
-            colors={[theme.colors.gradientStart, theme.colors.gradientEnd]}
-            start={{x: 0.2, y: 0.2}} end={{x: 1, y: 1}}>  
+        <MainLinearGradient theme={theme}>  
 
             <ScrollView 
                 style = {{width: "100%", flex: 1}}
@@ -146,7 +134,7 @@ export default class NewBroadcastForm extends React.Component {
                 />
 
         </ScrollView> 
-        </LinearGradient>
+        </MainLinearGradient>
         )}
         </ThemeConsumer>
       )
