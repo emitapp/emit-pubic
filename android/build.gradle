@@ -9,6 +9,19 @@ buildscript {
 
         //for react-native-netinfo and react-navigation
         appCompatVersion = "1.1.0-rc01" // this maps to androidx.appcompat 
+
+        //for react-native-maps
+        //https://stackoverflow.com/questions/58806151/get-supportlibversion-playservicesversion-and-androidmapsutilsversion-va
+        //https://github.com/react-native-community/react-native-maps/issues/3116
+        supportLibVersion = "28.0.0"
+        googlePlayServicesVersion = "16.0.0"
+        androidMapsUtilsVersion = "0.6.2"
+
+        //For react-native-camera
+        //Needed because using googlePlayServicesVersion makes the package look
+        //for a version of vision that matched the version of googlePlayServicesVersion,
+        //which might not exist
+        googlePlayServicesVisionVersion = "19.0.0"
     }
     repositories {
         google()

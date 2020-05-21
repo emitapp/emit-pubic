@@ -358,6 +358,8 @@ PODS:
     - React
   - react-native-image-picker (2.0.0):
     - React
+  - react-native-maps (0.27.1):
+    - React
   - react-native-netinfo (5.3.3):
     - React
   - react-native-notifications (3.1.1):
@@ -495,6 +497,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-camera (from `../node_modules/react-native-camera`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
+  - react-native-maps (from `../node_modules/react-native-maps`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-notifications (from `../node_modules/react-native-notifications`)
   - react-native-ultimate-config (from `../node_modules/react-native-ultimate-config`)
@@ -610,6 +613,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-camera"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
+  react-native-maps:
+    :path: "../node_modules/react-native-maps"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-notifications:
@@ -731,6 +736,7 @@ SPEC CHECKSUMS:
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
   react-native-camera: 1ba3e7f2375a6b44ae09ce9be70268e0b225bc10
   react-native-image-picker: a878ed6ac8c54ec4f5d7ab7a019c7b5eb7a737d4
+  react-native-maps: f4b89da81626ad7f151a8bfcb79733295d31ce5c
   react-native-netinfo: 8884d510fe67349940b4399c01db3e3591c922aa
   react-native-notifications: acf37b8cbeb5b05f274b25ffe6289119b65961c2
   react-native-ultimate-config: 0578ad8093801f4d1bfd88cf93babf7264317fd9
