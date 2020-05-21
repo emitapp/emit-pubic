@@ -71,6 +71,7 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = lunchme/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = lunchme/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = lunchme/main.m; sourceTree = "<group>"; };
+		1A7791882476FC98003A47B2 /* rnuc.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = rnuc.xcconfig; sourceTree = "<group>"; };
 		1A839E86242EAF04009C1C55 /* lunchme-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "lunchme-Bridging-Header.h"; sourceTree = "<group>"; };
 		1A839E87242EAF04009C1C55 /* LottieSafeguard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieSafeguard.swift; sourceTree = "<group>"; };
 		1AE8A76023A42DBF006FD65C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -248,6 +249,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				1A7791882476FC98003A47B2 /* rnuc.xcconfig */,
 				1AE8A76023A42DBF006FD65C /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* lunchme */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -1127,6 +1129,7 @@
 		};
 		83CBBA201A601CBA00E9B192 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1A7791882476FC98003A47B2 /* rnuc.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1180,6 +1183,7 @@
 		};
 		83CBBA211A601CBA00E9B192 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1A7791882476FC98003A47B2 /* rnuc.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";

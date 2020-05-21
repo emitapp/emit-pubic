@@ -12,6 +12,7 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import com.wix.reactnativenotifications.RNNotificationsPackage;
+import com.reactnativeultimateconfig.UltimateConfigModule;
 
 //Application needs ot be multidex because of all the node.js dependencies
 import androidx.multidex.MultiDexApplication;
@@ -51,6 +52,7 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this); // Remove this line if you don't want Flipper enabled
+    UltimateConfigModule.setBuildConfig(BuildConfig.class); //For react-native-ultimate-config
   }
 
   /**

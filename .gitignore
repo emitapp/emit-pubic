@@ -53,11 +53,19 @@ buck-out/
 */fastlane/screenshots
 
 # Bundle artifact
+#
 *.jsbundle
 
 # CocoaPods
+#
 /ios/Pods/
 
-#My own additions
+#Firebase config files
+#
 android/app/google-services.json
 ios/GoogleService-Info.plist
+
+# react-native-ultimate-config
+#
+rnuc.*
+.env
