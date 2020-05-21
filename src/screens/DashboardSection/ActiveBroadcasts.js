@@ -44,6 +44,13 @@ export default class ActiveBroadcasts extends React.Component {
             iconName = {S.strings.add}
             title = "CREATE NEW BROADCAST"
           />
+
+          <BannerButton
+            color = {S.colors.buttonBlue}
+            onPress={() => this.props.navigation.navigate('LocationSelector')}
+            iconName = {S.strings.add}
+            title = "MAP"
+          />
       </View>
     )
   }

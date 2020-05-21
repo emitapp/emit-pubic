@@ -202,7 +202,7 @@ export default class ProfilePicChanger extends Component {
             }else if (checkResult == RESULTS.UNAVAILABLE || checkResult == RESULTS.BLOCKED){
                 return checkResult;
             }else{
-                newStatus = await request(permission);
+                let newStatus = await request(permission);
                 return newStatus;
             }
         }catch(err){
