@@ -4,6 +4,7 @@ import ActiveBroadcasts from './ActiveBroadcasts';
 import NewBroadcastForm from './NewBroadcastForm2';
 import ResponsesScreen from './ResponsesViewer';
 import NewBroadcastFormTime from './NewBroadcastFormTime'
+import NewBroadcastFormLocation from './NewBroadcastFormLocation'
 import LocationSelector from './LocationSelector'
 import Header from 'reusables/Header'
 import {Alert} from 'react-native'
@@ -16,7 +17,8 @@ const Navigator = createStackNavigator(
     NewBroadcastForm,
     NewBroadcastFormTime,
     ResponsesScreen,
-    LocationSelector
+    LocationSelector,
+    NewBroadcastFormLocation
   },
   {
     initialRouteName: 'ActiveBroadcasts',
@@ -28,7 +30,7 @@ export default class DashboardStackNav extends React.Component {
   //The tab view shouldn't show for certain screens in this section...
   static navigationOptions = ({navigation}) => {
     const routeName = navigation.state ? navigation.state.routes[navigation.state.index].routeName : "default"
-    var targetScreens = ["NewBroadcastFormTime", "NewBroadcastForm", "LocationSelector"]
+    var targetScreens = ["NewBroadcastFormTime", "NewBroadcastForm", "LocationSelector", "NewBroadcastFormLocation"]
     let showTabView = !targetScreens.includes(routeName)
     return {
       tabBarVisible: showTabView, 

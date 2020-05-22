@@ -9,11 +9,6 @@ import Snackbar from 'react-native-snackbar';
 
 export default class NewBroadcastFormTime extends React.Component {
 
-    constructor(props){
-        super(props)
-        this.state = {showingMore: false}
-    }
-
     static navigationOptions = ({ navigationOptions }) => {
         return ClearHeader(navigationOptions, "New Broadcast")
     };

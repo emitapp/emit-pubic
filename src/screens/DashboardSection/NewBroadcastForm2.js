@@ -15,7 +15,9 @@ class NewBroadcastForm extends React.Component {
         this.passableBroadcastInfo = { //Information that's directly edited by other screens
             timeText: "In 5 minutes",
             broadcastTTL: 1000 * 60 * 5,
-            TTLRelative: true
+            TTLRelative: true,
+            location: "",
+            geolocation: null
         }
         this.state = {
             showingMore: false,
@@ -31,7 +33,7 @@ class NewBroadcastForm extends React.Component {
     componentDidMount() {
         const { navigation } = this.props;
         this.focusListener = navigation.addListener('didFocus', () => {
-            this.setState({}) //Just call for a rerender
+            this.setState({}, () => console.log(this.state)) //Just call for a rerender
         });
     }
     
@@ -60,8 +62,9 @@ class NewBroadcastForm extends React.Component {
             <FormSubtitle title = "Place" />
 
             <FormInput
+                onPress = {() => this.props.navigation.navigate("NewBroadcastFormLocation", this.passableBroadcastInfo)}
                 placeholder = "Where are you going?"
-                value = ""
+                value = {this.state.passableBroadcastInfo.location}
             />
 
             <FormSubtitle title = "Recepients" />

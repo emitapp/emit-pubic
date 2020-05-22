@@ -1,21 +1,45 @@
 import React from 'react';
 import { Platform, View } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-import MapView from 'react-native-maps';
+import MapView, {Marker} from 'react-native-maps';
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import Snackbar from 'react-native-snackbar';
 import { logError } from 'utils/helpers';
 import S from 'styling';
+import Header from 'reusables/Header'
 import {Text} from 'react-native-elements'
+import {BannerButton} from 'reusables/ReusableButtons'
 
-export default class ActiveBroadcasts extends React.Component {
+export default class LocationSelector extends React.Component {
 
-  state = { 
-    region: null, 
+  constructor(props){
+    super(props)
+    //Will be {latitude: null, longitude: null} if the pin wasn't set previously
+    let params = props.navigation.state.params
+    this.state = { 
+      region: null, 
+      //If this is true, dont give the marker a defualt location of 0,0
+      markerPrevSet: params.latitude ? true : false, 
+      markerLocation: params.latitude ? {...params} : {latitude: 0, longitude: 0}
+    }
   }
 
+
+  static navigationOptions = Header("Location Selector")
+
   componentDidMount() {
-    this.getCurrentLocation()
+    if (!this.state.markerPrevSet)
+     this.getCurrentLocation()
+    else{
+      this.setState({
+        region: {
+            longitude: this.state.markerLocation.longitude,
+            latitude: this.state.markerLocation.latitude,
+            longitudeDelta: 0.01,
+            latitudeDelta: 0.01
+        }
+      })
+    }
   }
 
   render() {
@@ -23,30 +47,40 @@ export default class ActiveBroadcasts extends React.Component {
     <View style={S.styles.containerFlexStart}>
         <Text style = {{fontWeight: "bold", marginBottom: 8}}>Pin the place you'll be eating at</Text>
         <MapView
-        style = {{width: "100%", flex: 1}}
-        showsUserLocation = {true}
-        loadingEnabled = {true}
-        onRegionChangeComplete={ region => this.setState({region})}
-        region = {this.state.region} 
+          style = {{width: "100%", flex: 1}}
+          showsUserLocation = {true}
+          loadingEnabled = {true}
+          onRegionChangeComplete={ region => this.setState({region})}
+          region = {this.state.region}>
+            <Marker draggable
+              coordinate={this.state.markerLocation}
+              onDragEnd={(e) => this.setState({ markerLocation: e.nativeEvent.coordinate })}
+              pinColor="green"
+              title = "Where you'll be"
+              description = "Receivers of this broadcast will be able to see this pin"
+            />
+        </MapView>
+        <BannerButton
+          color = {S.colors.buttonGreen}
+          onPress={this.saveLocation}
+          iconName = {S.strings.confirm}
+          title = "SAVE"
         />
     </View>
     )
   }
   
+  saveLocation = () => {
+    this.props.navigation.state.params.latitude = this.state.markerLocation.latitude
+    this.props.navigation.state.params.longitude = this.state.markerLocation.longitude
+    this.props.navigation.goBack()
+  }
+
   getCurrentLocation = async () => {
     try{
       if (await this.checkLocationPermission()){
         Geolocation.getCurrentPosition(
-          (position) => {
-            this.setState({
-                region: {
-                    longitude: position.coords.longitude,
-                    latitude: position.coords.latitude,
-                    longitudeDelta: 0.01,
-                    latitudeDelta: 0.01
-                }
-            })
-          },
+          this.updateMapRegion,
           this.handleGeolocationError,
           { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
         );
@@ -64,6 +98,24 @@ export default class ActiveBroadcasts extends React.Component {
     }
   }
 
+  updateMapRegion = (position) => {
+    this.setState({
+      region: {
+          longitude: position.coords.longitude,
+          latitude: position.coords.latitude,
+          longitudeDelta: 0.01,
+          latitudeDelta: 0.01
+      }
+    })
+    if (!this.state.markerPrevSet){
+      this.setState({
+        markerLocation:{
+          longitude: position.coords.longitude,
+          latitude: position.coords.latitude,
+        }
+      })
+    }
+  }
   handleGeolocationError = (error) => {
     const code = error.code
     let message = ""

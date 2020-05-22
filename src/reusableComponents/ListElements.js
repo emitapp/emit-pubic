@@ -3,6 +3,8 @@ import { TouchableOpacity, View } from 'react-native';
 import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
 import S from 'styling';
 import {Text, ThemeConsumer} from 'react-native-elements'
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
 
 /**
  * Standard ListView element component for viewing user snippets.
@@ -77,6 +79,37 @@ export class UserGroupListElement extends React.PureComponent {
             <Text style = {{fontWeight: 'bold', fontSize: 18}} >{groupInfo.name}</Text>
           </View>
       </TouchableOpacity>
+    )
+  }
+}
+
+/**
+ * Standard ListView element component for viewing braodcast locations.
+ * Required props: groupInfo
+ */
+export class LocationListElement extends React.PureComponent {
+
+  render() {
+    const {locationInfo, onPress} = this.props
+    return (
+      <ThemeConsumer>
+      {({ theme }) => (
+      <TouchableOpacity 
+        style = {{...S.styles.listElement, ...this.props.style}}
+        onPress = {onPress}>
+          <View style = {{marginLeft: 8, marginVertical: 8, width: "100%", flexDirection: "row"}}>
+            <View style = {{width: 40}}>
+              {locationInfo.geolocation !== undefined && locationInfo.geolocation !== null && 
+                <Icon name="location-on" size={20} color={theme.colors.grey2} style = {{marginHorizontal: 8}}/>
+              }
+            </View>
+            <Text style = {{fontSize: 16}}>
+              {locationInfo.name}
+            </Text>
+          </View>
+      </TouchableOpacity>
+      )}
+      </ThemeConsumer>
     )
   }
 }
