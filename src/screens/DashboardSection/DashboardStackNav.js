@@ -1,14 +1,15 @@
 import React from 'react';
+import { Alert } from 'react-native';
 import { createStackNavigator } from 'react-navigation-stack';
-import ActiveBroadcasts from './ActiveBroadcasts';
-import NewBroadcastForm from './NewBroadcastForm2';
-import ResponsesScreen from './ResponsesViewer';
-import NewBroadcastFormTime from './NewBroadcastFormTime'
-import NewBroadcastFormLocation from './NewBroadcastFormLocation'
-import LocationSelector from './LocationSelector'
-import Header from 'reusables/Header'
-import {Alert} from 'react-native'
+import Header from 'reusables/Header';
 import NavigationService from 'utils/NavigationService';
+import ActiveBroadcasts from './ActiveBroadcasts';
+import LocationSelector from './LocationSelector';
+import NewBroadcastForm from './NewBroadcastForm2';
+import NewBroadcastFormLocation from './NewBroadcastFormLocation';
+import NewBroadcastFormRecepients from './NewBroadcastFormRecepients';
+import NewBroadcastFormTime from './NewBroadcastFormTime';
+import ResponsesScreen from './ResponsesViewer';
 
 
 const Navigator = createStackNavigator(
@@ -18,7 +19,8 @@ const Navigator = createStackNavigator(
     NewBroadcastFormTime,
     ResponsesScreen,
     LocationSelector,
-    NewBroadcastFormLocation
+    NewBroadcastFormLocation,
+    NewBroadcastFormRecepients
   },
   {
     initialRouteName: 'ActiveBroadcasts',
@@ -30,7 +32,7 @@ export default class DashboardStackNav extends React.Component {
   //The tab view shouldn't show for certain screens in this section...
   static navigationOptions = ({navigation}) => {
     const routeName = navigation.state ? navigation.state.routes[navigation.state.index].routeName : "default"
-    var targetScreens = ["NewBroadcastFormTime", "NewBroadcastForm", "LocationSelector", "NewBroadcastFormLocation"]
+    var targetScreens = ["NewBroadcastFormTime", "NewBroadcastForm", "LocationSelector", "NewBroadcastFormLocation", "NewBroadcastFormRecepients"]
     let showTabView = !targetScreens.includes(routeName)
     return {
       tabBarVisible: showTabView, 

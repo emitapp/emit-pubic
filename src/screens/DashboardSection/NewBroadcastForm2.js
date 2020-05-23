@@ -17,7 +17,10 @@ class NewBroadcastForm extends React.Component {
             broadcastTTL: 1000 * 60 * 5,
             TTLRelative: true,
             location: "",
-            geolocation: null
+            geolocation: null,
+            recepientFriends:{},
+            recepientMasks:{},
+            recepientGroups:{}
         }
         this.state = {
             showingMore: false,
@@ -33,7 +36,7 @@ class NewBroadcastForm extends React.Component {
     componentDidMount() {
         const { navigation } = this.props;
         this.focusListener = navigation.addListener('didFocus', () => {
-            this.setState({}, () => console.log(this.state)) //Just call for a rerender
+            this.setState({}) //Just call for a rerender
         });
     }
     
@@ -71,15 +74,21 @@ class NewBroadcastForm extends React.Component {
 
             <View style = {{width: "100%", flexDirection: "row"}}>
                 <FormBox 
-                    amount = "5"
+                    onPress = {() => this.props.navigation.navigate("NewBroadcastFormRecepients", 
+                        {mode: "friends", data: this.state.passableBroadcastInfo})}
+                    amount = {`${Object.keys(this.state.passableBroadcastInfo.recepientFriends).length}`}
                     title = "friends"
                 />
                 <FormBox 
-                    amount = "0"
+                    onPress = {() => this.props.navigation.navigate("NewBroadcastFormRecepients", 
+                        {mode: "masks", data: this.state.passableBroadcastInfo})}
+                    amount = {`${Object.keys(this.state.passableBroadcastInfo.recepientMasks).length}`}
                     title = "masks"
                 />
                 <FormBox 
-                    amount = "3"
+                    onPress = {() => this.props.navigation.navigate("NewBroadcastFormRecepients", 
+                        {mode: "groups", data: this.state.passableBroadcastInfo})}
+                    amount = {`${Object.keys(this.state.passableBroadcastInfo.recepientGroups).length}`}
                     title = "groups"
                 />
             </View>

@@ -99,7 +99,7 @@ export default class NewBroadcastFormLocation extends React.Component {
                 color = {S.colors.buttonGreen}
                 iconName = {S.strings.confirm}
                 onPress = {this.saveLocation}
-                title = "SAVE"
+                title = "CONFIRM"
             />         
         </MainLinearGradient>
         )}

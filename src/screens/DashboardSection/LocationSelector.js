@@ -64,7 +64,7 @@ export default class LocationSelector extends React.Component {
           color = {S.colors.buttonGreen}
           onPress={this.saveLocation}
           iconName = {S.strings.confirm}
-          title = "SAVE"
+          title = "CONFIRM"
         />
     </View>
     )
