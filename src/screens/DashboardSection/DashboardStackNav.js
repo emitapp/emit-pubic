@@ -5,7 +5,7 @@ import Header from 'reusables/Header';
 import NavigationService from 'utils/NavigationService';
 import ActiveBroadcasts from './ActiveBroadcasts';
 import LocationSelector from './LocationSelector';
-import NewBroadcastForm from './NewBroadcastForm2';
+import NewBroadcastForm from './NewBroadcastForm';
 import NewBroadcastFormLocation from './NewBroadcastFormLocation';
 import NewBroadcastFormRecepients from './NewBroadcastFormRecepients';
 import NewBroadcastFormTime from './NewBroadcastFormTime';

@@ -1,316 +1,252 @@
-// Self explanatory what this does
-
-import DateTimePicker from '@react-native-community/datetimepicker';
-import auth from '@react-native-firebase/auth';
-import database from '@react-native-firebase/database';
-import functions from '@react-native-firebase/functions';
 import React from 'react';
-import { Button, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { BannerButton } from 'reusables/ReusableButtons';
-import { UserSnippetListElement } from 'reusables/ListElements';
+import { ScrollView, View, TouchableHighlightBase } from 'react-native';
+import { Button, CheckBox, Input, Text, ThemeConsumer } from 'react-native-elements';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import Chip from 'reusables/Chip';
+import { ClearHeader } from 'reusables/Header';
+import MainLinearGradient from 'reusables/MainLinearGradient';
+import { withNavigation } from 'react-navigation';
+import {BannerButton} from 'reusables/ReusableButtons'
+import S from 'styling'
+import functions from '@react-native-firebase/functions';
+import auth from '@react-native-firebase/auth';
+import { logError, LONG_TIMEOUT, timedPromise, isOnlyWhitespace } from 'utils/helpers';
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
-import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
-import S from 'styling';
-import { logError, LONG_TIMEOUT, MAX_BROADCAST_WINDOW, MIN_BROADCAST_WINDOW, timedPromise } from 'utils/helpers';
-import { returnStatuses } from 'utils/serverValues';
 
+class NewBroadcastForm extends React.Component {
 
-export default class NewBroadcastForm extends React.Component {
-
-    constructor(props) {
+    constructor(props){
         super(props)
-
-        this.minDate = null;
-        this.maxDate = null;
-        this.recalculateDateLimits()
-
-        this.recepientOptions = {friends: "friends", groups: "groups", masks: "masks"}
-
-        //I'm starting them off with a date that should be far enough from the 
-        //actual hard cutoff to give them ample time to fill the form
-        let startingDate = new Date()
-        startingDate.setMilliseconds(0)
-        startingDate.setSeconds(0)
-        const millisecondsToAdd = (MIN_BROADCAST_WINDOW + 3) * 60 * 1000
-        startingDate.setTime(startingDate.getTime() + millisecondsToAdd)
-
-        this.state = {
-            showPicker: false,
-            pickerMode: "time",
-            location: '',
-            date: startingDate,
-            errorMessage: null,
-            isModalVisible: false,
-
+        this.passableBroadcastInfo = { //Information that's directly edited by other screens
+            timeText: "In 5 minutes",
+            broadcastTTL: 1000 * 60 * 5,
+            TTLRelative: true,
+            location: "",
+            geolocation: null,
             allFriends: false,
-            friendRecipients: {},
-            maskRecepients: {},
-            groupRecepients: {},
-
-            dispayedRecepient: this.recepientOptions.friends
+            recepientFriends:{},
+            recepientMasks:{},
+            recepientGroups:{}
         }
+        this.state = {
+            showingMore: false,
+            passableBroadcastInfo: this.passableBroadcastInfo,
+            autoConfirm: true,
+            notes: "",
+            customMaxResponders: false,
+            maxResponders: "",
+            isModalVisible: false,
+            errorMessage: null
+        }
+
+    }
+
+    static navigationOptions = ({ navigationOptions }) => {
+        return ClearHeader(navigationOptions, "New Broadcast")
+    };
+
+    componentDidMount() {
+        const { navigation } = this.props;
+        this.focusListener = navigation.addListener('didFocus', () => {
+            this.setState({}) //Just call for a rerender
+        });
+    }
+    
+    componentWillUnmount() {
+        this.focusListener.remove();
     }
 
     render() {
-        const {dispayedRecepient} = this.state
-        return (
-            <View style={S.styles.containerFlexStart}>
-                <DefaultLoadingModal isVisible={this.state.isModalVisible} />
+      return (
+        <ThemeConsumer>
+        {({ theme }) => (
+        <MainLinearGradient theme={theme}>  
+            <DefaultLoadingModal isVisible={this.state.isModalVisible} />
+            <ScrollView 
+                style = {{width: "100%", flex: 1}}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle = {{paddingHorizontal: 16}}>
 
-                <Text>Create a New Broadcast</Text>
-                {this.state.errorMessage &&
-                    <Text style={{ color: 'red' }}>
-                        {this.state.errorMessage}
-                    </Text>}
-                <View style={styles.mainForm}>
-                    <TextInput
-                        style={S.styles.textInput}
-                        autoCapitalize="words"
-                        placeholder="Place"
-                        onChangeText={location => this.setState({ location })}
-                        value={this.state.location}/>
+            {this.state.errorMessage != null &&
+                <Text style={{ color: '#2900BD', fontWeight: "bold" }}>
+                    {this.state.errorMessage}
+                </Text>
+            }
+            
+            <FormSubtitle title = "Time" />
 
-                    <Text> Time and Date</Text>
-                    <View style = {{flexDirection: 'row'}}>
-                        <Button onPress={() => this.showPicker('date')} title="Choose Date" />
-                        <Button onPress={() => this.showPicker('time')} title="Choose Time" />
-                    </View>
+            <FormInput
+                onPress = {() => this.props.navigation.navigate("NewBroadcastFormTime", this.passableBroadcastInfo)}
+                value = {this.state.passableBroadcastInfo.timeText}
+            />
 
-                    {this.state.showPicker &&
-                     <DateTimePicker value={this.state.date}
-                        style={{width:'100%'}}
-                        mode={this.state.pickerMode}
-                        is24Hour={false}
-                        display="default"
-                        onChange={this.setDate}
-                        minimumDate={this.minDate} />
-                    }
+            <FormSubtitle title = "Place" />
 
-                    <Text style={{ textAlign: "center" }}> Chosen date: </Text>
-                    <Text style={{ textAlign: "center", fontWeight: "bold", margin: 8 }}>
-                        {this.state.date.toString()}
-                    </Text>
+            <FormInput
+                onPress = {() => this.props.navigation.navigate("NewBroadcastFormLocation", this.passableBroadcastInfo)}
+                placeholder = "Where are you going?"
+                value = {this.state.passableBroadcastInfo.location}
+            />
 
-                    <View style = {{width: "100%", height: 30, flexDirection: 'row'}}>
-                        <TouchableOpacity 
-                            style = {dispayedRecepient == this.recepientOptions.friends
-                                 ? styles.selectedTab : styles.dormantTab}
-                            onPress={() => this.setState({dispayedRecepient: this.recepientOptions.friends})}>
-                            <Text>Friends</Text>
-                        </TouchableOpacity>
+            <FormSubtitle title = "Recepients" />
 
-                        <TouchableOpacity 
-                            style = {dispayedRecepient == this.recepientOptions.masks
-                                 ? styles.selectedTab : styles.dormantTab}
-                            onPress={() => this.setState({dispayedRecepient: this.recepientOptions.masks})}>
-                            <Text>Masks</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity 
-                            style = {dispayedRecepient == this.recepientOptions.groups
-                                 ? styles.selectedTab : styles.dormantTab}
-                            onPress={() => this.setState({dispayedRecepient: this.recepientOptions.groups})}>
-                            <Text>Groups</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-
-                {this.chooseInfiniteScroller()}
-
-                <BannerButton
-                    color = {S.colors.buttonGreen}
-                    onPress={this.createBroadcast}
-                    iconName = {S.strings.add}
-                    title = "CREATE"
+            <View style = {{width: "100%", flexDirection: "row"}}>
+                <FormBox 
+                    onPress = {() => this.props.navigation.navigate("NewBroadcastFormRecepients", 
+                        {mode: "friends", data: this.state.passableBroadcastInfo})}
+                    amount = {`${Object.keys(this.state.passableBroadcastInfo.recepientFriends).length}`}
+                    title = "friends"
+                />
+                <FormBox 
+                    onPress = {() => this.props.navigation.navigate("NewBroadcastFormRecepients", 
+                        {mode: "masks", data: this.state.passableBroadcastInfo})}
+                    amount = {`${Object.keys(this.state.passableBroadcastInfo.recepientMasks).length}`}
+                    title = "masks"
+                />
+                <FormBox 
+                    onPress = {() => this.props.navigation.navigate("NewBroadcastFormRecepients", 
+                        {mode: "groups", data: this.state.passableBroadcastInfo})}
+                    amount = {`${Object.keys(this.state.passableBroadcastInfo.recepientGroups).length}`}
+                    title = "groups"
                 />
             </View>
-        )
+
+            {this.state.showingMore &&
+                <>
+                <CheckBox
+                    title='Auto-confirm'
+                    checkedColor='white'
+                    uncheckedColor="white"
+                    checked = {this.state.autoConfirm}
+                    textStyle = {{color: "white", fontWeight: "bold"}}
+                    containerStyle = {{alignSelf: "flex-start", marginLeft: 0, padding: 0, marginTop: 16}}
+                    onIconPress = {() => this.setState({autoConfirm: !this.state.autoConfirm})}
+                />
+
+                <FormSubtitle title = "Max Responders" />
+
+                <ScrollView 
+                    containerStyle = {{flexDirection: "row"}} 
+                    style = {{flex: 1}} 
+                    horizontal
+                    showsHorizontalScrollIndicator={false}>
+                    <Chip
+                        mainColor = "white"
+                        selected = {!this.state.customMaxResponders && this.state.maxResponders == ""}
+                        onPress = {() => this.setPredefinedMaxResponders("")}
+                        selectedTextColor = "black"
+                        style = {{paddingHorizontal: 16}}>
+                            <Text>N/A</Text>
+                    </Chip>
+                    <Chip
+                        selected = {!this.state.customMaxResponders && this.state.maxResponders == "2"}
+                        mainColor = "white"
+                        onPress = {() => this.setPredefinedMaxResponders("2")}
+                        selectedTextColor = "black"
+                        style = {{paddingHorizontal: 16}}>
+                            <Text>2</Text>
+                    </Chip>
+                    <Chip
+                        selected = {!this.state.customMaxResponders && this.state.maxResponders == "5"}
+                        mainColor = "white"
+                        onPress = {() => this.setPredefinedMaxResponders("5")}
+                        selectedTextColor = "black"
+                        style = {{paddingHorizontal: 16}}>
+                            <Text>5</Text>
+                    </Chip>
+                    <Chip
+                        selected = {!this.state.customMaxResponders && this.state.maxResponders == "10"}
+                        mainColor = "white"
+                        onPress = {() => this.setPredefinedMaxResponders("10")}
+                        selectedTextColor = "black"
+                        style = {{paddingHorizontal: 16}}>
+                            <Text>10</Text>
+                    </Chip>
+                    <Chip
+                        selected = {this.state.customMaxResponders}
+                        mainColor = "white"
+                        selectedTextColor = "black"
+                        onPress = {() => this.setState({customMaxResponders: true})}
+                        style = {{paddingHorizontal: 16}}>
+                            <Text>Custom</Text>
+                    </Chip>
+
+                </ScrollView>
+                
+                {this.state.customMaxResponders && 
+                    <Input
+                        value = {this.state.maxResponders}
+                        containerStyle = {{marginTop: 8}}
+                        inputContainerStyle = {{backgroundColor: "white"}}
+                        keyboardType = "number-pad"
+                        placeholder = "Max number of allowed responders"
+                        onChangeText = {(max) => this.setState({maxResponders: max})}
+                        errorMessage = {/^\d+$/.test(this.state.maxResponders) && parseInt(this.state.maxResponders) > 0 ?
+                                 "" : "Only positive values are valid. If you won't want a max number of responders, choose N/A"
+                        }
+                        errorStyle = {{color: "#2900BD"}}
+                    />
+                }
+
+                <FormSubtitle title = "Notes" />
+
+                <Input
+                    multiline = {true}
+                    textAlignVertical = "top"   
+                    numberOfLines = {4}           
+                    inputContainerStyle = {{backgroundColor: "white"}}
+                    placeholder = "Enter any extra information you want in here"
+                    value = {this.state.notes}
+                    onChangeText = {(notes) => this.setState({notes})}
+                />
+                </>
+            }
+
+            <Button 
+                title = {`Show ${this.state.showingMore ? "less" : "more"}`}
+                type = "clear"
+                onPress = {() => this.setState({showingMore: !this.state.showingMore})}
+                titleStyle = {{color: "white"}}
+                />
+
+        </ScrollView> 
+        <BannerButton
+          color = "white"
+          onPress={this.sendBroadcast}
+          contentColor = "green"
+          iconName = {S.strings.sendBroadcast}
+          title = "SEND"
+        />
+        </MainLinearGradient>
+        )}
+        </ThemeConsumer>
+      )
     }
 
-
-    chooseInfiniteScroller = () => {
-        const userUid = auth().currentUser.uid
-        if (this.state.dispayedRecepient == this.recepientOptions.friends){
-            return(
-                <View style = {[S.styles.containerFlexStart, {width: "100%"}]}>
-                    <Button onPress={() => this.selectAllFriends()} title="AllFriends" />
-                    <Text>All friends selected: {this.state.allFriends ? "yes" : "no"} </Text>
-                    <SearchableInfiniteScroll
-                    type = "static"
-                    queryValidator = {(query) => true}
-                    queryTypes = {[{name: "Display Name", value: "displayNameQuery"}, {name: "Username", value: "usernameQuery"}]}
-                    errorHandler = {this.scrollErrorHandler}
-                    renderItem = {this.friendRenderer}
-                    dbref = {database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`)}
-                    />    
-                </View>
-            )
-        }
-
-        if (this.state.dispayedRecepient == this.recepientOptions.groups){
-            return(
-                <SearchableInfiniteScroll
-                type = "dynamic"
-                queryValidator = {(query) => true}
-                queryTypes = {[{name: "Name", value: "name"}]}
-                errorHandler = {this.scrollErrorHandler}
-                renderItem = {this.groupRenderer}
-                dbref = {database().ref(`/userGroupMemberships/${userUid}`)}
-              />      
-            )
-        }
-
-        return (
-            <SearchableInfiniteScroll
-            type = "dynamic"
-            queryValidator = {(query) => true}
-            queryTypes = {[{name: "GName", value: "name"}]}
-            errorHandler = {this.scrollErrorHandler}
-            renderItem = {this.maskRenderer}
-            dbref = {database().ref(`/userFriendGroupings/${userUid}/custom/snippets`)}
-            />
-        )
+    sendBroadcast = () => {
+        this.createBroadcast()
     }
 
-
-    friendRenderer = ({ item }) => {
-        return (
-            <UserSnippetListElement 
-            style = {{backgroundColor: this.state.friendRecipients[item.uid] ? "lightgreen" : "white"}}
-            snippet={item} 
-            onPress={() => this.toggleSelection(item)}/>
-        );
-    }
-
-    groupRenderer = ({ item }) => {
-        return (
-          <TouchableOpacity 
-          onPress = {() => this.toggleSelection(item)}
-          style = {[S.styles.listElement, {backgroundColor: this.state.groupRecepients[item.uid] ? "lightgreen" : "white"}]}>
-                <Text>{item.name}</Text>
-          </TouchableOpacity>
-        );
-    }
-
-    maskRenderer = ({ item }) => {
-        return (
-          <TouchableOpacity 
-          onPress = {() => this.toggleSelection(item)}
-          style = {[S.styles.listElement, {backgroundColor: this.state.maskRecepients[item.uid] ? "lightgreen" : "white"}]}>
-                <Text>{item.name}</Text>
-                <Text>Member count: {item.memberCount}</Text>
-          </TouchableOpacity>
-        );
-    }
-    
-    scrollErrorHandler = (err) => {
-        logError(err)
-        this.setState({errorMessage: err.message})
-    }
-
-    toggleSelection = (snippet) => {
-        let copiedObj = {}
-        switch(this.state.dispayedRecepient){
-            case this.recepientOptions.friends:
-                copiedObj = {...this.state.friendRecipients}
-                break
-            case this.recepientOptions.masks:
-                copiedObj = {...this.state.maskRecepients}
-                break
-            default:
-                copiedObj = {...this.state.groupRecepients}
-                break
-        }
-
-        if (copiedObj[snippet.uid]){
-          //Then remove the snippet
-          delete copiedObj[snippet.uid]
-        }else{
-          //Add the snippet
-          const {uid, ...snippetSansUid} = snippet
-          copiedObj[snippet.uid] = snippetSansUid
-        }
-
-        switch(this.state.dispayedRecepient){
-            case this.recepientOptions.friends:
-                this.setState({friendRecipients: copiedObj, allFriends: false});
-                break
-            case this.recepientOptions.masks:
-                this.setState({maskRecepients: copiedObj, allFriends: false});
-                break
-            default:
-                this.setState({groupRecepients: copiedObj});
-                break
-        }
-    }
-
-    selectAllFriends = () =>{
-        this.setState({allFriends: true, friendRecipients: {}, maskRecepients: {}})
-    }
-
-    setDate = (event, newDate) => {
-        newDate = newDate || this.state.date;
-        let oldDate = this.state.date;
-        oldDate.setMilliseconds(0)
-        oldDate.setSeconds(0)
-
-        if (this.state.pickerMode == "time") {
-            oldDate.setHours(newDate.getHours(), newDate.getMinutes())
-        } else {
-            oldDate.setFullYear(newDate.getFullYear(),
-                newDate.getMonth(),
-                newDate.getDate())
-        }
-
-        this.recalculateDateLimits()
-        let errorMessage = this.checkTimeLimits(oldDate);
- 
+    setPredefinedMaxResponders = (max) => {
         this.setState({
-            showPicker: Platform.OS === 'ios' ? true : false,
-            date: oldDate,
-            errorMessage
-        });
-    }
-
-    showPicker = pickerMode => {
-        this.setState({
-            showPicker: true,
-            pickerMode,
-        });
-    }
-
-    //Returns an error message if there's a problem
-    checkTimeLimits = (date) => {
-        if (date.getTime() < this.minDate.getTime())
-            return`The time of this event should be at least ${MIN_BROADCAST_WINDOW + 1} minutes away`
-        else if (date.getTime() > this.maxDate.getTime())
-            return `The time of this event should be less than ${Math.ceil(MAX_BROADCAST_WINDOW / 60)} hours away`
-    }
-
-    recalculateDateLimits = () => {
-        this.minDate = new Date()
-        this.minDate.setMilliseconds(0)
-        this.minDate.setSeconds(0)
-        //I'm adding 1 to the limit becuase I want to round up after removing the seconds
-        let millisecondsToAdd = (MIN_BROADCAST_WINDOW + 1) * 60 * 1000
-        this.minDate.setTime(this.minDate.getTime() + millisecondsToAdd)
-
-        this.maxDate = new Date()
-        millisecondsToAdd = (MAX_BROADCAST_WINDOW) * 60 * 1000
-        this.maxDate.setTime(this.maxDate.getTime() + millisecondsToAdd)
+            maxResponders: max,
+            customMaxResponders: false
+        })
     }
 
     createBroadcast = async () => {
         try{
-            this.setState({isModalVisible: true})
+            this.setState({isModalVisible: true, errorMessage: null})
             const uid = auth().currentUser.uid
 
-            //First doing checks...
-            this.recalculateDateLimits()
-            let errorMessage = this.checkTimeLimits(this.state.date);
-            if (errorMessage){
-                this.setState({isModalVisible: false, errorMessage})
-                return;
+            if (isOnlyWhitespace(this.state.passableBroadcastInfo.location)){
+                this.setState({errorMessage: "Invalid location name", isModalVisible: false})
+                return
+            }
+
+            if (this.state.customMaxResponders && !/^\d+$/.test(this.state.maxResponders)){
+                this.setState({errorMessage: "Invalid max responder limit", isModalVisible: false})
+                return
             }
 
             //Getting the uid's of all my recepients
@@ -318,44 +254,53 @@ export default class NewBroadcastForm extends React.Component {
             const maskRecepients = {}
             const groupRecepients = {}
 
-            for (const key in this.state.friendRecipients) {
+            for (const key in this.state.passableBroadcastInfo.recepientFriends) {
                 friendRecepients[key] = true
             }
-            for (const key in this.state.maskRecepients) {
+            for (const key in this.state.passableBroadcastInfo.recepientMasks) {
                 maskRecepients[key] = true
             }
-            for (const key in this.state.groupRecepients) {
+            for (const key in this.state.passableBroadcastInfo.recepientGroups) {
                 groupRecepients[key] = true
             }
 
-            if (!this.state.allFriends 
+            if (!this.state.passableBroadcastInfo.allFriends 
                 && Object.keys(friendRecepients).length == 0
                 && Object.keys(maskRecepients).length == 0
                 && Object.keys(groupRecepients).length == 0){
-                this.setState({errorMessage: "No Recepients"})
-            }else{
-                const creationFunction = functions().httpsCallable('createActiveBroadcast');
-                const response = await timedPromise(creationFunction({
-                    ownerUid: uid, 
-                    autoConfirm: false,
-                    location: this.state.location,
-                    deathTimestamp: this.state.date.getTime(),
-                    allFriends: this.state.allFriends,
-                    friendRecepients,
-                    maskRecepients,
-                    groupRecepients
-                }), LONG_TIMEOUT);
-    
-                if (response.data.status === returnStatuses.OK){
-                    this.setState({errorMessage: "Success (I know this isn't an error but meh)"})
-                }else{
-                    logError(new Error("Problematic createActiveBroadcast function response: " + response.data.status))
-                }
+                    this.setState({
+                        errorMessage: "This broadcast has no receivers it can be sent to", 
+                        isModalVisible: false
+                    })
+                    return
             }
+
+            const creationFunction = functions().httpsCallable('createActiveBroadcast');
+            // const response = await timedPromise(creationFunction({
+            //     ownerUid: uid, 
+            //     autoConfirm: this.state.passableBroadcastInfo.autoConfirm,
+            //     location: this.state.passableBroadcastInfo.location,
+            //     geolocation: this.state.passableBroadcastInfo.geolocation,
+            //     deathTimestamp: this.state.passableBroadcastInfo.broadcastTTL,
+            //     timeStampRelative: this.state.passableBroadcastInfo.TTLRelative,
+            //     maxResponders: this.state.maxResponders,
+            //     allFriends: this.state.passableBroadcastInfo.allFriends,
+            //     friendRecepients,
+            //     maskRecepients,
+            //     groupRecepients,
+            //     notes: this.state.notes
+            // }), LONG_TIMEOUT);
+
+            // if (response.data.status === returnStatuses.OK){
+            //     this.setState({errorMessage: "Success (I know this isn't an error but meh)"})
+            // }else{
+            //     logError(new Error("Problematic createActiveBroadcast function response: " + response.data.status))
+            // }
         }catch(err){
             if (err.code == "timeout"){
                 this.setState({errorMessage: "Timeout!"})
             }else{
+                this.setState({errorMessage: "Something went wrong! Please try again later"})
                 logError(err)       
             }
         }
@@ -363,23 +308,64 @@ export default class NewBroadcastForm extends React.Component {
     }
 }
 
-const styles = StyleSheet.create({
-    mainForm: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: "100%",
-        margin: 8
-    }, 
-    selectedTab: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: 'center',
-        backgroundColor: "dodgerblue"
-    },
-    dormantTab: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: 'center',
-        backgroundColor: "grey"
+export default withNavigation(NewBroadcastForm);
+
+
+class FormInput extends React.PureComponent {
+    render (){
+        const {onPress, ...otherProps} = this.props
+        return (
+            <TouchableOpacity onPress = {onPress} style = {{height: "auto", width: "100%"}}>
+                <View pointerEvents='none'>
+                    <Input
+                        {...otherProps}                
+                        inputContainerStyle = {{backgroundColor: "white"}}
+                        editable = {false}
+                    />
+                </View>
+            </TouchableOpacity>
+        )
     }
-})
+}
+
+class FormBox extends React.PureComponent {
+    render (){
+        const {amount, title, ...otherProps} = this.props
+        return (
+            <View
+            style = {{
+                alignItems: "center",
+                justifyContent: "center", 
+                width: "20%",
+                aspectRatio: 1,
+                backgroundColor: "white",
+                borderRadius: 10,
+                marginRight: 16}}>
+            <TouchableOpacity 
+            {...otherProps}
+            style = {{alignItems: "center", justifyContent: "center"}}>  
+                <Text h4>{this.props.amount}</Text>
+                <Text style = {{fontWeight: "bold"}}>{this.props.title}</Text>
+            </TouchableOpacity>
+            </View>
+        )
+    }
+}
+
+
+class FormSubtitle extends React.PureComponent {
+    render (){
+        return (
+            <Text style = {{
+                fontFamily: "NunitoSans-Bold", 
+                marginBottom: 4, 
+                marginTop: 8,
+                fontSize: 22, 
+                color: "white", 
+                alignSelf: "flex-start"
+            }}>
+                {this.props.title}
+            </Text>
+        )
+    }
+}
