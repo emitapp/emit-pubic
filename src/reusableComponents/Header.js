@@ -21,6 +21,8 @@ export function ClearHeader (navigationOptions, title) {
             ...navigationOptions.headerStyle,
             elevation: 0,
             shadowOpacity: 0,
+            shadowColor: "transparent",
+            borderBottomWidth: 0,
         },
         headerTintColor: navigationOptions.headerTintColor,
     };

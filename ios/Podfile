@@ -37,6 +37,8 @@ target 'lunchme' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'react-native-geolocation', path: '../node_modules/@react-native-community/geolocation'
+  
   # Pods for react-native-permissions
   permissions_path = '../node_modules/react-native-permissions/ios'
   pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary.podspec"

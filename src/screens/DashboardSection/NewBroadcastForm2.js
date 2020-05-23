@@ -24,7 +24,9 @@ class NewBroadcastForm extends React.Component {
         }
         this.state = {
             showingMore: false,
-            passableBroadcastInfo: this.passableBroadcastInfo
+            passableBroadcastInfo: this.passableBroadcastInfo,
+            autoConfirm: true,
+            notes: ""
         }
 
     }
@@ -99,9 +101,10 @@ class NewBroadcastForm extends React.Component {
                     title='Auto-confirm'
                     checkedColor='white'
                     uncheckedColor="white"
-                    checked = {true}
+                    checked = {this.state.autoConfirm}
                     textStyle = {{color: "white", fontWeight: "bold"}}
                     containerStyle = {{alignSelf: "flex-start", marginLeft: 0, padding: 0, marginTop: 16}}
+                    onIconPress = {() => this.setState({autoConfirm: !this.state.autoConfirm})}
                 />
 
                 <FormSubtitle title = "Max Responders" />
@@ -157,6 +160,9 @@ class NewBroadcastForm extends React.Component {
                     textAlignVertical = "top"   
                     numberOfLines = {4}           
                     inputContainerStyle = {{backgroundColor: "white"}}
+                    placeholder = "Enter any extra information you want in here"
+                    value = {this.state.notes}
+                    onChangeText = {(notes) => this.setState({notes})}
                 />
                 </>
             }

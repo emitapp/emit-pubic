@@ -46,12 +46,10 @@ export const isOnlyWhitespace = (str) => {
  */
 export const epochToDateString = (epochMillis) =>
 {
-  let options = {timeStyle: "short", dateStyle: "medium"}
+  let options = {hour: "2-digit", minute: "2-digit", timeZoneName: "short", 
+    day: "2-digit", month: "short", year: "numeric"}
   return new Date(epochMillis).toLocaleString(undefined, options)
 }
-
-export const MIN_BROADCAST_WINDOW = 2 //2 minutes
-export const MAX_BROADCAST_WINDOW = 2879 //48 hours - 1 minute
 
 
 import crashlytics from '@react-native-firebase/crashlytics';

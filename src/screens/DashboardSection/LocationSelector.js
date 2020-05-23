@@ -152,6 +152,8 @@ export default class LocationSelector extends React.Component {
           let locationPermissionResult = await check(permissionName)
           locationPermissionResult = await this.requestIfNeeded(permissionName, locationPermissionResult)
           return locationPermissionResult == RESULTS.GRANTED
+        }else{
+          return true
         }
     }catch (err){
       logError(err)
