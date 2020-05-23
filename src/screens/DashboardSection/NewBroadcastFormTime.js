@@ -170,7 +170,8 @@ export default class NewBroadcastFormTime extends React.Component {
 
     showPicker = (pickerMode) => {
         this.setState({
-            showPicker: pickerMode != this.state.pickerMode, //Allow the buttons to also act as visibility toggles
+            //Allow the buttons to also act as visibility toggles for ios
+            showPicker: Platform.OS === 'ios' ? (pickerMode != this.state.pickerMode) : true, 
             pickerMode,
         });
     }

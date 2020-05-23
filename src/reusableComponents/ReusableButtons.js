@@ -24,13 +24,17 @@ function AdditionalOptionsButtonComponent(props) {
 
 export class BannerButton extends React.PureComponent {
 
+    static defaultProps = {
+        contentColor: "white"
+      }
+
     render() {
         return (
             <TouchableOpacity 
                 style = {[styles.bannerButton, {backgroundColor: this.props.color}, {...this.props.extraStyles}]}
                 onPress={this.props.onPress}>
-                <AwesomeIcon name={this.props.iconName} size={18} color= "white" style = {{marginRight: 18}} />
-                <Text style = {{color: "white", fontWeight: "bold"}}>{this.props.title}</Text>
+                <AwesomeIcon name={this.props.iconName} size={18} color={this.props.contentColor} style = {{marginRight: 18}} />
+                <Text style = {{color: this.props.contentColor, fontWeight: "bold"}}>{this.props.title}</Text>
             </TouchableOpacity>
         )
     }

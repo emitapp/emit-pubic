@@ -6,7 +6,8 @@ import Chip from 'reusables/Chip';
 import { ClearHeader } from 'reusables/Header';
 import MainLinearGradient from 'reusables/MainLinearGradient';
 import { withNavigation } from 'react-navigation';
-
+import {BannerButton} from 'reusables/ReusableButtons'
+import S from 'styling'
 
 class NewBroadcastForm extends React.Component {
 
@@ -26,7 +27,9 @@ class NewBroadcastForm extends React.Component {
             showingMore: false,
             passableBroadcastInfo: this.passableBroadcastInfo,
             autoConfirm: true,
-            notes: ""
+            notes: "",
+            customMaxResponders: false,
+            maxResponders: ""
         }
 
     }
@@ -116,42 +119,61 @@ class NewBroadcastForm extends React.Component {
                     showsHorizontalScrollIndicator={false}>
                     <Chip
                         mainColor = "white"
-                        selected = {true}
+                        selected = {!this.state.customMaxResponders && this.state.maxResponders == ""}
+                        onPress = {() => this.setPredefinedMaxResponders("")}
                         selectedTextColor = "black"
                         style = {{paddingHorizontal: 16}}>
                             <Text>N/A</Text>
                     </Chip>
                     <Chip
+                        selected = {!this.state.customMaxResponders && this.state.maxResponders == "2"}
                         mainColor = "white"
-                        selected = {false}
+                        onPress = {() => this.setPredefinedMaxResponders("2")}
                         selectedTextColor = "black"
                         style = {{paddingHorizontal: 16}}>
                             <Text>2</Text>
                     </Chip>
                     <Chip
+                        selected = {!this.state.customMaxResponders && this.state.maxResponders == "5"}
                         mainColor = "white"
-                        selected = {false}
+                        onPress = {() => this.setPredefinedMaxResponders("5")}
                         selectedTextColor = "black"
                         style = {{paddingHorizontal: 16}}>
                             <Text>5</Text>
                     </Chip>
                     <Chip
+                        selected = {!this.state.customMaxResponders && this.state.maxResponders == "10"}
                         mainColor = "white"
-                        selected = {false}
+                        onPress = {() => this.setPredefinedMaxResponders("10")}
                         selectedTextColor = "black"
                         style = {{paddingHorizontal: 16}}>
-                            <Text>100</Text>
+                            <Text>10</Text>
                     </Chip>
                     <Chip
+                        selected = {this.state.customMaxResponders}
                         mainColor = "white"
-                        selected = {false}
                         selectedTextColor = "black"
+                        onPress = {() => this.setState({customMaxResponders: true})}
                         style = {{paddingHorizontal: 16}}>
                             <Text>Custom</Text>
                     </Chip>
-                    
 
                 </ScrollView>
+                
+                {this.state.customMaxResponders && 
+                    <Input
+                        value = {this.state.maxResponders}
+                        containerStyle = {{marginTop: 8}}
+                        inputContainerStyle = {{backgroundColor: "white"}}
+                        keyboardType = "number-pad"
+                        placeholder = "Max number of allowed responders"
+                        onChangeText = {(max) => this.setState({maxResponders: max})}
+                        errorMessage = {/^\d+$/.test(this.state.maxResponders) && parseInt(this.state.maxResponders) > 0 ?
+                                 "" : "Only positive values are valid. If you won't want a max number of responders, choose N/A"
+                        }
+                        errorStyle = {{color: "yellow"}}
+                    />
+                }
 
                 <FormSubtitle title = "Notes" />
 
@@ -175,10 +197,28 @@ class NewBroadcastForm extends React.Component {
                 />
 
         </ScrollView> 
+        <BannerButton
+          color = "white"
+          onPress={this.sendBroadcast}
+          contentColor = "green"
+          iconName = {S.strings.sendBroadcast}
+          title = "SEND"
+        />
         </MainLinearGradient>
         )}
         </ThemeConsumer>
       )
+    }
+
+    sendBroadcast = () => {
+        console.log(this.state)
+    }
+
+    setPredefinedMaxResponders = (max) => {
+        this.setState({
+            maxResponders: max,
+            customMaxResponders: false
+        })
     }
 }
 
