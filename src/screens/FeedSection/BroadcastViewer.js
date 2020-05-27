@@ -2,14 +2,16 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
-import { Button, Text, View } from 'react-native';
+import { View, Linking, Platform } from 'react-native';
+import { Button, Divider, Text } from 'react-native-elements';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
-import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
+import { UserSnippetListElement } from 'reusables/ListElements';
+import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/LoadingComponents';
 import S from "styling";
-import { epochToDateString, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
+import {logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { responderStatuses, returnStatuses } from 'utils/serverValues';
-import {UserSnippetListElement} from 'reusables/ListElements'
-import {DefaultLoadingModal} from 'reusables/LoadingComponents'
+import CountdownComponent from 'reusables/CountdownComponent'
+import Icon from 'react-native-vector-icons/Entypo';
 
 
 export default class BroadcastViewer extends React.Component {
@@ -41,38 +43,57 @@ export default class BroadcastViewer extends React.Component {
 
 
   render() {
+    const {broadcastData} = this.state
     return (
-      <View style={S.styles.containerFlexStart}>
+      <View style={{...S.styles.containerFlexStart, alignItems: "flex-start", marginHorizontal: 16}}>
         <DefaultLoadingModal isVisible={this.state.isModalVisible} />
         
         {this.state.errorMessage &&
           <Text style={{ color: 'red' }}>
             {this.state.errorMessage}
-          </Text>}
-
-        {this.state.broadcastData && 
-        <View>
-            <Text>Owner Name: {this.broadcastSnippet.owner.name}</Text>
-            <Text>Owner uid: {this.broadcastSnippet.owner.uid}</Text>
-            <Text>Broadcast uid: {this.broadcastSnippet.uid}</Text>
-            <Text>Location: {this.state.broadcastData.location}</Text>
-            <Text>Note: {this.state.broadcastData.note || " "}</Text>
-            <Text>Death Time: {epochToDateString(this.state.broadcastData.deathTimestamp)}</Text>
-            <Text>Confirmations: {this.state.broadcastData.totalConfirmations}</Text>
-        </View>}
-
-        {this.displayBroadcastAction()}
-
-        {!this.state.broadcastData &&
-            <TimeoutLoadingComponent
-            hasTimedOut={false}
-            retryFunction={() => null}/>
+          </Text>
         }
 
-        {!this.state.showConfirmed &&
+        {!broadcastData &&
+            <TimeoutLoadingComponent hasTimedOut={false} retryFunction={() => null}/>
+        }
+
+        {broadcastData && 
+          <>
+              <UserSnippetListElement  snippet={this.broadcastSnippet.owner} onPress={null}/>
+              <Divider />
+              <Text h4 h4Style = {{marginVertical: 8}}>Will be at</Text>
+              <View style = {{flexDirection: "row", alignItems: "center"}}>
+                {broadcastData.geolocation && 
+                  <Button
+                    icon={ <Icon name="location-pin" size={20} color = "white" /> }
+                    onPress = {this.openLocationOnMap}
+                    containerStyle = {{marginRight: 8, marginLeft: 0}}
+                  />    
+                }
+                <Text style = {{fontSize: 18}}>{broadcastData.location}</Text>
+              </View>
+              <CountdownComponent deadLine = {broadcastData.deathTimestamp}  renderer = {this.timeLeftRenderer} />
+              {broadcastData.note != undefined &&
+                <Text style = {{fontStyle: "italic", marginTop: 8, fontSize: 18, color: "grey", marginLeft: 4, borderLeftColor: "grey", borderLeftWidth: 2, paddingLeft: 8}}>
+                  {broadcastData.note}
+                </Text>
+              }
+          </>
+        }
+
+        <Divider style = {{marginVertical: 8}} />
+        {this.displayBroadcastAction()}
+        <Divider style = {{marginVertical: 8}} />
+
+        {broadcastData && 
+            <Text style = {{alignSelf: "center"}}>{broadcastData.totalConfirmations} user(s) have confirmed to join</Text>
+        }
+        {!this.state.showConfirmed && broadcastData && broadcastData.totalConfirmations != 0 &&
           <Button 
-            title="Show Other Confirmations" 
-            onPress={() => this.setState({showConfirmed: true})}/>
+            title="Show Confirmations" 
+            onPress={() => this.setState({showConfirmed: true})}
+            containerStyle = {{alignSelf: "center"}}/>
         }
 
         {this.state.showConfirmed &&
@@ -95,9 +116,18 @@ export default class BroadcastViewer extends React.Component {
 
   displayBroadcastAction = () => {
     if (!this.broadcastSnippet.status){
-      return (<Button title="Express Interest" onPress={this.sendConfirmationRequest} />)
+      return (<Button 
+        title="Express Interest" 
+        onPress={this.sendConfirmationRequest} 
+        containerStyle = {{alignSelf: "center"}}/>)
     }else{
-      return <Text>{this.broadcastSnippet.status}</Text>
+      let color = "green"
+      if (this.broadcastSnippet.status == responderStatuses.PENDING) color = "grey"
+      return (
+        <Text style = {{fontSize: 18, marginVertical: 8}}>
+        Status: <Text style={{color, fontSize: 18}}> {this.broadcastSnippet.status} </Text>
+        </Text>
+      )
     }
   }
 
@@ -117,7 +147,6 @@ export default class BroadcastViewer extends React.Component {
 
       if (response.data.status === returnStatuses.OK){
         this.broadcastSnippet.status = newStatus
-        this.setState({errorMessage: "Success (I know this isn't an error but meh)"})
       }else{
         logError(new Error("Problematic setBroadcastResponse function response: " + response.data.status))
       }
@@ -142,5 +171,28 @@ export default class BroadcastViewer extends React.Component {
       snippet={item} 
       onPress={null}/>
     );
+  }
+
+  timeLeftRenderer = (time) => {
+    let string = ""
+    string += time.h ? `${time.h} hours, ` : ""
+    string += time.m ? `${time.m} minutes, ` : ""
+    string += time.s ? `${time.s} seconds` : ""
+    return(
+        <Text style = {{fontSize: 18, marginTop: 8}}>in {string}</Text>
+    );
+  }
+
+  openLocationOnMap = () => {
+    let geolocation = this.state.broadcastData.geolocation
+    let pinTitle = `${this.broadcastSnippet.owner.username}'s planned location`
+    let url = ""
+    if (Platform.OS == "android")
+      url = `geo:0,0?q=${geolocation.latitude},${geolocation.longitude}(${pinTitle})`
+    else
+      url = `http://maps.apple.com/?ll=${geolocation.latitude},${geolocation.longitude}`
+      url += `&q=${encodeURIComponent(pinTitle)}`
+      console.log(url)
+    Linking.openURL(url)
   }
 }
