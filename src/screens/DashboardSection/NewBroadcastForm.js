@@ -33,7 +33,7 @@ class NewBroadcastForm extends React.Component {
             showingMore: false,
             passableBroadcastInfo: this.passableBroadcastInfo,
             autoConfirm: true,
-            notes: "",
+            note: "",
             customMaxResponders: false,
             maxResponders: "",
             isModalVisible: false,
@@ -196,8 +196,8 @@ class NewBroadcastForm extends React.Component {
                     numberOfLines = {4}           
                     inputContainerStyle = {{backgroundColor: "white"}}
                     placeholder = "Enter any extra information you want in here"
-                    value = {this.state.notes}
-                    onChangeText = {(notes) => this.setState({notes})}
+                    value = {this.state.note}
+                    onChangeText = {(note) => this.setState({note})}
                 />
                 </>
             }
@@ -290,8 +290,8 @@ class NewBroadcastForm extends React.Component {
             }
             if (this.state.passableBroadcastInfo.geolocation) 
                 params.geolocation = this.state.passableBroadcastInfo.geolocation
-            if (this.state.notes)
-                params.notes = this.state.notes
+            if (this.state.note)
+                params.note = this.state.note
 
             const response = await timedPromise(creationFunction(params), LONG_TIMEOUT);
             if (response.data.status === returnStatuses.OK){

@@ -1,12 +1,17 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
 import S from 'styling';
+import {Text} from 'react-native-elements'
 import { epochToDateString, logError } from 'utils/helpers';
 import EmptyState from 'reusables/EmptyState'
+import CountdownComponent from 'reusables/CountdownComponent'
+import { responderStatuses } from 'utils/serverValues';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
 
@@ -50,21 +55,83 @@ export default class Feed extends React.Component {
   itemRenderer = ({ item }) => {
     return (
       <TouchableOpacity 
-        style = {S.styles.listElement}
+        style = {{marginVertical: 8, marginLeft: 8}}
         onPress = {() => this.props.navigation.navigate('BroadcastViewer', {broadcast: item}) }>
-          <View>
-            <ProfilePicDisplayer diameter = {30} uid = {item.owner.uid} style = {{marginRight: 10}} />
-            <Text>{item.owner.name}</Text>
+          <View style = {{flexDirection: "row", alignItems: "center", width: "100%", marginBottom: 8}}>
+            <ProfilePicDisplayer diameter = {48} uid = {item.owner.uid} style = {{marginRight: 10}} />
+            <View>
+              <Text style = {{fontSize: 18, fontFamily: "NunitoSans-Semibold"}}>
+                {item.owner.displayName}
+              </Text>
+              <Text style = {{color: "dimgrey"}}>@{item.owner.username}</Text>
+            </View>
+            <CountdownComponent deadLine = {item.deathTimestamp}  renderer = {this.timeLeftRenderer} />
           </View>
-          <View style={{marginHorizontal: 8}}>
-            <Text>Dies at: {epochToDateString(item.deathTimestamp)}</Text>
-            <Text>Location: {item.location}</Text>
-            <Text>Owner uid: {item.owner.uid}</Text>
-            {item.status &&  <Text>Status: {item.status}</Text>}
-            {item.groupInfo &&  <Text>Sent via {item.groupInfo.name} group</Text>}
-          </View>
+          <Text style = {{fontSize: 16, fontFamily: "NunitoSans-Semibold"}}>{item.location}</Text>
+          <Text>Will be there at: {epochToDateString(item.deathTimestamp)}</Text>
+          {item.groupInfo &&  <Text style = {{fontStyle: "italic"}}>Sent via {item.groupInfo.name} group</Text>}
+
+          {item.note != undefined && item.note != "" &&
+            <Text style = {{fontStyle: "italic", color: "dimgrey", marginLeft: 8, marginVertical: 8}}>{item.note}</Text>
+          }
+
+          {this.displayStatus(item)}
       </TouchableOpacity>
     );
   }
 
+  timeLeftRenderer = (time) => {
+    let string = ""
+    let subtitle = ""
+    if (time.h){
+      subtitle = "hours"
+      if (time.m > 30) string = `${time.h}+`
+      else string = `${time.h}`
+      string = time.h
+    }else if (time.m){
+      if (time.s > 30) string = `${time.m}+`
+      else string = `${time.m}`
+      subtitle = "mins"
+    }else{
+      subtitle = "mins"
+      string = "<1"
+    }
+    return(
+    <View style = {{marginLeft: "auto"}}>
+      <Text style = {{textAlign: "center", fontSize: 20}}>{string}</Text>
+      <Text style = {{textAlign: "center", fontSize: 16}}>{subtitle}</Text>
+    </View>      
+    );
+  }
+
+  displayStatus = (item) => {
+    if (!item.status) return
+    if (item.status == responderStatuses.PENDING){
+      return (
+        <View style={{...styles.statusParentStyle, backgroundColor: "dimgrey"}}>
+          <MaterialIcons name = "access-time" size = {20} color = "white" />
+          <Text style = {{color: "white", fontWeight: "bold"}}> {item.status}</Text>
+        </View>
+      )
+    }else{
+      return(
+        <View style={{...styles.statusParentStyle, backgroundColor: "green"}}>
+          <MaterialCommunityIcons name = "check-bold" size = {20} color = "white" />
+          <Text style = {{color: "white", fontWeight: "bold"}}> {item.status}</Text>
+        </View>
+      )
+    }  
+  }
 }
+
+
+const styles = StyleSheet.create({
+  statusParentStyle: {
+    flexDirection: "row", 
+    alignItems: "center", 
+    alignSelf: "flex-start", 
+    padding: 6, 
+    borderRadius: 4,
+    marginTop: 4
+  }
+})
