@@ -187,12 +187,13 @@ export default class BroadcastViewer extends React.Component {
     let geolocation = this.state.broadcastData.geolocation
     let pinTitle = `${this.broadcastSnippet.owner.username}'s planned location`
     let url = ""
-    if (Platform.OS == "android")
+    if (Platform.OS == "android"){
       url = `geo:0,0?q=${geolocation.latitude},${geolocation.longitude}(${pinTitle})`
-    else
+    }
+    else{
       url = `http://maps.apple.com/?ll=${geolocation.latitude},${geolocation.longitude}`
       url += `&q=${encodeURIComponent(pinTitle)}`
-      console.log(url)
+    }
     Linking.openURL(url)
   }
 }
