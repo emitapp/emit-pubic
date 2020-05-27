@@ -12,6 +12,7 @@ import functions from '@react-native-firebase/functions';
 import auth from '@react-native-firebase/auth';
 import { logError, LONG_TIMEOUT, timedPromise, isOnlyWhitespace } from 'utils/helpers';
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
+import {returnStatuses} from 'utils/serverValues'
 
 class NewBroadcastForm extends React.Component {
 
@@ -38,7 +39,6 @@ class NewBroadcastForm extends React.Component {
             isModalVisible: false,
             errorMessage: null
         }
-
     }
 
     static navigationOptions = ({ navigationOptions }) => {
@@ -276,31 +276,39 @@ class NewBroadcastForm extends React.Component {
             }
 
             const creationFunction = functions().httpsCallable('createActiveBroadcast');
-            // const response = await timedPromise(creationFunction({
-            //     ownerUid: uid, 
-            //     autoConfirm: this.state.passableBroadcastInfo.autoConfirm,
-            //     location: this.state.passableBroadcastInfo.location,
-            //     geolocation: this.state.passableBroadcastInfo.geolocation,
-            //     deathTimestamp: this.state.passableBroadcastInfo.broadcastTTL,
-            //     timeStampRelative: this.state.passableBroadcastInfo.TTLRelative,
-            //     maxResponders: this.state.maxResponders,
-            //     allFriends: this.state.passableBroadcastInfo.allFriends,
-            //     friendRecepients,
-            //     maskRecepients,
-            //     groupRecepients,
-            //     notes: this.state.notes
-            // }), LONG_TIMEOUT);
+            let params = {
+                ownerUid: uid, 
+                autoConfirm: this.state.autoConfirm,
+                location: this.state.passableBroadcastInfo.location,
+                deathTimestamp: this.state.passableBroadcastInfo.broadcastTTL,
+                timeStampRelative: this.state.passableBroadcastInfo.TTLRelative,
+                maxResponders: this.state.maxResponders,
+                allFriends: this.state.passableBroadcastInfo.allFriends,
+                friendRecepients,
+                maskRecepients,
+                groupRecepients,
+            }
+            if (this.state.passableBroadcastInfo.geolocation) 
+                params.geolocation = this.state.passableBroadcastInfo.geolocation
+            if (this.state.notes)
+                params.notes = this.state.notes
 
-            // if (response.data.status === returnStatuses.OK){
-            //     this.setState({errorMessage: "Success (I know this isn't an error but meh)"})
-            // }else{
-            //     logError(new Error("Problematic createActiveBroadcast function response: " + response.data.status))
-            // }
+            const response = await timedPromise(creationFunction(params), LONG_TIMEOUT);
+            if (response.data.status === returnStatuses.OK){
+                this.props.navigation.state.params.needUserConfirmation = false;
+                this.props.navigation.goBack()
+            }else{
+                this.setState({errorMessage: "Something went wrong! Please try again later"})
+                logError(new Error("Problematic createActiveBroadcast function response: " + response.data.status))
+            }
         }catch(err){
             if (err.code == "timeout"){
                 this.setState({errorMessage: "Timeout!"})
-            }else{
+            }else if (err.code = "internal"){
                 this.setState({errorMessage: "Something went wrong! Please try again later"})
+                logError(err)
+            }else{
+                this.setState({errorMessage: err.message})
                 logError(err)       
             }
         }
