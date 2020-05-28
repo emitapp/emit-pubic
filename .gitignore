@@ -63,6 +63,9 @@ buck-out/
 #Firebase config files
 #
 android/app/google-services.json
+android/app/src/prod/google-services.json
+android/app/src/dev/google-services.json
+
 ios/GoogleService-Info.plist
 
 # react-native-ultimate-config
