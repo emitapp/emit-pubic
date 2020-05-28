@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00E356F31AD99517003FC87E /* lunchmeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* lunchmeTests.m */; };
+		00E356F31AD99517003FC87E /* biteupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* biteupTests.m */; };
 		06E31616667742AE8A20F5D5 /* NunitoSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 31F0857BF62F42D09775FB52 /* NunitoSans-Bold.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
@@ -16,14 +16,14 @@
 		1A839E88242EAF04009C1C55 /* LottieSafeguard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A839E87242EAF04009C1C55 /* LottieSafeguard.swift */; };
 		1AE8A76123A42DBF006FD65C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AE8A76023A42DBF006FD65C /* GoogleService-Info.plist */; };
 		1AE8A76223A42DBF006FD65C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AE8A76023A42DBF006FD65C /* GoogleService-Info.plist */; };
-		1E1C5ABC1B3ED17686C56A89 /* libPods-lunchme.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D989848A4B57D88A968F385 /* libPods-lunchme.a */; };
+		1E1C5ABC1B3ED17686C56A89 /* libPods-biteup.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D989848A4B57D88A968F385 /* libPods-biteup.a */; };
 		22EE5FD7B7534F819580CDA0 /* NunitoSans-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5A3C9144084340829830BFC3 /* NunitoSans-BoldItalic.ttf */; };
 		2374D6CF23A645FE82A2CB5E /* NunitoSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 200975B325754134BA5BD8C4 /* NunitoSans-Italic.ttf */; };
-		24D325476B2A354BDD06882A /* libPods-lunchme-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C92CC179545E1521FF1B3027 /* libPods-lunchme-tvOS.a */; };
+		24D325476B2A354BDD06882A /* libPods-biteup-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C92CC179545E1521FF1B3027 /* libPods-biteup-tvOS.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		2DCD954D1E0B4F2C00145EB5 /* lunchmeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* lunchmeTests.m */; };
+		2DCD954D1E0B4F2C00145EB5 /* biteupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* biteupTests.m */; };
 		3E5EBD0A9D654D50A314FAAC /* NunitoSans-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 972189A918394D75850D4346 /* NunitoSans-BlackItalic.ttf */; };
 		3F37B966FBE8457D9CCA6813 /* NunitoSans-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 931578796E894650AACA7A70 /* NunitoSans-Black.ttf */; };
 		46624AF879BE42BFB665E803 /* NunitoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BEA826EE7A0448D2AB93F502 /* NunitoSans-Regular.ttf */; };
@@ -33,9 +33,9 @@
 		6DCFC222BF2F48008AA89894 /* NunitoSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 373AED4E6E0F40C9B1456214 /* NunitoSans-SemiBold.ttf */; };
 		6E06DDF2726348C092EF8A5C /* NunitoSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 31AD74AFAAF24FF9BDA918F2 /* NunitoSans-Light.ttf */; };
 		ABBE0EAD2168405AA815B6CE /* NunitoSans-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83A73E6C0A0743BFAE2556AC /* NunitoSans-SemiBoldItalic.ttf */; };
-		ADA0B3F380BC1520324D6ECE /* libPods-lunchme-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 135BFB2FCCB09E3CF41866EA /* libPods-lunchme-tvOSTests.a */; };
+		ADA0B3F380BC1520324D6ECE /* libPods-biteup-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 135BFB2FCCB09E3CF41866EA /* libPods-biteup-tvOSTests.a */; };
 		BAD6FB40A04B455B9D71F53A /* NunitoSans-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 740B25446C1D4C6FB4A057B6 /* NunitoSans-ExtraLightItalic.ttf */; };
-		FE3570B599354F81274ED87C /* libPods-lunchmeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CD74996B8247179A31952FA /* libPods-lunchmeTests.a */; };
+		FE3570B599354F81274ED87C /* libPods-biteupTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CD74996B8247179A31952FA /* libPods-biteupTests.a */; };
 		FEB3E9AD3F6A47AF9A08A461 /* NunitoSans-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42C11986621744F49366CBD2 /* NunitoSans-ExtraBold.ttf */; };
 /* End PBXBuildFile section */
 
@@ -45,60 +45,60 @@
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
-			remoteInfo = lunchme;
+			remoteInfo = biteup;
 		};
 		2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 2D02E47A1E0B4A5D006451C7;
-			remoteInfo = "lunchme-tvOS";
+			remoteInfo = "biteup-tvOS";
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
-		00E356EE1AD99517003FC87E /* lunchmeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = lunchmeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356EE1AD99517003FC87E /* biteupTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = biteupTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00E356F21AD99517003FC87E /* lunchmeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = lunchmeTests.m; sourceTree = "<group>"; };
+		00E356F21AD99517003FC87E /* biteupTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = biteupTests.m; sourceTree = "<group>"; };
 		06FD3BA8EE4C431B8DBE853B /* NunitoSans-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-ExtraLight.ttf"; path = "../src/styling/fonts/NunitoSans-ExtraLight.ttf"; sourceTree = "<group>"; };
 		0B39A2F9AE1C4A9E97BB1E14 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
-		135BFB2FCCB09E3CF41866EA /* libPods-lunchme-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-lunchme-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07F961A680F5B00A75B9A /* lunchme.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lunchme.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = lunchme/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = lunchme/AppDelegate.m; sourceTree = "<group>"; };
+		135BFB2FCCB09E3CF41866EA /* libPods-biteup-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-biteup-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* Biteup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Biteup.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = biteup/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = biteup/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = lunchme/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = lunchme/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = lunchme/main.m; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = biteup/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = biteup/Info.plist; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = biteup/main.m; sourceTree = "<group>"; };
 		1A7791882476FC98003A47B2 /* rnuc.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = rnuc.xcconfig; sourceTree = "<group>"; };
-		1A839E86242EAF04009C1C55 /* lunchme-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "lunchme-Bridging-Header.h"; sourceTree = "<group>"; };
+		1A839E86242EAF04009C1C55 /* biteup-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "biteup-Bridging-Header.h"; sourceTree = "<group>"; };
 		1A839E87242EAF04009C1C55 /* LottieSafeguard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieSafeguard.swift; sourceTree = "<group>"; };
 		1AE8A76023A42DBF006FD65C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1B1486D942EF491DBFA5C958 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		1D51739F4D1A4DEEAB2A9A68 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
-		1F2613DFF06253CD5AF1F76F /* Pods-lunchme.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lunchme.debug.xcconfig"; path = "Target Support Files/Pods-lunchme/Pods-lunchme.debug.xcconfig"; sourceTree = "<group>"; };
+		1F2613DFF06253CD5AF1F76F /* Pods-biteup.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-biteup.debug.xcconfig"; path = "Target Support Files/Pods-biteup/Pods-biteup.debug.xcconfig"; sourceTree = "<group>"; };
 		200975B325754134BA5BD8C4 /* NunitoSans-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-Italic.ttf"; path = "../src/styling/fonts/NunitoSans-Italic.ttf"; sourceTree = "<group>"; };
-		2D02E47B1E0B4A5D006451C7 /* lunchme-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "lunchme-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2D02E4901E0B4A5D006451C7 /* lunchme-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "lunchme-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D02E47B1E0B4A5D006451C7 /* biteup-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "biteup-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D02E4901E0B4A5D006451C7 /* biteup-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "biteup-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		31AD74AFAAF24FF9BDA918F2 /* NunitoSans-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-Light.ttf"; path = "../src/styling/fonts/NunitoSans-Light.ttf"; sourceTree = "<group>"; };
 		31F0857BF62F42D09775FB52 /* NunitoSans-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-Bold.ttf"; path = "../src/styling/fonts/NunitoSans-Bold.ttf"; sourceTree = "<group>"; };
 		35A0063ACC1042C784918489 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		373AED4E6E0F40C9B1456214 /* NunitoSans-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-SemiBold.ttf"; path = "../src/styling/fonts/NunitoSans-SemiBold.ttf"; sourceTree = "<group>"; };
-		3858A2D7B5EAFA8917DA33CF /* Pods-lunchme-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lunchme-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-lunchme-tvOS/Pods-lunchme-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		3858A2D7B5EAFA8917DA33CF /* Pods-biteup-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-biteup-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-biteup-tvOS/Pods-biteup-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		3AA177683EC1492FA16A7A23 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
-		3D989848A4B57D88A968F385 /* libPods-lunchme.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-lunchme.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D989848A4B57D88A968F385 /* libPods-biteup.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-biteup.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		42C11986621744F49366CBD2 /* NunitoSans-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-ExtraBold.ttf"; path = "../src/styling/fonts/NunitoSans-ExtraBold.ttf"; sourceTree = "<group>"; };
-		486BC584700DDB2C4FAD1AD3 /* Pods-lunchme-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lunchme-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-lunchme-tvOSTests/Pods-lunchme-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		486BC584700DDB2C4FAD1AD3 /* Pods-biteup-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-biteup-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-biteup-tvOSTests/Pods-biteup-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5A3C9144084340829830BFC3 /* NunitoSans-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-BoldItalic.ttf"; path = "../src/styling/fonts/NunitoSans-BoldItalic.ttf"; sourceTree = "<group>"; };
 		5B75E7A9FD1D4A4582018F37 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		5D826CAF344F45D484ACDCC1 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		62B6128A8F9B454CA58B2E18 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
 		692AF3FEC3A2446D9D2A08E3 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		740B25446C1D4C6FB4A057B6 /* NunitoSans-ExtraLightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-ExtraLightItalic.ttf"; path = "../src/styling/fonts/NunitoSans-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
-		7B918F190D9749C54F9E88E8 /* Pods-lunchme.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lunchme.release.xcconfig"; path = "Target Support Files/Pods-lunchme/Pods-lunchme.release.xcconfig"; sourceTree = "<group>"; };
+		7B918F190D9749C54F9E88E8 /* Pods-biteup.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-biteup.release.xcconfig"; path = "Target Support Files/Pods-biteup/Pods-biteup.release.xcconfig"; sourceTree = "<group>"; };
 		7C876628D16A4BD68B31582D /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
-		7CD74996B8247179A31952FA /* libPods-lunchmeTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-lunchmeTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7CD74996B8247179A31952FA /* libPods-biteupTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-biteupTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		83A09B3CB21F46F398CEDEC2 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
 		83A73E6C0A0743BFAE2556AC /* NunitoSans-SemiBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-SemiBoldItalic.ttf"; path = "../src/styling/fonts/NunitoSans-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
 		931578796E894650AACA7A70 /* NunitoSans-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-Black.ttf"; path = "../src/styling/fonts/NunitoSans-Black.ttf"; sourceTree = "<group>"; };
@@ -106,18 +106,18 @@
 		972189A918394D75850D4346 /* NunitoSans-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-BlackItalic.ttf"; path = "../src/styling/fonts/NunitoSans-BlackItalic.ttf"; sourceTree = "<group>"; };
 		981D292394D04BD099A18D23 /* NunitoSans-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-ExtraBoldItalic.ttf"; path = "../src/styling/fonts/NunitoSans-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
 		9A0A199130434EB082C679D6 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
-		A52DD0D848611C332D2C4D40 /* Pods-lunchme-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lunchme-tvOS.release.xcconfig"; path = "Target Support Files/Pods-lunchme-tvOS/Pods-lunchme-tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		A52DD0D848611C332D2C4D40 /* Pods-biteup-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-biteup-tvOS.release.xcconfig"; path = "Target Support Files/Pods-biteup-tvOS/Pods-biteup-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		A8097174F6BC4BE4B3586F12 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
-		B80D54663DE9BCFF7AD7C7A0 /* Pods-lunchmeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lunchmeTests.release.xcconfig"; path = "Target Support Files/Pods-lunchmeTests/Pods-lunchmeTests.release.xcconfig"; sourceTree = "<group>"; };
+		B80D54663DE9BCFF7AD7C7A0 /* Pods-biteupTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-biteupTests.release.xcconfig"; path = "Target Support Files/Pods-biteupTests/Pods-biteupTests.release.xcconfig"; sourceTree = "<group>"; };
 		BD61ACEDA77F40CEAA9C0E10 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		BEA826EE7A0448D2AB93F502 /* NunitoSans-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-Regular.ttf"; path = "../src/styling/fonts/NunitoSans-Regular.ttf"; sourceTree = "<group>"; };
-		C2908068476D1592CA56C648 /* Pods-lunchme-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lunchme-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-lunchme-tvOSTests/Pods-lunchme-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		C92CC179545E1521FF1B3027 /* libPods-lunchme-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-lunchme-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2908068476D1592CA56C648 /* Pods-biteup-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-biteup-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-biteup-tvOSTests/Pods-biteup-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		C92CC179545E1521FF1B3027 /* libPods-biteup-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-biteup-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEA060711EBC41149372D026 /* NunitoSans-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-LightItalic.ttf"; path = "../src/styling/fonts/NunitoSans-LightItalic.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F6F9F27971224289803D3EE1 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
-		FA9183B7944B15CD54766975 /* Pods-lunchmeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lunchmeTests.debug.xcconfig"; path = "Target Support Files/Pods-lunchmeTests/Pods-lunchmeTests.debug.xcconfig"; sourceTree = "<group>"; };
+		FA9183B7944B15CD54766975 /* Pods-biteupTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-biteupTests.debug.xcconfig"; path = "Target Support Files/Pods-biteupTests/Pods-biteupTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,7 +125,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FE3570B599354F81274ED87C /* libPods-lunchmeTests.a in Frameworks */,
+				FE3570B599354F81274ED87C /* libPods-biteupTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,7 +133,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1E1C5ABC1B3ED17686C56A89 /* libPods-lunchme.a in Frameworks */,
+				1E1C5ABC1B3ED17686C56A89 /* libPods-biteup.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,7 +141,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				24D325476B2A354BDD06882A /* libPods-lunchme-tvOS.a in Frameworks */,
+				24D325476B2A354BDD06882A /* libPods-biteup-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,20 +149,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ADA0B3F380BC1520324D6ECE /* libPods-lunchme-tvOSTests.a in Frameworks */,
+				ADA0B3F380BC1520324D6ECE /* libPods-biteup-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		00E356EF1AD99517003FC87E /* lunchmeTests */ = {
+		00E356EF1AD99517003FC87E /* biteupTests */ = {
 			isa = PBXGroup;
 			children = (
-				00E356F21AD99517003FC87E /* lunchmeTests.m */,
+				00E356F21AD99517003FC87E /* biteupTests.m */,
 				00E356F01AD99517003FC87E /* Supporting Files */,
 			);
-			path = lunchmeTests;
+			path = biteupTests;
 			sourceTree = "<group>";
 		};
 		00E356F01AD99517003FC87E /* Supporting Files */ = {
@@ -173,7 +173,7 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		13B07FAE1A68108700A75B9A /* lunchme */ = {
+		13B07FAE1A68108700A75B9A /* biteup */ = {
 			isa = PBXGroup;
 			children = (
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -184,9 +184,9 @@
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				1A839E87242EAF04009C1C55 /* LottieSafeguard.swift */,
-				1A839E86242EAF04009C1C55 /* lunchme-Bridging-Header.h */,
+				1A839E86242EAF04009C1C55 /* biteup-Bridging-Header.h */,
 			);
-			name = lunchme;
+			name = biteup;
 			sourceTree = "<group>";
 		};
 		1C69DE71C3D84E979EA9BF1A /* Resources */ = {
@@ -231,10 +231,10 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				3D989848A4B57D88A968F385 /* libPods-lunchme.a */,
-				C92CC179545E1521FF1B3027 /* libPods-lunchme-tvOS.a */,
-				135BFB2FCCB09E3CF41866EA /* libPods-lunchme-tvOSTests.a */,
-				7CD74996B8247179A31952FA /* libPods-lunchmeTests.a */,
+				3D989848A4B57D88A968F385 /* libPods-biteup.a */,
+				C92CC179545E1521FF1B3027 /* libPods-biteup-tvOS.a */,
+				135BFB2FCCB09E3CF41866EA /* libPods-biteup-tvOSTests.a */,
+				7CD74996B8247179A31952FA /* libPods-biteupTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -251,9 +251,9 @@
 			children = (
 				1A7791882476FC98003A47B2 /* rnuc.xcconfig */,
 				1AE8A76023A42DBF006FD65C /* GoogleService-Info.plist */,
-				13B07FAE1A68108700A75B9A /* lunchme */,
+				13B07FAE1A68108700A75B9A /* biteup */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
-				00E356EF1AD99517003FC87E /* lunchmeTests */,
+				00E356EF1AD99517003FC87E /* biteupTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				CAE6E4752BDCF0659E6EFD05 /* Pods */,
@@ -267,10 +267,10 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* lunchme.app */,
-				00E356EE1AD99517003FC87E /* lunchmeTests.xctest */,
-				2D02E47B1E0B4A5D006451C7 /* lunchme-tvOS.app */,
-				2D02E4901E0B4A5D006451C7 /* lunchme-tvOSTests.xctest */,
+				13B07F961A680F5B00A75B9A /* Biteup.app */,
+				00E356EE1AD99517003FC87E /* biteupTests.xctest */,
+				2D02E47B1E0B4A5D006451C7 /* biteup-tvOS.app */,
+				2D02E4901E0B4A5D006451C7 /* biteup-tvOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -278,14 +278,14 @@
 		CAE6E4752BDCF0659E6EFD05 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				1F2613DFF06253CD5AF1F76F /* Pods-lunchme.debug.xcconfig */,
-				7B918F190D9749C54F9E88E8 /* Pods-lunchme.release.xcconfig */,
-				3858A2D7B5EAFA8917DA33CF /* Pods-lunchme-tvOS.debug.xcconfig */,
-				A52DD0D848611C332D2C4D40 /* Pods-lunchme-tvOS.release.xcconfig */,
-				486BC584700DDB2C4FAD1AD3 /* Pods-lunchme-tvOSTests.debug.xcconfig */,
-				C2908068476D1592CA56C648 /* Pods-lunchme-tvOSTests.release.xcconfig */,
-				FA9183B7944B15CD54766975 /* Pods-lunchmeTests.debug.xcconfig */,
-				B80D54663DE9BCFF7AD7C7A0 /* Pods-lunchmeTests.release.xcconfig */,
+				1F2613DFF06253CD5AF1F76F /* Pods-biteup.debug.xcconfig */,
+				7B918F190D9749C54F9E88E8 /* Pods-biteup.release.xcconfig */,
+				3858A2D7B5EAFA8917DA33CF /* Pods-biteup-tvOS.debug.xcconfig */,
+				A52DD0D848611C332D2C4D40 /* Pods-biteup-tvOS.release.xcconfig */,
+				486BC584700DDB2C4FAD1AD3 /* Pods-biteup-tvOSTests.debug.xcconfig */,
+				C2908068476D1592CA56C648 /* Pods-biteup-tvOSTests.release.xcconfig */,
+				FA9183B7944B15CD54766975 /* Pods-biteupTests.debug.xcconfig */,
+				B80D54663DE9BCFF7AD7C7A0 /* Pods-biteupTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -293,9 +293,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* lunchmeTests */ = {
+		00E356ED1AD99517003FC87E /* biteupTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "lunchmeTests" */;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "biteupTests" */;
 			buildPhases = (
 				25DFE86CF57335866076B955 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
@@ -307,14 +307,14 @@
 			dependencies = (
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
-			name = lunchmeTests;
-			productName = lunchmeTests;
-			productReference = 00E356EE1AD99517003FC87E /* lunchmeTests.xctest */;
+			name = biteupTests;
+			productName = biteupTests;
+			productReference = 00E356EE1AD99517003FC87E /* biteupTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		13B07F861A680F5B00A75B9A /* lunchme */ = {
+		13B07F861A680F5B00A75B9A /* biteup */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "lunchme" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "biteup" */;
 			buildPhases = (
 				2F1F327D314965FB1CCF12E4 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
@@ -331,14 +331,14 @@
 			);
 			dependencies = (
 			);
-			name = lunchme;
-			productName = lunchme;
-			productReference = 13B07F961A680F5B00A75B9A /* lunchme.app */;
+			name = biteup;
+			productName = biteup;
+			productReference = 13B07F961A680F5B00A75B9A /* Biteup.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D02E47A1E0B4A5D006451C7 /* lunchme-tvOS */ = {
+		2D02E47A1E0B4A5D006451C7 /* biteup-tvOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "lunchme-tvOS" */;
+			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "biteup-tvOS" */;
 			buildPhases = (
 				7235E793A2FE4D79B73D757A /* [CP] Check Pods Manifest.lock */,
 				FD10A7F122414F3F0027D42C /* Start Packager */,
@@ -351,14 +351,14 @@
 			);
 			dependencies = (
 			);
-			name = "lunchme-tvOS";
-			productName = "lunchme-tvOS";
-			productReference = 2D02E47B1E0B4A5D006451C7 /* lunchme-tvOS.app */;
+			name = "biteup-tvOS";
+			productName = "biteup-tvOS";
+			productReference = 2D02E47B1E0B4A5D006451C7 /* biteup-tvOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D02E48F1E0B4A5D006451C7 /* lunchme-tvOSTests */ = {
+		2D02E48F1E0B4A5D006451C7 /* biteup-tvOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "lunchme-tvOSTests" */;
+			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "biteup-tvOSTests" */;
 			buildPhases = (
 				93F5F728C92BAECA8BF40986 /* [CP] Check Pods Manifest.lock */,
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
@@ -370,9 +370,9 @@
 			dependencies = (
 				2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */,
 			);
-			name = "lunchme-tvOSTests";
-			productName = "lunchme-tvOSTests";
-			productReference = 2D02E4901E0B4A5D006451C7 /* lunchme-tvOSTests.xctest */;
+			name = "biteup-tvOSTests";
+			productName = "biteup-tvOSTests";
+			productReference = 2D02E4901E0B4A5D006451C7 /* biteup-tvOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -402,7 +402,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "lunchme" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "biteup" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -416,10 +416,10 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* lunchme */,
-				00E356ED1AD99517003FC87E /* lunchmeTests */,
-				2D02E47A1E0B4A5D006451C7 /* lunchme-tvOS */,
-				2D02E48F1E0B4A5D006451C7 /* lunchme-tvOSTests */,
+				13B07F861A680F5B00A75B9A /* biteup */,
+				00E356ED1AD99517003FC87E /* biteupTests */,
+				2D02E47A1E0B4A5D006451C7 /* biteup-tvOS */,
+				2D02E48F1E0B4A5D006451C7 /* biteup-tvOSTests */,
 			);
 		};
 /* End PBXProject section */
@@ -531,7 +531,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-lunchmeTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-biteupTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -544,7 +544,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-lunchme/Pods-lunchme-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-biteup/Pods-biteup-resources.sh",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
@@ -583,7 +583,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-lunchme/Pods-lunchme-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-biteup/Pods-biteup-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
@@ -615,7 +615,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-lunchme-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-biteup-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -637,7 +637,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-lunchme-tvOS-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-biteup-tvOS-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -659,7 +659,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-lunchme-tvOSTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-biteup-tvOSTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -721,7 +721,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00E356F31AD99517003FC87E /* lunchmeTests.m in Sources */,
+				00E356F31AD99517003FC87E /* biteupTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -748,7 +748,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2DCD954D1E0B4F2C00145EB5 /* lunchmeTests.m in Sources */,
+				2DCD954D1E0B4F2C00145EB5 /* biteupTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -757,12 +757,12 @@
 /* Begin PBXTargetDependency section */
 		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* lunchme */;
+			target = 13B07F861A680F5B00A75B9A /* biteup */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 		2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2D02E47A1E0B4A5D006451C7 /* lunchme-tvOS */;
+			target = 2D02E47A1E0B4A5D006451C7 /* biteup-tvOS */;
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -774,7 +774,7 @@
 				13B07FB21A68108700A75B9A /* Base */,
 			);
 			name = LaunchScreen.xib;
-			path = lunchme;
+			path = biteup;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -782,7 +782,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FA9183B7944B15CD54766975 /* Pods-lunchmeTests.debug.xcconfig */;
+			baseConfigurationReference = FA9183B7944B15CD54766975 /* Pods-biteupTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -790,7 +790,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = lunchmeTests/Info.plist;
+				INFOPLIST_FILE = biteupTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -800,18 +800,18 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/lunchme.app/lunchme";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/biteup.app/biteup";
 			};
 			name = Debug;
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B80D54663DE9BCFF7AD7C7A0 /* Pods-lunchmeTests.release.xcconfig */;
+			baseConfigurationReference = B80D54663DE9BCFF7AD7C7A0 /* Pods-biteupTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				INFOPLIST_FILE = lunchmeTests/Info.plist;
+				INFOPLIST_FILE = biteupTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -821,19 +821,19 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/lunchme.app/lunchme";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/biteup.app/biteup";
 			};
 			name = Release;
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1F2613DFF06253CD5AF1F76F /* Pods-lunchme.debug.xcconfig */;
+			baseConfigurationReference = 1F2613DFF06253CD5AF1F76F /* Pods-biteup.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				INFOPLIST_FILE = lunchme/Info.plist;
+				INFOPLIST_FILE = biteup/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -913,9 +913,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.lunchme;
-				PRODUCT_NAME = lunchme;
-				SWIFT_OBJC_BRIDGING_HEADER = "lunchme-Bridging-Header.h";
+				PRODUCT_BUNDLE_IDENTIFIER = com.biteup;
+				PRODUCT_NAME = Biteup;
+				SWIFT_OBJC_BRIDGING_HEADER = "biteup-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -924,12 +924,12 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7B918F190D9749C54F9E88E8 /* Pods-lunchme.release.xcconfig */;
+			baseConfigurationReference = 7B918F190D9749C54F9E88E8 /* Pods-biteup.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = lunchme/Info.plist;
+				INFOPLIST_FILE = biteup/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1009,9 +1009,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.lunchme;
-				PRODUCT_NAME = lunchme;
-				SWIFT_OBJC_BRIDGING_HEADER = "lunchme-Bridging-Header.h";
+				PRODUCT_BUNDLE_IDENTIFIER = com.biteup;
+				PRODUCT_NAME = Biteup;
+				SWIFT_OBJC_BRIDGING_HEADER = "biteup-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1019,7 +1019,7 @@
 		};
 		2D02E4971E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3858A2D7B5EAFA8917DA33CF /* Pods-lunchme-tvOS.debug.xcconfig */;
+			baseConfigurationReference = 3858A2D7B5EAFA8917DA33CF /* Pods-biteup-tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1030,14 +1030,14 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "lunchme-tvOS/Info.plist";
+				INFOPLIST_FILE = "biteup-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.lunchme-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.biteup-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -1047,7 +1047,7 @@
 		};
 		2D02E4981E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A52DD0D848611C332D2C4D40 /* Pods-lunchme-tvOS.release.xcconfig */;
+			baseConfigurationReference = A52DD0D848611C332D2C4D40 /* Pods-biteup-tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1058,14 +1058,14 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "lunchme-tvOS/Info.plist";
+				INFOPLIST_FILE = "biteup-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.lunchme-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.biteup-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -1075,7 +1075,7 @@
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 486BC584700DDB2C4FAD1AD3 /* Pods-lunchme-tvOSTests.debug.xcconfig */;
+			baseConfigurationReference = 486BC584700DDB2C4FAD1AD3 /* Pods-biteup-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1085,24 +1085,24 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "lunchme-tvOSTests/Info.plist";
+				INFOPLIST_FILE = "biteup-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.lunchme-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.biteup-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/lunchme-tvOS.app/lunchme-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/biteup-tvOS.app/biteup-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 			};
 			name = Debug;
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C2908068476D1592CA56C648 /* Pods-lunchme-tvOSTests.release.xcconfig */;
+			baseConfigurationReference = C2908068476D1592CA56C648 /* Pods-biteup-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1112,17 +1112,17 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "lunchme-tvOSTests/Info.plist";
+				INFOPLIST_FILE = "biteup-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.lunchme-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.biteup-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/lunchme-tvOS.app/lunchme-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/biteup-tvOS.app/biteup-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 			};
 			name = Release;
@@ -1231,7 +1231,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "lunchmeTests" */ = {
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "biteupTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
@@ -1240,7 +1240,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "lunchme" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "biteup" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -1249,7 +1249,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "lunchme-tvOS" */ = {
+		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "biteup-tvOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D02E4971E0B4A5E006451C7 /* Debug */,
@@ -1258,7 +1258,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "lunchme-tvOSTests" */ = {
+		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "biteup-tvOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D02E4991E0B4A5E006451C7 /* Debug */,
@@ -1267,7 +1267,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "lunchme" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "biteup" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

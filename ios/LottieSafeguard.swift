@@ -1,6 +1,6 @@
 //
 //  LottieSafeguard.swift
-//  lunchme
+//  biteup
 //
 // This has been added becaues of this problem:
 //https://stackoverflow.com/questions/52536380/why-linker-link-static-libraries-with-errors-ios

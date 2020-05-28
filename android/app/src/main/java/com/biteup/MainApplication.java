@@ -1,4 +1,4 @@
-package com.lunchme;
+package com.biteup;
 
 import android.app.Application;
 import android.content.Context;
