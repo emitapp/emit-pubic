@@ -61,13 +61,3 @@ target 'biteup' do
 
   use_native_modules!
 end
-
-target 'biteup-tvOS' do
-  # Pods for biteup-tvOS
-
-  target 'biteup-tvOSTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
-end
