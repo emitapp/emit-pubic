@@ -67,6 +67,8 @@ android/app/src/prod/google-services.json
 android/app/src/dev/google-services.json
 
 ios/GoogleService-Info.plist
+ios/GoogleService-Info.prod.plist
+ios/GoogleService-Info.dev.plist
 
 # react-native-ultimate-config
 #
