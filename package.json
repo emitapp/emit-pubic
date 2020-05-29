@@ -3,9 +3,14 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
-    "start": "react-native start",
+    "androidDevDebug": "react-native run-android --variant=devDebug",
+    "androidProdDebug": "react-native run-android --variant=prodDebug",
+    "androidBundle": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/",
+    "androidAssembleDevDebug": "cd android && ./gradlew assembleDevDebug && cd ..",
+    "androidAssembleProdDebug": "cd android && ./gradlew assembleProdDebug && cd ..",
+    "iosDevDebug": "sh ios/runDevDebug.sh",
+    "iosProdDebug": "sh ios/runProdDebug.sh",
+    "startServer": "react-native start",
     "test": "jest",
     "lint": "eslint ."
   },
