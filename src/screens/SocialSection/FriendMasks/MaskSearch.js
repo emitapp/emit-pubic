@@ -13,7 +13,8 @@ export default class FriendMaskSearch extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-        title: "Mask Search",    
+        title: "Mask Search", 
+        headerBackTitle: null, //Because the Mask management screens use ScrollableHeaders   
     };
   };
 

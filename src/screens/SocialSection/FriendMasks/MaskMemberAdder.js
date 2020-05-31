@@ -8,7 +8,7 @@ import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
 import { isOnlyWhitespace, logError } from 'utils/helpers';
 import {Text, Input, CheckBox} from 'react-native-elements'
-
+import {ScrollingHeader} from "reusables/Header"
 
 export default class NewMaskScreen extends React.Component {
 
@@ -22,6 +22,13 @@ export default class NewMaskScreen extends React.Component {
     }
   }
 
+  static navigationOptions = ({ navigation }) => {
+    let title = ""
+    let mask = navigation.state?.params?.mask
+    if (mask) title = mask.name
+    else title = "New Mask"
+    return ScrollingHeader(title)
+  };
 
   render() {
     let userUid = auth().currentUser.uid

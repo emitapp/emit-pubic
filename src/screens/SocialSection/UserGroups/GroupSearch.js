@@ -13,7 +13,8 @@ export default class GroupSearch extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-        title: "Group Search",    
+        title: "Group Search",  
+        headerBackTitle: null, //Because the Group management screens use ScrollableHeaders
     };
   };
 

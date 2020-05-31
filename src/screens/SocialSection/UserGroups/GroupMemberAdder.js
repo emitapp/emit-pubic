@@ -9,8 +9,7 @@ import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
 import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import {Text, Input, CheckBox} from 'react-native-elements'
-
-
+import {ScrollingHeader} from "reusables/Header"
 
 export default class NewGroupScreen extends React.Component {
 
@@ -25,6 +24,13 @@ export default class NewGroupScreen extends React.Component {
     }
   }
 
+  static navigationOptions = ({ navigation }) => {
+    let title = ""
+    let group = navigation.state?.params?.groupSnippet
+    if (group) title = group.name
+    else title = "New Group"
+    return ScrollingHeader(title)
+  };
 
   render() {
     return (

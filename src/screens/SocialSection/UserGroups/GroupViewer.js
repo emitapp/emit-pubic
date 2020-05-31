@@ -12,7 +12,7 @@ import S from 'styling';
 import { isOnlyWhitespace, logError } from 'utils/helpers';
 import { groupRanks } from 'utils/serverValues';
 import Snackbar from 'react-native-snackbar';
-
+import {ScrollingHeader} from "reusables/Header"
 
 export default class GroupScreen extends React.Component {
 
@@ -31,6 +31,14 @@ export default class GroupScreen extends React.Component {
       userRank: null
     }
   }
+
+  static navigationOptions = ({ navigation }) => {
+    let title = ""
+    let group = navigation.state?.params?.group
+    if (group) title = group.name
+    else title = "New Group"
+    return ScrollingHeader(title)
+  };
 
   componentDidMount(){
     if (this.groupSnippet) this.getInitalGroupInfo()
