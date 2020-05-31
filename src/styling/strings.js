@@ -1,5 +1,5 @@
 const defaultIconNames = {
-    home: 'home',
+    home: 'plus-circle',
     feed: "rss",
     users: 'user-friends',
     settings: 'cog',

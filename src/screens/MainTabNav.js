@@ -22,8 +22,8 @@ import MainTheme from 'styling/mainTheme'
 
 const Tab = createBottomTabNavigator(
   {
-    DashboardStackNav,
     FeedStackNav,
+    DashboardStackNav,
     SocialStackNav,
     SettingsStackNav,
   },

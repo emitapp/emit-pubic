@@ -61,6 +61,7 @@ export default theme = {
             fontFamily: "NunitoSans-Semibold",
             fontSize: 14,
         },
+        selectionColor: "#92d558"
     },
 
     Text:{
@@ -88,6 +89,8 @@ export default theme = {
             fontWeight: "normal",
             textAlign: "center"
         },
+        selectable: true,
+        selectionColor: "#92d558"
     },
 
     Overlay: {
