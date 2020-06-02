@@ -14,6 +14,7 @@ import { BannerButton } from 'reusables/ReusableButtons';
 import S from "styling";
 import { epochToDateString, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { responderStatuses, returnStatuses } from 'utils/serverValues';
+import AutolinkText from 'reusables/AutolinkText'
 
 export default class ResponsesViewer extends React.Component {
 
@@ -76,9 +77,9 @@ export default class ResponsesViewer extends React.Component {
           <CountdownComponent deadLine = {this.broadcastData.deathTimestamp}  renderer = {this.timeLeftRenderer} />
           <Text>Death Time: {epochToDateString(this.broadcastData.deathTimestamp)}</Text>
           {this.broadcastData.note != undefined &&
-            <Text style = {{fontStyle: "italic", marginTop: 8, fontSize: 18, color: "grey", marginLeft: 4, borderLeftColor: "grey", borderLeftWidth: 2, paddingLeft: 8}}>
+            <AutolinkText style = {{fontStyle: "italic", marginTop: 8, fontSize: 18, color: "grey", marginLeft: 4, borderLeftColor: "grey", borderLeftWidth: 2, paddingLeft: 8}}>
               {this.broadcastData.note}
-            </Text>
+            </AutolinkText>
           }
         </View>
 

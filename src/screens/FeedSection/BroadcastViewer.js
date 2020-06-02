@@ -12,6 +12,7 @@ import {logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { responderStatuses, returnStatuses } from 'utils/serverValues';
 import CountdownComponent from 'reusables/CountdownComponent'
 import Icon from 'react-native-vector-icons/Entypo';
+import AutolinkText from 'reusables/AutolinkText'
 
 
 export default class BroadcastViewer extends React.Component {
@@ -75,9 +76,9 @@ export default class BroadcastViewer extends React.Component {
               </View>
               <CountdownComponent deadLine = {broadcastData.deathTimestamp}  renderer = {this.timeLeftRenderer} />
               {broadcastData.note != undefined &&
-                <Text style = {{fontStyle: "italic", marginTop: 8, fontSize: 18, color: "grey", marginLeft: 4, borderLeftColor: "grey", borderLeftWidth: 2, paddingLeft: 8}}>
+                <AutolinkText style = {{fontStyle: "italic", marginTop: 8, fontSize: 18, color: "grey", marginLeft: 4, borderLeftColor: "grey", borderLeftWidth: 2, paddingLeft: 8}}>
                   {broadcastData.note}
-                </Text>
+                </AutolinkText>
               }
           </>
         }
