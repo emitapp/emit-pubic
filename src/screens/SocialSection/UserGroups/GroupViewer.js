@@ -1,5 +1,6 @@
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth'
+import functions from '@react-native-firebase/functions'
 import React from 'react';
 import { View } from 'react-native';
 import { Button, Divider, Input, Overlay, Text, ThemeConsumer, Tooltip } from 'react-native-elements';
@@ -9,27 +10,18 @@ import { DefaultLoadingModal, SmallLoadingComponent } from 'reusables/LoadingCom
 import { AdditionalOptionsButton, BannerButton, MinorActionButton } from 'reusables/ReusableButtons';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
-import { isOnlyWhitespace, logError } from 'utils/helpers';
+import { isOnlyWhitespace, logError, timedPromise, LONG_TIMEOUT } from 'utils/helpers';
 import { groupRanks } from 'utils/serverValues';
 import Snackbar from 'react-native-snackbar';
 import {ScrollingHeader} from "reusables/Header"
+import {returnStatuses} from 'utils/serverValues'
 
 export default class GroupScreen extends React.Component {
 
   constructor(props){
     super(props)
     this.groupSnippet = this.props.navigation.getParam('group', null)
-    this.groupSnapshot = null
-    this.state = { 
-      errorMessage: null, 
-      groupName: this.groupSnippet ? this.groupSnippet.name : "",
-      usersToBeRemoved: {},
-      newGroupName: this.groupSnippet ? this.groupSnippet.name : "",
-      inEditMode: false,
-      currentlySelectedUser: null,
-      editingModalOpen: false,
-      userRank: null
-    }
+    this.state = this.initializeScreenState(GroupScreen.refreshModes.FIRST_LOAD)
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -40,8 +32,48 @@ export default class GroupScreen extends React.Component {
     return ScrollingHeader(title)
   };
 
+  static refreshModes = {
+    FIRST_LOAD: "first load",
+    NEW_RANK: "new rank",
+    NEW_GROUP_DATA: "new group data"
+  }
+
   componentDidMount(){
-    if (this.groupSnippet) this.getInitalGroupInfo()
+    if (!this.groupSnippet) return; //Otherwise this person is viewing a group that already exists
+    let shouldGoBack = false
+    database()
+      .ref(`/userGroups/${this.groupSnippet.uid}/snippet`)
+      .on("value", snap => {
+        if (!snap.exists()){
+          shouldGoBack = true
+          return;
+        }
+        this.setState(
+          this.initializeScreenState(GroupScreen.refreshModes.NEW_GROUP_DATA, snap.val()),
+          () => this.showDelayedSnackbar("Fetched group data")
+        )
+      })
+    database()
+      .ref(`/userGroups/${this.groupSnippet.uid}/memberUids/${auth().currentUser.uid}`)
+      .on("value", snap => {
+        if (!snap.exists()){
+          shouldGoBack = true
+          return;
+        }
+        this.setState(
+          this.initializeScreenState(GroupScreen.refreshModes.NEW_RANK, snap.val()),
+          () => this.showDelayedSnackbar("Fetched user group rank")
+        )
+      })
+      if (shouldGoBack){
+        this.props.navigation.goBack()
+      }
+  }
+
+  componentWillUnmount(){
+    if (!this.groupSnippet) return; 
+    database().ref(`/userGroups/${this.groupSnippet.uid}/snippet`).off()
+    database().ref(`/userGroups/${this.groupSnippet.uid}/memberUids/${auth().currentUser.uid}`).off()
   }
 
   render() {
@@ -51,9 +83,10 @@ export default class GroupScreen extends React.Component {
       currentlySelectedUser, 
       editingModalOpen, 
       isModalVisible,
-      userRank
+      fetchedUserRank,
+      fetchedGroupData
     } = this.state;
-    if (!this.groupSnippet || !userRank || !this.groupSnapshot){
+    if (!this.groupSnippet || !fetchedUserRank || !fetchedGroupData){
       return (
         <View style={S.styles.container}>
           <SmallLoadingComponent />
@@ -67,7 +100,7 @@ export default class GroupScreen extends React.Component {
 
         <DefaultLoadingModal isVisible={isModalVisible} />
 
-        {this.state.errorMessage &&
+        {this.state.errorMessage !== null &&
           <Text style={{ color: 'red' }}>
             {this.state.errorMessage}
           </Text>
@@ -134,7 +167,7 @@ export default class GroupScreen extends React.Component {
               titleStyle = {{color: theme.colors.error}}
               type = "clear"
               title = "Leave Group" 
-              onPress = {null}
+              onPress = {this.leaveGroup}
             />
             <Button 
               titleStyle = {{color: theme.colors.error}}
@@ -174,7 +207,7 @@ export default class GroupScreen extends React.Component {
             popover={<Text>Member Count</Text>}>
             <View style = {{flexDirection: "row", marginRight: 16}}>
               <FontAwesomeIcon name="users" size={24} color= "grey" style = {{marginHorizontal: 8}}/>
-              <Text>{this.groupSnapshot?.memberCount}</Text>
+              <Text>{this.state.fetchedGroupData?.memberCount}</Text>
             </View>
           </Tooltip>
 
@@ -182,7 +215,7 @@ export default class GroupScreen extends React.Component {
             popover={<Text>Admin Count</Text>}>
             <View style = {{flexDirection: "row"}}>
               <FontAwesomeIcon name="star" size={24} color= "grey" style = {{marginHorizontal: 8}}/>
-              <Text>{this.groupSnapshot?.adminCount}</Text>
+              <Text>{this.state.fetchedGroupData?.adminCount}</Text>
             </View>
           </Tooltip>
           <Divider style = {{marginHorizontal: 16, flex: 1}}/>
@@ -232,54 +265,97 @@ export default class GroupScreen extends React.Component {
       </ThemeConsumer>
     )
   }
-
-  getInitalGroupInfo = async () => {
-    try{
-      let groupSnippetSnapshot = await database()
-        .ref(`/userGroups/${this.groupSnippet.uid}/snippet`)
-        .once("value")
-      let userMembershipSnippet = await database()
-        .ref(`/userGroups/${this.groupSnippet.uid}/memberSnippets/${auth().currentUser.uid}`)
-        .once("value")
-      this.groupSnapshot = groupSnippetSnapshot.val()
-      let userRank = userMembershipSnippet = userMembershipSnippet.val().rank
-      this.setState({userRank}) //Rerender also necessary becuase of updated this.groupSnapshot
-    }catch(err){
-      logError(err)
+  
+  //Mode should be one of the refreshModes
+  initializeScreenState = (mode, newData = null) => {
+    let newState =  {
+      errorMessage: null, 
+      isModalVisible: false,
+      groupName: this.groupSnippet ? this.groupSnippet.name : "",
+      inEditMode: false,
+      newGroupName: this.groupSnippet ? this.groupSnippet.name : "",
+      usersToBeRemoved: {},
+      usersToBePromoted: {},
+      usersToBeDemoted: {},
+      currentlySelectedUser: null,
+      editingModalOpen: false,
     }
+    if (mode == GroupScreen.refreshModes.FIRST_LOAD){
+      newState.fetchedUserRank = newData,
+      newState.fetchedGroupData = newData
+    }else if (mode == GroupScreen.refreshModes.NEW_RANK){
+      newState.fetchedUserRank = newData
+    }else{
+      newState.fetchedGroupData = newData
+    }
+    return newState
   }
 
-  applyEdits = async () => {
-    const {usersToBeRemoved, newGroupName, groupName} = this.state
+  applyEdits = async (exitScreenWhenDone = false) => {
+    const {usersToBeRemoved, usersToBeDemoted, usersToBePromoted, newGroupName, groupName} = this.state
     if (isOnlyWhitespace(newGroupName)){
-      console.log("No cigar, my friend")
-      this.setState({isModalVisible: false})
+      this.setState({isModalVisible: false, errorMessage: "Your group name can't be just whitespace"})
       return;
     }
+
+    //Cleaning up the data first before contructing the arguments for the cloud functions
+    const copiedUsersToBeDemoted = usersToBeDemoted
+    const copiedUsersToBePromoted = usersToBePromoted
+    for (const uid in copiedUsersToBeDemoted) {
+      if (usersToBeRemoved.hasOwnProperty(uid)) delete copiedUsersToBeDemoted[uid]     
+    }
+    for (const uid in copiedUsersToBePromoted) {
+      if (usersToBeRemoved.hasOwnProperty(uid)) delete copiedUsersToBePromoted[uid]     
+    }
+
     this.setState({isModalVisible: true})
     try{    
       const params = {groupUid: this.groupSnippet.uid}
       if (Object.keys(usersToBeRemoved).length != 0) params['usersToRemove'] = usersToBeRemoved
+      if (Object.keys(copiedUsersToBeDemoted).length != 0) params['usersToDemote'] = copiedUsersToBeDemoted
+      if (Object.keys(copiedUsersToBePromoted).length != 0) params['usersToPromote'] = copiedUsersToBePromoted
       if (newGroupName != groupName) params['newName'] = newGroupName
       const cloudFunc = functions().httpsCallable('editGroup')
-      await timedPromise(cloudFunc(params), LONG_TIMEOUT);
-      this.setState({isModalVisible: false, inEditMode: false, usersToBeRemoved: {}})
+      const response = await timedPromise(cloudFunc(params), LONG_TIMEOUT);
+      if (response.data.status == returnStatuses.LEASE_TAKEN){
+        this.setState({
+          errorMessage: "This group is currently being edited by someone, please wait a few seconds", 
+          isModalVisible: false
+        })
+      }else{
+        //If the method was successful, the fireabse listeners will clean up the state for us
+        if (exitScreenWhenDone) this.props.navigation.goBack();
+      }
     }catch(err){
       if (err.message != 'timeout') logError(err)
       this.setState({errorMessage: err.message, isModalVisible: false})
     }   
   }
 
+  leaveGroup = () => {
+    this.queueForRemoval({uid: auth().currentUser.uid}, () => {
+      this.applyEdits(true)
+    })
+  }
+
   deleteGroup = async () => {
-    if (this.state.userRank !== groupRanks.ADMIN){
+    if (this.state.fetchedUserRank !== groupRanks.ADMIN){
       this.displayPermissionsMessage()
       return;
     }
     this.setState({isModalVisible: true})
     try{    
       const cloudFunc = functions().httpsCallable('deleteGroup')
-      await timedPromise(cloudFunc({groupUid: this.groupSnippet.uid}), LONG_TIMEOUT);
-      this.setState({isModalVisible: false}, () => this.props.navigation.goBack())
+      const response = await timedPromise(cloudFunc({groupUid: this.groupSnippet.uid}), LONG_TIMEOUT);
+      if (response.data.status == returnStatuses.LEASE_TAKEN){
+        this.setState({
+          errorMessage: "This group is currently being edited by someone, please wait a few seconds", 
+          isModalVisible: false
+        })
+        this.closeEditingModal()
+      }else{
+        this.setState({isModalVisible: false}, () => this.props.navigation.goBack())
+      }
     }catch(err){
       if (err.message != 'timeout') logError(err)
       this.setState({errorMessage: err.message, isModalVisible: false})
@@ -287,14 +363,33 @@ export default class GroupScreen extends React.Component {
   }
 
   changeRank = (memberSnippet) => {
-
+    if (this.state.fetchedUserRank !== groupRanks.ADMIN){
+      this.displayPermissionsMessage()
+      return;
+    }
+    if (memberSnippet.rank == groupRanks.ADMIN){
+      const copiedObj = {...this.state.usersToBeDemoted}
+      copiedObj[memberSnippet.uid] = true
+      this.setState({usersToBeDemoted: copiedObj});
+    }else{
+      const copiedObj = {...this.state.usersToBePromoted}
+      copiedObj[memberSnippet.uid] = true
+      this.setState({usersToBePromoted: copiedObj});
+    }
+    this.deselectUser()
   }
 
-  scrollErrorHandler = (err) => {
-    logError(err)
-    this.setState({errorMessage: err.message})
+  queueForRemoval = (snippet, callback = null) => {
+    if (this.state.fetchedUserRank !== groupRanks.ADMIN && snippet.uid !== auth().currentUser.uid){
+      this.displayPermissionsMessage()
+      return;
+    }
+    const copiedObj = {...this.state.usersToBeRemoved}
+    copiedObj[snippet.uid] = true
+    if (callback) this.setState({usersToBeRemoved: copiedObj}, callback);
+    else this.setState({usersToBeRemoved: copiedObj});
+    this.deselectUser()
   }
-
 
   itemRenderer = ({ item }) => {
     const {inEditMode, usersToBeRemoved} = this.state
@@ -302,7 +397,7 @@ export default class GroupScreen extends React.Component {
     return (
       <View style = {{width: "100%", flexDirection: "row", alignItems: "center"}}>
         <UserSnippetListElement snippet = {item} style = {{flex: 1}} />
-        {item.rank === groupRanks.ADMIN &&
+        {(item.rank === groupRanks.ADMIN || this.state.usersToBePromoted[item.uid]) && !this.state.usersToBeDemoted[item.uid] &&
           <FontAwesomeIcon name="star" size={24} color= "grey" style = {{marginHorizontal: 8}}/>
         }
         {inEditMode && 
@@ -312,7 +407,10 @@ export default class GroupScreen extends React.Component {
     );
   }
 
-
+  scrollErrorHandler = (err) => {
+    logError(err)
+    this.setState({errorMessage: err.message})
+  }
 
   selectUser = (user) => {
     this.setState({currentlySelectedUser: user})
@@ -334,7 +432,7 @@ export default class GroupScreen extends React.Component {
   }
 
   enterEditingMode = () => {
-    if (this.state.userRank !== groupRanks.ADMIN){
+    if (this.state.fetchedUserRank !== groupRanks.ADMIN){
       this.displayPermissionsMessage()
       return;
     }
@@ -342,32 +440,23 @@ export default class GroupScreen extends React.Component {
   }
 
   displayPermissionsMessage = () => {
-    //There are modals being opened and closed on this screen, and if I close a modal
-    //and then show the snackbar, the snackbar might be attached to the modal that was jsut in 
-    //the process of being removed, meaning the snackbar will never be displayed. 
-    //So, I use a small timeout to give the snackbar a bit of a delay
-    //https://github.com/cooperka/react-native-snackbar/issues/67
+    this.showDelayedSnackbar('You have to be an admin to be able to do this')
+  }
+
+  //There are modals being opened and closed on this screen, and if I close a modal
+  //and then show the snackbar, the snackbar might be attached to the modal that was jsut in 
+  //the process of being removed, meaning the snackbar will never be displayed. 
+  //So, I use a small timeout to give the snackbar a bit of a delay
+  //https://github.com/cooperka/react-native-snackbar/issues/67
+  showDelayedSnackbar = (message) => {
     setTimeout(
       () => {
         Snackbar.show({
-          text: 'You have to be an admin to be able to do this', 
+          text: message, 
           duration: Snackbar.LENGTH_SHORT
         });
       },
       150
     )
-  }
-
-  queueForRemoval = (snippet) => {
-    const copiedObj = {...this.state.usersToBeRemoved}
-    if (copiedObj[snippet.uid]){
-      //Then remove the user's uid
-      delete copiedObj[snippet.uid]
-    }else{
-      //Add the user's uid
-      copiedObj[snippet.uid] = true
-    }
-    this.setState({usersToBeRemoved: copiedObj});
-    this.deselectUser()
   }
 }

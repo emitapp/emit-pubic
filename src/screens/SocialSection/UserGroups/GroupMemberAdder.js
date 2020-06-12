@@ -1,5 +1,6 @@
 import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
+import auth from '@react-native-firebase/auth';
 import React from 'react';
 import { View, ScrollView } from 'react-native';
 import { BannerButton } from 'reusables/ReusableButtons';
@@ -10,6 +11,7 @@ import S from 'styling';
 import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import {Text, Input, CheckBox} from 'react-native-elements'
 import {ScrollingHeader} from "reusables/Header"
+import {returnStatuses} from 'utils/serverValues'
 
 export default class NewGroupScreen extends React.Component {
 
@@ -97,20 +99,28 @@ export default class NewGroupScreen extends React.Component {
       selectedUserUids[uid] = true
     }
     try{
+      let response = null
       if (!this.groupSnippet){
         const cloudFunc = functions().httpsCallable('createGroup')
-        await timedPromise(cloudFunc({
+        response =  await timedPromise(cloudFunc({
           name: this.state.groupName, 
           usersToAdd: selectedUserUids
         }), LONG_TIMEOUT);
       }else{
         const cloudFunc = functions().httpsCallable('editGroup')
-        await timedPromise(cloudFunc({
+        response = await timedPromise(cloudFunc({
           groupUid: this.groupSnippet.uid,
           usersToAdd: selectedUserUids
         }), LONG_TIMEOUT);
       }
-      this.props.navigation.goBack()
+      if (response.data.status == returnStatuses.LEASE_TAKEN){
+        this.setState({
+          errorMessage: "This group is currently being edited by someone, please wait a few seconds", 
+          isModalVisible: false
+        })
+      }else{
+        this.props.navigation.goBack()
+      }
     }catch(err){
       if (err.message != 'timeout') logError(err)
       this.setState({errorMessage: err.message, isModalVisible: false})
@@ -123,6 +133,7 @@ export default class NewGroupScreen extends React.Component {
   }
 
   itemRenderer = ({ item }) => {
+    if (item.uid === auth().currentUser.uid) return null
     return (
       <View style = {{alignItems: "center", width: "100%", flexDirection: "row"}}>
         <UserSnippetListElement 

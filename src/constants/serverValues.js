@@ -3,7 +3,8 @@
 
 export const returnStatuses = {
     OK: "successful",
-    NOTO: "non existent receiver"
+    NOTO: "non existent receiver",
+    LEASE_TAKEN: "lease is currently taken"
 }
 
 export const responderStatuses = {
