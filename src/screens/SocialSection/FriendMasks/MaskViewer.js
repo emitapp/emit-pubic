@@ -1,5 +1,6 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
+import functions from '@react-native-firebase/functions';
 import React from 'react';
 import { View } from 'react-native';
 import { Button, Divider, Input, Overlay, Text, ThemeConsumer } from 'react-native-elements';
@@ -8,8 +9,9 @@ import { UserSnippetListElement } from 'reusables/ListElements';
 import { AdditionalOptionsButton, MinorActionButton } from 'reusables/ReusableButtons';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
-import { isOnlyWhitespace, logError } from 'utils/helpers';
+import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import {ScrollingHeader} from "reusables/Header"
+import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 
 export default class NewMaskScreen extends React.Component {
 
@@ -23,7 +25,8 @@ export default class NewMaskScreen extends React.Component {
       currentlySelectedUser: null,
       newMaskName: this.maskSnippet ? this.maskSnippet.name : "",
       inEditMode: false,
-      editingModalOpen: false
+      editingModalOpen: false,
+      isModalVisible: false
     }
   }
 
@@ -43,6 +46,13 @@ export default class NewMaskScreen extends React.Component {
       <ThemeConsumer>
       {({ theme }) => (
       <View style={S.styles.containerFlexStart}>
+
+      {this.state.errorMessage != null &&
+        <Text style={{ color: 'red' }}>
+          {this.state.errorMessage}
+        </Text>}
+
+        <DefaultLoadingModal isVisible={this.state.isModalVisible} />
 
         <Overlay 
           isVisible = {currentlySelectedUser !== null}
@@ -172,48 +182,42 @@ export default class NewMaskScreen extends React.Component {
     )
   }
 
-  applyEdits = () => {
-    const {usersToBeRemoved, newMaskName} = this.state
-    if (isOnlyWhitespace(newMaskName)){
-      console.log("No cigar, my friend")
+  applyEdits = async () => {
+    try{
+      const {usersToBeRemoved, newMaskName} = this.state
+      if (isOnlyWhitespace(newMaskName)){
+        this.setState({errorMessage: "Invalid name"});
+        return;
+      }
+  
+      this.setState({isModalVisible: true})
+      const cloudFunc = functions().httpsCallable('createOrEditMask')
+      await timedPromise(cloudFunc({
+        maskUid: this.maskSnippet.uid,
+        newName: newMaskName, 
+        usersToRemove: usersToBeRemoved
+      }), LONG_TIMEOUT);
+  
+      this.setState({inEditMode: false, usersToBeRemoved: {}, maskName: newMaskName, isModalVisible: false})
+    }catch(err){
+      if (err.message != 'timeout') logError(err)
+      this.setState({errorMessage: err.message, isModalVisible: false})
     }
-    const snippetPath = `/userFriendGroupings/${auth().currentUser.uid}/custom/snippets/${this.maskSnippet.uid}`
-    const infoPath = `/userFriendGroupings/${auth().currentUser.uid}/custom/details/${this.maskSnippet.uid}`
-
-    const updates = {}
-    for (const uid in usersToBeRemoved) {
-      //Deleting all selected users
-      updates[`${infoPath}/memberSnippets/${uid}`] = null
-      updates[`${infoPath}/memberUids/${uid}`] = null
-    }
-    updates[`${snippetPath}/name`] = newMaskName
- 
-    //We're gonna let this happen asynchronously
-    database().ref().update(updates)
-      .then(() => {
-        this.setState({maskName: newMaskName, usersToBeRemoved: {}})
-        console.log("Edited the friend mask!!")
-      })
-      .catch((err) => logError(err));
-
-    this.setState({inEditMode: false})
   }
 
-  deleteMask = () => {
-    const snippetPath = `/userFriendGroupings/${auth().currentUser.uid}/custom/snippets/${this.maskSnippet.uid}`
-    const infoPath = `/userFriendGroupings/${auth().currentUser.uid}/custom/details/${this.maskSnippet.uid}`
-    const updates = {}
-    updates[infoPath] = null
-    updates[snippetPath] = null
- 
-    //We're gonna let this happen asynchronously
-    database().ref().update(updates)
-      .then(() => {
-        console.log("Deleted friend mask!!")
-      })
-      .catch((err) => logError(err));
-
-    this.props.navigation.goBack()
+  deleteMask = async () => {
+    try{
+      this.setState({isModalVisible: true})
+      const cloudFunc = functions().httpsCallable('deleteMask')
+      await timedPromise(cloudFunc({
+        maskUid: this.maskSnippet.uid,
+      }), LONG_TIMEOUT);
+  
+      this.props.navigation.goBack()
+    }catch(err){
+      if (err.message != 'timeout') logError(err)
+      this.setState({errorMessage: err.message, isModalVisible: false})
+    }
   }
 
   scrollErrorHandler = (err) => {
