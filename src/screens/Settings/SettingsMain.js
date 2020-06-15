@@ -60,9 +60,10 @@ export default class SettingsMain extends React.Component {
               color = {theme.colors.grey0}  
             />
             <SettingSectionButton 
-              title = "Data and Privacy"
+              title = "Your Account and Data"
               icon = {<FeatherIcon name="lock" />}
               color = {theme.colors.grey0}  
+              onPress={() => this.props.navigation.navigate("AccountManagementScreen")}
             />
             <SettingSectionButton 
               title = "Help or Feedback"

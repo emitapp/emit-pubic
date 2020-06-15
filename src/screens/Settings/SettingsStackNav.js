@@ -2,6 +2,7 @@ import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
 import EditProfileScreen from './EditProfileScreen';
 import SettingsMain from './SettingsMain';
+import AccountManagementScreen from './AccountManagementScreen'
 import Header from 'reusables/Header'
 
 
@@ -9,6 +10,7 @@ const Navigator = createStackNavigator(
   {
     SettingsMain,
     EditProfileScreen,
+    AccountManagementScreen
   },
   {
     initialRouteName: 'SettingsMain',
