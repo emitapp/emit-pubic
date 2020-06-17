@@ -278,6 +278,9 @@ class FriendReqDialogue extends React.Component {
             case actionOptions.ACCEPTREQ:
                 callableFunction =  functions().httpsCallable('acceptFriendRequest');
                 break;
+            case actionOptions.REMOVE:
+                callableFunction =  functions().httpsCallable('removeFriend');
+                break;
             default:
                 this.setState({waitingForFuncResponse: false})
                 return;
@@ -293,7 +296,12 @@ class FriendReqDialogue extends React.Component {
                 this.refreshActionOption()
                 this.setState({waitingForFuncResponse: false})
             }else{
-                this.setState({waitingForFuncResponse: false, option: actionOptions.NONE})
+                this.setState({
+                    waitingForFuncResponse: false, 
+                    option: actionOptions.NONE, 
+                    gettingInitialData: false, 
+                    extraMessage: "Looks like something went wrong!"
+                })
                 logError(new Error(`Problematic ${this.state.option} function response: ${response.data.status}`))
             }
         } catch (err) {
@@ -339,7 +347,6 @@ export default class FriendReqModal extends React.Component{
         }
         this.canBeClosed = true;
     }
-
 
     render(){
         return(
