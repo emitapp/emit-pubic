@@ -25,6 +25,7 @@ export default class AccountManagementScreen extends React.Component {
       <ScrollView 
       style={{flex: 1, marginTop: 8}} 
       contentContainerStyle = {{justifyContent: 'flex-start', alignItems: 'center'}}>
+        <Text h4>Request your Data</Text>
         <Text style = {{marginHorizontal: 8}}>
           You can request for all the data that Biteup has that pertains to you sent to your account's registered  email address.
           It only takes a few minutes. Note that this action doesn't delete this data or alter it in any way in Biteup's databases.
@@ -35,6 +36,7 @@ export default class AccountManagementScreen extends React.Component {
           onPress = {this.requestData}
         />
         <View style = {{borderTopWidth: 1, borderBottomWidth: 1, borderColor: "red", backgroundColor: "#FEEDEC", marginTop: 16}}>
+          <Text h4>Delete your Account</Text>
           <Text style = {{fontSize: 22, fontWeight: "bold", alignSelf: "center", marginVertical: 8}}>
           ⚠️Danger Zone⚠️
           </Text>

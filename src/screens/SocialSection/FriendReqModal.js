@@ -4,13 +4,16 @@ import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
-import { Button, Overlay, SocialIcon, Text, ThemeConsumer } from 'react-native-elements';
+import { Button, Overlay, Text, ThemeConsumer } from 'react-native-elements';
 import { TimeoutLoadingComponent } from 'reusables/LoadingComponents';
 import { ProfilePicRaw } from 'reusables/ProfilePicComponents';
 import { MinorActionButton } from 'reusables/ReusableButtons';
 import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import * as responseStatuses from 'utils/serverValues';
 import { isValidDBPath } from 'utils/serverValues';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import { Clipboard } from "react-native";
+import Snackbar from 'react-native-snackbar'
 
 
 /**
@@ -45,16 +48,19 @@ class FriendReqDialogue extends React.Component {
             userInfo,
             timedOut: false, //Timed out during any of the operations 
             extraMessage: false,
-            option: "" //Which cloud function the user can user for this other user
+            option: "", //Which cloud function the user can user for this other user
+            userSocials: null
         }
     }
 
 
     componentDidMount(){
         this.getInitialData();
+        this.getSocialInfo();
     }
 
     render() {
+        const {userSocials} = this.state
         return (
             <ThemeConsumer>
             {({ theme }) => (
@@ -96,7 +102,9 @@ class FriendReqDialogue extends React.Component {
                 }
 
                 {this.state.extraMessage &&
-                    <Text>{this.state.extraMessage}</Text>                
+                    <Text style = {{marginVertical: 8}}>
+                        {this.state.extraMessage}
+                    </Text>                
                 }
 
                 {this.displayOptionsLoading()}
@@ -104,29 +112,17 @@ class FriendReqDialogue extends React.Component {
                 {this.displayActionsPanel(theme)}
 
 
-                {this.state.userInfo !== null &&
-                    <Text style = {{alignSelf: "flex-start"}}>Other Socials:</Text>                
-                }
-
-                {this.state.userInfo !== null &&
-                    <View style = {styles.buttonPanelContainer}>
-                        <SocialIcon
-                            raised={false}
-                            type='facebook'
-                        />
-                        <SocialIcon
-                            raised={false}
-                            type='twitter'
-                        />
-                        <SocialIcon
-                            raised={false}
-                            type='instagram'
-                        />
-                        <SocialIcon
-                            raised={false}
-                            type='github'
-                        />
-                    </View>
+                {userSocials !== null &&
+                    <>
+                        <Text style = {{alignSelf: "flex-start"}}>Other Socials:</Text>       
+                        <View style = {styles.buttonPanelContainer}>
+                            <SocialsIcon name='facebook' data = {userSocials.facebook}/>
+                            <SocialsIcon name='twitter' data = {userSocials.twitter}/>
+                            <SocialsIcon name='instagram' data = {userSocials.instagram}/>
+                            <SocialsIcon name='snapchat' data = {userSocials.snapchat}/>
+                            <SocialsIcon name='github' data = {userSocials.github}/>
+                        </View>
+                    </>
                 }
 
                 {(!this.state.waitingForFuncResponse || this.state.timedOut) &&
@@ -185,6 +181,18 @@ class FriendReqDialogue extends React.Component {
         }
     }
 
+    getSocialInfo = async () => {
+        try{
+            const socialsRef = database().ref(`/userSnippetExtras/${this.userUid}`);
+            const socialsSnap = await timedPromise(socialsRef.once('value'), LONG_TIMEOUT);
+            this.setState({userSocials: socialsSnap.val()})
+        }catch(err){
+            if (err.code !== "timeout"){
+                logError(err)
+            }
+        }
+    }
+
     getInitialData = async () => {
         try{
             const uid = auth().currentUser.uid; 
@@ -210,7 +218,7 @@ class FriendReqDialogue extends React.Component {
             }
 
             //If we already don't have the user's snippet data, let's quickly get that
-            //This is also a good way to chekc if this user even exists in the first place
+            //This is also a good way to check if this user even exists in the first place
             if (!this.state.userInfo){
                 const snippetRef = database().ref(`/userSnippets/${this.userUid}`);
                 const snippetSnapshot = await timedPromise(snippetRef.once('value'), MEDIUM_TIMEOUT)
@@ -333,6 +341,23 @@ class FriendReqDialogue extends React.Component {
         this.setState({option: newOption})
     }
 }
+
+class SocialsIcon extends React.Component {
+    render() {
+        if (!this.props.data) return null;
+        return (
+            <Icon 
+                name = {this.props.name} 
+                size = {24} 
+                color = "dimgray"
+                onPress = {() => {
+                    Clipboard.setString(this.props.data);
+                    Snackbar.show({text: 'Copied to clipboard', duration: Snackbar.LENGTH_SHORT})
+                }}/>
+        )
+    }
+}
+
 
 //This component can also be given the onClosed prop if 
 //you want to trigger something when it's been closed
