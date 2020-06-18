@@ -15,6 +15,7 @@ import { groupRanks } from 'utils/serverValues';
 import Snackbar from 'react-native-snackbar';
 import {ScrollingHeader} from "reusables/Header"
 import {returnStatuses} from 'utils/serverValues'
+import ErrorMessageText from 'reusables/ErrorMessageText';
 
 export default class GroupScreen extends React.Component {
 
@@ -100,11 +101,8 @@ export default class GroupScreen extends React.Component {
 
         <DefaultLoadingModal isVisible={isModalVisible} />
 
-        {this.state.errorMessage !== null &&
-          <Text style={{ color: 'red' }}>
-            {this.state.errorMessage}
-          </Text>
-        }
+        <ErrorMessageText message = {this.state.errorMessage} />
+
 
         <Overlay 
           isVisible = {currentlySelectedUser !== null}

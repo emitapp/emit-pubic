@@ -12,6 +12,7 @@ import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/he
 import {Text, Input, CheckBox} from 'react-native-elements'
 import {ScrollingHeader} from "reusables/Header"
 import {returnStatuses} from 'utils/serverValues'
+import ErrorMessageText from 'reusables/ErrorMessageText';
 
 export default class NewGroupScreen extends React.Component {
 
@@ -39,11 +40,7 @@ export default class NewGroupScreen extends React.Component {
       <View style={S.styles.containerFlexStart}>
 
         <DefaultLoadingModal isVisible={this.state.isModalVisible} />
-
-        {this.state.errorMessage &&
-          <Text style={{ color: 'red' }}>
-            {this.state.errorMessage}
-          </Text>}
+        <ErrorMessageText message = {this.state.errorMessage} />
 
         {!this.groupSnippet && 
           <Input

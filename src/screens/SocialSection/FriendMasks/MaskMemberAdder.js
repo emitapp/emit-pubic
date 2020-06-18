@@ -12,6 +12,7 @@ import {Text, Input, CheckBox} from 'react-native-elements'
 import {ScrollingHeader} from "reusables/Header"
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import Snackbar from 'react-native-snackbar';
+import ErrorMessageText from 'reusables/ErrorMessageText';
 
 export default class NewMaskScreen extends React.Component {
 
@@ -41,10 +42,8 @@ export default class NewMaskScreen extends React.Component {
 
       <DefaultLoadingModal isVisible={this.state.isModalVisible} />
 
-      {this.state.errorMessage != null &&
-        <Text style={{ color: 'red' }}>
-          {this.state.errorMessage}
-        </Text>}
+      <ErrorMessageText message = {this.state.errorMessage} />
+
 
         {!this.maskSnippet && 
           <Input

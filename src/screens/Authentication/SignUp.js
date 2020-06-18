@@ -6,6 +6,7 @@ import S from "styling";
 import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import {MinorActionButton} from 'reusables/ReusableButtons'
 import {DefaultLoadingModal} from 'reusables/LoadingComponents'
+import ErrorMessageText from 'reusables/ErrorMessageText';
 
 export default class SignUp extends React.Component {
 
@@ -38,10 +39,8 @@ export default class SignUp extends React.Component {
                 Sign Up
             </Text>
 
-            {this.state.errorMessage &&
-              <Text style={{ color: 'red' }}>
-                {this.state.errorMessage}
-              </Text>}
+            <ErrorMessageText message = {this.state.errorMessage} />
+
 
             <Input
               autoCapitalize="none"

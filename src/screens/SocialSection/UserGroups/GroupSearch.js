@@ -1,12 +1,13 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
+import ErrorMessageText from 'reusables/ErrorMessageText';
+import { UserGroupListElement } from 'reusables/ListElements';
 import { BannerButton } from 'reusables/ReusableButtons';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
 import { logError } from 'utils/helpers';
-import {UserGroupListElement} from 'reusables/ListElements'
 
 
 export default class GroupSearch extends React.Component {
@@ -28,10 +29,8 @@ export default class GroupSearch extends React.Component {
     return (
       <View style={S.styles.containerFlexStart}>
 
-        {this.state.errorMessage &&
-          <Text style={{ color: 'red' }}>
-            {this.state.errorMessage}
-          </Text>}
+        <ErrorMessageText message = {this.state.errorMessage} />
+
 
         <SearchableInfiniteScroll
           type = "dynamic"

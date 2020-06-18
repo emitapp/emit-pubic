@@ -12,6 +12,7 @@ import {SmallLoadingComponent} from 'reusables/LoadingComponents'
 import Snackbar from 'react-native-snackbar';
 var RNFS = require('react-native-fs');
 import ProfilePicCircle from 'reusables/ProfilePicComponents';
+import ErrorMessageText from 'reusables/ErrorMessageText';
 
 
 const options = {
@@ -38,11 +39,7 @@ export default class ProfilePicChanger extends Component {
     return (
       <View style={styles.container}>
 
-        {this.state.errorMessage &&
-          <Text style={{ color: 'red' }}>
-            {this.state.errorMessage}
-          </Text>
-        }
+        <ErrorMessageText message = {this.state.errorMessage} />
 
         <Text style = {{textAlign: "center", marginBottom: 16}}>
           Note that your updated profile pic might take a few seconds to appear everywhere in the app

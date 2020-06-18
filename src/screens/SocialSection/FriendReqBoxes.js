@@ -9,6 +9,7 @@ import {UserSnippetListElement} from 'reusables/ListElements';
 import S from 'styling';
 import { epochToDateString, logError } from 'utils/helpers';
 import FriendReqModal from './FriendReqModal';
+import ErrorMessageText from 'reusables/ErrorMessageText';
 
 
 export default class UserSearch extends React.Component {
@@ -45,10 +46,7 @@ export default class UserSearch extends React.Component {
           buttons={["Inbox", "Outbox"]}
         />
 
-        {this.state.errorMessage &&
-          <Text style={{ color: 'red' }}>
-            {this.state.errorMessage}
-          </Text>}
+            <ErrorMessageText message = {this.state.errorMessage} />
 
 
             <DynamicInfiniteScroll

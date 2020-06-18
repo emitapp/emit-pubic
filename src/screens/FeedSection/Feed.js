@@ -12,6 +12,7 @@ import CountdownComponent from 'reusables/CountdownComponent'
 import { responderStatuses } from 'utils/serverValues';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import ErrorMessageText from 'reusables/ErrorMessageText';
 
 export default class Feed extends React.Component {
 
@@ -23,10 +24,8 @@ export default class Feed extends React.Component {
     return (
       <View style={S.styles.container}>
 
-        {this.state.errorMessage &&
-          <Text style={{ color: 'red' }}>
-            {this.state.errorMessage}
-          </Text>}
+          <ErrorMessageText message = {this.state.errorMessage} />
+
 
           <DynamicInfiniteScroll
             errorHandler = {this.scrollErrorHandler}

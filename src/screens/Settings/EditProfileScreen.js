@@ -11,7 +11,7 @@ import ProfilePicChanger from 'reusables/ProfilePicChanger'
 import { isOnlyWhitespace, logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers'
 import { returnStatuses } from 'utils/serverValues'
 import Icon from 'react-native-vector-icons/FontAwesome5';
-
+import ErrorMessageText from 'reusables/ErrorMessageText';
 
 
 export default class EditProfileScreen extends React.Component {
@@ -95,10 +95,9 @@ export default class EditProfileScreen extends React.Component {
           <Text style = {{textAlign: "center", marginBottom: 16, marginHorizontal: 8}}>
             People will be able to see these when they check your profile. Exclude the @ in all your handles
           </Text>
-          {this.state.socialsError !== null &&
-          <Text style={{ color: 'red' }}>
-            {this.state.socialsError}
-          </Text>}
+
+          <ErrorMessageText message = {this.state.socialsError} />
+
  
           <Input
             autoCapitalize="none"

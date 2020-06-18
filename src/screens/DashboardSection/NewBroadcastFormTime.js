@@ -9,6 +9,7 @@ import { MAX_BROADCAST_WINDOW, MIN_BROADCAST_WINDOW, } from 'utils/serverValues'
 import { BannerButton } from 'reusables/ReusableButtons';
 import S from 'styling'
 import {epochToDateString} from 'utils/helpers'
+import ErrorMessageText from 'reusables/ErrorMessageText';
 
 
 export default class NewBroadcastFormTime extends React.Component {
@@ -85,11 +86,9 @@ export default class NewBroadcastFormTime extends React.Component {
                             <Button onPress={() => this.showPicker('date')} title="Choose Date" />
                             <Button onPress={() => this.showPicker('time')} title="Choose Time" />
                         </View>
-                        {this.state.errorMessage != null &&
-                            <Text style={{ color: 'red' }}>
-                                {this.state.errorMessage}
-                            </Text>
-                        }
+
+                        <ErrorMessageText message = {this.state.errorMessage} />
+
                         <Text style={{ textAlign: "center" }}> Chosen date: </Text>
                         <Text style={{ textAlign: "center", fontWeight: "bold", margin: 8 }}>
                             {epochToDateString(this.state.date.getTime())}

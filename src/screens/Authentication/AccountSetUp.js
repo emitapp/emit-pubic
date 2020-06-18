@@ -12,6 +12,7 @@ import { MinorActionButton } from 'reusables/ReusableButtons';
 import S from "styling";
 import { ASYNC_SETUP_KEY, isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { validUsername } from 'utils/serverValues';
+import ErrorMessageText from 'reusables/ErrorMessageText';
 
 
 export default class AccountSetUp extends React.Component {
@@ -45,10 +46,7 @@ export default class AccountSetUp extends React.Component {
                 Finish setting up your Biteup Account
             </Text>
 
-            {this.state.errorMessage &&
-              <Text style={{ color: 'red' }}>
-                {this.state.errorMessage}
-              </Text>}
+            <ErrorMessageText message = {this.state.errorMessage} />
 
             <Text style = {{marginBottom: 8}}>
               The name that people will see associated with your account. It can be whatever you want, and you can always change it later

@@ -13,6 +13,7 @@ import { responderStatuses, returnStatuses } from 'utils/serverValues';
 import CountdownComponent from 'reusables/CountdownComponent'
 import Icon from 'react-native-vector-icons/Entypo';
 import AutolinkText from 'reusables/AutolinkText'
+import ErrorMessageText from 'reusables/ErrorMessageText';
 
 
 export default class BroadcastViewer extends React.Component {
@@ -49,11 +50,8 @@ export default class BroadcastViewer extends React.Component {
       <View style={{...S.styles.containerFlexStart, alignItems: "flex-start", marginHorizontal: 16}}>
         <DefaultLoadingModal isVisible={this.state.isModalVisible} />
         
-        {this.state.errorMessage &&
-          <Text style={{ color: 'red' }}>
-            {this.state.errorMessage}
-          </Text>
-        }
+        <ErrorMessageText message = {this.state.errorMessage} />
+
 
         {!broadcastData &&
             <TimeoutLoadingComponent hasTimedOut={false} retryFunction={() => null}/>

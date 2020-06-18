@@ -12,6 +12,7 @@ import S from 'styling';
 import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import {ScrollingHeader} from "reusables/Header"
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
+import ErrorMessageText from 'reusables/ErrorMessageText';
 
 export default class NewMaskScreen extends React.Component {
 
@@ -47,10 +48,8 @@ export default class NewMaskScreen extends React.Component {
       {({ theme }) => (
       <View style={S.styles.containerFlexStart}>
 
-      {this.state.errorMessage != null &&
-        <Text style={{ color: 'red' }}>
-          {this.state.errorMessage}
-        </Text>}
+        <ErrorMessageText message = {this.state.errorMessage} />
+
 
         <DefaultLoadingModal isVisible={this.state.isModalVisible} />
 

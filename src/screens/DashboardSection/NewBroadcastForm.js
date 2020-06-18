@@ -13,6 +13,7 @@ import auth from '@react-native-firebase/auth';
 import { logError, LONG_TIMEOUT, timedPromise, isOnlyWhitespace } from 'utils/helpers';
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import {returnStatuses} from 'utils/serverValues'
+import ErrorMessageText from 'reusables/ErrorMessageText';
 
 class NewBroadcastForm extends React.Component {
 
@@ -67,11 +68,10 @@ class NewBroadcastForm extends React.Component {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle = {{paddingHorizontal: 16}}>
 
-            {this.state.errorMessage != null &&
-                <Text style={{ color: '#2900BD', fontWeight: "bold" }}>
-                    {this.state.errorMessage}
-                </Text>
-            }
+            <ErrorMessageText 
+            message = {this.state.errorMessage} 
+            style ={{ color: '#2900BD', fontWeight: "bold" }} />
+
             
             <FormSubtitle title = "Time" />
 

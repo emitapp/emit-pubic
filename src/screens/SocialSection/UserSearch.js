@@ -6,6 +6,7 @@ import {UserSnippetListElement} from 'reusables/ListElements';
 import S from 'styling';
 import { logError } from 'utils/helpers';
 import FriendReqModal from './FriendReqModal';
+import ErrorMessageText from 'reusables/ErrorMessageText';
 
 export default class UserSearch extends React.Component {
 
@@ -26,10 +27,8 @@ export default class UserSearch extends React.Component {
         <FriendReqModal 
           ref={modal => this.modal = modal} />
 
-        {this.state.errorMessage &&
-          <Text style={{ color: 'red' }}>
-            {this.state.errorMessage}
-          </Text>}
+        <ErrorMessageText message = {this.state.errorMessage} />
+
 
         <SearchableInfiniteScroll
           type = "static"

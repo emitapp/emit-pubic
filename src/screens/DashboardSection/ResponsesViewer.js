@@ -15,6 +15,7 @@ import S from "styling";
 import { epochToDateString, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { responderStatuses, returnStatuses } from 'utils/serverValues';
 import AutolinkText from 'reusables/AutolinkText'
+import ErrorMessageText from 'reusables/ErrorMessageText';
 
 export default class ResponsesViewer extends React.Component {
 
@@ -58,11 +59,8 @@ export default class ResponsesViewer extends React.Component {
       <View style={{...S.styles.containerFlexStart, alignItems: "flex-start"}}>
         <DefaultLoadingModal isVisible={this.state.isModalVisible} />
 
-        {this.state.errorMessage &&
-          <Text style={{ color: 'red' }}>
-            {this.state.errorMessage}
-          </Text>
-        }
+        <ErrorMessageText message = {this.state.errorMessage} />
+
         <View style = {{marginLeft: 16, marginBottom: 8}}>
           <View style = {{flexDirection: "row", alignItems: "center"}}>
             {this.broadcastData.geolocation && 

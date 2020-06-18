@@ -9,6 +9,7 @@ import { epochToDateString, logError } from 'utils/helpers';
 import EmptyState from 'reusables/EmptyState'
 import {Badge, Text} from 'react-native-elements'
 import CountdownComponent from 'reusables/CountdownComponent'
+import ErrorMessageText from 'reusables/ErrorMessageText';
 
 export default class ActiveBroadcasts extends React.Component {
 
@@ -20,10 +21,8 @@ export default class ActiveBroadcasts extends React.Component {
     return (
       <View style={S.styles.containerFlexStart}>
 
-        {this.state.errorMessage &&
-          <Text style={{ color: 'red' }}>
-            {this.state.errorMessage}
-          </Text>}
+          <ErrorMessageText message = {this.state.errorMessage} />
+
 
           <DynamicInfiniteScroll
             errorHandler = {this.scrollErrorHandler}
