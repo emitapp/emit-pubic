@@ -1,15 +1,19 @@
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 import React from 'react';
-import { View, FlatList } from 'react-native';
-import { Button, Input, Text, ThemeConsumer, Divider } from 'react-native-elements';
+import { FlatList, TouchableOpacity, View } from 'react-native';
+import { Button, Divider, Input, Text, ThemeConsumer } from 'react-native-elements';
+import Snackbar from 'react-native-snackbar';
 import Icon from 'react-native-vector-icons/Entypo';
+import ErrorMessageText from 'reusables/ErrorMessageText';
 import { ClearHeader } from 'reusables/Header';
+import { LocationListElement } from "reusables/ListElements";
+import { SmallLoadingComponent } from 'reusables/LoadingComponents';
 import MainLinearGradient from 'reusables/MainLinearGradient';
-import {LocationListElement} from "reusables/ListElements"
+import { BannerButton, MinorActionButton } from 'reusables/ReusableButtons';
 import S from 'styling';
-import {BannerButton, MinorActionButton} from 'reusables/ReusableButtons'
-import ErrorMessageText from 'reusables/ErrorMessageText'
-import * as recentLocFuncs from 'utils/RecentLocationsFunctions'
-import { logError } from 'utils/helpers';
+import { isOnlyWhitespace, logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
+import * as recentLocFuncs from 'utils/RecentLocationsFunctions';
 import uuid from 'uuid/v4';
 
 
@@ -22,7 +26,8 @@ export default class NewBroadcastFormLocation extends React.Component {
             locationName: navigationParams.location, 
             locationPin: {longitude: null, latitude: null},
             recentLocations: [],
-            errorMessage: "test"
+            errorMessage: null,
+            savingLocation: false
         }
         if (navigationParams.geolocation) this.state.locationPin = navigationParams.geolocation
     }
@@ -91,6 +96,15 @@ export default class NewBroadcastFormLocation extends React.Component {
                         />   
                     </View>
                 }
+
+                {!this.state.savingLocation ? (
+                    <MinorActionButton title = "Save Current Location" onPress = {this.saveLocation} />
+                ) : (
+                    <View style = {{alignSelf: "center"}}>
+                        <SmallLoadingComponent />
+                    </View>
+                )}
+
                 <FlatList
                     data={this.state.recentLocations}
                     renderItem={({ item, index }) => this.renderRecentLocation(item, index)}
@@ -104,7 +118,7 @@ export default class NewBroadcastFormLocation extends React.Component {
             <BannerButton
                 color = {S.colors.buttonGreen}
                 iconName = {S.strings.confirm}
-                onPress = {this.saveLocation}
+                onPress = {this.confirmLocation}
                 title = "CONFIRM"
             />         
         </MainLinearGradient>
@@ -113,24 +127,52 @@ export default class NewBroadcastFormLocation extends React.Component {
       )
     }  
     
-    saveLocation = (saveLocation = true) => {
+    confirmLocation = (addToRecents = true) => {
         this.props.navigation.state.params.location = this.state.locationName
         const locationToSave = {name: this.state.locationName, uid: uuid()} 
         if (this.state.locationPin.latitude != null){
             this.props.navigation.state.params.geolocation = this.state.locationPin
             locationToSave.geolocation = this.state.locationPin
         }
-        if (saveLocation) recentLocFuncs.addNewLocation(locationToSave)   
+        if (addToRecents) recentLocFuncs.addNewLocation(locationToSave)   
         this.props.navigation.goBack()
+    }
+
+    saveLocation = async () => {
+        if (isOnlyWhitespace(this.state.locationName)){
+            Snackbar.show({text: 'Enter a location for your name.', duration: Snackbar.LENGTH_SHORT});
+            return
+        }
+        this.setState({savingLocation: true, errorMessage: null})
+        let location = {name: this.state.locationName}
+        if (this.state.locationPin.latitude !== null) location.geolocation = this.state.locationPin
+        try{
+            await timedPromise(
+                database().ref(`/savedLocations/${auth().currentUser.uid}`).push(location),
+                MEDIUM_TIMEOUT
+            )
+            Snackbar.show({text: 'Saved location', duration: Snackbar.LENGTH_SHORT});
+        }catch(err){
+            if (err.code == "timeout"){
+                Snackbar.show({text: 'Timeout', duration: Snackbar.LENGTH_SHORT});
+            }else{
+                this.setState({errorMessage: "Something went wrong."})
+                logError(err)        
+            }
+        }
+        this.setState({savingLocation: false})
     }
 
     renderHeader = (theme) => {
         return (
-            <View style = {{
-                ...S.styles.listElement, 
-                marginVertical: 8, 
-                width: "100%", backgroundColor: theme.colors.grey4,
-                borderRadius: 8}}>
+            <TouchableOpacity 
+                style = {{
+                    ...S.styles.listElement, 
+                    marginVertical: 8, 
+                    width: "100%", backgroundColor: theme.colors.grey4,
+                    borderRadius: 8}}
+                onPress = {() => this.props.navigation.navigate("SavedLocations", this.props.navigation.state.params)}
+            >
                 <View style = {{width: 40}}>
                     <Icon name="star" size={20} style = {{marginHorizontal: 8}}/>
                 </View>
@@ -138,7 +180,7 @@ export default class NewBroadcastFormLocation extends React.Component {
                 Saved Locations
                 </Text>
                 <Icon name="chevron-right" size={20} style = {{marginHorizontal: 8}}/>
-            </View>
+            </TouchableOpacity>
         )
     }
 
@@ -150,7 +192,7 @@ export default class NewBroadcastFormLocation extends React.Component {
                     const newState = {locationName: item.name}
                     if (item.geolocation) newState.locationPin = item.geolocation
                     recentLocFuncs.bubbleToTop(index)
-                    this.setState(newState, () => this.saveLocation(false))
+                    this.setState(newState, () => this.confirmLocation(false))
                 }}
             />
         )

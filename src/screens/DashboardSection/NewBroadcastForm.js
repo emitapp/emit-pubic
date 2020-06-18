@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, View, TouchableHighlightBase } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { Button, CheckBox, Input, Text, ThemeConsumer } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Chip from 'reusables/Chip';
@@ -14,6 +14,8 @@ import { logError, LONG_TIMEOUT, timedPromise, isOnlyWhitespace } from 'utils/he
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import {returnStatuses} from 'utils/serverValues'
 import ErrorMessageText from 'reusables/ErrorMessageText';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
 
 class NewBroadcastForm extends React.Component {
 
@@ -86,6 +88,9 @@ class NewBroadcastForm extends React.Component {
                 onPress = {() => this.props.navigation.navigate("NewBroadcastFormLocation", this.passableBroadcastInfo)}
                 placeholder = "Where are you going?"
                 value = {this.state.passableBroadcastInfo.location}
+                icon = {this.state.passableBroadcastInfo.geolocation ? 
+                        <Icon name="location-on" size={20} color = "white"/> 
+                        : null}
             />
 
             <FormSubtitle title = "Recepients" />
@@ -321,17 +326,23 @@ export default withNavigation(NewBroadcastForm);
 
 class FormInput extends React.PureComponent {
     render (){
-        const {onPress, ...otherProps} = this.props
+        const {onPress, icon, ...otherProps} = this.props
         return (
-            <TouchableOpacity onPress = {onPress} style = {{height: "auto", width: "100%"}}>
-                <View pointerEvents='none'>
-                    <Input
-                        {...otherProps}                
-                        inputContainerStyle = {{backgroundColor: "white"}}
-                        editable = {false}
-                    />
+            <View style = {{flexDirection: "row", width: "100%", height: "auto", alignItems: "center", marginBottom: 8}}>
+                {icon}
+                <View style = {{ flex: 1}}>
+                    <TouchableOpacity onPress = {onPress} style = {{height: "auto", flexDirection: "row"}}>
+                        <View pointerEvents='none' style = {{width: "100%"}}>
+                            <Input
+                                {...otherProps}                
+                                inputContainerStyle = {{backgroundColor: "white"}}
+                                containerStyle={{marginBottom: 0}}
+                                editable = {false}
+                            />
+                        </View>
+                    </TouchableOpacity>
                 </View>
-            </TouchableOpacity>
+            </View>
         )
     }
 }
