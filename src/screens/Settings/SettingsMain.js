@@ -2,17 +2,17 @@ import auth from '@react-native-firebase/auth';
 import React from 'react';
 import { View, ScrollView, RefreshControl, StyleSheet } from 'react-native';
 import {Button, Text, ThemeConsumer} from 'react-native-elements'
-import S from 'styling';
 import { logError } from 'utils/helpers';
 import UserProfileSummary from 'reusables/UserProfileSummary'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import ErrorMessageText from 'reusables/ErrorMessageText';
 
 
 export default class SettingsMain extends React.Component {
 
-    state = {refreshing: false}
+    state = {refreshing: false, verificationEmailError: ""}
 
     render() {
       const { currentUser } = auth()
@@ -37,6 +37,7 @@ export default class SettingsMain extends React.Component {
             <Text>
               Your email is {currentUser.emailVerified ? "" : "not"} verified
             </Text>
+            <ErrorMessageText message = {this.state.verificationEmailError} />
             {!currentUser.emailVerified && 
               <Button
                 title="Send Verification Email"
@@ -66,9 +67,10 @@ export default class SettingsMain extends React.Component {
               onPress={() => this.props.navigation.navigate("AccountManagementScreen")}
             />
             <SettingSectionButton 
-              title = "Help or Feedback"
-              icon = {<FeatherIcon name="help-circle" />}
+              title = "Contact or Support Biteup"
+              icon = {<FeatherIcon name="heart" />}
               color = {theme.colors.grey0}  
+              onPress = {() => this.props.navigation.navigate("ContactSupportPage")}
             />   
             <SettingSectionButton 
               title = "Logout"
@@ -78,6 +80,12 @@ export default class SettingsMain extends React.Component {
               style = {{borderBottomWidth: 0}}
             />
           </View>
+
+          <Text style = {{textAlign: "center"}}>
+            Powered by Passion
+            {"\n"}
+            vx.x
+          </Text>
 
         </ScrollView>
         )}
@@ -106,8 +114,12 @@ export default class SettingsMain extends React.Component {
     }
 
     sendEmailVerification = () => {
+      this.setState({verificationEmailError: ""})
       auth().currentUser.sendEmailVerification()
-      .catch(error => logError(error))
+      .catch(error => {
+        this.setState({verificationEmailError: error.message})
+        logError(error)
+      })
     }
   }
 

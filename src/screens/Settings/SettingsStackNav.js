@@ -3,6 +3,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import EditProfileScreen from './EditProfileScreen';
 import SettingsMain from './SettingsMain';
 import AccountManagementScreen from './AccountManagementScreen'
+import ContactSupportPage from './ContactSupportPage'
 import Header from 'reusables/Header'
 
 
@@ -10,7 +11,8 @@ const Navigator = createStackNavigator(
   {
     SettingsMain,
     EditProfileScreen,
-    AccountManagementScreen
+    AccountManagementScreen,
+    ContactSupportPage
   },
   {
     initialRouteName: 'SettingsMain',
