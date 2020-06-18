@@ -10,7 +10,7 @@ export default class ErrorMessageText extends React.PureComponent {
 			<Text
 				style={{ ...ErrorMessageText.defaultStyle, ...this.props.style }}
 				{...otherProps}>
-				{this.state.errorMessage}
+				{this.props.errorMessage}
 			</Text>
     )
 	}
