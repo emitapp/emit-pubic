@@ -9,6 +9,7 @@ import AccountSetUp from 'screens/Authentication/AccountSetUp';
 import AuthDecisionPage from 'screens/Authentication/AuthDecisionPage';
 import LandingPage from 'screens/Authentication/LandingPage';
 import Login from 'screens/Authentication/Login';
+import PasswordReset from 'screens/Authentication/PasswordReset'
 import SignUp from 'screens/Authentication/SignUp';
 import MainTabNav from 'screens/MainTabNav';
 import MainTheme from 'styling/mainTheme';
@@ -60,7 +61,8 @@ const Navigator = createAppContainer(
     AccountSetUp,
     Login,
     MainTabNav,
-    LandingPage
+    LandingPage,
+    PasswordReset,
   },
   {
     initialRouteName: 'AuthDecisionPage'
