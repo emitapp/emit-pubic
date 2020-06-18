@@ -25,6 +25,7 @@ export default class NewBroadcastFormLocation extends React.Component {
         this.state = {
             locationName: navigationParams.location, 
             locationPin: {longitude: null, latitude: null},
+            locationCleared: false,
             recentLocations: [],
             errorMessage: null,
             savingLocation: false
@@ -39,7 +40,7 @@ export default class NewBroadcastFormLocation extends React.Component {
     componentDidMount() {
         const { navigation } = this.props;
         this.focusListener = navigation.addListener('didFocus', () => {
-            this.setState({}) //Just call for a rerender (this is used when we come back from the location picker map)
+            this.setState({locationCleared: false}) //Just call for a rerender (this is used when we come back from the location picker map)
         });
         recentLocFuncs.getRecentLocations()
             .then(recentLocations => this.setState({recentLocations}))
@@ -92,7 +93,7 @@ export default class NewBroadcastFormLocation extends React.Component {
                             titleStyle = {{color: "red"}}
                             type= "clear"
                             title="Clear"
-                            onPress = {() => this.setState({locationPin: {longitude: null, latitude: null}})}
+                            onPress = {() => this.setState({locationPin: {longitude: null, latitude: null}, locationCleared: true})}
                         />   
                     </View>
                 }
@@ -133,6 +134,9 @@ export default class NewBroadcastFormLocation extends React.Component {
         if (this.state.locationPin.latitude != null){
             this.props.navigation.state.params.geolocation = this.state.locationPin
             locationToSave.geolocation = this.state.locationPin
+        }
+        if (this.state.locationCleared){
+            this.props.navigation.state.params.geolocation = null
         }
         if (addToRecents) recentLocFuncs.addNewLocation(locationToSave)   
         this.props.navigation.goBack()
