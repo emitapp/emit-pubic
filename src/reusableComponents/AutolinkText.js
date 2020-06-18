@@ -10,7 +10,7 @@ export default class AutolinkText extends React.Component {
             <Autolink
                 text={this.props.children}
                 hashtag="instagram"
-                mention="twitter"
+                mention="insatgram"
                 component = {Text}
                 linkStyle = {{color: "blue"}}
                 truncate = {0}

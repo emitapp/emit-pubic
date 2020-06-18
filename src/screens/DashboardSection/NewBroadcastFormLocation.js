@@ -6,28 +6,25 @@ import { ClearHeader } from 'reusables/Header';
 import MainLinearGradient from 'reusables/MainLinearGradient';
 import {LocationListElement} from "reusables/ListElements"
 import S from 'styling';
-import {BannerButton} from 'reusables/ReusableButtons'
+import {BannerButton, MinorActionButton} from 'reusables/ReusableButtons'
+import ErrorMessageText from 'reusables/ErrorMessageText'
+import * as recentLocFuncs from 'utils/RecentLocationsFunctions'
+import { logError } from 'utils/helpers';
+import uuid from 'uuid/v4';
+
 
 export default class NewBroadcastFormLocation extends React.Component {
 
     constructor(props){
         super(props)
         let navigationParams = props.navigation.state.params
-        this.state = {locationName: navigationParams.location, locationPin: {longitude: null, latitude: null}}
+        this.state = {
+            locationName: navigationParams.location, 
+            locationPin: {longitude: null, latitude: null},
+            recentLocations: [],
+            errorMessage: "test"
+        }
         if (navigationParams.geolocation) this.state.locationPin = navigationParams.geolocation
-
-        this.data = [
-            {name: "Accra Mall", geolocation: "something"},
-            {name: "Somewhere else", geolocation: "something"},
-            {name: "Some other place bi"},
-            {name: "Hell idk another place this is a really long name jus testing how this workds"},
-            {name: "Oga you get the idea", geolocation: "something"},
-            {name: "Accra Mall", geolocation: "something"},
-            {name: "Somewhere else", geolocation: "something"},
-            {name: "Some other place bi"},
-            {name: "Hell idk another place"},
-            {name: "Oga you get the idea", geolocation: "something"},
-        ]
     }
 
     static navigationOptions = ({ navigationOptions }) => {
@@ -37,8 +34,14 @@ export default class NewBroadcastFormLocation extends React.Component {
     componentDidMount() {
         const { navigation } = this.props;
         this.focusListener = navigation.addListener('didFocus', () => {
-            this.setState({}) //Just call for a rerender
+            this.setState({}) //Just call for a rerender (this is used when we come back from the location picker map)
         });
+        recentLocFuncs.getRecentLocations()
+            .then(recentLocations => this.setState({recentLocations}))
+            .catch(err => {
+                logError(err)
+                this.setState({errorMessage: "Couldn't retrieve recent locations"})
+            })
     }
     
     componentWillUnmount() {
@@ -54,6 +57,7 @@ export default class NewBroadcastFormLocation extends React.Component {
                 <Text h4 h4Style={{marginVertical: 8, fontWeight: "bold"}}>
                     Where will you be?
                 </Text>
+                <ErrorMessageText message = {this.state.errorMessage} />
                 <Input
                     label="Location Name"
                     placeholder = "That Super Awesome Place"
@@ -88,11 +92,13 @@ export default class NewBroadcastFormLocation extends React.Component {
                     </View>
                 }
                 <FlatList
-                    data={this.data}
-                    renderItem={({ item }) => (<LocationListElement locationInfo = {item}/>)}
+                    data={this.state.recentLocations}
+                    renderItem={({ item, index }) => this.renderRecentLocation(item, index)}
                     ListHeaderComponent = {() => this.renderHeader(theme)}
+                    ListFooterComponent = {() => this.renderFooter()}
                     style = {{marginHorizontal: 8}}
                     ItemSeparatorComponent = {() => <Divider/>}
+                    keyExtractor={item => item.uid}
                 />         
             </View> 
             <BannerButton
@@ -107,10 +113,14 @@ export default class NewBroadcastFormLocation extends React.Component {
       )
     }  
     
-    saveLocation = () => {
+    saveLocation = (saveLocation = true) => {
         this.props.navigation.state.params.location = this.state.locationName
-        if (this.state.locationPin.latitude != null)
+        const locationToSave = {name: this.state.locationName, uid: uuid()} 
+        if (this.state.locationPin.latitude != null){
             this.props.navigation.state.params.geolocation = this.state.locationPin
+            locationToSave.geolocation = this.state.locationPin
+        }
+        if (saveLocation) recentLocFuncs.addNewLocation(locationToSave)   
         this.props.navigation.goBack()
     }
 
@@ -129,6 +139,37 @@ export default class NewBroadcastFormLocation extends React.Component {
                 </Text>
                 <Icon name="chevron-right" size={20} style = {{marginHorizontal: 8}}/>
             </View>
+        )
+    }
+
+    renderRecentLocation = (item, index) => {
+        return (
+            <LocationListElement 
+                locationInfo = {item}
+                onPress = {() => {
+                    const newState = {locationName: item.name}
+                    if (item.geolocation) newState.locationPin = item.geolocation
+                    recentLocFuncs.bubbleToTop(index)
+                    this.setState(newState, () => this.saveLocation(false))
+                }}
+            />
+        )
+    }
+
+    renderFooter = () => {
+        if (this.state.recentLocations.length == 0) return null
+        return (
+            <MinorActionButton 
+                title = "Clear Recent List"
+                onPress = {() => {
+                    recentLocFuncs.clearRecentLocations()
+                        .then(() => this.setState({recentLocations: []}))
+                        .catch(err => {
+                            logError(err)
+                            this.setState({errorMessage: "Couldn't clear recent locations"})
+                        })
+                }}
+            />
         )
     }
     
