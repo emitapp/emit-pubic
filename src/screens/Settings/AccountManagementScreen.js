@@ -2,7 +2,7 @@
 import auth from '@react-native-firebase/auth'
 import functions from '@react-native-firebase/functions'
 import React from 'react'
-import { ScrollView, View } from 'react-native'
+import { ScrollView, View, Alert } from 'react-native'
 import { Button, Divider, Input, Text } from 'react-native-elements'
 import ErrorMessageText from 'reusables/ErrorMessageText'
 import { DefaultLoadingModal } from 'reusables/LoadingComponents'
@@ -22,11 +22,17 @@ export default class AccountManagementScreen extends React.Component {
     oldPass1: "",
     newEmail: "",
     emailChangeError: "",
+
     oldEmail2: "",
     oldPass2: "",
     newPass: "",
     newPassConfirm: "",
     passwordChangeError: "",
+
+    oldEmail3: "",
+    oldPass3: "",
+    deleteAccountError: "",
+
     isModalVisible: false
   }
 
@@ -128,10 +134,28 @@ export default class AccountManagementScreen extends React.Component {
           <Text style = {{marginHorizontal: 8}}>
             Needless to say, deleting your account is very irreversible.
           </Text>
+          <ErrorMessageText message = {this.state.deleteAccountError} />
+          <Input
+            autoCapitalize="none"
+            placeholder="johnDoe@gmail.com"
+            label = "Current Email"
+            keyboardType = "email-address"
+            onChangeText={oldEmail3 => this.setState({ oldEmail3 })}
+            value={this.state.oldEmail3}
+          />
+          <Input
+            secureTextEntry
+            autoCapitalize="none"
+            label = "Current Password"
+            placeholder="Password"
+            onChangeText={oldPass3 => this.setState({ oldPass3 })}
+            value={this.state.oldPass3}
+          />
           <Button
           containerStyle = {{alignSelf: "center"}}
           buttonStyle = {{backgroundColor: "crimson"}}
           title = "Delete account"
+          onPress = {this.confirmDeleteAccount}
           />
         </View>
 
@@ -188,6 +212,45 @@ export default class AccountManagementScreen extends React.Component {
     }catch(err){
       console.log(err)
       this.setState({passwordChangeError: err.message})
+    }
+    this.setState({isModalVisible: false})
+  }
+
+  confirmDeleteAccount = () => {
+    Alert.alert(
+      "Account Deletion",
+      "Are you sure you want to delete your account? This is very permanent!",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        { 
+          text: "Delete Account", 
+          onPress: () => this.deleteAccount(),
+          style: "destructive"
+        }
+      ],
+      { cancelable: false }
+    );
+  }
+
+
+  deleteAccount = async () => {
+    this.setState({isModalVisible: true, deleteAccountError: null})
+    try{
+      if (!this.state.oldEmail3 || !this.state.oldPass3){
+        this.setState({deleteAccountError: "You haven't entered information in all the fields"})
+      }else{
+        const user = auth().currentUser
+        const authCredential = auth.EmailAuthProvider.credential(this.state.oldEmail3, this.state.oldPass3);
+        await timedPromise(user.reauthenticateWithCredential(authCredential), LONG_TIMEOUT)
+        await timedPromise(user.delete(), LONG_TIMEOUT)
+        this.setState({oldEmail3: "", oldPass3: ""})
+      }
+    }catch(err){
+      console.log(err)
+      this.setState({deleteAccountError: err.message})
     }
     this.setState({isModalVisible: false})
   }
