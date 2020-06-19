@@ -59,6 +59,7 @@ export default class SettingsMain extends React.Component {
               title = "Notifications"
               icon = {<FontAwesomeIcon name="bell" />}
               color = {theme.colors.grey0}  
+              onPress = {() => this.props.navigation.navigate("NotificationSettings")}
             />
             <SettingSectionButton 
               title = "Your Account and Data"

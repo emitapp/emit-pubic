@@ -1,14 +1,9 @@
 
-import auth from '@react-native-firebase/auth'
-import functions from '@react-native-firebase/functions'
 import React from 'react'
-import { ScrollView, View, Alert, Clipboard, Linking } from 'react-native'
-import { Button, Divider, Input, Text } from 'react-native-elements'
-import ErrorMessageText from 'reusables/ErrorMessageText'
-import { DefaultLoadingModal } from 'reusables/LoadingComponents'
-import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers'
+import { Clipboard, Linking, ScrollView, View } from 'react-native'
+import { Button, Divider, Text } from 'react-native-elements'
 import Snackbar from 'react-native-snackbar'
-import config from "react-native-ultimate-config";
+import config from "react-native-ultimate-config"
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
 export default class ContactSupportPage extends React.Component {
@@ -23,7 +18,11 @@ export default class ContactSupportPage extends React.Component {
     return (
       <ScrollView 
       style={{flex: 1, marginTop: 8}} 
-      contentContainerStyle = {{justifyContent: 'flex-start', alignItems: 'center', marginHorizontal: 4}}>
+      contentContainerStyle = {{
+        justifyContent: 'flex-start', 
+        alignItems: 'center', 
+        marginHorizontal: 4,
+        paddingBottom: 16}}>
 
         <Text h4>Learn More</Text>
         <Text style = {{marginHorizontal: 8, marginBottom: 8}}>
