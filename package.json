@@ -13,7 +13,8 @@
     "startServer": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "updateLicenses": "sh src/constants/updateLicenses.sh"
+    "updateLicenses": "sh src/constants/updateLicenses.sh",
+    "env": "yarn rnuc .env"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.7.1",

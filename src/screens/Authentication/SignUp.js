@@ -1,12 +1,13 @@
 import auth from '@react-native-firebase/auth';
 import React from 'react';
-import { Image, View } from 'react-native';
+import { Image, View, Linking } from 'react-native';
 import { Button, Input, Text, ThemeConsumer } from 'react-native-elements';
 import S from "styling";
 import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import {MinorActionButton} from 'reusables/ReusableButtons'
 import {DefaultLoadingModal} from 'reusables/LoadingComponents'
 import ErrorMessageText from 'reusables/ErrorMessageText';
+import config from "react-native-ultimate-config"
 
 export default class SignUp extends React.Component {
 
@@ -70,7 +71,15 @@ export default class SignUp extends React.Component {
             />
 
             <Text style={{fontWeight: "bold", textAlign: 'center'}}>
-            By creating an account you agree to our Terms of Service and Privacy Policy
+            By creating an account you agree to our
+            <Text style = {{textDecorationLine: "underline"}} onPress={() => Linking.openURL(config.PROJECT_TOS)}>
+            {" Terms of Service "}
+            </Text>
+            and 
+            <Text style = {{textDecorationLine: "underline"}}  onPress={() => Linking.openURL(config.PROJECT_PRIVACY_POLICY)}>
+            {" Privacy Policy"}
+            </Text>
+            .
             </Text>
 
             <Button 
