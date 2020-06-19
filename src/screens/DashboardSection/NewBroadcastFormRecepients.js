@@ -27,18 +27,19 @@ export default class NewBroadcastFormRecepients extends React.Component {
             this.dbRef = database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`)
             this.queryTypes = [{name: "Display Name", value: "displayNameQuery"}, {name: "Username", value: "usernameQuery"}]    
             this.mapper = ({username}) => `@${username} `
+            this.state.allFriends = navigationParams.data.allFriends
         }else if (this.mode == "masks"){
             this.state = {selectedSnippets: JSON.parse(JSON.stringify(navigationParams.data.recepientMasks))}
             this.rendererType = FriendMaskListElement
             this.dbRef = database().ref(`/userFriendGroupings/${userUid}/custom/snippets`)
             this.queryTypes = [{name: "Name", value: "name"}]
-            this.mapper = ({name}) => `* ${name} `
+            this.mapper = ({name}, index) => `[${index + 1}] ${name} `
         }else{ //Default to user groups
             this.state = {selectedSnippets: JSON.parse(JSON.stringify(navigationParams.data.recepientGroups))}
             this.rendererType = UserGroupListElement
             this.dbRef = database().ref(`/userGroupMemberships/${userUid}`)
             this.queryTypes = [{name: "Name", value: "name"}]
-            this.mapper = ({name}) => `* ${name} `
+            this.mapper = ({name}, index) => `[${index + 1}] ${name} `
         }
     }
 
@@ -52,15 +53,35 @@ export default class NewBroadcastFormRecepients extends React.Component {
         {({ theme }) => (
         <MainLinearGradient theme={theme}> 
             <View style = {{flex: 1, backgroundColor: "white", width: "100%", borderTopEndRadius: 50, borderTopStartRadius: 50}}>
-                <Text h4 h4Style={{marginTop: 8, marginHorizontal: 18, fontWeight: "bold"}}>
-                    Who can see this broadcast?
-                </Text>
+                
+                <View style={{width: "100%", flexDirection: "row"}}>
+                    <View style = {{flex: 1}}>
+                        <Text h4 h4Style={{marginTop: 8, marginHorizontal: 18, fontWeight: "bold"}}>
+                            Who can see this broadcast?
+                        </Text>
+                    </View>
+                    {this.mode == "friends" &&
+                        <View style = {{justifyContent: "center", alignItems: "center", marginRight: 16, marginLeft: -24}}>
+                            <CheckBox 
+                                checked = {this.state.allFriends} 
+                                containerStyle = {{margin: 0, padding: 0}}
+                                onIconPress = {this.selectAllFriends}
+                            />
+                            <Text style={{textAlign: "center"}}>Select All{"\n"}Friends</Text>
+                        </View>
+                    }
+                </View>
 
                 <ScrollView 
                 style = {{maxHeight: 55, width: "100%"}}>
                 {Object.keys(this.state.selectedSnippets).length != 0 && 
                     <Text style = {{textAlign: "center", marginTop: 8}}>
                     {Object.values(this.state.selectedSnippets).map(this.mapper)}
+                    </Text>
+                }
+                {this.mode == "friends" && this.state.allFriends &&  
+                    <Text style = {{textAlign: "center", marginTop: 8}}>
+                    All friends selected
                     </Text>
                 }
                 </ScrollView>
@@ -88,6 +109,8 @@ export default class NewBroadcastFormRecepients extends React.Component {
 
     saveRecepients = () => {
         if (this.mode == "friends"){
+            const {allFriends} = this.state
+            this.props.navigation.state.params.data.allFriends = allFriends
             this.props.navigation.state.params.data.recepientFriends = this.state.selectedSnippets
         }else if (this.mode == "masks"){
             this.props.navigation.state.params.data.recepientMasks = this.state.selectedSnippets
@@ -118,16 +141,21 @@ export default class NewBroadcastFormRecepients extends React.Component {
         );
     }
 
-    toggleSelection = (snippet) => {
-    const copiedObj = {...this.state.selectedSnippets}
-    if (copiedObj[snippet.uid]){
-        //Then remove the snipper
-        delete copiedObj[snippet.uid]
-    }else{
-        //Add the snippet
-        const {uid, ...snippetSansUid} = snippet
-        copiedObj[snippet.uid] = snippetSansUid
+    selectAllFriends = () => {
+        this.setState({allFriends: !this.state.allFriends, selectedSnippets: {}});
     }
-    this.setState({selectedSnippets: copiedObj});
+
+    toggleSelection = (snippet) => {
+        const copiedObj = {...this.state.selectedSnippets}
+        if (copiedObj[snippet.uid]){
+            //Then remove the snipper
+            delete copiedObj[snippet.uid]
+        }else{
+            //Add the snippet
+            const {uid, ...snippetSansUid} = snippet
+            copiedObj[snippet.uid] = snippetSansUid
+        }
+        this.setState({selectedSnippets: copiedObj});
+        if (this.mode == "friends") this.setState({allFriends: false});
     }
 }

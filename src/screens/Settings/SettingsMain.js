@@ -83,9 +83,9 @@ export default class SettingsMain extends React.Component {
           </View>
 
           <Text style = {{textAlign: "center"}}>
-            Powered by Passion
+            Biteup vx.x
             {"\n"}
-            vx.x
+            Powered by Passion
           </Text>
 
         </ScrollView>
