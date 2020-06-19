@@ -12,7 +12,8 @@
     "iosProdDebug": "sh ios/runProdDebug.sh",
     "startServer": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "updateLicenses": "sh src/constants/updateLicenses.sh"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.7.1",
@@ -65,6 +66,7 @@
     "eslint": "^6.7.2",
     "jest": "^24.9.0",
     "metro-react-native-babel-preset": "^0.57.0",
+    "npm-license-crawler": "^0.2.1",
     "react-native-clean-project": "^3.3.0",
     "react-test-renderer": "16.9.0"
   },

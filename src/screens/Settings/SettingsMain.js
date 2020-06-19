@@ -74,6 +74,12 @@ export default class SettingsMain extends React.Component {
               onPress = {() => this.props.navigation.navigate("ContactSupportPage")}
             />   
             <SettingSectionButton 
+              title = "Legal"
+              icon = {<MaterialIcon name="briefcase-outline" />}
+              color = {theme.colors.grey0}  
+              onPress = {() => this.props.navigation.navigate("LegalNotices")}
+            />   
+            <SettingSectionButton 
               title = "Logout"
               icon = {<MaterialIcon name="logout" />}
               color = "red" 

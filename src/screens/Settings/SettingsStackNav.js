@@ -5,6 +5,7 @@ import SettingsMain from './SettingsMain';
 import AccountManagementScreen from './AccountManagementScreen'
 import ContactSupportPage from './ContactSupportPage'
 import NotificationSettings from './NotificationSettings'
+import LegalNotices from './LegalNotices'
 import Header from 'reusables/Header'
 
 
@@ -14,7 +15,8 @@ const Navigator = createStackNavigator(
     EditProfileScreen,
     AccountManagementScreen,
     ContactSupportPage,
-    NotificationSettings
+    NotificationSettings,
+    LegalNotices
   },
   {
     initialRouteName: 'SettingsMain',
