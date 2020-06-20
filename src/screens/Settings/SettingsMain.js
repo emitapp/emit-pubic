@@ -2,17 +2,20 @@ import auth from '@react-native-firebase/auth';
 import React from 'react';
 import { View, ScrollView, RefreshControl, StyleSheet } from 'react-native';
 import {Button, Text, ThemeConsumer} from 'react-native-elements'
-import { logError } from 'utils/helpers';
+import { logError, getFullVersionInfo } from 'utils/helpers';
 import UserProfileSummary from 'reusables/UserProfileSummary'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import ErrorMessageText from 'reusables/ErrorMessageText';
 
-
 export default class SettingsMain extends React.Component {
 
-    state = {refreshing: false, verificationEmailError: ""}
+    constructor(props){
+      super(props)
+      this.state = {refreshing: false, verificationEmailError: "", version: "calculating..."}
+      getFullVersionInfo().then(version => this.setState({version}))
+    }
 
     render() {
       const { currentUser } = auth()
@@ -88,8 +91,8 @@ export default class SettingsMain extends React.Component {
             />
           </View>
 
-          <Text style = {{textAlign: "center"}}>
-            Biteup vx.x
+          <Text style = {{textAlign: "center", fontSize: 12, marginBottom: 4}}>
+            {this.state.version}
             {"\n"}
             Powered by Passion
           </Text>

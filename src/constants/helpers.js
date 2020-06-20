@@ -75,3 +75,48 @@ export const ASYNC_TOKEN_KEY = "stored_FCM_token";
 
 //This is the key that's used to cache whether or not the user has properly set up their account
 export const ASYNC_SETUP_KEY = "accountSetUp";
+
+
+import DeviceInfo from 'react-native-device-info';
+import {Platform} from 'react-native'
+import codePush from 'react-native-code-push'
+/**
+ * Gets the full versioning info of the app
+ */
+export const getFullVersionInfo = async() => {
+  try{
+    let versionInfo = DeviceInfo.getApplicationName()
+    versionInfo += ` ${DeviceInfo.getSystemName()} v${DeviceInfo.getVersion()} (Build No.${DeviceInfo.getBuildNumber()})`
+    const codePushPackageInfo = await codePush.getUpdateMetadata()
+    if (codePushPackageInfo) versionInfo += ` Codepush Package ${codePushPackageInfo.label}`
+    else versionInfo += ` Using Base Binary`
+    return versionInfo
+  }catch(err){
+    logError(err)
+    return "<Error Getting Versioning Info>"
+  }
+}
+
+/**
+ * Gets the full hardware info of the device
+ */
+export const getFullHardwareInfo = async() => {
+  try{
+    let hardwareInfo = ""
+    hardwareInfo += `Manufacturer: ${await DeviceInfo.getManufacturer()}\n`
+    hardwareInfo += `Model: ${DeviceInfo.getModel() || "unknown"}\n`
+    hardwareInfo += `Device: ${DeviceInfo.getBrand()} ${DeviceInfo.getDeviceId()} (${DeviceInfo.getDeviceType()})\n`
+    if (Platform.OS === "android"){
+      hardwareInfo += `Name: ${await DeviceInfo.getDevice()}\n`
+      hardwareInfo += `Product: ${await DeviceInfo.getProduct()}\n`
+      hardwareInfo += `API: ${await DeviceInfo.getApiLevel()}\n`
+      hardwareInfo += `Hardware name (from kernel): ${await DeviceInfo.getHardware()}\n`
+    }
+    hardwareInfo += `Ariplane mode: ${await DeviceInfo.isAirplaneMode() ? "on" : "off"}\n`
+    hardwareInfo += `System-wide location services enabled: ${await DeviceInfo.isLocationEnabled() ? "yes" : "no"}`
+    return hardwareInfo;
+  }catch(err){
+    logError(err)
+    return "<Error Getting Hardware Info>"
+  }
+}

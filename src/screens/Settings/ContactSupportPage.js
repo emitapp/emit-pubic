@@ -1,10 +1,13 @@
 
+import auth from '@react-native-firebase/auth'
 import React from 'react'
 import { Clipboard, Linking, ScrollView, View } from 'react-native'
 import { Button, Divider, Text } from 'react-native-elements'
 import Snackbar from 'react-native-snackbar'
 import config from "react-native-ultimate-config"
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { getFullHardwareInfo, getFullVersionInfo, logError } from 'utils/helpers'
+import ErrorMessage from 'reusables/ErrorMessageText'
 
 export default class ContactSupportPage extends React.Component {
 
@@ -13,6 +16,8 @@ export default class ContactSupportPage extends React.Component {
         title: "Contact or Support Us",    
     };
   };
+
+  state = {mailError: null}
 
   render() {
     return (
@@ -49,9 +54,10 @@ export default class ContactSupportPage extends React.Component {
           </Text>
           or use the button below.
         </Text>
+        <ErrorMessage message = {this.state.mailError} />
         <Button
           title = "Email Us"
-          onPress={() => Linking.openURL(`mailto:${config.PROJECT_CONTACT_EMAIL}`)}
+          onPress={this.composeMail}
           icon = {<Icon name = "envelope-open-text" color = "white" size={24} style = {{marginRight: 8}}/>}
         />
 
@@ -87,5 +93,19 @@ export default class ContactSupportPage extends React.Component {
 
       </ScrollView>
     )
+  }
+
+  composeMail = async () => {
+    this.setState({mailError: null})
+    try{
+      let body = `\n\n\n\n\nPlease don't delete the section below\n`
+      body += "-----------\n"
+      body += `User ID: ${auth().currentUser.uid}\n`
+      body += `${await getFullVersionInfo()}\n\n${await getFullHardwareInfo()}`
+      Linking.openURL(`mailto:${config.PROJECT_CONTACT_EMAIL}?body=${body}`)
+    }catch(err){
+      this.setState({mailError: err.message})
+      logError(err)
+    }
   }
 }

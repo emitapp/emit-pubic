@@ -109,6 +109,12 @@ export default
         "licenseUrl": "https://github.com/Microsoft/react-native-code-push/raw/master/LICENSE.md",
         "parents": "biteup"
     },
+    "react-native-device-info@5.6.1": {
+        "licenses": "MIT",
+        "repository": "https://github.com/react-native-community/react-native-device-info",
+        "licenseUrl": "https://github.com/react-native-community/react-native-device-info/raw/master/LICENSE",
+        "parents": "biteup"
+    },
     "react-native-elements@1.2.7": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-elements/react-native-elements",
