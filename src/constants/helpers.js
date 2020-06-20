@@ -109,10 +109,12 @@ export const getFullHardwareInfo = async() => {
     if (Platform.OS === "android"){
       hardwareInfo += `Name: ${await DeviceInfo.getDevice()}\n`
       hardwareInfo += `Product: ${await DeviceInfo.getProduct()}\n`
-      hardwareInfo += `API: ${await DeviceInfo.getApiLevel()}\n`
+      hardwareInfo += `Android API: ${await DeviceInfo.getApiLevel()}\n`
       hardwareInfo += `Hardware name (from kernel): ${await DeviceInfo.getHardware()}\n`
+    }else{
+      hardwareInfo += `iOS: ${Platform.Version}\n`
     }
-    hardwareInfo += `Ariplane mode: ${await DeviceInfo.isAirplaneMode() ? "on" : "off"}\n`
+    hardwareInfo += `Airplane mode: ${await DeviceInfo.isAirplaneMode() ? "on" : "off"}\n`
     hardwareInfo += `System-wide location services enabled: ${await DeviceInfo.isLocationEnabled() ? "yes" : "no"}`
     return hardwareInfo;
   }catch(err){
