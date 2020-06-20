@@ -1,0 +1,3 @@
+<resources>
+    <string moduleConfig="true" name="CodePushDeploymentKey">@string/CODEPUSH_ANDROID_STAGE_KEY</string>
+</resources>

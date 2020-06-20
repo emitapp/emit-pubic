@@ -8,10 +8,12 @@ import {name as appName} from './app.json';
 import 'react-native-gesture-handler' //For react-navigation
 import messaging from '@react-native-firebase/messaging';
 import { handleFCMMessage } from 'utils/fcmNotificationHandlers';
+import codePush from "react-native-code-push";
+
 
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
     await handleFCMMessage(remoteMessage)
 });
 
-AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent(appName, () => codePush(App));
 

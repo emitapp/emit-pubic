@@ -103,6 +103,12 @@ export default
         "licenseUrl": "https://github.com/react-native-community/react-native-camera/raw/master/LICENSE",
         "parents": "biteup"
     },
+    "react-native-code-push@6.2.1": {
+        "licenses": "MIT",
+        "repository": "https://github.com/Microsoft/react-native-code-push",
+        "licenseUrl": "https://github.com/Microsoft/react-native-code-push/raw/master/LICENSE.md",
+        "parents": "biteup"
+    },
     "react-native-elements@1.2.7": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-elements/react-native-elements",
