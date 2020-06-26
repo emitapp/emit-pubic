@@ -90,7 +90,6 @@ export default class NewBroadcastFormRecepients extends React.Component {
                 type = "static"
                 queryValidator = {(query) => true}
                 queryTypes = {this.queryTypes}
-                errorHandler = {this.scrollErrorHandler}
                 renderItem = {this.itemRenderer}
                 dbref = {this.dbRef}
                 />
@@ -118,11 +117,6 @@ export default class NewBroadcastFormRecepients extends React.Component {
             this.props.navigation.state.params.data.recepientGroups = this.state.selectedSnippets
         }
         this.props.navigation.goBack()
-    }
-
-    scrollErrorHandler = (err) => {
-        logError(err)
-        this.setState({errorMessage: err.message})
     }
 
     itemRenderer = ({ item }) => {

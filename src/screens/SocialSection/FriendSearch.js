@@ -37,19 +37,12 @@ export default class FriendSearch extends React.Component {
           type = "static"
           queryValidator = {(query) => true}
           queryTypes = {[{name: "Display Name", value: "displayNameQuery"}, {name: "Username", value: "usernameQuery"}]}
-          errorHandler = {this.scrollErrorHandler}
           renderItem = {this.itemRenderer}
           dbref = {database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`)}
         />
 
       </View>
     )
-  }
-
-
-  scrollErrorHandler = (err) => {
-    logError(err)
-    this.setState({errorMessage: err.message})
   }
 
   itemRenderer = ({ item }) => {

@@ -97,8 +97,6 @@ export default class BroadcastViewer extends React.Component {
 
         {this.state.showConfirmed &&
           <DynamicInfiniteScroll
-            
-            errorHandler = {this.scrollErrorHandler}
             renderItem = {this.itemRenderer}
             generation = {0}
             dbref = {
@@ -158,12 +156,7 @@ export default class BroadcastViewer extends React.Component {
     }
     this.setState({isModalVisible: false})
   }
-
-  scrollErrorHandler = (err) => {
-    logError(err)
-    this.setState({errorMessage: err.message})
-  }
-
+  
   itemRenderer = ({ item }) => {
     return (
       <UserSnippetListElement 

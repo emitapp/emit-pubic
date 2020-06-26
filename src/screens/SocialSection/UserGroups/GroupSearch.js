@@ -36,7 +36,6 @@ export default class GroupSearch extends React.Component {
           type = "dynamic"
           queryValidator = {(query) => true}
           queryTypes = {[{name: "Name", value: "name"}]}
-          errorHandler = {this.scrollErrorHandler}
           renderItem = {this.itemRenderer}
           dbref = {database().ref(`/userGroupMemberships/${userUid}`)}
         />
@@ -50,12 +49,6 @@ export default class GroupSearch extends React.Component {
 
       </View>
     )
-  }
-
-
-  scrollErrorHandler = (err) => {
-    logError(err)
-    this.setState({errorMessage: err.message})
   }
 
   itemRenderer = ({ item }) => {

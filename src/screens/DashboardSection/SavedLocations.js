@@ -37,7 +37,6 @@ export default class SavedLocations extends React.Component {
               </Text>
               <ErrorMessageText message={this.state.errorMessage} />
               <DynamicInfiniteScroll
-                errorHandler={this.scrollErrorHandler}
                 renderItem={({ item }) => this.itemRenderer(item)}
                 generation={0}
                 dbref={database().ref(`/savedLocations/${auth().currentUser.uid}`)}
@@ -78,11 +77,6 @@ export default class SavedLocations extends React.Component {
         logError(err)
       }
     }
-  }
-
-  scrollErrorHandler = (err) => {
-    logError(err)
-    this.setState({ errorMessage: err.message })
   }
 
   itemRenderer = (item) => {

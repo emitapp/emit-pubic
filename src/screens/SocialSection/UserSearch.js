@@ -34,19 +34,12 @@ export default class UserSearch extends React.Component {
           type = "static"
           queryValidator = {(query) => query.length > 0}
           queryTypes = {[{name: "Display Name", value: "displayNameQuery"}, {name: "Username", value: "usernameQuery"}]}
-          errorHandler = {this.scrollErrorHandler}
           renderItem = {this.itemRenderer}
           dbref = {database().ref("/userSnippets")}
         />
 
       </View>
     )
-  }
-
-
-  scrollErrorHandler = (err) => {
-    logError(err)
-    this.setState({errorMessage: err.message})
   }
 
   itemRenderer = ({ item }) => {

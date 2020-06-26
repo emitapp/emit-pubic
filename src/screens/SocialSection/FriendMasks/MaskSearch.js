@@ -36,7 +36,6 @@ export default class FriendMaskSearch extends React.Component {
           type = "dynamic"
           queryValidator = {(query) => true}
           queryTypes = {[{name: "Name", value: "name"}]}
-          errorHandler = {this.scrollErrorHandler}
           renderItem = {this.itemRenderer}
           dbref = {database().ref(`/userFriendGroupings/${userUid}/custom/snippets`)}
         />
@@ -52,11 +51,6 @@ export default class FriendMaskSearch extends React.Component {
     )
   }
 
-
-  scrollErrorHandler = (err) => {
-    logError(err)
-    this.setState({errorMessage: err.message})
-  }
 
   itemRenderer = ({ item }) => {
     return (

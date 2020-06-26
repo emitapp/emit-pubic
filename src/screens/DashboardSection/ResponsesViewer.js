@@ -88,7 +88,6 @@ export default class ResponsesViewer extends React.Component {
         />
 
         <DynamicInfiniteScroll
-          errorHandler = {this.scrollErrorHandler}
           renderItem = {this.itemRenderer}
           generation = {this.state.searchGeneration}
           dbref = {
@@ -126,12 +125,7 @@ export default class ResponsesViewer extends React.Component {
         return responderStatuses.IGNORED
     }
   }
-
-  scrollErrorHandler = (err) => {
-    logError(err)
-    this.setState({errorMessage: err.message})
-  }
-
+  
   itemRenderer = ({ item }) => {
     return (
       <View>

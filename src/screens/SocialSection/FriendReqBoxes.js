@@ -50,7 +50,6 @@ export default class UserSearch extends React.Component {
 
 
             <DynamicInfiniteScroll
-              errorHandler = {this.scrollErrorHandler}
               renderItem = {this.itemRenderer}
               generation = {this.state.searchGeneration}
               dbref = {this.getRef().orderByChild("timestamp")}
@@ -63,12 +62,6 @@ export default class UserSearch extends React.Component {
             />
       </View>
     )
-  }
-
-
-  scrollErrorHandler = (err) => {
-    logError(err)
-    this.setState({errorMessage: err.message})
   }
 
   itemRenderer = ({ item }) => {

@@ -1,9 +1,10 @@
 import React from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, View } from 'react-native';
 import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
 import EmptyState from 'reusables/EmptyState'
 import {Divider} from 'react-native-elements'
-
+import ErrorMessageText from 'reusables/ErrorMessageText';
+import {logError} from 'utils/helpers'
 
 /**
  * Use this class if you want to impliment an infinite scroll
@@ -14,8 +15,6 @@ import {Divider} from 'react-native-elements'
 
 // Required props:
 // dbref: the databse ref to use
-// errorHandler: what the component should do upon facing SDK errors 
-//         (not timeout erros tho, those are handled by the compenent)
 // renderItem: same as FLatlist RenderItem
 
 //Optinal props
@@ -24,6 +23,7 @@ import {Divider} from 'react-native-elements'
 //generation: used to indicate to the scrollview that it shouldd reset
 //emptyStateComponent: Will be rendered when the list is empty 
 // chunkSize: Size of chunks to get from firebase rtdb (default 10)
+// errorHandler: what the component should do upon facing SDK errors (not timeout erros tho, those are handled by the compenent)
 
 //Also note that this compenent doesn't store lots of the variables it uses
 //in the state because this.setState() wouldn't update them immediately
@@ -46,8 +46,8 @@ export default class DymanicInfiniteScroll extends React.Component {
         this.gettingFirstLoad = true; //For when it's loading for the first time
         this.gettingMoreData = false; //For when it's getting more info
         this.currentChunkSize = this.props.chunkSize;
-
         this.lastUsedRef;
+        this.errorMessage = "";
     }
 
     componentDidMount = () => {
@@ -75,6 +75,7 @@ export default class DymanicInfiniteScroll extends React.Component {
         this.listData = [];
         this.timedOut = false;
         this.currentChunkSize = this.props.chunkSize;
+        this.errorMessage = "";
         this.requestRerender();
         this.setListener();
         //console.log("Dynamic Scoller [re]initialized")
@@ -130,7 +131,14 @@ export default class DymanicInfiniteScroll extends React.Component {
             this.props.timedOut = true;
             this.requestRerender();
         } else {
-            this.props.errorHandler(error)
+            if (this.props.errorHandler){
+                this.props.errorHandler(error)
+            } 
+            else{
+                logError(error)
+                this.errorMessage = error.message;
+                this.requestRerender()
+            }
         }
     }
 
@@ -160,25 +168,37 @@ export default class DymanicInfiniteScroll extends React.Component {
 
     render() {
         if (this.gettingFirstLoad) {
-            return (
-                <TimeoutLoadingComponent
-                    hasTimedOut={false}
-                    retryFunction={() => null}
-                />
-            )
+            if (this.errorMessage){
+                return (
+                    <View style = {{...this.props.style, justifyContent: "center"}}>
+                        <ErrorMessageText message = {this.errorMessage} />
+                    </View>
+                )
+            }else{
+                return (
+                    <TimeoutLoadingComponent
+                        hasTimedOut={false}
+                        retryFunction={() => null}
+                    />
+                )
+            }
         } else {
+            const {style, ...otherProps} = this.props
             return (
-                <FlatList
-                    data={this.listData}
-                    keyExtractor={item => item.uid}
-                    ListFooterComponent={this.renderFooter}
-                    onEndReached={this.retrieveMoreData}
-                    onEndReachedThreshold={0.1}
-                    refreshing={this.refreshing}
-                    contentContainerStyle = {{flex: 1}}
-                    ListEmptyComponent = {this.renderEmptyState}
-                    {...this.props}
-                />
+                <View style = {style}>
+                    <ErrorMessageText message = {this.errorMessage} />
+                    <FlatList
+                        data={this.listData}
+                        keyExtractor={item => item.uid}
+                        ListFooterComponent={this.renderFooter}
+                        onEndReached={this.retrieveMoreData}
+                        onEndReachedThreshold={0.1}
+                        refreshing={this.refreshing}
+                        contentContainerStyle = {{flex: 1}}
+                        ListEmptyComponent = {this.renderEmptyState}
+                        {...otherProps}
+                    />
+                </View>
             )
         }
     }

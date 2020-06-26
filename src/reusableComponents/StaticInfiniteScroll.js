@@ -1,10 +1,12 @@
 import React from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
 import {Text} from 'react-native-elements'
 import EmptyState from 'reusables/EmptyState'
 import { Divider } from "react-native-elements"
+import ErrorMessageText from 'reusables/ErrorMessageText';
+import {logError} from 'utils/helpers'
 
 
 /**
@@ -17,8 +19,6 @@ import { Divider } from "react-native-elements"
 
 // Required props:
 // dbref: the databse ref to use
-// errorHandler: what the component should do upon facing SDK errors 
-//         (not timeout erros tho, those are handled by the compenent)
 // orderBy: the name of the key you're ordering by.
 // renderItem: same as FLatlist RenderItem
 
@@ -27,6 +27,7 @@ import { Divider } from "react-native-elements"
 //endingPoint: the value to be used for .endat in both retrieveInitialChunk and retrieveMore
 //emptyStateComponent: Will be rendered when the list is empty 
 // chunkSize: Size of chunks to get from firebase rtdb  (default 10)
+// errorHandler: what the component should do upon facing SDK errors (not timeout erros tho, those are handled by the compenent)
 
 // generation: used to indicate to the scrollview that it shoudl reset
 //Generation is used to prevent api calls that were called for previous
@@ -56,6 +57,7 @@ export default class StaticInfiniteScroll extends React.Component {
         this.isLoading = true; //For when it's loading for the first time
         this.refreshing = false; //For when it's getting more info
         this.timedOut = false;
+        this.errorMessage = "";
     }
 
     componentDidMount = () => {
@@ -78,6 +80,7 @@ export default class StaticInfiniteScroll extends React.Component {
         this.lastItemProperty = null;
         this.stopSearching = false;
         this.timedOut = false;
+        this.errorMessage = "";
         this.requestRerender();
         this.retrieveInitialChunk(this.props.generation);
         //console.log("Scoller [re]initialized")
@@ -180,7 +183,14 @@ export default class StaticInfiniteScroll extends React.Component {
             this.timedOut = true;
             this.requestRerender();
         } else {
-            this.props.errorHandler(error)
+            if (this.props.errorHandler){
+                this.props.errorHandler(error)
+            } 
+            else{
+                logError(error)
+                this.errorMessage = error.message;
+                this.requestRerender()
+            }
         }
     }
 
@@ -220,27 +230,39 @@ export default class StaticInfiniteScroll extends React.Component {
 
     render() {
         if (this.isLoading) {
-            return (
-                <TimeoutLoadingComponent
-                    hasTimedOut={this.timedOut}
-                    retryFunction={() => {
-                        this.timedOut = false;
-                        this.retrieveInitialChunk(this.props.generation)
-                    }}
-                />
-            )
+            if (this.errorMessage){
+                return (
+                    <View style = {{...this.props.style, justifyContent: "center"}}>
+                        <ErrorMessageText message = {this.errorMessage} />
+                    </View>
+                )
+            }else{
+                return (
+                    <TimeoutLoadingComponent
+                        hasTimedOut={this.timedOut}
+                        retryFunction={() => {
+                            this.timedOut = false;
+                            this.retrieveInitialChunk(this.props.generation)
+                        }}
+                    />
+                )
+            }
         } else {
+            const {style, ...otherProps} = this.props
             return (
-                <FlatList
-                    data={this.listData}
-                    keyExtractor={item => item.uid}
-                    ListFooterComponent={this.renderFooter}
-                    onEndReached={() => this.retrieveMore(this.props.generation)}
-                    onEndReachedThreshold={0.1}
-                    refreshing={this.refreshing}
-                    ListEmptyComponent = {this.renderEmptyState}
-                    {...this.props}
-                />
+                <View style = {style}>
+                    <ErrorMessageText message = {this.errorMessage} />
+                    <FlatList
+                        data={this.listData}
+                        keyExtractor={item => item.uid}
+                        ListFooterComponent={this.renderFooter}
+                        onEndReached={() => this.retrieveMore(this.props.generation)}
+                        onEndReachedThreshold={0.1}
+                        refreshing={this.refreshing}
+                        ListEmptyComponent = {this.renderEmptyState}
+                        {...otherProps}
+                    />
+                </View>
             )
         }
     }

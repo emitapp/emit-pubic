@@ -136,7 +136,6 @@ export default class NewMaskScreen extends React.Component {
           type = "dynamic"
           queryValidator = {(query) => true}
           queryTypes = {[{name: "Display Name", value: "displayNameQuery"}, {name: "Username", value: "usernameQuery"}]}
-          errorHandler = {this.scrollErrorHandler}
           renderItem = {this.itemRenderer}
           dbref = {database().ref(`/userFriendGroupings/${userUid}/custom/details/${this.maskSnippet.uid}/memberSnippets`)}
         />
@@ -217,11 +216,6 @@ export default class NewMaskScreen extends React.Component {
       if (err.message != 'timeout') logError(err)
       this.setState({errorMessage: err.message, isModalVisible: false})
     }
-  }
-
-  scrollErrorHandler = (err) => {
-    logError(err)
-    this.setState({errorMessage: err.message})
   }
 
   itemRenderer = ({ item }) => {

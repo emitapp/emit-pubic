@@ -28,7 +28,6 @@ export default class Feed extends React.Component {
 
 
           <DynamicInfiniteScroll
-            errorHandler = {this.scrollErrorHandler}
             renderItem = {this.itemRenderer}
             generation = {0}
             dbref = {database().ref(`/feeds/${auth().currentUser.uid}`)}
@@ -41,12 +40,6 @@ export default class Feed extends React.Component {
           />
       </View>
     )
-  }
-
-
-  scrollErrorHandler = (err) => {
-    logError(err)
-    this.setState({errorMessage: err.message})
   }
 
   itemRenderer = ({ item }) => {

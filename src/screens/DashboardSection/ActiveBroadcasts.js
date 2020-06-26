@@ -25,7 +25,6 @@ export default class ActiveBroadcasts extends React.Component {
 
 
           <DynamicInfiniteScroll
-            errorHandler = {this.scrollErrorHandler}
             renderItem = {this.itemRenderer}
             generation = {0}
             dbref = {database().ref(`/activeBroadcasts/${auth().currentUser.uid}/public`)}
@@ -45,12 +44,6 @@ export default class ActiveBroadcasts extends React.Component {
           />
       </View>
     )
-  }
-
-
-  scrollErrorHandler = (err) => {
-    logError(err)
-    this.setState({errorMessage: err.message})
   }
 
   itemRenderer = ({ item }) => {
