@@ -13,6 +13,7 @@ import {ScrollingHeader} from "reusables/Header"
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import Snackbar from 'react-native-snackbar';
 import ErrorMessageText from 'reusables/ErrorMessageText';
+import {MAX_MASK_NAME_LENGTH} from 'utils/serverValues'
 
 export default class NewMaskScreen extends React.Component {
 
@@ -52,6 +53,7 @@ export default class NewMaskScreen extends React.Component {
             placeholder = "Best mask name ever"
             onChangeText={maskName => this.setState({ maskName })}
             value={this.state.maskName}
+            errorMessage = {this.state.maskName.length > MAX_MASK_NAME_LENGTH ? "Too long" : undefined}
           />}
               
 
@@ -100,7 +102,7 @@ export default class NewMaskScreen extends React.Component {
         return;
       }
   
-      if (isOnlyWhitespace(maskName)){
+      if (isOnlyWhitespace(maskName) || maskName.length > MAX_MASK_NAME_LENGTH){
         Snackbar.show({
           text: "Invalid name", 
           duration: Snackbar.LENGTH_SHORT

@@ -10,14 +10,21 @@ import { Button, Input, Text, ThemeConsumer } from 'react-native-elements';
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import { MinorActionButton } from 'reusables/ReusableButtons';
 import S from "styling";
-import { ASYNC_SETUP_KEY, isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
-import { validUsername } from 'utils/serverValues';
+import { ASYNC_SETUP_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
+import { validUsername, validDisplayName, MAX_USERNAME_LENGTH, MAX_DISPLAY_NAME_LENGTH } from 'utils/serverValues';
 import ErrorMessageText from 'reusables/ErrorMessageText';
 
 
 export default class AccountSetUp extends React.Component {
 
-    state = { displayName: '', username: "", errorMessage: null, isModalVisible: false }  
+    state = { 
+      displayName: '', 
+      displayNameError: null,
+      username: "", 
+      usernameError: null,
+      errorMessage: null, 
+      isModalVisible: false 
+    }  
 
     render() {
       return (
@@ -49,25 +56,38 @@ export default class AccountSetUp extends React.Component {
             <ErrorMessageText message = {this.state.errorMessage} />
 
             <Text style = {{marginBottom: 8}}>
-              The name that people will see associated with your account. It can be whatever you want, and you can always change it later
+              The name that people will see associated with your account. 
+              It can be whatever you want, and you can always change it later
             </Text>
             <Input
               label = "Display Name"
               autoCapitalize="none"
               placeholder="John Doe"
-              onChangeText={displayName => this.setState({ displayName })}
+              onChangeText={displayName => {
+                let displayNameError = null
+                if (displayName.length > MAX_DISPLAY_NAME_LENGTH) displayNameError = "Your display name is too long"
+                this.setState({ displayName, displayNameError })
+              }}
               value={this.state.displayName}
+              errorMessage = {this.state.displayNameError}
             />
 
             <Text style = {{marginBottom: 8}}>
-              You’re username must be unique, and you can’t change it. It must contain only A-Z, a-z, 0-9, underscores or hyphens.
+              You’re username must be unique, and you can’t change it. 
+              It must contain only A-Z, a-z, 0-9, underscores or hyphens.
             </Text>
             <Input
               label = "Username"
               autoCapitalize="none"
               placeholder="the_real_john"
-              onChangeText={username => this.setState({ username })}
+              onChangeText={username => {
+                let usernameError = null
+                if (username && !validUsername(username, false)) usernameError = "Your username can only have A-Z, a-z, 0-9, underscores or hyphens"
+                else if (username.length > MAX_USERNAME_LENGTH) usernameError = "Your username is too long"
+                this.setState({ username, usernameError })
+              }}
               value={this.state.username}
+              errorMessage = {this.state.usernameError}
             />
 
             <Button 
@@ -98,18 +118,16 @@ export default class AccountSetUp extends React.Component {
 
     finishUserSetUp = async () => {
       try{
-        this.setState({isModalVisible: true})
-        if (isOnlyWhitespace(this.state.displayName)){
-          this.setState({ errorMessage: "Empty Display Name!" })
-          this.setState({isModalVisible: false})
+        if (!validDisplayName(this.state.displayName)){
+          this.setState({ errorMessage: "Invalid display name! Either too short or too long" })
           return;
         }
-        if (isOnlyWhitespace(this.state.username) || !validUsername(this.state.username)){
-          this.setState({ errorMessage: "Usernames can only have A-Z, a-z, 0-9 or _ or -" })
-          this.setState({isModalVisible: false})
+        if (!validUsername(this.state.username)){
+          this.setState({ errorMessage: "Invalid username! It's either too long, too short or contains invalid characters" })
           return;
         }
 
+        this.setState({isModalVisible: true})
         const usernameRef = database().ref(`/usernames/${this.state.username.normalize("NFKC").toLowerCase()}`);
         const currentUsernameOwnerSnap = await timedPromise(usernameRef.once('value'), LONG_TIMEOUT)
 

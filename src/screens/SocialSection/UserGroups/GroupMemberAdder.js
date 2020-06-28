@@ -11,8 +11,10 @@ import S from 'styling';
 import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import {Text, Input, CheckBox} from 'react-native-elements'
 import {ScrollingHeader} from "reusables/Header"
-import {returnStatuses} from 'utils/serverValues'
+import {returnStatuses, MAX_GROUP_NAME_LENGTH} from 'utils/serverValues'
 import ErrorMessageText from 'reusables/ErrorMessageText';
+import Snackbar from 'react-native-snackbar';
+
 
 export default class NewGroupScreen extends React.Component {
 
@@ -49,6 +51,7 @@ export default class NewGroupScreen extends React.Component {
             placeholder = "Best group name ever"
             onChangeText={groupName => this.setState({ groupName })}
             value={this.state.groupName}
+            errorMessage = {this.state.groupName.length > MAX_GROUP_NAME_LENGTH ? "Too long" : undefined}
           />}
         
         <Text style = {{fontWeight: "bold"}}>
@@ -85,15 +88,27 @@ export default class NewGroupScreen extends React.Component {
   }
 
   createOrEditGroup = async () => {
-    if (isOnlyWhitespace(this.state.groupName)){
-      console.log("No cigar, my friend")
+    if (isOnlyWhitespace(this.state.groupName) || this.state.groupName.length > MAX_GROUP_NAME_LENGTH){
+      Snackbar.show({
+        text: "Invalid name", 
+        duration: Snackbar.LENGTH_SHORT
+      });
       return;
     }
-    this.setState({isModalVisible: true})
+
     let selectedUserUids = {}
     for (const uid in this.state.selectedUsers) {
       selectedUserUids[uid] = true
     }
+    if (Object.keys(selectedUserUids).length == 0){
+      Snackbar.show({
+        text: "You haven't selected any users to add", 
+        duration: Snackbar.LENGTH_SHORT
+      });
+      return
+    }
+
+    this.setState({isModalVisible: true})
     try{
       let response = null
       if (!this.groupSnippet){

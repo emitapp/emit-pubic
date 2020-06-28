@@ -1,4 +1,4 @@
-//This file contains all the values that this cient app uses that mirror
+//This file contains all the values that this client app uses that mirror
 //values used on the server in either Cloud Functions or Security Rules
 
 export const returnStatuses = {
@@ -18,10 +18,19 @@ export const groupRanks = {
     ADMIN: "admin"
 }
 
-export const validUsername = (username) => {
-    const regexTest = RegExp(/^[a-z0-9_-]+$/)
+import { isOnlyWhitespace } from 'utils/helpers'
+export const validUsername = (username, considerLength = true) => {
+    const regexTest = RegExp(/^[a-z0-9_-]+$/) //This also takes care of strings that are just whitespace
     const normalizedUsername = username.normalize("NFKC").toLowerCase()
+    if (considerLength){
+        if (normalizedUsername.length > MAX_USERNAME_LENGTH) return false
+    }
     return regexTest.test(normalizedUsername)
+}
+
+export const validDisplayName = (displayName, considerLength = true) => {
+    if (!considerLength) return !isOnlyWhitespace(displayName)
+    return !isOnlyWhitespace(displayName) && displayName.length <= MAX_DISPLAY_NAME_LENGTH
 }
 
 export const isValidDBPath = (path) => {
@@ -34,6 +43,18 @@ export const isValidDBPath = (path) => {
     return valid
 }
 
-
 export const MIN_BROADCAST_WINDOW = 2 //2 minutes
 export const MAX_BROADCAST_WINDOW = 2879 //48 hours - 1 minute
+
+export const MAX_TWITTER_HANDLE_LENGTH = 15
+export const MAX_FACEBOOK_HANDLE_LENGTH = 100
+export const MAX_INSTAGRAM_HANDLE_LENGTH = 30
+export const MAX_SNAPCHAT_HANDLE_LENGTH = 30
+export const MAX_GITHUB_HANDLE_LENGTH = 39
+
+export const MAX_USERNAME_LENGTH = 30
+export const MAX_DISPLAY_NAME_LENGTH = 35
+export const MAX_LOCATION_NAME_LENGTH = 100
+export const MAX_BROADCAST_NOTE_LENGTH = 500
+export const MAX_GROUP_NAME_LENGTH = 40
+export const MAX_MASK_NAME_LENGTH = 40

@@ -14,7 +14,7 @@ import { isOnlyWhitespace, logError, timedPromise, LONG_TIMEOUT } from 'utils/he
 import { groupRanks } from 'utils/serverValues';
 import Snackbar from 'react-native-snackbar';
 import {ScrollingHeader} from "reusables/Header"
-import {returnStatuses} from 'utils/serverValues'
+import {returnStatuses, MAX_GROUP_NAME_LENGTH} from 'utils/serverValues'
 import ErrorMessageText from 'reusables/ErrorMessageText';
 
 export default class GroupScreen extends React.Component {
@@ -193,6 +193,7 @@ export default class GroupScreen extends React.Component {
                 autoCapitalize="none"
                 onChangeText={text => this.setState({ newGroupName: text })}
                 value={newGroupName}
+                errorMessage = {newGroupName.length > MAX_GROUP_NAME_LENGTH ? "Too long" : undefined}
               /> 
             </View>
             <Divider />
@@ -292,6 +293,11 @@ export default class GroupScreen extends React.Component {
     const {usersToBeRemoved, usersToBeDemoted, usersToBePromoted, newGroupName, groupName} = this.state
     if (isOnlyWhitespace(newGroupName)){
       this.setState({isModalVisible: false, errorMessage: "Your group name can't be just whitespace"})
+      return;
+    }
+
+    if (newGroupName.length > MAX_GROUP_NAME_LENGTH){
+      this.setState({isModalVisible: false, errorMessage: "Your group name is too long"})
       return;
     }
 

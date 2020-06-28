@@ -13,6 +13,7 @@ import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/he
 import {ScrollingHeader} from "reusables/Header"
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import ErrorMessageText from 'reusables/ErrorMessageText';
+import {MAX_MASK_NAME_LENGTH} from 'utils/serverValues'
 
 export default class NewMaskScreen extends React.Component {
 
@@ -126,6 +127,7 @@ export default class NewMaskScreen extends React.Component {
                 autoCapitalize="none"
                 onChangeText={text => this.setState({ newMaskName: text })}
                 value={newMaskName}
+                errorMessage = {newMaskName.length > MAX_MASK_NAME_LENGTH ? "Too long" : undefined}
               /> 
             </View>
             <Divider />
@@ -183,7 +185,7 @@ export default class NewMaskScreen extends React.Component {
   applyEdits = async () => {
     try{
       const {usersToBeRemoved, newMaskName} = this.state
-      if (isOnlyWhitespace(newMaskName)){
+      if (isOnlyWhitespace(newMaskName) || newMaskName.length > MAX_MASK_NAME_LENGTH){
         this.setState({errorMessage: "Invalid name"});
         return;
       }

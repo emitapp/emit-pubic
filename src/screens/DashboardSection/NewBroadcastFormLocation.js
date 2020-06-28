@@ -14,6 +14,7 @@ import { BannerButton, MinorActionButton } from 'reusables/ReusableButtons';
 import S from 'styling';
 import { isOnlyWhitespace, logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import * as recentLocFuncs from 'utils/RecentLocationsFunctions';
+import {MAX_LOCATION_NAME_LENGTH} from 'utils/serverValues'
 import uuid from 'uuid/v4';
 
 
@@ -23,7 +24,7 @@ export default class NewBroadcastFormLocation extends React.Component {
         super(props)
         let navigationParams = props.navigation.state.params
         this.state = {
-            locationName: navigationParams.location, 
+            locationName: navigationParams.location, //Default: ""
             locationPin: {longitude: null, latitude: null},
             locationCleared: false,
             recentLocations: [],
@@ -69,6 +70,7 @@ export default class NewBroadcastFormLocation extends React.Component {
                     placeholder = "That Super Awesome Place"
                     onChangeText={locationName => this.setState({ locationName })}
                     value={this.state.locationName}
+                    errorMessage = {this.state.locationName.length > MAX_LOCATION_NAME_LENGTH ? "Too long" : undefined}
                 />
                 { this.state.locationPin.latitude == null &&
                     <Button
@@ -129,6 +131,14 @@ export default class NewBroadcastFormLocation extends React.Component {
     }  
     
     confirmLocation = (addToRecents = true) => {
+        if (isOnlyWhitespace(this.state.locationName)){
+            Snackbar.show({text: 'Enter a name for your location.', duration: Snackbar.LENGTH_SHORT});
+            return
+        }
+        if (this.state.locationName.length > MAX_LOCATION_NAME_LENGTH){
+            Snackbar.show({text: 'Your location name is too long', duration: Snackbar.LENGTH_SHORT});
+            return
+        }
         this.props.navigation.state.params.location = this.state.locationName
         const locationToSave = {name: this.state.locationName, uid: uuid()} 
         if (this.state.locationPin.latitude != null){
@@ -144,7 +154,11 @@ export default class NewBroadcastFormLocation extends React.Component {
 
     saveLocation = async () => {
         if (isOnlyWhitespace(this.state.locationName)){
-            Snackbar.show({text: 'Enter a location for your name.', duration: Snackbar.LENGTH_SHORT});
+            Snackbar.show({text: 'Enter a name for your location.', duration: Snackbar.LENGTH_SHORT});
+            return
+        }
+        if (this.state.locationName.length > MAX_LOCATION_NAME_LENGTH){
+            Snackbar.show({text: 'Your location name is too long', duration: Snackbar.LENGTH_SHORT});
             return
         }
         this.setState({savingLocation: true, errorMessage: null})

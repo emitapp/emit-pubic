@@ -8,8 +8,16 @@ import { Button, Divider, Input, Text } from 'react-native-elements'
 import Snackbar from 'react-native-snackbar'
 import { SmallLoadingComponent, TimeoutLoadingComponent } from 'reusables/LoadingComponents'
 import ProfilePicChanger from 'reusables/ProfilePicChanger'
-import { isOnlyWhitespace, logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers'
-import { returnStatuses } from 'utils/serverValues'
+import { logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers'
+import { 
+  returnStatuses, 
+  MAX_FACEBOOK_HANDLE_LENGTH,
+  MAX_GITHUB_HANDLE_LENGTH, 
+  MAX_SNAPCHAT_HANDLE_LENGTH, 
+  MAX_TWITTER_HANDLE_LENGTH, 
+  MAX_INSTAGRAM_HANDLE_LENGTH,
+  validDisplayName
+} from 'utils/serverValues'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ErrorMessageText from 'reusables/ErrorMessageText';
 
@@ -80,7 +88,10 @@ export default class EditProfileScreen extends React.Component {
             placeholder="What's your new display name?"
             onChangeText={displayName => this.setState({displayName})}
             value={this.state.displayName}
-            errorMessage={this.state.displayNameError}
+            errorMessage={
+              validDisplayName(this.state.displayName) ? this.state.displayNameError : 
+              `Your display name is too long or is only whitespace`
+            }
           />
 
           {!this.state.changingDisplayName ? (
@@ -98,13 +109,16 @@ export default class EditProfileScreen extends React.Component {
 
           <ErrorMessageText message = {this.state.socialsError} />
 
- 
           <Input
             autoCapitalize="none"
             placeholder="Facebook name"
             onChangeText={facebook => this.setState({facebook})}
             value={this.state.facebook}
             leftIcon={<Icon name='facebook-square'size={24}/>}
+            errorMessage = {
+              (this.state.facebook && this.state.facebook.length > MAX_FACEBOOK_HANDLE_LENGTH) ? 
+              `Your Facebook name can't be more than ${MAX_FACEBOOK_HANDLE_LENGTH} characters` : undefined
+            }
           />
           <Input
             autoCapitalize="none"
@@ -112,6 +126,10 @@ export default class EditProfileScreen extends React.Component {
             onChangeText={instagram => this.setState({instagram})}
             value={this.state.instagram}
             leftIcon={<Icon name='instagram'size={24}/>}
+            errorMessage = {
+              (this.state.instagram && this.state.instagram.length > MAX_INSTAGRAM_HANDLE_LENGTH) ? 
+              `Instagram handles aren't more than ${MAX_INSTAGRAM_HANDLE_LENGTH} characters` : undefined
+            }
           />
           <Input
             autoCapitalize="none"
@@ -119,6 +137,10 @@ export default class EditProfileScreen extends React.Component {
             onChangeText={twitter => this.setState({twitter})}
             value={this.state.twitter}
             leftIcon={<Icon name='twitter'size={24}/>}
+            errorMessage = {
+              (this.state.twitter && this.state.twitter.length > MAX_TWITTER_HANDLE_LENGTH) ? 
+              `Twitter handles aren't more than ${MAX_TWITTER_HANDLE_LENGTH} characters` : undefined
+            }
           />
           <Input
             autoCapitalize="none"
@@ -126,6 +148,10 @@ export default class EditProfileScreen extends React.Component {
             onChangeText={github => this.setState({github})}
             value={this.state.github}
             leftIcon={<Icon name='github'size={24}/>}
+            errorMessage = {
+              (this.state.github && this.state.github.length > MAX_GITHUB_HANDLE_LENGTH) ? 
+              `Github usernames aren't more than ${MAX_GITHUB_HANDLE_LENGTH} characters` : undefined
+            }
           />
           <Input
             autoCapitalize="none"
@@ -133,6 +159,10 @@ export default class EditProfileScreen extends React.Component {
             onChangeText={snapchat => this.setState({snapchat})}
             value={this.state.snapchat}
             leftIcon={<Icon name='snapchat'size={24}/>}
+            errorMessage = {
+              (this.state.snapchat && this.state.snapchat.length > MAX_SNAPCHAT_HANDLE_LENGTH) ? 
+              `Snapchat usernames aren't more than ${MAX_SNAPCHAT_HANDLE_LENGTH} characters` : undefined
+            }
           />
 
           {!this.state.updatingSocials ? (
@@ -172,8 +202,7 @@ export default class EditProfileScreen extends React.Component {
   }
 
   updateDisplayName = async () => {
-    if (isOnlyWhitespace(this.state.displayName)){
-      this.setState({displayNameError: "Your display name is invalid!"})
+    if (!validDisplayName(this.state.displayName)){
       return
     }else{
       this.setState({displayNameError: ""})
@@ -187,6 +216,7 @@ export default class EditProfileScreen extends React.Component {
         Snackbar.show({text: 'Display name change successful', duration: Snackbar.LENGTH_SHORT});
       }else{
         logError(new Error("Problematic updateDisplayName fucntion response: " + response.data.status))
+        this.setState({displayNameError: "Something went wrong."})
       }
     }catch(err){
       if (err.code == "timeout"){
@@ -207,6 +237,14 @@ export default class EditProfileScreen extends React.Component {
   }
 
   updateSocials = async () => {
+    if (
+        (this.state.facebook && this.state.facebook.length > MAX_FACEBOOK_HANDLE_LENGTH) ||
+        (this.state.instagram && this.state.instagram.length > MAX_INSTAGRAM_HANDLE_LENGTH) ||
+        (this.state.twitter && this.state.twitter.length > MAX_TWITTER_HANDLE_LENGTH) ||
+        (this.state.github && this.state.github.length > MAX_GITHUB_HANDLE_LENGTH) || 
+        (this.state.snapchat && this.state.snapchat.length > MAX_SNAPCHAT_HANDLE_LENGTH)
+      ) return
+
     this.setState({updatingSocials: true, socialsError: null})
     try{
       const facebook = this.formatSocial(this.state.facebook)

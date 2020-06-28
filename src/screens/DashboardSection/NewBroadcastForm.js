@@ -12,7 +12,7 @@ import functions from '@react-native-firebase/functions';
 import auth from '@react-native-firebase/auth';
 import { logError, LONG_TIMEOUT, timedPromise, isOnlyWhitespace } from 'utils/helpers';
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
-import {returnStatuses} from 'utils/serverValues'
+import {returnStatuses, MAX_BROADCAST_NOTE_LENGTH} from 'utils/serverValues'
 import ErrorMessageText from 'reusables/ErrorMessageText';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -204,6 +204,7 @@ class NewBroadcastForm extends React.Component {
                     placeholder = "Enter any extra information you want in here"
                     value = {this.state.note}
                     onChangeText = {(note) => this.setState({note})}
+                    errorMessage = {this.state.note.length > MAX_BROADCAST_NOTE_LENGTH ? "Too long" : undefined}
                 />
                 </>
             }
@@ -247,6 +248,11 @@ class NewBroadcastForm extends React.Component {
 
             if (isOnlyWhitespace(this.state.passableBroadcastInfo.location)){
                 this.setState({errorMessage: "Invalid location name", isModalVisible: false})
+                return
+            }
+
+            if (this.state.note.length > MAX_BROADCAST_NOTE_LENGTH){
+                this.setState({errorMessage: "Broadcast note too long", isModalVisible: false})
                 return
             }
 
