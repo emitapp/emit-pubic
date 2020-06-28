@@ -38,6 +38,9 @@ export default class SettingsMain extends React.Component {
 
           <View style = {styles.section}>
             <Text>
+              {currentUser.email}
+            </Text>
+            <Text>
               Your email is {currentUser.emailVerified ? "" : "not"} verified
             </Text>
             <ErrorMessageText message = {this.state.verificationEmailError} />

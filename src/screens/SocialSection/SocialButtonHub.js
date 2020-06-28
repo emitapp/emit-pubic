@@ -30,6 +30,7 @@ export default class SocialButtonHub extends React.Component {
                 onBackdropPress = {() => this.setState({QRVisible: false})}
                 onRequestClose = {() => this.setState({QRVisible: false})}>
                 <View>
+                    <Text style = {{textAlign: "center", marginVertical: 8, fontWeight: "bold"}}>Your Bitecode</Text>
                     <UserBitecode color = {theme.colors.primary}/>
                     <MinorActionButton
                     title="Go Back"
@@ -68,7 +69,7 @@ export default class SocialButtonHub extends React.Component {
                 <SocialSectionButton color={theme.colors.secondary}
                     onPress={() => this.props.navigation.navigate('GroupSearch')}
                     icon = {<FontAwesomeIcon name="user-friends" size={32}/>}
-                    text = {<Text>Friend Groups</Text>}
+                    text = {<Text>Groups</Text>}
                 />
             </View>
 
