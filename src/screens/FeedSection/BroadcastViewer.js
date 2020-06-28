@@ -3,7 +3,7 @@ import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
 import { View, Linking, Platform } from 'react-native';
-import { Button, Divider, Text } from 'react-native-elements';
+import { Button, Divider, Text, Tooltip } from 'react-native-elements';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import { UserSnippetListElement } from 'reusables/ListElements';
 import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/LoadingComponents';
@@ -14,7 +14,7 @@ import CountdownComponent from 'reusables/CountdownComponent'
 import Icon from 'react-native-vector-icons/Entypo';
 import AutolinkText from 'reusables/AutolinkText'
 import ErrorMessageText from 'reusables/ErrorMessageText';
-
+import LockNotice from 'reusables/BroadcastLockNotice'
 
 export default class BroadcastViewer extends React.Component {
 
@@ -82,6 +82,9 @@ export default class BroadcastViewer extends React.Component {
         }
 
         <Divider style = {{marginVertical: 8}} />
+        {(broadcastData && broadcastData.locked) && 
+            <LockNotice message={"This broadcast has react the response limit it's creator set. It won't receive any more responses."} />
+        }
         {this.displayBroadcastAction()}
         <Divider style = {{marginVertical: 8}} />
 

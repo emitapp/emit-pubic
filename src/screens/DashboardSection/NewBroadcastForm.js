@@ -294,7 +294,7 @@ class NewBroadcastForm extends React.Component {
                 location: this.state.passableBroadcastInfo.location,
                 deathTimestamp: this.state.passableBroadcastInfo.broadcastTTL,
                 timeStampRelative: this.state.passableBroadcastInfo.TTLRelative,
-                maxResponders: this.state.maxResponders,
+                maxResponders:  this.state.maxResponders ? parseInt(this.state.maxResponders) : null,
                 allFriends: this.state.passableBroadcastInfo.allFriends,
                 friendRecepients,
                 maskRecepients,
@@ -316,9 +316,6 @@ class NewBroadcastForm extends React.Component {
         }catch(err){
             if (err.code == "timeout"){
                 this.setState({errorMessage: "Timeout!"})
-            }else if (err.code = "internal"){
-                this.setState({errorMessage: "Something went wrong! Please try again later"})
-                logError(err)
             }else{
                 this.setState({errorMessage: err.message})
                 logError(err)       

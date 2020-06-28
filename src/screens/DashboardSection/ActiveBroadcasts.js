@@ -10,6 +10,7 @@ import EmptyState from 'reusables/EmptyState'
 import {Badge, Text} from 'react-native-elements'
 import CountdownComponent from 'reusables/CountdownComponent'
 import ErrorMessageText from 'reusables/ErrorMessageText';
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 export default class ActiveBroadcasts extends React.Component {
 
@@ -61,6 +62,7 @@ export default class ActiveBroadcasts extends React.Component {
           <Text style = {{marginTop: 8}}>{item.totalConfirmations} confirmations</Text>
         </View>
        
+       {item.locked && <Icon name="lock" color="grey" size={24} style = {{marginHorizontal: 8}}/>}
        {item.pendingResponses != 0 && <Badge value={item.pendingResponses} status="error"/>}
       </TouchableOpacity>
     );

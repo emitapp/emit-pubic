@@ -2,8 +2,8 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
-import { View, Linking } from 'react-native';
-import { Button, ButtonGroup, Text } from 'react-native-elements';
+import { View, Linking, StyleSheet } from 'react-native';
+import { Button, ButtonGroup, Text, Tooltip } from 'react-native-elements';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CountdownComponent from 'reusables/CountdownComponent';
@@ -16,6 +16,7 @@ import { epochToDateString, logError, LONG_TIMEOUT, timedPromise } from 'utils/h
 import { responderStatuses, returnStatuses } from 'utils/serverValues';
 import AutolinkText from 'reusables/AutolinkText'
 import ErrorMessageText from 'reusables/ErrorMessageText';
+import LockNotice from 'reusables/BroadcastLockNotice'
 
 export default class ResponsesViewer extends React.Component {
 
@@ -74,8 +75,13 @@ export default class ResponsesViewer extends React.Component {
           </View>
           <CountdownComponent deadLine = {this.broadcastData.deathTimestamp}  renderer = {this.timeLeftRenderer} />
           <Text>Death Time: {epochToDateString(this.broadcastData.deathTimestamp)}</Text>
+
+          {this.broadcastData.locked && 
+            <LockNotice message={"This broadcast has react the response limit you set. It won't receive any more responses."} />
+          }
+
           {this.broadcastData.note != undefined &&
-            <AutolinkText style = {{fontStyle: "italic", marginTop: 8, fontSize: 18, color: "grey", marginLeft: 4, borderLeftColor: "grey", borderLeftWidth: 2, paddingLeft: 8}}>
+            <AutolinkText style = {styles.noteStyle}>
               {this.broadcastData.note}
             </AutolinkText>
           }
@@ -205,5 +211,17 @@ export default class ResponsesViewer extends React.Component {
     }
     Linking.openURL(url)
   }
-
 }
+
+const styles = StyleSheet.create({
+  noteStyle: {
+    fontStyle: "italic", 
+    marginTop: 8, 
+    fontSize: 18, 
+    color: "grey", 
+    marginLeft: 4, 
+    borderLeftColor: "grey", 
+    borderLeftWidth: 2, 
+    paddingLeft: 8
+  }
+})
