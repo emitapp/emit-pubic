@@ -70,7 +70,7 @@ export default class SavedLocations extends React.Component {
         MEDIUM_TIMEOUT
       )
     } catch (err) {
-      if (err.code == "timeout") {
+      if (err.name == "timeout") {
         this.setState({ errorMessage: "Timeout" })
       } else {
         this.setState({ errorMessage: "Something went wrong." })

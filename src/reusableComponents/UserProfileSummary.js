@@ -67,7 +67,7 @@ export default class Summary extends React.Component {
             }
         }catch(err){
             this.setState({ snippet: {displayName: "-", username: "-"} })
-            if (err.code != "timeout") logError(err)
+            if (err.name != "timeout") logError(err)
         }
     }
 

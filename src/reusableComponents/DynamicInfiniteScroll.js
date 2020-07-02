@@ -127,7 +127,7 @@ export default class DymanicInfiniteScroll extends React.Component {
     }
     
     onError = (error) => {
-        if (error.code == "timeout") {
+        if (error.name == "timeout") {
             this.props.timedOut = true;
             this.requestRerender();
         } else {

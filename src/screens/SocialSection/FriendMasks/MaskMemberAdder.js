@@ -13,7 +13,7 @@ import {ScrollingHeader} from "reusables/Header"
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import Snackbar from 'react-native-snackbar';
 import ErrorMessageText from 'reusables/ErrorMessageText';
-import {MAX_MASK_NAME_LENGTH} from 'utils/serverValues'
+import {MAX_MASK_NAME_LENGTH, cloudFunctionStatuses} from 'utils/serverValues'
 
 export default class NewMaskScreen extends React.Component {
 
@@ -117,15 +117,19 @@ export default class NewMaskScreen extends React.Component {
         selectedUserUids[uid] = true
       }    
       const cloudFunc = functions().httpsCallable('createOrEditMask')
-      await timedPromise(cloudFunc({
+      const response = await timedPromise(cloudFunc({
         maskUid: this.maskSnippet ? this.maskSnippet.uid : null,
         newName: this.state.maskName, 
         usersToAdd: selectedUserUids
       }), LONG_TIMEOUT);
 
-      this.props.navigation.goBack() 
+      if (response.data.staus != cloudFunctionStatuses.OK){
+        this.setState({errorMessage: response.data.message, isModalVisible: false})
+      }else{
+        this.props.navigation.goBack() 
+      }
     }catch(err){
-      if (err.message != 'timeout') logError(err)
+      if (err.name != 'timeout') logError(err)
       this.setState({errorMessage: err.message, isModalVisible: false})
     }
   }

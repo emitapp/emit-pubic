@@ -171,7 +171,7 @@ export default class NewBroadcastFormLocation extends React.Component {
             )
             Snackbar.show({text: 'Saved location', duration: Snackbar.LENGTH_SHORT});
         }catch(err){
-            if (err.code == "timeout"){
+            if (err.name == "timeout"){
                 Snackbar.show({text: 'Timeout', duration: Snackbar.LENGTH_SHORT});
             }else{
                 this.setState({errorMessage: "Something went wrong."})

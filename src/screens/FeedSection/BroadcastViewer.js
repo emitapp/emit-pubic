@@ -9,7 +9,7 @@ import { UserSnippetListElement } from 'reusables/ListElements';
 import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/LoadingComponents';
 import S from "styling";
 import {logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
-import { responderStatuses, returnStatuses } from 'utils/serverValues';
+import { responderStatuses, cloudFunctionStatuses } from 'utils/serverValues';
 import CountdownComponent from 'reusables/CountdownComponent'
 import Icon from 'react-native-vector-icons/Entypo';
 import AutolinkText from 'reusables/AutolinkText'
@@ -145,17 +145,15 @@ export default class BroadcastViewer extends React.Component {
         newStatuses
       }), LONG_TIMEOUT);
 
-      if (response.data.status === returnStatuses.OK){
+      if (response.data.status === cloudFunctionStatuses.OK){
         this.broadcastSnippet.status = newStatus
       }else{
-        logError(new Error("Problematic setBroadcastResponse function response: " + response.data.status))
+        this.setState({errorMessage: response.data.message})
+        logError(new Error("Problematic setBroadcastResponse function response: " + response.data.message))
       }
     }catch(err){
-      if (err.code == "timeout"){
-          this.setState({errorMessage: "Timeout!"})
-      }else{
-          logError(err)        
-      }
+      if (err.name != "timeout") logError(err)      
+      this.setState({errorMessage: err.message})
     }
     this.setState({isModalVisible: false})
   }

@@ -11,7 +11,7 @@ import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import { MinorActionButton } from 'reusables/ReusableButtons';
 import S from "styling";
 import { ASYNC_SETUP_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
-import { validUsername, validDisplayName, MAX_USERNAME_LENGTH, MAX_DISPLAY_NAME_LENGTH } from 'utils/serverValues';
+import { validUsername, validDisplayName, MAX_USERNAME_LENGTH, MAX_DISPLAY_NAME_LENGTH, cloudFunctionStatuses } from 'utils/serverValues';
 import ErrorMessageText from 'reusables/ErrorMessageText';
 
 
@@ -139,18 +139,21 @@ export default class AccountSetUp extends React.Component {
         }
 
         const cloudFunc = functions().httpsCallable('createSnippet');
-        await timedPromise(cloudFunc({
+        const response = await timedPromise(cloudFunc({
           displayName: this.state.displayName,
           username: this.state.username
         }), LONG_TIMEOUT)
 
-        await AsyncStorage.setItem(ASYNC_SETUP_KEY, "yes")
-        this.props.navigation.navigate('MainTabNav')
-
+        if (response.data.status == cloudFunctionStatuses.OK){
+          this.setState({ errorMessage: response.data.mess })
+        }else{
+          await AsyncStorage.setItem(ASYNC_SETUP_KEY, "yes")
+          this.props.navigation.navigate('MainTabNav')
+        }
       }catch(error){
         this.setState({ errorMessage: error.message })
         this.setState({isModalVisible: false})
-        if (error.message != "timeout") logError(error)
+        if (error.name != "timeout") logError(error)
       }
     }
 }

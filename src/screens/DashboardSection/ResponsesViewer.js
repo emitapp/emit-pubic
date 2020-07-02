@@ -13,7 +13,7 @@ import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import { BannerButton } from 'reusables/ReusableButtons';
 import S from "styling";
 import { epochToDateString, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
-import { responderStatuses, returnStatuses } from 'utils/serverValues';
+import { responderStatuses, cloudFunctionStatuses } from 'utils/serverValues';
 import AutolinkText from 'reusables/AutolinkText'
 import ErrorMessageText from 'reusables/ErrorMessageText';
 import LockNotice from 'reusables/BroadcastLockNotice'
@@ -173,17 +173,13 @@ export default class ResponsesViewer extends React.Component {
         newStatuses: this.state.responseStatusDeltas
       }), LONG_TIMEOUT);
 
-      if (response.data.status === returnStatuses.OK){
-        this.setState({errorMessage: "Success (I know this isn't an error but meh)"})
-      }else{
-          logError(new Error("Problematic setBroadcastResponse fucntion response: " + response.data.status))
+      if (response.data.status !== cloudFunctionStatuses.OK){
+          this.setState({errorMessage: response.data.message})
+          logError(new Error("Problematic setBroadcastResponse fucntion response: " + response.data.message))
       }
     }catch(err){
-      if (err.code == "timeout"){
-          this.setState({errorMessage: "Timeout!"})
-      }else{
-          logError(err)        
-      }
+      if (err.name != "timeout") logError(err)  
+      this.setState({errorMessage: err.message})
     }
     this.setState({isModalVisible: false, responseStatusDeltas: {}})
   }

@@ -11,7 +11,7 @@ import S from 'styling';
 import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import {Text, Input, CheckBox} from 'react-native-elements'
 import {ScrollingHeader} from "reusables/Header"
-import {returnStatuses, MAX_GROUP_NAME_LENGTH} from 'utils/serverValues'
+import {cloudFunctionStatuses, MAX_GROUP_NAME_LENGTH} from 'utils/serverValues'
 import ErrorMessageText from 'reusables/ErrorMessageText';
 import Snackbar from 'react-native-snackbar';
 
@@ -124,16 +124,19 @@ export default class NewGroupScreen extends React.Component {
           usersToAdd: selectedUserUids
         }), LONG_TIMEOUT);
       }
-      if (response.data.status == returnStatuses.LEASE_TAKEN){
+      if (response.data.status != cloudFunctionStatuses.OK){
+        const message = (response.data.status == cloudFunctionStatuses.LEASE_TAKEN) 
+          ? "This group is currently being edited by someone, please wait a few seconds" 
+          : response.data.message
         this.setState({
-          errorMessage: "This group is currently being edited by someone, please wait a few seconds", 
+          errorMessage: message, 
           isModalVisible: false
         })
       }else{
         this.props.navigation.goBack()
       }
     }catch(err){
-      if (err.message != 'timeout') logError(err)
+      if (err.name != 'timeout') logError(err)
       this.setState({errorMessage: err.message, isModalVisible: false})
     }   
   }

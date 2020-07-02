@@ -179,7 +179,7 @@ export default class StaticInfiniteScroll extends React.Component {
     };
 
     onError = (error) => {
-        if (error.code == "timeout") {
+        if (error.name == "timeout") {
             this.timedOut = true;
             this.requestRerender();
         } else {

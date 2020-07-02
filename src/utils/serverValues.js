@@ -1,10 +1,10 @@
 //This file contains all the values that this client app uses that mirror
 //values used on the server in either Cloud Functions or Security Rules
 
-export const returnStatuses = {
+export const cloudFunctionStatuses = {
     OK: "successful",
-    NOTO: "non existent receiver",
-    LEASE_TAKEN: "lease is currently taken"
+    INVALID: "invalid state",
+    LEASE_TAKEN: "lease taken"
 }
 
 export const responderStatuses = {

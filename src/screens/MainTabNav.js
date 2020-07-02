@@ -17,7 +17,7 @@ import FeedStackNav from './FeedSection/FeedStackNav';
 import SocialStackNav from './SocialSection/SocialSectionStackNav'
 import SettingsStackNav from "./Settings/SettingsStackNav";
 import MainTheme from 'styling/mainTheme'
-
+import {cloudFunctionStatuses} from 'utils/serverValues'
 
 
 const Tab = createBottomTabNavigator(
@@ -157,11 +157,12 @@ export default class Main extends React.Component {
       const cachedToken = await AsyncStorage.getItem(ASYNC_TOKEN_KEY)
       const syncFunction = functions().httpsCallable('updateFCMTokenData')
       if (fcmToken != cachedToken){
-        await timedPromise(syncFunction(fcmToken), LONG_TIMEOUT)
+        const response = await timedPromise(syncFunction(fcmToken), LONG_TIMEOUT)
+        if (response.data.status != cloudFunctionStatuses.OK) return; //Don't cache the token (so we can retry later)
         await AsyncStorage.setItem(ASYNC_TOKEN_KEY, fcmToken)
       }    
     }catch(err){
-      if (err.code != "timeout") logError(err)
+      if (err.name != "timeout") logError(err)
     }
 
   }

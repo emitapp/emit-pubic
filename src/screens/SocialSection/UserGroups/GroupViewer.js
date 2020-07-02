@@ -14,7 +14,7 @@ import { isOnlyWhitespace, logError, timedPromise, LONG_TIMEOUT } from 'utils/he
 import { groupRanks } from 'utils/serverValues';
 import Snackbar from 'react-native-snackbar';
 import {ScrollingHeader} from "reusables/Header"
-import {returnStatuses, MAX_GROUP_NAME_LENGTH} from 'utils/serverValues'
+import {cloudFunctionStatuses, MAX_GROUP_NAME_LENGTH} from 'utils/serverValues'
 import ErrorMessageText from 'reusables/ErrorMessageText';
 
 export default class GroupScreen extends React.Component {
@@ -320,9 +320,12 @@ export default class GroupScreen extends React.Component {
       if (newGroupName != groupName) params['newName'] = newGroupName
       const cloudFunc = functions().httpsCallable('editGroup')
       const response = await timedPromise(cloudFunc(params), LONG_TIMEOUT);
-      if (response.data.status == returnStatuses.LEASE_TAKEN){
+      if (response.data.status != cloudFunctionStatuses.OK){
+        const message = (response.data.status == cloudFunctionStatuses.LEASE_TAKEN) 
+          ? "This group is currently being edited by someone, please wait a few seconds" 
+          : response.data.message
         this.setState({
-          errorMessage: "This group is currently being edited by someone, please wait a few seconds", 
+          errorMessage: message, 
           isModalVisible: false
         })
       }else{
@@ -330,7 +333,7 @@ export default class GroupScreen extends React.Component {
         if (exitScreenWhenDone) this.props.navigation.goBack();
       }
     }catch(err){
-      if (err.message != 'timeout') logError(err)
+      if (err.name != 'timeout') logError(err)
       this.setState({errorMessage: err.message, isModalVisible: false})
     }   
   }
@@ -350,9 +353,12 @@ export default class GroupScreen extends React.Component {
     try{    
       const cloudFunc = functions().httpsCallable('deleteGroup')
       const response = await timedPromise(cloudFunc({groupUid: this.groupSnippet.uid}), LONG_TIMEOUT);
-      if (response.data.status == returnStatuses.LEASE_TAKEN){
+      if (response.data.status != cloudFunctionStatuses.OK){
+        const message = (response.data.status == cloudFunctionStatuses.LEASE_TAKEN) 
+          ? "This group is currently being edited by someone, please wait a few seconds" 
+          : response.data.message
         this.setState({
-          errorMessage: "This group is currently being edited by someone, please wait a few seconds", 
+          errorMessage: message, 
           isModalVisible: false
         })
         this.closeEditingModal()
@@ -360,7 +366,7 @@ export default class GroupScreen extends React.Component {
         this.setState({isModalVisible: false}, () => this.props.navigation.goBack())
       }
     }catch(err){
-      if (err.message != 'timeout') logError(err)
+      if (err.name != 'timeout') logError(err)
       this.setState({errorMessage: err.message, isModalVisible: false})
     }   
   }

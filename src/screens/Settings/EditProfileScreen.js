@@ -10,7 +10,7 @@ import { SmallLoadingComponent, TimeoutLoadingComponent } from 'reusables/Loadin
 import ProfilePicChanger from 'reusables/ProfilePicChanger'
 import { logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers'
 import { 
-  returnStatuses, 
+  cloudFunctionStatuses, 
   MAX_FACEBOOK_HANDLE_LENGTH,
   MAX_GITHUB_HANDLE_LENGTH, 
   MAX_SNAPCHAT_HANDLE_LENGTH, 
@@ -196,7 +196,7 @@ export default class EditProfileScreen extends React.Component {
         hasSnippets: true
       })
     }catch(err){
-        if (err.code != "timeout") logError(err)
+        if (err.name != "timeout") logError(err)
         else this.setState({hasTimedOut: true})
     }
   }
@@ -212,14 +212,14 @@ export default class EditProfileScreen extends React.Component {
       const changeFunction = functions().httpsCallable('updateDisplayName');
       const response = await timedPromise(changeFunction(this.state.displayName), MEDIUM_TIMEOUT);
 
-      if (response.data.status === returnStatuses.OK){
+      if (response.data.status === cloudFunctionStatuses.OK){
         Snackbar.show({text: 'Display name change successful', duration: Snackbar.LENGTH_SHORT});
       }else{
-        logError(new Error("Problematic updateDisplayName fucntion response: " + response.data.status))
-        this.setState({displayNameError: "Something went wrong."})
+        logError(new Error("Problematic updateDisplayName fucntion response: " + response.data.message))
+        this.setState({displayNameError: response.data.message})
       }
     }catch(err){
-      if (err.code == "timeout"){
+      if (err.name == "timeout"){
         this.setState({displayNameError: "Timeout! Try again"})
       }else{
         this.setState({displayNameError: "Something went wrong."})
@@ -260,7 +260,7 @@ export default class EditProfileScreen extends React.Component {
       )
       Snackbar.show({text: 'Social update change successful', duration: Snackbar.LENGTH_SHORT});
     }catch(err){
-      if (err.code == "timeout"){
+      if (err.name == "timeout"){
         this.setState({socialsError: "Timeout! Try again"})
       }else{
         this.setState({socialsError: "Something went wrong."})

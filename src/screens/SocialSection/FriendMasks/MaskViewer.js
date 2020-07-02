@@ -13,7 +13,7 @@ import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/he
 import {ScrollingHeader} from "reusables/Header"
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import ErrorMessageText from 'reusables/ErrorMessageText';
-import {MAX_MASK_NAME_LENGTH} from 'utils/serverValues'
+import {MAX_MASK_NAME_LENGTH, cloudFunctionStatuses} from 'utils/serverValues'
 
 export default class NewMaskScreen extends React.Component {
 
@@ -192,15 +192,19 @@ export default class NewMaskScreen extends React.Component {
   
       this.setState({isModalVisible: true})
       const cloudFunc = functions().httpsCallable('createOrEditMask')
-      await timedPromise(cloudFunc({
+      const response = await timedPromise(cloudFunc({
         maskUid: this.maskSnippet.uid,
         newName: newMaskName, 
         usersToRemove: usersToBeRemoved
       }), LONG_TIMEOUT);
   
-      this.setState({inEditMode: false, usersToBeRemoved: {}, maskName: newMaskName, isModalVisible: false})
+      if (response.data.staus != cloudFunctionStatuses.OK){
+        this.setState({errorMessage: response.data.message, isModalVisible: false})
+      }else{
+        this.setState({inEditMode: false, usersToBeRemoved: {}, maskName: newMaskName, isModalVisible: false})
+      }
     }catch(err){
-      if (err.message != 'timeout') logError(err)
+      if (err.name != 'timeout') logError(err)
       this.setState({errorMessage: err.message, isModalVisible: false})
     }
   }
@@ -215,7 +219,7 @@ export default class NewMaskScreen extends React.Component {
   
       this.props.navigation.goBack()
     }catch(err){
-      if (err.message != 'timeout') logError(err)
+      if (err.name != 'timeout') logError(err)
       this.setState({errorMessage: err.message, isModalVisible: false})
     }
   }

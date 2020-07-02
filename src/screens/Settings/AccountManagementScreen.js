@@ -168,7 +168,7 @@ export default class AccountManagementScreen extends React.Component {
       const response = await timedPromise(functions().httpsCallable('requestAllData')(), LONG_TIMEOUT);
       console.log(response.data)
     }catch(err){
-      if (err.message != 'timeout') logError(err)
+      if (err.name != 'timeout') logError(err)
     }
   }
 

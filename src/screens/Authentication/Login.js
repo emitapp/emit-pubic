@@ -94,7 +94,7 @@ export default class Login extends React.Component {
         await timedPromise(signInPromise, MEDIUM_TIMEOUT)
       }catch(err){
         this.setState({ errorMessage: err.message, modalVisible: false })
-        if (err.code != "timeout") logError(error)
+        if (err.name != "timeout") logError(error)
       }    
     }
   }

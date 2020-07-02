@@ -108,7 +108,7 @@ export default class SignUp extends React.Component {
         await timedPromise(signUpPromise, LONG_TIMEOUT)
       }catch(error){
         this.setState({ errorMessage: error.message, modalVisible: false })
-        if (error.message != "timeout") logError(error)
+        if (error.name != "timeout") logError(error)
       }
     }
 

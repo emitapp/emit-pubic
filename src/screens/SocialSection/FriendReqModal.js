@@ -9,8 +9,7 @@ import { TimeoutLoadingComponent } from 'reusables/LoadingComponents';
 import { ProfilePicRaw } from 'reusables/ProfilePicComponents';
 import { MinorActionButton } from 'reusables/ReusableButtons';
 import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
-import * as responseStatuses from 'utils/serverValues';
-import { isValidDBPath } from 'utils/serverValues';
+import { isValidDBPath, cloudFunctionStatuses } from 'utils/serverValues';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Clipboard } from "react-native";
 import Snackbar from 'react-native-snackbar'
@@ -187,7 +186,7 @@ class FriendReqDialogue extends React.Component {
             const socialsSnap = await timedPromise(socialsRef.once('value'), LONG_TIMEOUT);
             this.setState({userSocials: socialsSnap.val()})
         }catch(err){
-            if (err.code !== "timeout"){
+            if (err.name !== "timeout"){
                 logError(err)
             }
         }
@@ -260,7 +259,7 @@ class FriendReqDialogue extends React.Component {
                 this.setState({gettingInitialData: false, option: actionOptions.SENDREQ})
             }
         }catch (err){
-            if (err.code == "timeout"){
+            if (err.name == "timeout"){
                 this.setState({timedOut: true})
             }else{
                 logError(err)
@@ -300,7 +299,7 @@ class FriendReqDialogue extends React.Component {
                 from: auth().currentUser.uid, 
                 to: this.userUid
             }), LONG_TIMEOUT);
-            if (response.data.status === responseStatuses.returnStatuses.OK){
+            if (response.data.status === cloudFunctionStatuses.OK){
                 this.refreshActionOption()
                 this.setState({waitingForFuncResponse: false})
             }else{
@@ -308,12 +307,12 @@ class FriendReqDialogue extends React.Component {
                     waitingForFuncResponse: false, 
                     option: actionOptions.NONE, 
                     gettingInitialData: false, 
-                    extraMessage: "Looks like something went wrong!"
+                    extraMessage: response.data.message
                 })
-                logError(new Error(`Problematic ${this.state.option} function response: ${response.data.status}`))
+                logError(new Error(`Problematic ${this.state.option} function response: ${response.data.message}`))
             }
         } catch (err) {
-            if (err.code == "timeout"){
+            if (err.name == "timeout"){
                 this.setState({timedOut: true, waitingForFuncResponse: false})
             }else{
                 this.setState({waitingForFuncResponse: false})

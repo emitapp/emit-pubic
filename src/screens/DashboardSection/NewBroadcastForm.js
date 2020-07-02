@@ -12,7 +12,7 @@ import functions from '@react-native-firebase/functions';
 import auth from '@react-native-firebase/auth';
 import { logError, LONG_TIMEOUT, timedPromise, isOnlyWhitespace } from 'utils/helpers';
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
-import {returnStatuses, MAX_BROADCAST_NOTE_LENGTH} from 'utils/serverValues'
+import {cloudFunctionStatuses, MAX_BROADCAST_NOTE_LENGTH} from 'utils/serverValues'
 import ErrorMessageText from 'reusables/ErrorMessageText';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -306,15 +306,15 @@ class NewBroadcastForm extends React.Component {
                 params.note = this.state.note
 
             const response = await timedPromise(creationFunction(params), LONG_TIMEOUT);
-            if (response.data.status === returnStatuses.OK){
+            if (response.data.status === cloudFunctionStatuses.OK){
                 this.props.navigation.state.params.needUserConfirmation = false;
                 this.props.navigation.goBack()
             }else{
-                this.setState({errorMessage: "Something went wrong! Please try again later"})
-                logError(new Error("Problematic createActiveBroadcast function response: " + response.data.status))
+                this.setState({errorMessage: response.data.message})
+                logError(new Error("Problematic createActiveBroadcast function response: " + response.data.message))
             }
         }catch(err){
-            if (err.code == "timeout"){
+            if (err.name == "timeout"){
                 this.setState({errorMessage: "Timeout!"})
             }else{
                 this.setState({errorMessage: err.message})

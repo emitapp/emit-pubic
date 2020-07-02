@@ -60,7 +60,7 @@ export default class Loading extends React.Component {
         } 
       }
     }catch(err){
-      if (err.code == "timeout"){
+      if (err.name == "timeout"){
         logError(err, false)
         this.setState({timedout: true})
       }else{

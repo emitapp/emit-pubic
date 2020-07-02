@@ -10,7 +10,7 @@ export const timedPromise = (promise, ms) => {
   // Create a promise that rejects in <ms> milliseconds
   let timeout = new Promise((resolve, reject) => {
     setTimeout(() => reject({
-      code: "timeout",
+      name: "timeout",
       message: `Your Promise timed out after ${ms} milliseconds`
     }),
       ms)
