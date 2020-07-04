@@ -138,7 +138,8 @@ export default theme = {
         textStyle: {
             fontSize: 18,
             color: "black",
-            fontWeight: "normal"
+            fontWeight: "normal",
+            flexShrink: 1
         },
         fontFamily: "NunitoSans-SemiBold",
     },
