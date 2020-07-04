@@ -35,6 +35,7 @@ buildscript {
         classpath 'com.google.gms:google-services:4.3.3' // https://github.com/microsoft/react-native-code-push/issues/1640#issuecomment-553102136
         classpath 'com.google.firebase:perf-plugin:1.3.1'
         classpath 'io.fabric.tools:gradle:1.28.1'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.0.0'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

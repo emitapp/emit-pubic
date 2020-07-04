@@ -15,6 +15,7 @@ import MainTabNav from 'screens/MainTabNav';
 import MainTheme from 'styling/mainTheme';
 import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError } from 'utils/helpers';
 import NavigationService from 'utils/NavigationService';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 export default class App extends React.Component {
 
@@ -44,6 +45,8 @@ export default class App extends React.Component {
       if (!user){
         await AsyncStorage.removeItem(ASYNC_TOKEN_KEY)
         await AsyncStorage.removeItem(ASYNC_SETUP_KEY)
+      }else{
+        crashlytics().setUserId(user.uid).catch(err => logError(err))
       }
       NavigationService.navigate("AuthDecisionPage")
     }catch(err){

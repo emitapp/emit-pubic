@@ -60,10 +60,9 @@ import crashlytics from '@react-native-firebase/crashlytics';
  * @param {boolean} includeCrashlytics Whether or not to perform Crashlytics logging too. DEFAULT: true
  * @param {string} extraLoggingInfo Extra info that will be logged with the Crashlytics report(if enabled) and with console.log
  */
-export const logError = (error, includeCrashlytics, extraLoggingInfo) => {
+export const logError = (error, includeCrashlytics = true, extraLoggingInfo) => {
   if (extraLoggingInfo) console.log(extraLoggingInfo)
   console.log(error)
-  if (includeCrashlytics === undefined) includeCrashlytics = true
   if (includeCrashlytics){
     if (extraLoggingInfo) crashlytics().log(extraLoggingInfo)
     crashlytics().recordError(error)

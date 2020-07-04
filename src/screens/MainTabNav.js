@@ -115,8 +115,8 @@ export default class Main extends React.Component {
       const permissionGranted = await messaging().requestPermission()
   
       if (permissionGranted) { 
-        if (!messaging().isRegisteredForRemoteNotifications) {
-          await messaging().registerForRemoteNotifications();
+        if (!messaging().isDeviceRegisteredForRemoteMessages) {
+          await messaging().registerDeviceForRemoteMessages();
         }      
         this.syncToken() //Asyncronous
         this.setFCMListeners()
@@ -152,7 +152,7 @@ export default class Main extends React.Component {
    */
   syncToken = async () => {
     try{
-      if (!messaging().isRegisteredForRemoteNotifications) return;
+      if (!messaging().isDeviceRegisteredForRemoteMessages) return;
       const fcmToken = await messaging().getToken()
       const cachedToken = await AsyncStorage.getItem(ASYNC_TOKEN_KEY)
       const syncFunction = functions().httpsCallable('updateFCMTokenData')
