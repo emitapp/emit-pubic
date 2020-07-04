@@ -16,6 +16,7 @@ import MainTheme from 'styling/mainTheme';
 import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError } from 'utils/helpers';
 import NavigationService from 'utils/NavigationService';
 import crashlytics from '@react-native-firebase/crashlytics';
+import DevBuildBanner from 'reusables/DevBuildBanner'
 
 export default class App extends React.Component {
 
@@ -36,6 +37,7 @@ export default class App extends React.Component {
           <StatusBar backgroundColor={MainTheme.colors.statusBar} barStyle="light-content"/>
           <Navigator ref = {ref => NavigationService.setTopLevelNavigator(ref)}/>
           <ConnectionBanner/>
+          <DevBuildBanner/>
         </ThemeProvider>
       )
   }
