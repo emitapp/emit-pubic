@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, FlatList, StyleSheet, Linking } from 'react-native';
 import LicensesListItem from 'reusables/LicensesListElement';
 import LicenseData from 'utils/dependencyLicenses'
+import CustomLicenseData from 'utils/depencencyLicensesCustom'
 import S from 'styling';
 import {Text, Divider, Button} from 'react-native-elements'
 import config from "react-native-ultimate-config"
@@ -15,6 +16,7 @@ export default class LegalNotices extends Component {
     for (const packageName in LicenseData) {
       data.push({packageName, ...LicenseData[packageName]})
     }
+    data.push.apply(data, CustomLicenseData)
     this.setState({data})
   }
 
@@ -38,7 +40,7 @@ export default class LegalNotices extends Component {
         <Divider />
         <FlatList
           style={{flex: 1, width: "100%"}}
-          keyExtractor={( item ) => item.packageName}
+          keyExtractor={( item ) => item.packageName || item.title}
           data={this.state.data}
           renderItem={({ item }) => <LicensesListItem item = {item} />}
         />

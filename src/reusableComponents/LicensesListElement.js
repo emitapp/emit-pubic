@@ -9,11 +9,12 @@ export default class LicensesListItem extends PureComponent {
     super(props)
 
     this.title = null;
-    this.name = null
-    this.version = null
-    this.username = null
-    this.userUrl = null;
+    this.version = null;
+    this.creatorUrl = null;
     this.imageSrc = null;
+    this.sourceUrl = null;
+    this.licenseUrl = null;
+    this.licenses = null
 
     this.parseData(props.item)
   }
@@ -24,17 +25,17 @@ export default class LicensesListItem extends PureComponent {
     return (
       <View style={styles.parent}>
         {this.imageSrc &&
-          <TouchableOpacity onPress={() => Linking.openURL(this.userUrl)}>
+          <TouchableOpacity onPress={() => Linking.openURL(this.creatorUrl)}>
             <Avatar rounded source={{ uri: this.imageSrc }} containerStyle={styles.image} />
           </TouchableOpacity>
         }
         <TouchableOpacity
           underlayColor={'#eeeeee'}
-          onPress={() => Linking.openURL(item.repository)}
+          onPress={() => Linking.openURL(this.sourceUrl)}
           style={styles.textParent}>
           <View style={{ maxWidth: '90%' }}>
             <Text style={styles.name}>{this.title}</Text>
-            <Text style={styles.minorText} onPress={() => item.licenseUrl && Linking.openURL(item.licenseUrl)}>{item.licenses}</Text>
+            <Text style={styles.minorText} onPress={() => this.licenseUrl && Linking.openURL(this.licenseUrl)}>{this.licenses}</Text>
             <Text style={styles.minorText}>{this.version}</Text>
           </View>
           <FontAwesome
@@ -49,14 +50,27 @@ export default class LicensesListItem extends PureComponent {
   }
 
   parseData = (item) => {
+    if (item.custom){
+      this.title = item.title;
+      this.version = item.version;
+      this.creatorUrl = item.creatorUrl;
+      this.imageSrc = item.imageSrc;
+      this.sourceUrl = item.sourceUrl;
+      this.licenseUrl = item.licenseUrl;
+      this.licenses = item.licenses
+      return;
+    }
+
     if (item.packageName[0] == "@"){
       var [name, version] = item.packageName.substr(1).split('@');
     }else{
       var [name, version] = item.packageName.split('@');
     }
 
-    this.name = name
+    this.licenses = item.licenses
     this.version = version
+    this.licenseUrl = item.licenseUrl
+    this.sourceUrl = item.repository
 
     this.username =
       this.extractNameFromGithubUrl(item.repository) ||
@@ -65,7 +79,7 @@ export default class LicensesListItem extends PureComponent {
     if (this.username) {
       this.username = this.capitalizeFirstLetter(this.username)
       this.imageSrc = `http://github.com/${this.username}.png`;
-      this.userUrl = `http://github.com/${this.username}`;
+      this.creatorUrl = `http://github.com/${this.username}`;
     }
     
     this.title = name
