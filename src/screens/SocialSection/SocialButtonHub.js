@@ -30,7 +30,9 @@ export default class SocialButtonHub extends React.Component {
                 onBackdropPress = {() => this.setState({QRVisible: false})}
                 onRequestClose = {() => this.setState({QRVisible: false})}>
                 <View>
-                    <Text style = {{textAlign: "center", marginVertical: 8, fontWeight: "bold"}}>Your Bitecode</Text>
+                    <Text style = {{textAlign: "center", marginVertical: 8, fontWeight: "bold"}}>
+                        Your Bitecode
+                    </Text>
                     <UserBitecode color = {theme.colors.primary}/>
                     <MinorActionButton
                     title="Go Back"

@@ -79,7 +79,7 @@ export default class NotificationSettings extends React.Component {
             title = "Get push notifications when...">
             <CheckBox
               title='You get a new friend request'
-              fontFamily = "NunitoSans"
+              fontFamily = "NunitoSans-Regular"
               textStyle = {{fontSize: 16}}
               checked = {this.state.onNewFriendRequest}
               containerStyle = {{alignSelf: "flex-start", marginLeft: 24, padding: 0, marginBottom: 16}}
@@ -87,7 +87,7 @@ export default class NotificationSettings extends React.Component {
             />
             <CheckBox
               title='You get a new friend'
-              fontFamily = "NunitoSans"
+              fontFamily = "NunitoSans-Regular"
               textStyle = {{fontSize: 16}}
               checked = {this.state.onNewFriend}
               containerStyle = {{alignSelf: "flex-start", marginLeft: 24, padding: 0, marginBottom: 16}}
@@ -95,7 +95,7 @@ export default class NotificationSettings extends React.Component {
             />
             <CheckBox
               title='You get added to a group'
-              fontFamily = "NunitoSans"
+              fontFamily = "NunitoSans-Regular"
               textStyle = {{fontSize: 16}}
               checked = {this.state.onAddedToGroup}
               containerStyle = {{alignSelf: "flex-start", marginLeft: 24, padding: 0, marginBottom: 16}}
@@ -103,7 +103,7 @@ export default class NotificationSettings extends React.Component {
             />
             <CheckBox
               title={`Someone responds to one of your ${`\n`} broadcasts`}
-              fontFamily = "NunitoSans"
+              fontFamily = "NunitoSans-Regular"
               textStyle = {{fontSize: 16}}
               checked = {this.state.onNewBroadcastResponse}
               containerStyle = {{alignSelf: "flex-start", marginLeft: 24, padding: 0, marginBottom: 16}}
