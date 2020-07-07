@@ -1,7 +1,3 @@
-/**
- * @format
- */
-
 import {AppRegistry} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
@@ -10,10 +6,16 @@ import messaging from '@react-native-firebase/messaging';
 import { handleFCMMessage } from 'utils/fcmNotificationHandlers';
 import codePush from "react-native-code-push";
 
-
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
     await handleFCMMessage(remoteMessage)
 });
 
-AppRegistry.registerComponent(appName, () => codePush(App));
+//https://rnfirebase.io/messaging/usage#background-application-state
+function HeadlessCheckedApp({ isHeadless }) {
+    // If app has been "launched" in the background by iOS due to FCM, ignore
+    if (isHeadless) return null;
+    return codePush(App);
+}
+
+AppRegistry.registerComponent(appName, HeadlessCheckedApp);
 

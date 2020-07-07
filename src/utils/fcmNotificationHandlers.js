@@ -19,8 +19,9 @@ export const handleFCMDeletion = async () => {
     if (!auth().currentUser) return
     const response = await checkNotifications();
     if (response.status != RESULTS.GRANTED) return;
+    
     Notifications.postLocalNotification({
         title: "Nice to see you again!",
         body: "It looks a lot might have happened since you last signed in!",
-      });
+    });
 }

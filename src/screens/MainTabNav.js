@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import functions from '@react-native-firebase/functions';
 import messaging from '@react-native-firebase/messaging';
 import React from 'react';
-import {View} from 'react-native'
+import {View, Platform} from 'react-native'
 import { requestNotifications, RESULTS } from 'react-native-permissions';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
@@ -77,7 +77,9 @@ export default class Main extends React.Component {
 
   constructor(props){
     super(props);
-    this.unsunscribeFromTokenRefresh = null;
+    this.unsubscribeFromTokenRefresh = null;
+    this.unsubscribeFromOnMessage = null;
+    this.unsubscribeFromOnMessageDelete = null;
   }
 
   componentDidMount = () => {
@@ -85,7 +87,9 @@ export default class Main extends React.Component {
   }
 
   componentWillUnmount = () => {
-    if (this.unsunscribeFromTokenRefresh) this.unsunscribeFromTokenRefresh()
+    if (this.unsubscribeFromTokenRefresh) this.unsubscribeFromTokenRefresh()
+    if (this.unsubscribeFromOnMessage) this.unsubscribeFromOnMessage()
+    if (this.unsubscribeFromOnMessageDelete) this.unsubscribeFromOnMessageDelete()
   }
   
   render() {
@@ -112,36 +116,44 @@ export default class Main extends React.Component {
       //But according to Mike Hardy on Discord, requestPermission has a side 
       //effect of setting some listeners, so we're doing it this way
       //This is needed just for iOS, btw
-      const permissionGranted = await messaging().requestPermission()
-  
-      if (permissionGranted) { 
-        if (!messaging().isDeviceRegisteredForRemoteMessages) {
-          await messaging().registerDeviceForRemoteMessages();
-        }      
-        this.syncToken() //Asyncronous
-        this.setFCMListeners()
-      } else {
-        logError(new Error("permissionGranted still false after requestNotifications success"))
+      let permissionGranted = true
+      if (Platform.OS == 'ios'){
+        const permissionStatus = await messaging().requestPermission()
+        permissionGranted =
+          permissionStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+          permissionStatus === messaging.AuthorizationStatus.PROVISIONAL;  
       }
+  
+      if (!permissionGranted){
+        logError(new Error("permissionGranted still false after requestNotifications success"))
+        return
+      }
+
+      //Not actually needed becuase this is done by defualt (unless disabled)
+      //But meh
+      if (!messaging().isDeviceRegisteredForRemoteMessages) {
+        await messaging().registerDeviceForRemoteMessages();
+      }      
+      this.syncToken() //Asyncronous
+      this.setFCMListeners()
     }catch(err){
       logError(err)
     }
   }
 
-  /**
-   * Sets the listeners needed for FCM functionality 
-   * (Note that one of these listeners is actually already set in index.js as well)
-   */
+
   setFCMListeners = () => {
-    messaging().onDeletedMessages(async () => {
+    this.unsubscribeFromOnMessageDelete = messaging().onDeletedMessages(async () => {
       await handleFCMDeletion()
     });
 
-    messaging().onMessage(async (remoteMessage) => {
+    //This is only for forground messages
+    //Background message handler has been set in index.js
+    this.unsubscribeFromOnMessage = messaging().onMessage(async (remoteMessage) => {
       await handleFCMMessage(remoteMessage)
     });
 
-    this.unsunscribeFromTokenRefresh = messaging().onTokenRefresh(token => {
+    this.unsubscribeFromTokenRefresh = messaging().onTokenRefresh(token => {
       this.syncToken() //Asyncronous
     });
   }
@@ -155,8 +167,8 @@ export default class Main extends React.Component {
       if (!messaging().isDeviceRegisteredForRemoteMessages) return;
       const fcmToken = await messaging().getToken()
       const cachedToken = await AsyncStorage.getItem(ASYNC_TOKEN_KEY)
-      const syncFunction = functions().httpsCallable('updateFCMTokenData')
       if (fcmToken != cachedToken){
+        const syncFunction = functions().httpsCallable('updateFCMTokenData')
         const response = await timedPromise(syncFunction(fcmToken), LONG_TIMEOUT)
         if (response.data.status != cloudFunctionStatuses.OK) return; //Don't cache the token (so we can retry later)
         await AsyncStorage.setItem(ASYNC_TOKEN_KEY, fcmToken)
@@ -164,6 +176,5 @@ export default class Main extends React.Component {
     }catch(err){
       if (err.name != "timeout") logError(err)
     }
-
   }
 }
