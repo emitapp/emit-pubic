@@ -31,55 +31,55 @@ export default
         "licenseUrl": "https://github.com/react-native-community/react-native-netinfo/raw/master/LICENSE",
         "parents": "biteup"
     },
-    "@react-native-firebase/app@8.0.0": {
+    "@react-native-firebase/app@8.1.0": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/app",
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/app/raw/master/LICENSE",
         "parents": "biteup"
     },
-    "@react-native-firebase/auth@8.0.9": {
+    "@react-native-firebase/auth@8.1.1": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/auth",
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/auth/raw/master/LICENSE",
         "parents": "biteup"
     },
-    "@react-native-firebase/crashlytics@8.0.1": {
+    "@react-native-firebase/crashlytics@8.1.1": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/crashlytics",
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/crashlytics/raw/master/LICENSE",
         "parents": "biteup"
     },
-    "@react-native-firebase/database@7.2.6": {
+    "@react-native-firebase/database@7.3.1": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/database",
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/database/raw/master/LICENSE",
         "parents": "biteup"
     },
-    "@react-native-firebase/firestore@7.2.3": {
+    "@react-native-firebase/firestore@7.4.1": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/firestore",
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/firestore/raw/master/LICENSE",
         "parents": "biteup"
     },
-    "@react-native-firebase/functions@7.1.7": {
+    "@react-native-firebase/functions@7.2.1": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/functions",
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/functions/raw/master/LICENSE",
         "parents": "biteup"
     },
-    "@react-native-firebase/messaging@7.2.1": {
+    "@react-native-firebase/messaging@7.4.1": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/messaging",
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/messaging/raw/master/LICENSE",
         "parents": "biteup"
     },
-    "@react-native-firebase/perf@7.1.7": {
+    "@react-native-firebase/perf@7.2.1": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/perf",
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/perf/raw/master/LICENSE",
         "parents": "biteup"
     },
-    "@react-native-firebase/storage@7.1.7": {
+    "@react-native-firebase/storage@7.2.1": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/storage",
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/storage/raw/master/LICENSE",

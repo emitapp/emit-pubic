@@ -986,55 +986,55 @@
   integrity sha512-pIwc6e0ZINw6PJqNVsAxzOVJUDg6au2TdulY+ZOYQ11SPDs5I2n9likoGrElPmJjajT4s9h87uz/6PWP2k9PxQ==
 
 "@react-native-firebase/app@^8.0.0":
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-8.0.0.tgz#bde1b7f72ce373141586a12be4ef6e6f7865b72b"
-  integrity sha512-WraPvpoXOGtSqS9b1tucqgDKLiGDP6eeAwEkutsqhYZYpaVkbQj0PA3Mlb0/Hi09xPQ7xtSV+8luTTBJBHnvHg==
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-8.1.0.tgz#e1c0aee7c9e5f601ab0b638bb8d668387ca64fa0"
+  integrity sha512-vebKpmlfJ8XcBuXT+8ykfV7Jf3wqF1Fz6G8IATsuNQE8mIHUXkmnAaGCVoX0FJnO4ojFCGfoKMQdxbr/SgmZRA==
   dependencies:
     "@react-native-firebase/app-types" "6.7.2"
     opencollective-postinstall "^2.0.1"
     superstruct "^0.6.2"
 
 "@react-native-firebase/auth@^8.0.9":
-  version "8.0.9"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/auth/-/auth-8.0.9.tgz#2fd0c59b7df78ff904b62d1a0a86a8df177d7c31"
-  integrity sha512-ZK+iXHIdJNqrSQYtBZYyVrx1JCQXPYVqz61gwsIOB2hi8zTs1vUcaZUcK4joI/fAOKSPRwwC8WosOwdLy2kzmg==
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/auth/-/auth-8.1.1.tgz#81122ac2f8c3710e0816ba6d40137ade92605175"
+  integrity sha512-KQIXPD+PflmTwwtE6Joatk57Ne0b4HRbKD0vyuNeOUEB7WkptoOqt6VtaTtoa6Tz9Vr/LxUFrfdwE91s+aemzw==
 
 "@react-native-firebase/crashlytics@^8.0.1":
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/crashlytics/-/crashlytics-8.0.1.tgz#f5e3d2a35063cbf3c95091c3d0177dd5c6e0134f"
-  integrity sha512-WvFuxTM/NZxfuaWY+Xyh/IFTo9MZ2jghNsDCMNQVC0JSpn1v5Fvbf/CvlC8DdMr4rCP5qhfSVG4gvUgI7KY7Hw==
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/crashlytics/-/crashlytics-8.1.1.tgz#7495e8640c3d927eec34e67427ea12d5840fa242"
+  integrity sha512-Y8lVC5gE6h5UuGLkkr7wzB7xdkgFMUOOf2OrrzrEg3spKfJQLWcATOoLUsFOMpHnJUshlLLh44qm62WdFy9A3Q==
   dependencies:
     stacktrace-js "^2.0.0"
 
 "@react-native-firebase/database@^7.2.6":
-  version "7.2.6"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/database/-/database-7.2.6.tgz#18504044384a6ef067ba5df3085291f695952336"
-  integrity sha512-Ruz/Uel/AsHJ5xGXmMcal73ubYHod1MfSIOu9iZi3mCUBYdSokbRcqIfSyhbkOnx+G04NW9OAgTFgYxkav26HQ==
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/database/-/database-7.3.1.tgz#c67fffed3d33711e77c1ada3d255868a262c07e8"
+  integrity sha512-sfF+flZoPgqK4pTZEe9GvBAZZg4XidFRLvBWrwzf58TS1fuxGpL/hP2V3De8DSVuecIRYwypcw2Y19oBjvij8g==
 
 "@react-native-firebase/firestore@^7.2.3":
-  version "7.2.3"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/firestore/-/firestore-7.2.3.tgz#b2e8be60212b42df32c7a150c17e3cb230d2ae5e"
-  integrity sha512-oxrVzKYvYUof4YGsTK4miNW+5ZkbSHvWMSzsLfTFRbK0FbytzuaWGcdD4LXdgnAGn2Vskeith/Qm6bJhFZZwpw==
+  version "7.4.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/firestore/-/firestore-7.4.1.tgz#2271101036156d0912e4847126028a856fab86d9"
+  integrity sha512-aRRBxY3GTRPgEVBA7CGHfns0HZfm6egCPtj+wcb6qBihAwT7EGnhsJKXi06tBq25ifBBbyTkbG0LjLTE2bzaig==
 
 "@react-native-firebase/functions@^7.1.7":
-  version "7.1.7"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/functions/-/functions-7.1.7.tgz#775cb2f52f4d5eb207042e9a32dd9983a49439d9"
-  integrity sha512-ObmLrO03373q5qj3rzeBDM9JVgShNXGxhFMAh8dJAXzk07vbupifhSJjtRtTePdVfqDyllwqqVcUs0jC/CzndA==
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/functions/-/functions-7.2.1.tgz#127922885bf92fa55f9a2d89d2bb9a9c97312d33"
+  integrity sha512-6coXosDXrFhQtmBu0JM8graCuq10DQ9BXWzQF29K1ddw9lFtpRuMUCNzLwCvE7fvXS6H2+nKE2Sp8MP2kJiFgw==
 
 "@react-native-firebase/messaging@^7.2.1":
-  version "7.2.1"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-7.2.1.tgz#b08cb1ae4171ee76cb25f765b2f1f1f01ac9a083"
-  integrity sha512-5w94m+XFj2P/VdGZW3AuXvhsAnjHC03vQcTdJm7B5vZo2ZbfnVEH4Dyb7V9rlI2stPc2/cIBiMK/oTerMAaDtw==
+  version "7.4.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-7.4.1.tgz#ad5c36dbe0e97091a437a45bade2a8c9fd04fff5"
+  integrity sha512-hpqPBK/Y6/qI7hrk+9+pGYTitbzpzVTmKWyir1x2nsjXYfKMuPc6Tz82TZ0n5dQKnn9GCGgp7nshBkP4zC7zeg==
 
 "@react-native-firebase/perf@^7.1.7":
-  version "7.1.7"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/perf/-/perf-7.1.7.tgz#f437e2a668dfc66ec0ebf0ac1b77e007604db24b"
-  integrity sha512-ror5E2oUPSmYd8MIEQIw/wWOOCaPnwkk9HFouXQy5l9XBeGT4Oni4Sr1XeGUUEjXMxvpeCvZQEPQHyl+2dpoOg==
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/perf/-/perf-7.2.1.tgz#b542a7bdf610ec7d1e89616400dfd8b23878b1e6"
+  integrity sha512-1wdgpz0qrdKUuYZhVCQnI+MdIS21mTYXknUI8HzQFPaFVQ8qfcXJL4B7pApBBKDSCA2r5/CzMTB4kaEiREsI0w==
 
 "@react-native-firebase/storage@^7.1.7":
-  version "7.1.7"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/storage/-/storage-7.1.7.tgz#40e668657b4e5c943ceeda33df1f807e093daa0a"
-  integrity sha512-Pw+FiAJFM63jWw1zqKDYeB62Ab3+hqqddjWudYaPghwQZOeA5d/N1iPUSsG0iAsfc8bU5w3WQwOq+fIZpSVXzQ==
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/storage/-/storage-7.2.1.tgz#63301a4939345bef327f7d061a794bd2fbf2ae82"
+  integrity sha512-+ycqGARC4gBBs7K3El2HssfgL6t835JXhco+wduwSukcbwD2z5Rmu7wJNE29asQylMDhAsBvm+5xVYzvjKdOUA==
 
 "@react-navigation/core@^3.5.1":
   version "3.5.1"
@@ -7301,9 +7301,9 @@ stack-utils@^1.0.1:
   integrity sha512-MTX+MeG5U994cazkjd/9KNAapsHnibjMLnfXodlkXw76JEea0UiNzrqidzo1emMwk7w5Qhc9jd4Bn9TBb1MFwA==
 
 stackframe@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/stackframe/-/stackframe-1.1.1.tgz#ffef0a3318b1b60c3b58564989aca5660729ec71"
-  integrity sha512-0PlYhdKh6AfFxRyK/v+6/k+/mMfyiEBbTM5L94D0ZytQnJ166wuwoTYLHFWGbs2dpA8Rgq763KGWmN1EQEYHRQ==
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/stackframe/-/stackframe-1.2.0.tgz#52429492d63c62eb989804c11552e3d22e779303"
+  integrity sha512-GrdeshiRmS1YLMYgzF16olf2jJ/IzxXY9lhKOskuVziubpTYcYqyOwYeJKzQkwy7uN0fYSsbsC4RQaXf9LCrYA==
 
 stacktrace-gps@^3.0.4:
   version "3.0.4"
