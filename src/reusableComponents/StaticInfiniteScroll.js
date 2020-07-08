@@ -83,7 +83,6 @@ export default class StaticInfiniteScroll extends React.Component {
         this.errorMessage = "";
         this.requestRerender();
         this.retrieveInitialChunk(this.props.generation);
-        //console.log("Scoller [re]initialized")
     }
 
 
@@ -107,8 +106,6 @@ export default class StaticInfiniteScroll extends React.Component {
                     })
                     
             });
-
-            //console.log("retrieveInitialChunk", listData)
 
             if (listData.length == 0) {
                 this.stopSearching = true;
@@ -157,8 +154,6 @@ export default class StaticInfiniteScroll extends React.Component {
 
             //Removing the first element since startAt is inclusive
             additionaListData.shift();
-
-            //console.log("retrieveMore", additionaListData)
 
             if (additionaListData.length == 0) {
                 this.stopSearching = true;

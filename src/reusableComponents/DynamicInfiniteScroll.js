@@ -78,7 +78,6 @@ export default class DymanicInfiniteScroll extends React.Component {
         this.errorMessage = "";
         this.requestRerender();
         this.setListener();
-        //console.log("Dynamic Scoller [re]initialized")
     }
 
     refListenerCallback = (snap) => {
@@ -97,7 +96,6 @@ export default class DymanicInfiniteScroll extends React.Component {
             this.gettingMoreData = true;
             this.setListener();
         }
-        //console.log("retrieveMoreData called")
     }
 
     setListener = () => {

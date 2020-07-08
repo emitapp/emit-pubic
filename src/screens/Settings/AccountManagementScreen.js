@@ -187,7 +187,7 @@ export default class AccountManagementScreen extends React.Component {
         this.showDelayedSnackbar("Email change successful")
       }
     }catch(err){
-      console.log(err)
+      if (err.name !== 'timeout') logError(err)
       this.setState({emailChangeError: err.message})
     }
     this.setState({isModalVisible: false})
@@ -210,7 +210,7 @@ export default class AccountManagementScreen extends React.Component {
         this.showDelayedSnackbar("Password change successful")
       }
     }catch(err){
-      console.log(err)
+      if (err.name !== 'timeout') logError(err)
       this.setState({passwordChangeError: err.message})
     }
     this.setState({isModalVisible: false})
@@ -249,7 +249,7 @@ export default class AccountManagementScreen extends React.Component {
         this.setState({oldEmail3: "", oldPass3: ""})
       }
     }catch(err){
-      console.log(err)
+      if (err.name !== 'timeout') logError(err)
       this.setState({deleteAccountError: err.message})
     }
     this.setState({isModalVisible: false})
