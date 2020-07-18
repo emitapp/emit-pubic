@@ -2,17 +2,18 @@
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import React, { Component } from 'react';
-import { Platform, StyleSheet, View, Image } from 'react-native';
+import { Platform, StyleSheet, View, Image, Alert, Linking } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import { logError } from 'utils/helpers';
 import uuid from 'uuid/v4';
-import {Text, Button} from 'react-native-elements'
+import {Text, Button, Overlay} from 'react-native-elements'
 import {SmallLoadingComponent} from 'reusables/LoadingComponents'
 import Snackbar from 'react-native-snackbar';
 var RNFS = require('react-native-fs');
 import ProfilePicCircle from 'reusables/ProfilePicComponents';
 import ErrorMessageText from 'reusables/ErrorMessageText';
+import { MinorActionButton } from 'reusables/ReusableButtons';
 
 
 const options = {
@@ -32,12 +33,36 @@ export default class ProfilePicChanger extends Component {
     uploadProgress: 0,
     errorMessage: null,
     //Stays true the moment the user successfully picked a pic at least once
-    hasSuccessfullyPicked: false 
+    hasSuccessfullyPicked: false,
+    modalVisible: false
   };
 
   render() {
     return (
       <View style={styles.container}>
+
+        <Overlay 
+          isVisible={this.state.modalVisible}
+          onRequestClose = {() => this.setState({modalVisible: false})}
+          onBackdropPress = {() => this.setState({modalVisible: false})}
+          overlayStyle = {{maxWidth: "70%"}}>
+            <>
+            <Text style = {{textAlign: "center"}}>
+              How would you like to change your profile pic?
+            </Text>
+            <Button 
+              title = "Choose image from phone" 
+              onPress={() => this.setState({modalVisible: false}, this.pickImage)}
+              type = 'clear'/>
+            <Button 
+              title = "Create avatar" 
+              onPress={() => this.setState({modalVisible: false}, this.createAvatar)}
+              type = 'clear'/>
+            <MinorActionButton 
+              title="Close" 
+              onPress={() => this.setState({modalVisible: false})}/>
+            </>
+        </Overlay>
 
         <ErrorMessageText message = {this.state.errorMessage} />
 
@@ -69,14 +94,16 @@ export default class ProfilePicChanger extends Component {
        
         <View style = {{flexDirection: "row", justifyContent: "center", width: "100%", marginTop: 16}}>
           <Button 
-            title = "Pick Image" 
-            onPress={this.pickImage} 
+            title = "Change image" 
+            onPress={() => this.setState({modalVisible: true})} 
             disabled = {this.state.uploading}/>
 
+        {this.state.imageUri ? (     
           <Button 
             title = {(this.state.uploading) ? "Uploading ..." : "Upload image"} 
             onPress={this.uploadImage} 
             disabled = {this.state.uploading}/>
+        ): null}
         </View>
 
       </View>
@@ -89,9 +116,9 @@ export default class ProfilePicChanger extends Component {
         this.setState({pickingImage: true})
         ImagePicker.showImagePicker(options, response => {
           if (response.didCancel) {
-            alert('Image selection cancelled');
+            Alert.alert('You changed your mind?', 'Image selection cancelled');
           } else if (response.error) {
-            alert('An error occured: ', response.error);
+            Alert.alert('Whoops!', `An error occured: ${response.error}`);
           } else {
             this.setState({imageUri: response.uri, hasSuccessfullyPicked: true});
           }
@@ -207,6 +234,9 @@ export default class ProfilePicChanger extends Component {
         }
     } 
 
+    createAvatar = () => {
+      Linking.openURL("https://personas.draftbit.com/")
+    }
 }
 
 const styles = StyleSheet.create({

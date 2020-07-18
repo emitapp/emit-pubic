@@ -343,15 +343,16 @@ class FriendReqDialogue extends React.Component {
 
 class SocialsIcon extends React.Component {
     render() {
-        if (!this.props.data) return null;
+        const {data, name} = this.props
+        if (!data) return null;
         return (
             <Icon 
-                name = {this.props.name} 
+                name = {name} 
                 size = {24} 
                 color = "dimgray"
                 onPress = {() => {
-                    Clipboard.setString(this.props.data);
-                    Snackbar.show({text: 'Copied to clipboard', duration: Snackbar.LENGTH_SHORT})
+                    Clipboard.setString(data);
+                    Snackbar.show({text: `"${data}" copied to clipboard`, duration: Snackbar.LENGTH_SHORT})
                 }}/>
         )
     }
