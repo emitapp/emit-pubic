@@ -1,18 +1,22 @@
+const colors = {
+    primary: "#FA6C13",
+    secondary: "#FCA31B",
+
+    bannerButton: "#FCA31B",
+    bannerButtonGreen: "mediumseagreen",
+    bannerButtonRed: "crimson",
+
+    statusBar: "#c43e00",
+
+    gradientStart: "#FA6C13",
+    gradientEnd: "#FF9300"
+}
+
 //Used by react-native-elements
 export default theme = {
 
     colors:{
-        primary: "#FA6C13",
-        secondary: "#FCA31B",
-
-        bannerButton: "#FCA31B",
-        bannerButtonGreen: "mediumseagreen",
-        bannerButtonRed: "crimson",
-
-        statusBar: "#c43e00",
-
-        gradientStart: "#FA6C13",
-        gradientEnd: "#FF9300"
+       ...colors
     },
 
     Button:{
@@ -37,8 +41,8 @@ export default theme = {
         },
         containerBorderRadius: 0,
         selectedButtonStyle: {
-            backgroundColor: "grey"
-        }
+            backgroundColor: "#FCA31B"
+        },
     },
 
     Input:{
@@ -66,7 +70,7 @@ export default theme = {
             fontFamily: "NunitoSans-Semibold",
             fontSize: 14,
         },
-        selectionColor: "#92d558"
+        selectionColor: colors.primary
     },
 
     Text:{
@@ -95,7 +99,7 @@ export default theme = {
             textAlign: "center"
         },
         selectable: true,
-        selectionColor: "#92d558"
+        selectionColor: colors.primary
     },
 
     Overlay: {

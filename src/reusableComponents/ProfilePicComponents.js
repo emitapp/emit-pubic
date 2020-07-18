@@ -53,7 +53,7 @@ export class ProfilePicRaw extends React.Component {
             return (
                 <Image
                     style={style}
-                    source={require('media/ProfilePicPlaceholder.png')}
+                    source={require('media/DefualtProfilePic.png')}
                     {...otherProps}
                 />)
         } else {

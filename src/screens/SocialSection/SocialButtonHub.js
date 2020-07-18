@@ -111,11 +111,11 @@ export default class SocialButtonHub extends React.Component {
 class SocialSectionButton extends React.Component { 
     render() {
         const {icon, text, color} = this.props
-        let iconProps = {color}
-        let textProps = {style: {...styles.buttonTextStyle, color: this.props.color}}
+        let iconProps = {color: "white"}
+        let textProps = {style: {...styles.buttonTextStyle, color: "white"}}
         return (
             <TouchableOpacity 
-                style = {{...styles.socialButton, borderColor: this.props.color, backgroundColor: "#EEF8FE"}}
+                style = {{...styles.socialButton, backgroundColor: color}}
                 onPress = {this.props.onPress}>
                 {React.cloneElement(icon, iconProps)}
                 {React.cloneElement(text, textProps)}
@@ -131,7 +131,6 @@ const styles = StyleSheet.create({
         height: "100%",
         width: "45%",
         borderRadius: 10,
-        borderWidth: 2
     },
     buttonTextStyle:{
         fontSize: 18, 

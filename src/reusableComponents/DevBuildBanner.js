@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     width,
-    backgroundColor: 'grey',
+    backgroundColor: 'white',
     paddingHorizontal: 16
   },
 });

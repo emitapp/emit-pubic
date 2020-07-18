@@ -37,7 +37,7 @@ export default class ScanScreen extends Component {
                             flashMode={RNCamera.Constants.FlashMode.off}
                             checkAndroid6Permissions={true}
                             showMarker={true}
-                            markerStyle={{...styles.cameraBorder, color: theme.colors.primary}}
+                            markerStyle={{...styles.cameraBorder, borderColor: theme.colors.secondary}}
                         />
                     </View>
                 </>
