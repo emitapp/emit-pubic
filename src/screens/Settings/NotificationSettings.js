@@ -153,7 +153,6 @@ export default class NotificationSettings extends React.Component {
             onPress={this.saveSettings}
             title="CONFIRM CHANGES"
             iconName = {S.strings.add}
-            color = {S.colors.buttonGreen}
         />
       </View>
     )

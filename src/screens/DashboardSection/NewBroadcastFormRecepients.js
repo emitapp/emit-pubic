@@ -94,7 +94,6 @@ export default class NewBroadcastFormRecepients extends React.Component {
                 dbref = {this.dbRef}
                 />
                 <BannerButton
-                color = {S.colors.buttonGreen}
                 iconName = {S.strings.confirm}
                 onPress = {this.saveRecepients}
                 title = "CONFIRM"

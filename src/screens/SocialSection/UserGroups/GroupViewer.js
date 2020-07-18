@@ -233,7 +233,6 @@ export default class GroupScreen extends React.Component {
           <View style={{flexDirection: "row"}}>
             <BannerButton
               extraStyles = {{flex: 1}}
-              color = {S.colors.buttonBlue}
               onPress={() => this.openEditingModal()}
               iconName = {S.strings.edit}
               title = "EDIT"
@@ -243,14 +242,14 @@ export default class GroupScreen extends React.Component {
           <View style={{flexDirection: "row"}}>
             <BannerButton
               extraStyles = {{flex: 1}}
-              color = {S.colors.buttonRed}
+              color = {theme.colors.bannerButtonRed}
               onPress={() => this.setState({inEditMode: false})}
               iconName = {S.strings.cancel}
               title = "CANCEL"
             />        
             <BannerButton
               extraStyles = {{flex: 1}}
-              color = {S.colors.buttonGreen}
+              color = {theme.colors.bannerButtonGreen}
               onPress={this.applyEdits}
               iconName = {S.strings.confirm}
               title = "SAVE CHANGES"

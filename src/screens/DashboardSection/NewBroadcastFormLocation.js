@@ -119,7 +119,6 @@ export default class NewBroadcastFormLocation extends React.Component {
                 />         
             </View> 
             <BannerButton
-                color = {S.colors.buttonGreen}
                 iconName = {S.strings.confirm}
                 onPress = {this.confirmLocation}
                 title = "CONFIRM"

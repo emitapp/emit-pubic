@@ -80,7 +80,6 @@ export default class NewMaskScreen extends React.Component {
         />
 
         <BannerButton
-          color = {S.colors.buttonGreen}
           onPress={this.createOrEditMask}
           iconName = {S.strings.add}
           title = {this.maskSnippet ? "ADD" : "CREATE"}

@@ -147,7 +147,6 @@ export default class NewMaskScreen extends React.Component {
           <View style={{flexDirection: "row"}}>
             <BannerButton
               extraStyles = {{flex: 1}}
-              color = {S.colors.buttonBlue}
               onPress={this.openEditingModal}
               iconName = {S.strings.edit}
               title = "EDIT"
@@ -157,7 +156,7 @@ export default class NewMaskScreen extends React.Component {
           <View style={{flexDirection: "row"}}>
             <BannerButton
               extraStyles = {{flex: 1}}
-              color = {S.colors.buttonRed}
+              color = {theme.colors.bannerButtonRed}
               onPress={() => this.setState({
                 inEditMode: false, 
                 usersToBeRemoved: {}, 
@@ -168,7 +167,7 @@ export default class NewMaskScreen extends React.Component {
             />        
             <BannerButton
               extraStyles = {{flex: 1}}
-              color = {S.colors.buttonGreen}
+              color = {theme.colors.bannerButtonGreen}
               onPress={this.applyEdits}
               iconName = {S.strings.confirm}
               title = "SAVE CHANGES"

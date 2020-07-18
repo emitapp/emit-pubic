@@ -5,7 +5,7 @@ import { TouchableOpacity, View } from 'react-native';
 import { BannerButton } from 'reusables/ReusableButtons';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import S from 'styling';
-import { epochToDateString, logError } from 'utils/helpers';
+import { epochToDateString } from 'utils/helpers';
 import EmptyState from 'reusables/EmptyState'
 import {Badge, Text} from 'react-native-elements'
 import CountdownComponent from 'reusables/CountdownComponent'
@@ -24,7 +24,6 @@ export default class ActiveBroadcasts extends React.Component {
 
           <ErrorMessageText message = {this.state.errorMessage} />
 
-
           <DynamicInfiniteScroll
             renderItem = {this.itemRenderer}
             generation = {0}
@@ -38,7 +37,6 @@ export default class ActiveBroadcasts extends React.Component {
           />
 
           <BannerButton
-            color = {S.colors.buttonGreen}
             onPress={() => this.props.navigation.navigate('NewBroadcastForm', {needUserConfirmation: true})}
             iconName = {S.strings.add}
             title = "CREATE NEW BROADCAST"

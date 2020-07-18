@@ -220,7 +220,7 @@ class NewBroadcastForm extends React.Component {
         <BannerButton
           color = "white"
           onPress={this.sendBroadcast}
-          contentColor = "green"
+          contentColor = {theme.colors.primary}
           iconName = {S.strings.sendBroadcast}
           title = "SEND"
         />

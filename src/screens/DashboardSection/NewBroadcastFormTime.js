@@ -109,7 +109,6 @@ export default class NewBroadcastFormTime extends React.Component {
                 </View>
                 {this.state.showingCustom && 
                     <BannerButton
-                    color = {S.colors.buttonGreen}
                     iconName = {S.strings.confirm}
                     onPress = {this.saveCustomTime}
                     title = "CONFIRM"

@@ -7,8 +7,6 @@ import { UserGroupListElement } from 'reusables/ListElements';
 import { BannerButton } from 'reusables/ReusableButtons';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
-import { logError } from 'utils/helpers';
-
 
 export default class GroupSearch extends React.Component {
 
@@ -44,7 +42,6 @@ export default class GroupSearch extends React.Component {
           onPress={() => this.props.navigation.navigate('GroupMemberAdder')}
           title="CREATE NEW GROUP"
           iconName = {S.strings.add}
-          color = {S.colors.buttonGreen}
         />
 
       </View>

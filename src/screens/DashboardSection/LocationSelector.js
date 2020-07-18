@@ -61,7 +61,6 @@ export default class LocationSelector extends React.Component {
             />
         </MapView>
         <BannerButton
-          color = {S.colors.buttonGreen}
           onPress={this.saveLocation}
           iconName = {S.strings.confirm}
           title = "CONFIRM"

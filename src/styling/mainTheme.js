@@ -2,12 +2,17 @@
 export default theme = {
 
     colors:{
-        primary: "#6ACB17",
-        secondary: "#01BAEF",
-        statusBar: "#008000",
+        primary: "#FA6C13",
+        secondary: "#FCA31B",
 
-        gradientStart: "#6ACB17",
-        gradientEnd: "#03925e"
+        bannerButton: "#FCA31B",
+        bannerButtonGreen: "mediumseagreen",
+        bannerButtonRed: "crimson",
+
+        statusBar: "#c43e00",
+
+        gradientStart: "#FA6C13",
+        gradientEnd: "#FF9300"
     },
 
     Button:{

@@ -22,16 +22,18 @@ function AdditionalOptionsButtonComponent(props) {
     )
 }
 
-export class BannerButton extends React.PureComponent {
+class BannerButtonComponent extends React.PureComponent {
 
     static defaultProps = {
         contentColor: "white"
-      }
+    }
 
     render() {
+        const { theme } = this.props;
+        const backgroundColor = this.props.color ?? theme.colors.bannerButton
         return (
             <TouchableOpacity 
-                style = {[styles.bannerButton, {backgroundColor: this.props.color}, {...this.props.extraStyles}]}
+                style = {[styles.bannerButton, {backgroundColor}, {...this.props.extraStyles}]}
                 onPress={this.props.onPress}>
                 <AwesomeIcon name={this.props.iconName} size={18} color={this.props.contentColor} style = {{marginRight: 18}} />
                 <Text style = {{color: this.props.contentColor, fontWeight: "bold"}}>{this.props.title}</Text>
@@ -42,4 +44,5 @@ export class BannerButton extends React.PureComponent {
 
 const MinorActionButton = withTheme(MinorActionButtonComponent)
 const AdditionalOptionsButton = withTheme(AdditionalOptionsButtonComponent)
-export {MinorActionButton, AdditionalOptionsButton}
+const BannerButton = withTheme(BannerButtonComponent)
+export {MinorActionButton, AdditionalOptionsButton, BannerButton}

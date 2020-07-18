@@ -108,7 +108,6 @@ export default class ResponsesViewer extends React.Component {
           onPress={this.confirmChanges}
           title="CONFIRM CHANGES"
           iconName = {S.strings.add}
-          color = {S.colors.buttonGreen}
         />
       </View>
     )

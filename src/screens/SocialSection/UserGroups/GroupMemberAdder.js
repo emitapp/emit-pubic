@@ -78,7 +78,6 @@ export default class NewGroupScreen extends React.Component {
 
 
         <BannerButton
-          color = {S.colors.buttonGreen}
           onPress={this.createOrEditGroup}
           iconName = {S.strings.add}
           title = {this.groupSnippet ? "ADD" : "CREATE"}

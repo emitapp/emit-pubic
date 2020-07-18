@@ -44,7 +44,6 @@ export default class FriendMaskSearch extends React.Component {
           onPress={() => this.props.navigation.navigate('MaskMemberAdder')}
           title="CREATE NEW MASK"
           iconName = {S.strings.add}
-          color = {S.colors.buttonGreen}
         />
 
       </View>
