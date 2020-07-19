@@ -1,7 +1,7 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { View } from 'react-native';
+import { View, Image } from 'react-native';
 import { Text, ThemeConsumer } from 'react-native-elements';
 import AwesomeIcon from 'react-native-vector-icons/dist/FontAwesome';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
@@ -42,8 +42,13 @@ export default class SavedLocations extends React.Component {
                 dbref={database().ref(`/savedLocations/${auth().currentUser.uid}`)}
                 emptyStateComponent={
                   <EmptyState
-                    title="No saved locations"
-                    message="You saven't saved any locations yet."
+                    image =  {
+                      <Image source={require('media/NoSavedLocations.png')} 
+                      style = {{height: 100, marginBottom: 8}} 
+                      resizeMode = 'contain' />
+                    }
+                    title="No saved locations."
+                    message="You haven't saved any locations yet."
                   />
                 }
               />

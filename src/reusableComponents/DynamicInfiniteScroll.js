@@ -161,7 +161,7 @@ export default class DymanicInfiniteScroll extends React.Component {
                 image =  {
                     <Image source={require('media/NoSearchResults.png')} 
                     style = {{height: 80, marginBottom: 8}} 
-                    resizeMode = 'center' />
+                    resizeMode = 'contain' />
                 }
                 title = "No results." 
                 message = "Looks like we didn't find anything." 

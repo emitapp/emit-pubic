@@ -33,7 +33,7 @@ export default class ActiveBroadcasts extends React.Component {
                 image =  {
                   <Image source={require('media/NoActiveBroadcasts.png')} 
                   style = {{height: 100, marginBottom: 8}} 
-                  resizeMode = 'center' />
+                  resizeMode = 'contain' />
                 }
                 title = "Pretty chill day, huh?" 
                 message = "You haven't made any broadcasts yet." 

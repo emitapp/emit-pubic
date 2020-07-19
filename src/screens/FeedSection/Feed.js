@@ -36,7 +36,7 @@ export default class Feed extends React.Component {
                 image =  {
                   <Image source={require('media/EmptyFeed.png')} 
                   style = {{height: 80, marginBottom: 8}} 
-                  resizeMode = 'center' />
+                  resizeMode = 'contain' />
                 }
                 title = "It's pretty quiet here" 
                 message = "You have no broadcasts in your feed right now." 

@@ -58,7 +58,7 @@ export default class UserSearch extends React.Component {
                 image =  {
                   <Image source={require('media/NoFriendReqs.png')} 
                   style = {{height: 80, marginBottom: 8}} 
-                  resizeMode = 'center' />
+                  resizeMode = 'contain' />
                 }
                   title = "It's all clear!" 
                   message = {`You have no friend requests in your ${this.state.boxIndex ? "outbox" : "inbox"}.`}
