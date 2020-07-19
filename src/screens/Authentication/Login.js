@@ -1,6 +1,6 @@
 import auth from '@react-native-firebase/auth';
 import React from 'react';
-import { View, Image } from 'react-native';
+import { View, ImageBackground, StatusBar } from 'react-native';
 import S from "styling";
 import { logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import { ThemeConsumer } from 'react-native-elements';
@@ -18,14 +18,13 @@ export default class Login extends React.Component {
       return (
         <ThemeConsumer>
         {({ theme }) => (
-          <View style={{...S.styles.container, backgroundColor: theme.colors.primary}}>
+        <ImageBackground
+          source={require('media/AuthFlowBackground.jpg')}
+          style = {{...S.styles.container, backgroundColor: "black"}}
+          resizeMode = 'cover'>
+          <StatusBar backgroundColor={'black'} barStyle="light-content"/>
 
           <DefaultLoadingModal isVisible={this.state.modalVisible} />
-
-          <Image
-            source={require('media/unDrawPizzaEating.png')}
-            style = {{position: 'absolute', bottom: 0, height: "50%", opacity: 0.3}}
-            resizeMode = 'contain'/>
 
             <View style = {{
               justifyContent: 'center',
@@ -37,7 +36,7 @@ export default class Login extends React.Component {
               marginHorizontal: 30}}>
 
               <Text h3 
-                style = {{color: theme.colors.primary, marginVertical: 8}}>
+                style = {{marginVertical: 8}}>
                   Log In
               </Text>
 
@@ -70,7 +69,6 @@ export default class Login extends React.Component {
               <Button 
                 title="Log In" 
                 onPress={this.handleLogin} 
-                type = "outline"
                 buttonStyle = {{borderWidth: 2, width: 180, height: 50, marginTop: 22}}
                 titleStyle = {{fontSize: 22}}/>
 
@@ -80,7 +78,7 @@ export default class Login extends React.Component {
               onPress={() => this.props.navigation.navigate('LandingPage')}/>
               
             </View>
-          </View>
+          </ImageBackground>
         )}
         </ThemeConsumer>
       )

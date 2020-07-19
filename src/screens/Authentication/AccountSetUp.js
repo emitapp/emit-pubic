@@ -5,7 +5,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
-import { Image, View } from 'react-native';
+import { ImageBackground, View, StatusBar } from 'react-native';
 import { Button, Input, Text, ThemeConsumer } from 'react-native-elements';
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import { MinorActionButton } from 'reusables/ReusableButtons';
@@ -30,12 +30,11 @@ export default class AccountSetUp extends React.Component {
       return (
         <ThemeConsumer>
         {({ theme }) => (
-          <View style={{...S.styles.container, backgroundColor: theme.colors.primary}}>
-  
-          <Image
-          source={require('media/unDrawPizzaEating.png')}
-          style = {{position: 'absolute', bottom: 0, height: "50%", opacity: 0.3}}
-          resizeMode = 'contain'/>
+        <ImageBackground
+          source={require('media/AuthFlowBackground.jpg')}
+          style = {{...S.styles.container, backgroundColor: "black"}}
+          resizeMode = 'cover'>
+          <StatusBar backgroundColor={'black'} barStyle="light-content"/>
 
           <DefaultLoadingModal isVisible={this.state.isModalVisible} />
 
@@ -49,7 +48,7 @@ export default class AccountSetUp extends React.Component {
             marginHorizontal: 30}}>
 
             <Text h4
-              style = {{color: theme.colors.primary, marginVertical: 8, fontWeight: 'bold'}}>
+              style = {{ marginVertical: 8, fontWeight: 'bold'}}>
                 Finish setting up your Biteup Account
             </Text>
 
@@ -93,7 +92,6 @@ export default class AccountSetUp extends React.Component {
             <Button 
               title="Finish" 
               onPress={this.finishUserSetUp} 
-              type = "outline"
               buttonStyle = {{borderWidth: 2, width: 180, height: 50, marginTop: 22}}
               titleStyle = {{fontSize: 22}}/>
 
@@ -102,7 +100,7 @@ export default class AccountSetUp extends React.Component {
               onPress={this.signOut}/>
 
           </View>
-        </View>
+        </ImageBackground>
       )}
       </ThemeConsumer>
       )

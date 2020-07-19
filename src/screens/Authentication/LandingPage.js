@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, View } from 'react-native';
+import { Image, View, ImageBackground, StatusBar } from 'react-native';
 import { Button, Text } from 'react-native-elements';
 import S from "styling";
 
@@ -7,28 +7,37 @@ export default class LandingPage extends React.Component {
 
     render() {
       return (
-        <View style={S.styles.container}>
-            <Text h1>Biteup</Text>
+          <ImageBackground
+            source={require('media/AuthFlowBackground.jpg')}
+            //The background color is added so users don't get a flash of white when the image is loading
+            style = {{...S.styles.containerFlexStart, backgroundColor: "black"}} 
+            resizeMode = 'cover'>
+              <StatusBar backgroundColor={'black'} barStyle="light-content"/>
 
-            <Image
-                source={require('media/unDrawEatingTogether.png')}
-                style = {{height: "30%"}}
-                resizeMode = 'contain'
-            />
-            
-            <Button
-            title = "Sign in with Email"
-            buttonStyle = {{height: 50, width: 256}}
-            titleStyle = {{fontSize: 22}}
-            onPress = {() => this.props.navigation.navigate("Login")}
-            />
+              <View style = {{flexDirection: "row", alignItems: "center", marginTop: 100, marginBottom: 20}}>
+                <Image
+                  source={require('media/LogoWhite.png')}
+                  style = {{height: 80, width: 80}}
+                  resizeMode = 'contain'
+                />
+                <Text h1 h1Style = {{color: 'white', fontFamily: 'NunitoSans-SemiBold'}}>
+                  Biteup
+                </Text>
+              </View>
 
-            <Text 
-            style={{marginTop: 20, textDecorationLine: 'underline'}}
-            onPress = {() => this.props.navigation.navigate("SignUp")}>
-                New to Biteup? Sign up for free
-            </Text>
-        </View>
+              <Button
+              title = "Sign in"
+              buttonStyle = {{height: 50, width: 256}}
+              titleStyle = {{fontSize: 22}}
+              onPress = {() => this.props.navigation.navigate("Login")}
+              />
+
+              <Text 
+              style={{marginTop: 20, textDecorationLine: 'underline', color: "white"}}
+              onPress = {() => this.props.navigation.navigate("SignUp")}>
+                  New to Biteup? Sign up for free
+              </Text>
+            </ImageBackground>
       )
     }
   }
