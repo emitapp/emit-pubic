@@ -38,7 +38,7 @@ export default class Feed extends React.Component {
                   style = {{height: 80, marginBottom: 8}} 
                   resizeMode = 'contain' />
                 }
-                title = "It's pretty quiet here" 
+                title = "It's pretty quiet here." 
                 message = "You have no broadcasts in your feed right now." 
               />
             }
