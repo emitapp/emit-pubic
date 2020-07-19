@@ -14,6 +14,8 @@
 #import <React/RCTRootView.h>
 #import <CodePush/CodePush.h>
 
+#import "RNBootSplash.h"
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -34,6 +36,7 @@
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
 
+  [RNBootSplash initWithStoryboard:@"BootSplash" rootView:rootView]; // For react-native-bootsplash
   [RNNotifications startMonitorNotifications]; //For react-native-notifications
 
   return YES;

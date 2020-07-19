@@ -17,6 +17,7 @@ import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError } from 'utils/helpers';
 import NavigationService from 'utils/NavigationService';
 import crashlytics from '@react-native-firebase/crashlytics';
 import DevBuildBanner from 'reusables/DevBuildBanner'
+import RNBootSplash from "react-native-bootsplash";
 
 export default class App extends React.Component {
 
@@ -29,6 +30,7 @@ export default class App extends React.Component {
     //Don't unsubscribe, so that if the user is signed out (manually or automatically by Firebase),
     // he is still rerouted
     auth().onAuthStateChanged(this.handleAuthChange)
+    RNBootSplash.hide({ duration: 150 });
   }
 
   render() {

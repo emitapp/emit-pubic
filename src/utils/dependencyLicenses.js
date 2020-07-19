@@ -103,6 +103,12 @@ export default
         "licenseUrl": "https://github.com/joshswan/react-native-autolink/raw/master/LICENSE",
         "parents": "biteup"
     },
+    "react-native-bootsplash@2.2.5": {
+        "licenses": "MIT",
+        "repository": "https://github.com/zoontek/react-native-bootsplash",
+        "licenseUrl": "https://github.com/zoontek/react-native-bootsplash/raw/master/LICENSE",
+        "parents": "biteup"
+    },
     "react-native-camera@3.15.1": {
         "licenses": "MIT AND Apache-2.0 AND BSD-3-Clause",
         "repository": "https://github.com/react-native-community/react-native-camera",

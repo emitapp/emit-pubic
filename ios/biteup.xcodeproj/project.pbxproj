@@ -13,6 +13,7 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1A79207A24C4BB170069BB2B /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1A79207924C4BB170069BB2B /* BootSplash.storyboard */; };
 		1A839E88242EAF04009C1C55 /* LottieSafeguard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A839E87242EAF04009C1C55 /* LottieSafeguard.swift */; };
 		1AD6FF96248180D900E879A1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AD6FF95248180D800E879A1 /* GoogleService-Info.plist */; };
 		1E1C5ABC1B3ED17686C56A89 /* libPods-biteup.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D989848A4B57D88A968F385 /* libPods-biteup.a */; };
@@ -61,6 +62,7 @@
 		1A15DDE22480CD170096C2C7 /* GoogleService-Info.prod.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.prod.plist"; sourceTree = "<group>"; };
 		1A15DDE32480CD170096C2C7 /* GoogleService-Info.dev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.dev.plist"; sourceTree = "<group>"; };
 		1A7791882476FC98003A47B2 /* rnuc.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = rnuc.xcconfig; sourceTree = "<group>"; };
+		1A79207924C4BB170069BB2B /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = biteup/BootSplash.storyboard; sourceTree = "<group>"; };
 		1A839E86242EAF04009C1C55 /* biteup-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "biteup-Bridging-Header.h"; sourceTree = "<group>"; };
 		1A839E87242EAF04009C1C55 /* LottieSafeguard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieSafeguard.swift; sourceTree = "<group>"; };
 		1AD6FF95248180D800E879A1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -149,6 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
+				1A79207924C4BB170069BB2B /* BootSplash.storyboard */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -373,6 +376,7 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				3F37B966FBE8457D9CCA6813 /* NunitoSans-Black.ttf in Resources */,
+				1A79207A24C4BB170069BB2B /* BootSplash.storyboard in Resources */,
 				3E5EBD0A9D654D50A314FAAC /* NunitoSans-BlackItalic.ttf in Resources */,
 				06E31616667742AE8A20F5D5 /* NunitoSans-Bold.ttf in Resources */,
 				22EE5FD7B7534F819580CDA0 /* NunitoSans-BoldItalic.ttf in Resources */,
