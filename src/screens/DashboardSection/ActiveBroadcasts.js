@@ -1,7 +1,7 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View, Image } from 'react-native';
 import { BannerButton } from 'reusables/ReusableButtons';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import S from 'styling';
@@ -30,6 +30,11 @@ export default class ActiveBroadcasts extends React.Component {
             dbref = {database().ref(`/activeBroadcasts/${auth().currentUser.uid}/public`)}
             emptyStateComponent = {
               <EmptyState 
+                image =  {
+                  <Image source={require('media/NoActiveBroadcasts.png')} 
+                  style = {{height: 100, marginBottom: 8}} 
+                  resizeMode = 'center' />
+                }
                 title = "Pretty chill day, huh?" 
                 message = "You haven't made any broadcasts yet." 
               />

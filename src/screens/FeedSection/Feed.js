@@ -1,12 +1,12 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { TouchableOpacity, View, StyleSheet } from 'react-native';
+import { TouchableOpacity, View, StyleSheet, Image} from 'react-native';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
 import S from 'styling';
 import {Text} from 'react-native-elements'
-import { epochToDateString, logError } from 'utils/helpers';
+import { epochToDateString } from 'utils/helpers';
 import EmptyState from 'reusables/EmptyState'
 import CountdownComponent from 'reusables/CountdownComponent'
 import { responderStatuses } from 'utils/serverValues';
@@ -33,6 +33,11 @@ export default class Feed extends React.Component {
             dbref = {database().ref(`/feeds/${auth().currentUser.uid}`)}
             emptyStateComponent = {
               <EmptyState 
+                image =  {
+                  <Image source={require('media/EmptyFeed.png')} 
+                  style = {{height: 80, marginBottom: 8}} 
+                  resizeMode = 'center' />
+                }
                 title = "It's pretty quiet here" 
                 message = "You have no broadcasts in your feed right now." 
               />

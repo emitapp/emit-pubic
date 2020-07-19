@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, View, Image } from 'react-native';
 import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
 import EmptyState from 'reusables/EmptyState'
 import {Divider} from 'react-native-elements'
@@ -158,8 +158,13 @@ export default class DymanicInfiniteScroll extends React.Component {
             return this.props.emptyStateComponent
         return (
             <EmptyState 
-                title = "Here's a lot of empty space!" 
-                message = "Looks like we didn't find anything" 
+                image =  {
+                    <Image source={require('media/NoSearchResults.png')} 
+                    style = {{height: 80, marginBottom: 8}} 
+                    resizeMode = 'center' />
+                }
+                title = "No results." 
+                message = "Looks like we didn't find anything." 
             />
         )
     }

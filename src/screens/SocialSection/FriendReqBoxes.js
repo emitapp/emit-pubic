@@ -1,13 +1,13 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { View } from 'react-native';
+import { View, Image } from 'react-native';
 import { ButtonGroup, Text } from 'react-native-elements';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import EmptyState from 'reusables/EmptyState';
 import {UserSnippetListElement} from 'reusables/ListElements';
 import S from 'styling';
-import { epochToDateString, logError } from 'utils/helpers';
+import { epochToDateString } from 'utils/helpers';
 import FriendReqModal from './FriendReqModal';
 import ErrorMessageText from 'reusables/ErrorMessageText';
 
@@ -55,6 +55,11 @@ export default class UserSearch extends React.Component {
               dbref = {this.getRef().orderByChild("timestamp")}
               emptyStateComponent = {
                 <EmptyState 
+                image =  {
+                  <Image source={require('media/NoFriendReqs.png')} 
+                  style = {{height: 80, marginBottom: 8}} 
+                  resizeMode = 'center' />
+                }
                   title = "It's all clear!" 
                   message = {`You have no friend requests in your ${this.state.boxIndex ? "outbox" : "inbox"}.`}
                 />
