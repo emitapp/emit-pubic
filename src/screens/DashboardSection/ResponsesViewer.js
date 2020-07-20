@@ -150,7 +150,9 @@ export default class ResponsesViewer extends React.Component {
             />
           }
         </View>
-        <Text>Changing to: {this.state.responseStatusDeltas[item.uid]}</Text>
+        {this.state.responseStatusDeltas[item.uid] !== undefined && 
+         <Text>Changing to: {this.state.responseStatusDeltas[item.uid]}</Text>
+        }
       </View>
     )
   }

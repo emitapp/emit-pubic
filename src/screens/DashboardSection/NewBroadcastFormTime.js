@@ -57,19 +57,19 @@ export default class NewBroadcastFormTime extends React.Component {
                         in...
                     </Text>
                     <View style={styles.rowStyle}>
-                        {this.generateTimeButton(5, theme.colors.primary)}
-                        {this.generateTimeButton(10, theme.colors.primary)}
-                        {this.generateTimeButton(15, theme.colors.primary)}
+                        {this.generateTimeButton(5, "black")}
+                        {this.generateTimeButton(10, "black")}
+                        {this.generateTimeButton(15, "black")}
                     </View>
                     <View style={styles.rowStyle}>
-                        {this.generateTimeButton(20, theme.colors.primary)}
-                        {this.generateTimeButton(25, theme.colors.primary)}
-                        {this.generateTimeButton(30, theme.colors.primary)}
+                        {this.generateTimeButton(20, "black")}
+                        {this.generateTimeButton(25, "black")}
+                        {this.generateTimeButton(30, "black")}
                     </View>
                     <View style={styles.rowStyle}>
-                        {this.generateTimeButton(45, theme.colors.primary)}
-                        {this.generateTimeButton(60, theme.colors.primary)}
-                        {this.generateTimeButton(90, theme.colors.primary)}
+                        {this.generateTimeButton(45, "black")}
+                        {this.generateTimeButton(60, "black")}
+                        {this.generateTimeButton(90, "black")}
                     </View>
 
                     {!this.state.showingCustom && 
