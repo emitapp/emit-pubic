@@ -5,7 +5,7 @@ import React from 'react'
 import { ScrollView, View, Alert } from 'react-native'
 import { Button, Divider, Input, Text } from 'react-native-elements'
 import ErrorMessageText from 'reusables/ErrorMessageText'
-import { DefaultLoadingModal } from 'reusables/LoadingComponents'
+import { DefaultLoadingModal, DataEmailSendingModal } from 'reusables/LoadingComponents'
 import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers'
 import Snackbar from 'react-native-snackbar'
 
@@ -33,7 +33,8 @@ export default class AccountManagementScreen extends React.Component {
     oldPass3: "",
     deleteAccountError: "",
 
-    isModalVisible: false
+    isModalVisible: false,
+    dataRequestModalCondition: "disabled" //Can be disabled, loading, success, error
   }
 
   render() {
@@ -42,6 +43,8 @@ export default class AccountManagementScreen extends React.Component {
       style={{flex: 1, marginTop: 8}} 
       contentContainerStyle = {{justifyContent: 'flex-start', alignItems: 'center'}}>
         <DefaultLoadingModal isVisible={this.state.isModalVisible} />
+        <DataEmailSendingModal condition={this.state.dataRequestModalCondition} />
+
         <Text h4>Request your Data</Text>
         <Text style = {{marginHorizontal: 8}}>
           You can request for all the data that Biteup has that pertains to you sent to your account's registered  email address.
@@ -165,8 +168,11 @@ export default class AccountManagementScreen extends React.Component {
 
   requestData = async () => {
     try{
-      const response = await timedPromise(functions().httpsCallable('requestAllData')(), LONG_TIMEOUT);
-      console.log(response.data)
+      let error = true;
+      this.setState({dataRequestModalCondition: 'loading'})
+      setTimeout(() => this.setState({dataRequestModalCondition: error ? "error" : "success"}), 2000)
+      setTimeout(() => this.setState({dataRequestModalCondition: 'disabled'}), 4000)
+      //const response = await timedPromise(functions().httpsCallable('requestAllData')(), LONG_TIMEOUT);
     }catch(err){
       if (err.name != 'timeout') logError(err)
     }

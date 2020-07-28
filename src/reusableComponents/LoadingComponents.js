@@ -81,3 +81,43 @@ export class TimeoutLoadingComponent extends React.Component {
         }
     }
 }
+
+//Needs one prop: condition
+// -> disabled, loading, success, error
+export class DataEmailSendingModal extends React.PureComponent {
+    render() {
+        let source = ""
+        let text = ""
+        let loop = true
+        switch (this.props.condition){
+            case "disabled": 
+                source = require('media/animations/file-search.json')
+                text = ''
+                break
+            case "loading": 
+                source = require('media/animations/file-search.json')
+                text = 'Combing our database...'
+                break
+            case "success": 
+                source = require('media/animations/success-check.json')
+                text = 'Email sent!'
+                loop = false
+                break
+            case "error": 
+                source = require('media/animations/error-state-dog.json')
+                text = 'Oops! Looks like something went wrong.'
+                break
+        }
+
+        return (
+            <Overlay isVisible={this.props.condition != 'disabled'}>
+            <View>
+                <View style={{ width: 200, height: 200 }}>
+                    <LottieView source={source} autoPlay loop={loop} />
+                </View>
+                <Text style={{fontWeight: "bold", width: 200, textAlign: 'center' }}>{text}</Text>
+            </View>
+            </Overlay>
+        )
+    }
+}
