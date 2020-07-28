@@ -131,9 +131,8 @@ export default class Main extends React.Component {
 
       //Not actually needed becuase this is done by defualt (unless disabled)
       //But meh
-      if (!messaging().isDeviceRegisteredForRemoteMessages) {
-        await messaging().registerDeviceForRemoteMessages();
-      }      
+      //also -> https://github.com/invertase/react-native-firebase/issues/3367#issuecomment-605907816
+      await messaging().registerDeviceForRemoteMessages();    
       this.syncToken() //Asyncronous
       this.setFCMListeners()
     }catch(err){
