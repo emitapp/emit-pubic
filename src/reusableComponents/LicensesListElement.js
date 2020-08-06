@@ -78,8 +78,8 @@ export default class LicensesListItem extends PureComponent {
 
     if (this.username) {
       this.username = this.capitalizeFirstLetter(this.username)
-      this.imageSrc = `http://github.com/${this.username}.png`;
-      this.creatorUrl = `http://github.com/${this.username}`;
+      this.imageSrc = `https://github.com/${this.username}.png`;
+      this.creatorUrl = `https://github.com/${this.username}`;
     }
     
     this.title = name

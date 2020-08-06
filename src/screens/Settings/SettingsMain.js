@@ -74,8 +74,8 @@ export default class SettingsMain extends React.Component {
               onPress={() => this.props.navigation.navigate("AccountManagementScreen")}
             />
             <SettingSectionButton 
-              title = "Contact or Support Biteup"
-              icon = {<FeatherIcon name="heart" />}
+              title = "Contact Biteup"
+              icon = {<FontAwesomeIcon name="paper-plane" />}
               color = {theme.colors.grey0}  
               onPress = {() => this.props.navigation.navigate("ContactSupportPage")}
             />   
