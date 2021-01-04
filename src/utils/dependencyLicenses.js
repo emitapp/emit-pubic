@@ -151,10 +151,10 @@ export default
         "licenseUrl": "https://github.com/Agontuk/react-native-geolocation-service/raw/master/LICENSE",
         "parents": "biteup"
     },
-    "react-native-gesture-handler@1.5.2": {
+    "react-native-gesture-handler@1.9.0": {
         "licenses": "MIT",
-        "repository": "https://github.com/kmagiera/react-native-gesture-handler",
-        "licenseUrl": "https://github.com/kmagiera/react-native-gesture-handler/raw/master/LICENSE",
+        "repository": "https://github.com/software-mansion/react-native-gesture-handler",
+        "licenseUrl": "https://github.com/software-mansion/react-native-gesture-handler/raw/master/LICENSE",
         "parents": "biteup"
     },
     "react-native-image-picker@2.0.0": {
@@ -199,13 +199,19 @@ export default
         "licenseUrl": "https://github.com/awesomejerry/react-native-qrcode-svg/raw/master/LICENSE",
         "parents": "biteup"
     },
-    "react-native-reanimated@1.4.0": {
+    "react-native-reanimated@1.13.2": {
         "licenses": "MIT",
-        "repository": "https://github.com/kmagiera/react-native-reanimated",
-        "licenseUrl": "https://github.com/kmagiera/react-native-reanimated/raw/master/LICENSE",
+        "repository": "https://github.com/software-mansion/react-native-reanimated",
+        "licenseUrl": "https://github.com/software-mansion/react-native-reanimated/raw/master/LICENSE",
         "parents": "biteup"
     },
-    "react-native-screens@1.0.0-alpha.23": {
+    "react-native-safe-area-context@3.1.9": {
+        "licenses": "MIT",
+        "repository": "https://github.com/th3rdwave/react-native-safe-area-context",
+        "licenseUrl": "https://github.com/th3rdwave/react-native-safe-area-context/raw/master/LICENSE",
+        "parents": "biteup"
+    },
+    "react-native-screens@2.16.1": {
         "licenses": "MIT",
         "repository": "https://github.com/kmagiera/react-native-screens",
         "licenseUrl": "https://github.com/kmagiera/react-native-screens/raw/master/LICENSE",
@@ -247,13 +253,13 @@ export default
         "licenseUrl": "https://github.com/react-navigation/react-navigation-stack/raw/master/LICENSE.md",
         "parents": "biteup"
     },
-    "react-navigation-tabs@2.6.2": {
+    "react-navigation-tabs@2.10.1": {
         "licenses": "MIT",
         "repository": "https://github.com/react-navigation/tabs",
-        "licenseUrl": "https://github.com/react-navigation/tabs/raw/master/LICENSE.md",
+        "licenseUrl": "https://github.com/react-navigation/tabs/raw/master/LICENSE",
         "parents": "biteup"
     },
-    "react-navigation@4.0.10": {
+    "react-navigation@4.4.3": {
         "licenses": "MIT",
         "repository": "https://github.com/react-navigation/react-navigation",
         "licenseUrl": "https://github.com/react-navigation/react-navigation/raw/master/LICENSE",
