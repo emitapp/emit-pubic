@@ -15,8 +15,7 @@ import S from 'styling';
 import { isOnlyWhitespace, logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import * as recentLocFuncs from 'utils/RecentLocationsFunctions';
 import {MAX_LOCATION_NAME_LENGTH} from 'utils/serverValues'
-import uuid from 'uuid/v4';
-
+import { v4 as uuidv4 } from 'uuid';
 
 export default class NewBroadcastFormLocation extends React.Component {
 
@@ -139,7 +138,7 @@ export default class NewBroadcastFormLocation extends React.Component {
             return
         }
         this.props.navigation.state.params.location = this.state.locationName
-        const locationToSave = {name: this.state.locationName, uid: uuid()} 
+        const locationToSave = {name: this.state.locationName, uid: uuidv4()} 
         if (this.state.locationPin.latitude != null){
             this.props.navigation.state.params.geolocation = this.state.locationPin
             locationToSave.geolocation = this.state.locationPin

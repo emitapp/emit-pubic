@@ -6,7 +6,7 @@ import { Platform, StyleSheet, View, Image, Alert, Linking } from 'react-native'
 import ImagePicker from 'react-native-image-picker';
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import { logError } from 'utils/helpers';
-import uuid from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import {Text, Button, Overlay} from 'react-native-elements'
 import {SmallLoadingComponent} from 'reusables/LoadingComponents'
 import Snackbar from 'react-native-snackbar';
@@ -132,7 +132,7 @@ export default class ProfilePicChanger extends Component {
 
   uploadImage = async () => {
     if (!this.state.imageUri) return;
-    let filename = `${uuid()}` // Generate unique name
+    let filename = `${uuidv4()}` // Generate unique name
     this.setState({ uploading: true });
     let task = storage().ref(`profilePictures/${auth().currentUser.uid}/${filename}`)
 
@@ -195,7 +195,7 @@ export default class ProfilePicChanger extends Component {
                 finalResults[1] = await this.requestIfNeeded(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, permissionResults[1])
                 finalResults[2] = await this.requestIfNeeded(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, permissionResults[2])
 
-                if (finalResults[1] != RESULTS.GRANTED){
+                if (finalResults[1] != RESULTS.GRANTED && finalResults[1] != RESULTS.LIMITED){
                     logError(new Error ("Essential Permission not Granted, aborted"), false)
                     throw new Error("Invalid permissions")
                 }
@@ -207,7 +207,7 @@ export default class ProfilePicChanger extends Component {
                 finalResults[0] = await this.requestIfNeeded(PERMISSIONS.IOS.CAMERA, permissionResults[0])
                 finalResults[1] = await this.requestIfNeeded(PERMISSIONS.IOS.PHOTO_LIBRARY, permissionResults[1])
 
-                if (finalResults[1] != RESULTS.GRANTED){
+                if (finalResults[1] != RESULTS.GRANTED && finalResults[1] != RESULTS.LIMITED){
                   logError(new Error ("Essential Permission not Granted, aborted"), false)
                   throw new Error("Invalid permissions")
                 }
@@ -221,7 +221,7 @@ export default class ProfilePicChanger extends Component {
 
     requestIfNeeded = async (permission, checkResult) => {
         try{
-            if (checkResult == RESULTS.GRANTED){
+            if (checkResult == RESULTS.GRANTED || checkResult == RESULTS.LIMITED){
                 return checkResult;
             }else if (checkResult == RESULTS.UNAVAILABLE || checkResult == RESULTS.BLOCKED){
                 return checkResult;

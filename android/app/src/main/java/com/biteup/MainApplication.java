@@ -14,6 +14,7 @@ import java.util.List;
 import com.wix.reactnativenotifications.RNNotificationsPackage;
 import com.reactnativeultimateconfig.UltimateConfigModule;
 import com.microsoft.codepush.react.CodePush;
+import com.facebook.react.ReactInstanceManager;
 
 //Application needs ot be multidex because of all the node.js dependencies
 import androidx.multidex.MultiDexApplication;
