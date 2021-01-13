@@ -26,7 +26,6 @@ export default class Feed extends React.Component {
 
           <ErrorMessageText message = {this.state.errorMessage} />
 
-
           <DynamicInfiniteScroll
             renderItem = {this.itemRenderer}
             generation = {0}
@@ -39,7 +38,7 @@ export default class Feed extends React.Component {
                   resizeMode = 'contain' />
                 }
                 title = "It's pretty quiet here." 
-                message = "You have no broadcasts in your feed right now." 
+                message = "You have no flares in your feed right now." 
               />
             }
           />
