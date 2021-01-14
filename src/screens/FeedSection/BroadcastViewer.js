@@ -1,20 +1,19 @@
-import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
-import { View, Linking, Platform } from 'react-native';
-import { Button, Divider, Text, Tooltip } from 'react-native-elements';
+import { Linking, Platform, View } from 'react-native';
+import { Button, Divider, Text } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/Entypo';
+import AutolinkText from 'reusables/AutolinkText';
+import LockNotice from 'reusables/BroadcastLockNotice';
+import CountdownComponent from 'reusables/CountdownComponent';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
+import ErrorMessageText from 'reusables/ErrorMessageText';
 import { UserSnippetListElement } from 'reusables/ListElements';
 import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/LoadingComponents';
 import S from "styling";
-import {logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
-import { responderStatuses, cloudFunctionStatuses } from 'utils/serverValues';
-import CountdownComponent from 'reusables/CountdownComponent'
-import Icon from 'react-native-vector-icons/Entypo';
-import AutolinkText from 'reusables/AutolinkText'
-import ErrorMessageText from 'reusables/ErrorMessageText';
-import LockNotice from 'reusables/BroadcastLockNotice'
+import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
+import { cloudFunctionStatuses, responderStatuses } from 'utils/serverValues';
 
 export default class BroadcastViewer extends React.Component {
 
@@ -52,7 +51,6 @@ export default class BroadcastViewer extends React.Component {
         
         <ErrorMessageText message = {this.state.errorMessage} />
 
-
         {!broadcastData &&
             <TimeoutLoadingComponent hasTimedOut={false} retryFunction={() => null}/>
         }
@@ -85,31 +83,19 @@ export default class BroadcastViewer extends React.Component {
         {(broadcastData && broadcastData.locked) && 
             <LockNotice message={"This broadcast has react the response limit it's creator set. It won't receive any more responses."} />
         }
+
         {this.displayBroadcastAction()}
         <Divider style = {{marginVertical: 8}} />
 
         {broadcastData && 
             <Text style = {{alignSelf: "center"}}>{broadcastData.totalConfirmations} user(s) have confirmed to join</Text>
         }
-        {!this.state.showConfirmed && broadcastData && broadcastData.totalConfirmations != 0 &&
-          <Button 
-            title="Show Confirmations" 
-            onPress={() => this.setState({showConfirmed: true})}
-            containerStyle = {{alignSelf: "center"}}/>
-        }
 
-        {this.state.showConfirmed &&
-          <DynamicInfiniteScroll
-            renderItem = {this.itemRenderer}
-            generation = {0}
-            dbref = {
-              database()
-              .ref(`activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)
-              .orderByChild("status")
-              .equalTo(responderStatuses.CONFIRMED)
-            }
-          />
-        }
+        <DynamicInfiniteScroll
+          renderItem = {this.itemRenderer}
+          dbref = {database().ref(`activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)}
+          emptyStateComponent = {<Text style = {{alignSelf: "center"}}> Nothing to see here </Text>}
+        />
       </View>
     )
   }
@@ -134,19 +120,14 @@ export default class BroadcastViewer extends React.Component {
   sendConfirmationRequest = async () => {
     this.setState({isModalVisible: true})
     try{
-      const newStatus = (this.state.broadcastData.autoConfirm ? responderStatuses.CONFIRMED : responderStatuses.PENDING)
-      const newStatuses = {}
-      newStatuses[auth().currentUser.uid] = newStatus
-
       const requestFunction = functions().httpsCallable('setBroadcastResponse');
       const response = await timedPromise(requestFunction({
         broadcasterUid: this.broadcastSnippet.owner.uid,
-        broadcastUid: this.broadcastSnippet.uid,
-        newStatuses
+        broadcastUid: this.broadcastSnippet.uid
       }), LONG_TIMEOUT);
 
       if (response.data.status === cloudFunctionStatuses.OK){
-        this.broadcastSnippet.status = newStatus
+        this.broadcastSnippet.status = responderStatuses.CONFIRMED
       }else{
         this.setState({errorMessage: response.data.message})
         logError(new Error("Problematic setBroadcastResponse function response: " + response.data.message))

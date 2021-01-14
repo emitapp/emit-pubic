@@ -105,7 +105,7 @@ export default class DymanicInfiniteScroll extends React.Component {
             if (this.props.endingPoint) ref = ref.endAt(this.props.endingPoint)
 
             this.lastUsedRef = ref;
-            ref.on("value", this.refListenerCallback)
+            ref.on("value", this.refListenerCallback, this.onError)
         }
         catch (error) {
             this.onError(error)

@@ -66,7 +66,6 @@ export default class ActiveBroadcasts extends React.Component {
         </View>
        
        {item.locked && <Icon name="lock" color="grey" size={24} style = {{marginHorizontal: 8}}/>}
-       {item.pendingResponses != 0 && <Badge value={item.pendingResponses} status="error"/>}
       </TouchableOpacity>
     );
   }

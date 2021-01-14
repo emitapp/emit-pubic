@@ -9,8 +9,6 @@ import {Text} from 'react-native-elements'
 import { epochToDateString } from 'utils/helpers';
 import EmptyState from 'reusables/EmptyState'
 import CountdownComponent from 'reusables/CountdownComponent'
-import { responderStatuses } from 'utils/serverValues';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ErrorMessageText from 'reusables/ErrorMessageText';
 
@@ -101,21 +99,13 @@ export default class Feed extends React.Component {
 
   displayStatus = (item) => {
     if (!item.status) return
-    if (item.status == responderStatuses.PENDING){
-      return (
-        <View style={{...styles.statusParentStyle, backgroundColor: "dimgrey"}}>
-          <MaterialIcons name = "access-time" size = {20} color = "white" />
-          <Text style = {{color: "white", fontWeight: "bold"}}> {item.status}</Text>
-        </View>
-      )
-    }else{
-      return(
-        <View style={{...styles.statusParentStyle, backgroundColor: "green"}}>
-          <MaterialCommunityIcons name = "check-bold" size = {20} color = "white" />
-          <Text style = {{color: "white", fontWeight: "bold"}}> {item.status}</Text>
-        </View>
-      )
-    }  
+    
+    return(
+      <View style={{...styles.statusParentStyle, backgroundColor: "green"}}>
+        <MaterialCommunityIcons name = "check-bold" size = {20} color = "white" />
+        <Text style = {{color: "white", fontWeight: "bold"}}> {item.status}</Text>
+      </View>
+    )
   }
 }
 

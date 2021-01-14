@@ -8,9 +8,7 @@ export const cloudFunctionStatuses = {
 }
 
 export const responderStatuses = {
-    CONFIRMED: "Confirmed",
-    IGNORED: "Ignored",
-    PENDING: "Pending"
+    CONFIRMED: "confirmed",
 }
 
 export const groupRanks = {
