@@ -51,18 +51,27 @@ export default class Feed extends React.Component {
       <TouchableOpacity 
         style = {{marginVertical: 8, marginLeft: 8}}
         onPress = {() => this.props.navigation.navigate('BroadcastViewer', {broadcast: item}) }>
-          <View style = {{flexDirection: "row", alignItems: "center", width: "100%", marginBottom: 8}}>
-            <ProfilePicDisplayer diameter = {48} uid = {item.owner.uid} style = {{marginRight: 10}} />
-            <View>
-              <Text style = {{fontSize: 18, fontFamily: "NunitoSans-Semibold"}}>
-                {item.owner.displayName}
-              </Text>
-              <Text style = {{color: "dimgrey"}}>@{item.owner.username}</Text>
+          <View style = {{flexDirection: 'row'}}>
+
+            <View style = {{flexDirection: 'column'}}>
+              <ProfilePicDisplayer diameter = {52} uid = {item.owner.uid} style = {{marginRight: 20}} /> 
             </View>
-            <CountdownComponent deadLine = {item.deathTimestamp}  renderer = {this.timeLeftRenderer} />
+            
+            <View style = {{flexDirection: 'column'}}>
+              <Text style = {{fontSize: 22, fontFamily: "NunitoSans-Semibold"}}>{item.location}</Text>
+              
+              <View style = {{flexDirection: 'row'}}>
+                <ProfilePicDisplayer diameter = {22} uid = {item.owner.uid} style = {{marginRight: 10}} />
+                <Text style = {{fontSize: 14, fontFamily: "NunitoSans-Semibold"}}>{item.owner.displayName}</Text>         
+              </View>
+
+            </View>
+            <View style = {{flexDirection: 'column', paddingLeft: 132}}>
+              <CountdownComponent deadLine = {item.deathTimestamp}  renderer = {this.timeLeftRenderer} />
+              <Text>for X min</Text>
+            </View>
           </View>
-          <Text style = {{fontSize: 16, fontFamily: "NunitoSans-Semibold"}}>{item.location}</Text>
-          <Text>Will be there at: {epochToDateString(item.deathTimestamp)}</Text>
+          
           {item.groupInfo &&  <Text style = {{fontStyle: "italic"}}>Sent via {item.groupInfo.name} group</Text>}
 
           {item.note != undefined && item.note != "" &&
@@ -76,24 +85,26 @@ export default class Feed extends React.Component {
 
   timeLeftRenderer = (time) => {
     let string = ""
-    let subtitle = ""
+    let metric = ""
     if (time.h){
-      subtitle = "hours"
-      if (time.m > 30) string = `${time.h}+`
+      metric = "hours"
+      if (time.m > 30) string = `in ${time.h}+`
       else string = `${time.h}`
-      string = time.h
+      string = `in ${time.h}`
     }else if (time.m){
-      if (time.s > 30) string = `${time.m}+`
-      else string = `${time.m}`
-      subtitle = "mins"
+      if (time.s > 30) string = `in ${time.m}+`
+      else string = `in ${time.m}`
+      metric = "mins"
     }else{
-      subtitle = "mins"
+      metric = "mins"
       string = "<1"
     }
     return(
-    <View style = {{marginLeft: "auto"}}>
-      <Text style = {{textAlign: "center", fontSize: 20}}>{string}</Text>
-      <Text style = {{textAlign: "center", fontSize: 16}}>{subtitle}</Text>
+    <View>
+      <View style = {{flexDirection: 'row'}}>
+        <Text style = {{textAlign: "center", fontSize: 15}}>{string}</Text>
+        <Text style = {{textAlign: "center", fontSize: 16, marginLeft: 4}}>{metric}</Text>
+      </View>
     </View>      
     );
   }
@@ -117,7 +128,6 @@ export default class Feed extends React.Component {
     }  
   }
 }
-
 
 const styles = StyleSheet.create({
   statusParentStyle: {
