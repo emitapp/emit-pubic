@@ -29,10 +29,11 @@ export default class Feed extends React.Component {
           <DynamicInfiniteScroll
             renderItem = {this.itemRenderer}
             generation = {0}
+            
             dbref = {database().ref(`/feeds/${auth().currentUser.uid}`)}
             emptyStateComponent = {
               <EmptyState 
-                image =  {
+                image =  { 
                   <Image source={require('media/EmptyFeed.png')} 
                   style = {{height: 80, marginBottom: 8}} 
                   resizeMode = 'contain' />
@@ -59,14 +60,14 @@ export default class Feed extends React.Component {
             
             <View style = {{flexDirection: 'column'}}>
               <Text style = {{fontSize: 22, fontFamily: "NunitoSans-Semibold"}}>{item.location}</Text>
-              
+             
               <View style = {{flexDirection: 'row'}}>
                 <ProfilePicDisplayer diameter = {22} uid = {item.owner.uid} style = {{marginRight: 10}} />
                 <Text style = {{fontSize: 14, fontFamily: "NunitoSans-Semibold"}}>{item.owner.displayName}</Text>         
               </View>
 
             </View>
-            <View style = {{flexDirection: 'column', paddingLeft: 132}}>
+            <View style = {{flexDirection: 'column', marginLeft: 80}}>
               <CountdownComponent deadLine = {item.deathTimestamp}  renderer = {this.timeLeftRenderer} />
               <Text>for X min</Text>
             </View>
