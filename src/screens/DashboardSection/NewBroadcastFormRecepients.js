@@ -4,7 +4,7 @@ import React from 'react';
 import { ScrollView, View } from 'react-native';
 import { CheckBox, Text, ThemeConsumer } from 'react-native-elements';
 import { ClearHeader } from 'reusables/Header';
-import { UserSnippetListElement, FriendMaskListElement, UserGroupListElement } from 'reusables/ListElements';
+import { UserSnippetListElement, UserGroupListElement } from 'reusables/ListElements';
 import MainLinearGradient from 'reusables/MainLinearGradient';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import {BannerButton} from 'reusables/ReusableButtons'
@@ -28,12 +28,6 @@ export default class NewBroadcastFormRecepients extends React.Component {
             this.queryTypes = [{name: "Display Name", value: "displayNameQuery"}, {name: "Username", value: "usernameQuery"}]    
             this.mapper = ({username}) => `@${username} `
             this.state.allFriends = navigationParams.data.allFriends
-        }else if (this.mode == "masks"){
-            this.state = {selectedSnippets: JSON.parse(JSON.stringify(navigationParams.data.recepientMasks))}
-            this.rendererType = FriendMaskListElement
-            this.dbRef = database().ref(`/userFriendGroupings/${userUid}/custom/snippets`)
-            this.queryTypes = [{name: "Name", value: "name"}]
-            this.mapper = ({name}, index) => `[${index + 1}] ${name} `
         }else{ //Default to user groups
             this.state = {selectedSnippets: JSON.parse(JSON.stringify(navigationParams.data.recepientGroups))}
             this.rendererType = UserGroupListElement
@@ -108,8 +102,6 @@ export default class NewBroadcastFormRecepients extends React.Component {
             const {allFriends} = this.state
             this.props.navigation.state.params.data.allFriends = allFriends
             this.props.navigation.state.params.data.recepientFriends = this.state.selectedSnippets
-        }else if (this.mode == "masks"){
-            this.props.navigation.state.params.data.recepientMasks = this.state.selectedSnippets
         }else{ //Default to user groups
             this.props.navigation.state.params.data.recepientGroups = this.state.selectedSnippets
         }
@@ -122,7 +114,6 @@ export default class NewBroadcastFormRecepients extends React.Component {
             <this.rendererType
               style = {{flex: 1}}
               snippet={item} 
-              maskInfo = {item}
               groupInfo = {item}
               onPress={() => this.toggleSelection(item)}
               imageDiameter = {45}

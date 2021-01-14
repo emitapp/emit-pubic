@@ -103,12 +103,6 @@ class NewBroadcastForm extends React.Component {
                 />
                 <FormBox 
                     onPress = {() => this.props.navigation.navigate("NewBroadcastFormRecepients", 
-                        {mode: "masks", data: this.state.passableBroadcastInfo})}
-                    amount = {`${Object.keys(this.state.passableBroadcastInfo.recepientMasks).length}`}
-                    title = "masks"
-                />
-                <FormBox 
-                    onPress = {() => this.props.navigation.navigate("NewBroadcastFormRecepients", 
                         {mode: "groups", data: this.state.passableBroadcastInfo})}
                     amount = {`${Object.keys(this.state.passableBroadcastInfo.recepientGroups).length}`}
                     title = "groups"

@@ -39,31 +39,6 @@ export class UserSnippetListElement extends React.PureComponent {
 }
 
 /**
- * Standard ListView element component for viewing friend masks snippets.
- * Required props: maskInfo
- */
-export class FriendMaskListElement extends React.PureComponent {
-
-  render() {
-    const {maskInfo, onPress} = this.props
-    return (
-      <ThemeConsumer>
-      {({ theme }) => (
-        <TouchableOpacity 
-          style = {{...S.styles.listElement, ...this.props.style}}
-          onPress = {onPress}>
-            <View style = {{marginLeft: 8}}>
-              <Text style = {{fontWeight: 'bold', fontSize: 18}} >{maskInfo.name}</Text>
-              <Text style = {{color: theme.colors.grey2}}>{maskInfo.memberCount} members</Text>
-            </View>
-        </TouchableOpacity>
-      )}
-      </ThemeConsumer>
-    )
-  }
-}
-
-/**
  * Standard ListView element component for viewing user groups.
  * Required props: groupInfo
  */

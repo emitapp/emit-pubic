@@ -1,9 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
 import SocialButtonHub from './SocialButtonHub';
-import MaskSearch from './FriendMasks/MaskSearch';
-import MaskMemberAdder from './FriendMasks/MaskMemberAdder';
-import MaskViewer from './FriendMasks/MaskViewer';
 import FriendRequests from './FriendReqBoxes';
 import FriendSearch from './FriendSearch';
 import QRScanner from './QRFriendAdder';
@@ -20,9 +17,6 @@ const Navigator = createStackNavigator(
     FriendRequests,
     QRScanner,
     FriendSearch,
-    MaskSearch,
-    MaskViewer,
-    MaskMemberAdder,
     GroupMemberAdder,
     GroupSearch,
     GroupViewer

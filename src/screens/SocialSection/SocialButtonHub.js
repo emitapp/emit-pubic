@@ -62,11 +62,6 @@ export default class SocialButtonHub extends React.Component {
             </View>
 
             <View style={styles.rowStyle}>
-                <SocialSectionButton color={theme.colors.secondary}
-                    onPress={() => this.props.navigation.navigate('MaskSearch')}
-                    icon = {<FontAwesomeIcon name="user-friends" size={32}/>}
-                    text = {<Text>Friend Masks</Text> } 
-                />
 
                 <SocialSectionButton color={theme.colors.secondary}
                     onPress={() => this.props.navigation.navigate('GroupSearch')}
