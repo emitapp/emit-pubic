@@ -1,33 +1,81 @@
 import React from "react"
 import ScrollingText from "reusables/HorizontalScrollingText"
+import { Text, View } from 'react-native'
 import MainTheme from 'styling/mainTheme'
+import ProfilePicDisplayer from 'reusables/ProfilePicComponents'
+import NavigationService from 'utils/NavigationService';
+import auth from "@react-native-firebase/auth"
+import { TouchableOpacity } from "react-native-gesture-handler"
 
-export default function StandardHeader (title) {
+const profilePic = () => {
+    return (
+        <TouchableOpacity onPress={() => NavigationService.navigate("SocialButtonHub")}>
+            <ProfilePicDisplayer
+                diameter={40}
+                uid={auth().currentUser.uid}
+                style={{ marginLeft: 10 }}
+            />
+        </TouchableOpacity>)
+}
+
+export default function StandardHeader(title) {
     return {
-        title,
+        headerTitle: props => {
+            let textStyle = {}
+            props.style.forEach(styleObject => {
+                textStyle = { ...textStyle, ...styleObject }
+            });
+            return (
+                <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 10}}>
+                    <Text style={{...textStyle, flex: 1}}> {title} </Text>
+                    {profilePic()}
+                </View>
+            )
+        },
         headerStyle: {
             backgroundColor: MainTheme.colors.primary,
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
             fontFamily: "NunitoSans-Regular",
-            color: "white"
+            color: "white",
+            fontSize: 20
         }
     }
 };
 
-export function ScrollingHeader (title) {
+export function ClearHeader(title) {
+    return {
+        title,
+        headerTitle: undefined,
+        headerStyle: {
+            backgroundColor: MainTheme.colors.primary,
+            elevation: 0,
+            shadowOpacity: 0,
+            shadowColor: "transparent",
+            borderBottomWidth: 0,
+        },
+        headerTintColor: '#fff',
+    };
+}
+
+export function ScrollingHeader(title) {
     return {
         headerTitle: props => {
             let textStyle = {}
             props.style.forEach(styleObject => {
-                textStyle = {...textStyle, ...styleObject}
+                textStyle = { ...textStyle, ...styleObject }
             });
-            return (<ScrollingText 
-                containerStyle = {{minWidth: "100%"}}
-                textStyle = {{...textStyle, minWidth: "100%"}}>
-                    {title}
-                </ScrollingText>)
+            return (
+                <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 10}}>
+                    <ScrollingText
+                        containerStyle={{ flex: 1 }}
+                        textStyle={{ ...textStyle, minWidth: "100%" }}>
+                        {title}
+                    </ScrollingText>
+                    {profilePic()}
+                </View>
+            )
         },
         headerStyle: {
             backgroundColor: MainTheme.colors.primary,
@@ -36,21 +84,9 @@ export function ScrollingHeader (title) {
         headerTintColor: '#fff',
         headerTitleStyle: {
             fontFamily: "NunitoSans-Regular",
-            color: "white"
+            color: "white",
+            fontSize: 20
         }
     }
 };
 
-export function ClearHeader (navigationOptions, title) {
-    return {
-        title,
-        headerStyle: {
-            ...navigationOptions.headerStyle,
-            elevation: 0,
-            shadowOpacity: 0,
-            shadowColor: "transparent",
-            borderBottomWidth: 0,
-        },
-        headerTintColor: navigationOptions.headerTintColor,
-    };
-}

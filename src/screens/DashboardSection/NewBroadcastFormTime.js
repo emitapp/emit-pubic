@@ -38,9 +38,7 @@ export default class NewBroadcastFormTime extends React.Component {
     }
 
 
-    static navigationOptions = ({ navigationOptions }) => {
-        return ClearHeader(navigationOptions, "New Broadcast")
-    };
+    static navigationOptions = ClearHeader("New Broadcast")
 
     render() {
       return (

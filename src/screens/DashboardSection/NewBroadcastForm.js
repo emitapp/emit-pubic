@@ -44,9 +44,7 @@ class NewBroadcastForm extends React.Component {
         }
     }
 
-    static navigationOptions = ({ navigationOptions }) => {
-        return ClearHeader(navigationOptions, "New Broadcast")
-    };
+    static navigationOptions = ClearHeader("New Broadcast");
 
     componentDidMount() {
         const { navigation } = this.props;
