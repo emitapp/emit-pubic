@@ -47,7 +47,8 @@ export default class SearchableInfiniteScroll extends React.Component {
   }
 
   render() {
-    const { type, queryTypes, queryValidator, dbref, style, ...otherProps } = this.props
+    const { type, queryTypes, queryValidator, dbref, style,
+      parentEmptyStateComponent, searchbarPlaceholder, ...otherProps } = this.props
     return (
       <ThemeConsumer>
         {({ theme }) => (
@@ -55,11 +56,11 @@ export default class SearchableInfiniteScroll extends React.Component {
 
             <SearchBar
               autoCapitalize="none"
-              placeholder= {this.props.searchbarPlaceholder || "Search"}
+              placeholder={searchbarPlaceholder || "Search"}
               onChangeText={searchBarValue => this.setState({ searchBarValue })}
               value={this.state.searchBarValue}
               onSubmitEditing={this.search}
-              onClear = {() => this.setState({searchBarValue: '', query: null})}
+              onClear={() => this.setState({ searchBarValue: '', query: null })}
             />
 
             <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
@@ -74,7 +75,7 @@ export default class SearchableInfiniteScroll extends React.Component {
             </View>
 
             {(this.state.query == null) ? (
-               this.renderEmptyState() 
+              this.renderEmptyState()
             ) : (
                 this.props.type == "static" ? (
                   <StaticInfiniteScroll
