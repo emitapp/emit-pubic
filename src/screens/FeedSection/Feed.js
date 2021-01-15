@@ -5,6 +5,7 @@ import { TouchableOpacity, View, StyleSheet, Image} from 'react-native';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
 import S from 'styling';
+import {FlatList} from 'react-native';
 import {Text} from 'react-native-elements'
 import { epochToDateString } from 'utils/helpers';
 import EmptyState from 'reusables/EmptyState'
@@ -17,6 +18,7 @@ import ErrorMessageText from 'reusables/ErrorMessageText';
 export default class Feed extends React.Component {
 
   state = { 
+    string: "",
     errorMessage: null, 
   }
 
@@ -79,10 +81,37 @@ export default class Feed extends React.Component {
             <Text style = {{fontStyle: "italic", color: "dimgrey", marginLeft: 8, marginVertical: 8}}>{item.note}</Text>
           }
 
-          {this.displayStatus(item)}
-      </TouchableOpacity>
+          <View><Text>{this.displayAttendees(item)}</Text></View>
+      
+          
+      </TouchableOpacity> 
     );
   }
+  
+  displayAttendees = (item) => {
+    const owner = item.owner.uid;
+    const dbref = database().ref(`/activeBroadcasts/${owner}/responders/${item.uid}`); 
+    let string = "";
+    dbref.on("value", function(snapshot) {
+      let attendees = [];
+      const data = snapshot.val();
+      for (let id in data) {
+        attendees.push(data[id]['displayName']);
+      } 
+      if (attendees.length > 2) {
+        string = `${attendees.pop()}, ${attendees.pop()} and ${attendees.length} 
+        other people are in `
+      } else if (attendees.length == 2) {
+        string = `${attendees.pop()} and ${attendees.pop()} are in`
+      } else {
+        string = `${attendees.pop()} is in`
+      } 
+    }, function (errorObject) {
+      console.log("The read failed: " + errorObject.code);
+    })
+    console.log(string);
+    return string; 
+  } 
 
   timeLeftRenderer = (time) => {
     let string = ""
