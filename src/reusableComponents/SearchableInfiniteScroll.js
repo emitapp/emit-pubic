@@ -18,17 +18,21 @@ import StaticInfiniteScroll from './StaticInfiniteScroll'
 //can be entered into the orderByChild value of a databse ref
 //queryValidator: a function that determines whether a querty is valid enough to attempt
 
+//OPTIONAL PROPS:
+//parentEmptyStateComponent
+//searchbarPlaceholder
+
 //Also be sure to give this class all the props necessary for the 
 //chosen infinite scrolling component to work, 
 //but don't give them a generation, startingPoint or endingPoint
 export default class SearchableInfiniteScroll extends React.Component {
 
-  constructor(props){
+  constructor(props) {
     super(props)
-    this.state = { 
-      searchBarValue: '', 
-      query: this.getInitialQueryValue(), 
-      searchGeneration: 0, 
+    this.state = {
+      searchBarValue: '',
+      query: this.getInitialQueryValue(), //Will be null if the query isn't valid
+      searchGeneration: 0,
       currentSorter: this.props.queryTypes[0].value
     }
   }
@@ -36,91 +40,89 @@ export default class SearchableInfiniteScroll extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.dbref.toString() !== prevProps.dbref.toString()) {
       this.setState({
-        query: this.getInitialQueryValue(), 
+        query: this.getInitialQueryValue(),
         searchGeneration: this.state.searchGeneration + 1
       })
     }
   }
 
   render() {
-    const {type, queryTypes, queryValidator, dbref, style, ...otherProps } = this.props
+    const { type, queryTypes, queryValidator, dbref, style, ...otherProps } = this.props
     return (
       <ThemeConsumer>
-      {({ theme }) => (
-      <View style={{...S.styles.containerFlexStart, width: "100%", ...style}}>
-      
-        <SearchBar
-          autoCapitalize="none"
-          placeholder="Search"
-          onChangeText={searchBarValue => this.setState({ searchBarValue })}
-          value={this.state.searchBarValue}
-          onSubmitEditing = {this.search}
-        />
+        {({ theme }) => (
+          <View style={{ ...S.styles.containerFlexStart, width: "100%", ...style }}>
 
-        <View style = {{flexDirection: "row", alignItems: "center", marginBottom: 16}}>
-          <Text style = {{marginHorizontal: 16}}>Search by...</Text>
+            <SearchBar
+              autoCapitalize="none"
+              placeholder= {this.props.searchbarPlaceholder || "Search"}
+              onChangeText={searchBarValue => this.setState({ searchBarValue })}
+              value={this.state.searchBarValue}
+              onSubmitEditing={this.search}
+              onClear = {() => this.setState({searchBarValue: '', query: null})}
+            />
 
-          <FlatList
-            horizontal={true}
-            renderItem = {({item}) => this.queryOptionRenerer(item, theme.colors.secondary)}
-            data={this.props.queryTypes}
-            keyExtractor = {(item, index) => item.value}
-          />
-        </View>
+            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
+              <Text style={{ marginHorizontal: 16 }}>Search by...</Text>
 
-      {(this.state.query == null) ? (
-        <EmptyState 
-          image = {<FontAwesomeIcon name="search" size={50} color = {theme.colors.grey1} />}
-          title = "Search for something"
-          message="We'll do our best to find it!"
-        />
-      ) : (
-        this.props.type == "static" ? (   
-          <StaticInfiniteScroll
-            generation = {this.state.searchGeneration}
-            dbref = {this.props.dbref}
-            orderBy = {this.state.currentSorter}
-            startingPoint = {this.state.query}
-            endingPoint = {`${this.state.query}\uf8ff`}
-            {...otherProps}
-          />
-        ) : (
-          <DynamicInfiniteScroll
-            generation = {this.state.searchGeneration}
-            dbref = {this.props.dbref.orderByChild(this.state.currentSorter)}
-            startingPoint = {this.state.query}
-            endingPoint = {`${this.state.query}\uf8ff`}
-            {...otherProps}
-          />
-        )
-      )}
+              <FlatList
+                horizontal={true}
+                renderItem={({ item }) => this.queryOptionRenerer(item, theme.colors.secondary)}
+                data={this.props.queryTypes}
+                keyExtractor={(item, index) => item.value}
+              />
+            </View>
 
-      </View>
-      )}
+            {(this.state.query == null) ? (
+               this.renderEmptyState() 
+            ) : (
+                this.props.type == "static" ? (
+                  <StaticInfiniteScroll
+                    generation={this.state.searchGeneration}
+                    dbref={this.props.dbref}
+                    orderBy={this.state.currentSorter}
+                    startingPoint={this.state.query}
+                    endingPoint={`${this.state.query}\uf8ff`}
+                    {...otherProps}
+                  />
+                ) : (
+                    <DynamicInfiniteScroll
+                      generation={this.state.searchGeneration}
+                      dbref={this.props.dbref.orderByChild(this.state.currentSorter)}
+                      startingPoint={this.state.query}
+                      endingPoint={`${this.state.query}\uf8ff`}
+                      {...otherProps}
+                    />
+                  )
+              )}
+
+          </View>
+        )}
       </ThemeConsumer>
     )
   }
 
   search = () => {
-    if (this.props.queryValidator(this.state.searchBarValue)){
+    if (this.props.queryValidator(this.state.searchBarValue)) {
       this.setState({
-        query: this.state.searchBarValue.toLowerCase(), 
+        query: this.state.searchBarValue.toLowerCase(),
         searchGeneration: this.state.searchGeneration + 1
       })
-    }else{
+    } else {
       Alert.alert("Invalid Query!")
-    }   
+    }
   }
 
   queryOptionRenerer = (item, mainColor) => {
     return (
       <Chip
-        onPress = {() => this.updateSearchOption(item)}
-        mainColor = {mainColor}
-        selected = {item.value === this.state.currentSorter}>
-          <Text>{item.name}</Text>
+        onPress={() => this.updateSearchOption(item)}
+        mainColor={mainColor}
+        selected={item.value === this.state.currentSorter}>
+        <Text>{item.name}</Text>
       </Chip>
-  )}
+    )
+  }
 
   updateSearchOption = (option) => {
     this.setState({
@@ -135,6 +137,17 @@ export default class SearchableInfiniteScroll extends React.Component {
   //decide whether or not to actually query firebase using the provided queryValidator
   getInitialQueryValue = () => {
     return this.props.queryValidator("") ? "" : null
+  }
+
+  renderEmptyState = () => {
+    if (this.props.parentEmptyStateComponent) return this.props.parentEmptyStateComponent
+    return (
+      <EmptyState
+        image={<FontAwesomeIcon name="search" size={50} color={theme.colors.grey1} />}
+        title="Search for something"
+        message="We'll do our best to find it!"
+      />
+    )
   }
 
 }

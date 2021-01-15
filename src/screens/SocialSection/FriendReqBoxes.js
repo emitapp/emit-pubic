@@ -12,7 +12,7 @@ import FriendReqModal from './FriendReqModal';
 import ErrorMessageText from 'reusables/ErrorMessageText';
 
 
-export default class UserSearch extends React.Component {
+export default class FriendReqBoxes extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
