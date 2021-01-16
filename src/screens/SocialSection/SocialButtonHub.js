@@ -47,7 +47,7 @@ export default class SocialButtonHub extends React.Component {
                 onPress = {() => this.setState({QRVisible: true})}
             />
 
-						<Button 
+			<Button 
                 icon={<OctIcon name="gear" size={40} color={theme.colors.primary}/>}
                 containerStyle = {{position: 'absolute', top: 16, right: 16}}
 								onPress = {() => this.props.navigation.navigate("SettingsStackNav")}
@@ -95,7 +95,7 @@ export default class SocialButtonHub extends React.Component {
                     icon = {<FontAwesomeIcon name="search" size={32}/>}
                     text = {<Text style = {styles.buttonTextStyle}>User Search</Text> }
                 />
-             </View>
+            </View>
 
             </View>
             </ScrollView>

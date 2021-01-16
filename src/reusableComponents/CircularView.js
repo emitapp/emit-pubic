@@ -1,6 +1,10 @@
 import React from 'react';
 import { View } from 'react-native';
 
+/**
+ * Behaves just like the standard <View />, but it's circular
+ * (Centers children by defualt)
+ */
 export default class CircularView extends React.Component {
     static defaultProps = {
         diameter: 10

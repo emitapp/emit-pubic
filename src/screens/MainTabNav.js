@@ -40,7 +40,6 @@ const renderTab = (props, targetRouteName, iconName) => {
         borderTopStartRadius: 8
       }} />}
     </TouchableOpacity>
-
   )
 }
 
