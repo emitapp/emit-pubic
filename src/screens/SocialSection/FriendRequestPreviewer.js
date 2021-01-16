@@ -67,7 +67,7 @@ class FriendRequestPreviewer extends React.Component {
     }
 
     refListenerCallback = (snap) => {
-        this.listData = this.transformSnapshotData(snap)
+        this.transformSnapshotData(snap)
         this.setState({ gettingFirstLoad: false })
     }
 
@@ -85,8 +85,14 @@ class FriendRequestPreviewer extends React.Component {
 
     itemRenderer = (item) => {
         return (
-            <FriendRequestPreviewElement item={item} key={item.uid} />
+            <FriendRequestPreviewElement item={item} key={item.uid} parent = {this} />
         );
+    }
+
+    //For a wierd bug where the reference isn't updating when it needs to... 
+    //TODO: Maybe look into this...
+    forcedUpdateRef = () => {
+        this.ref.once("value", this.refListenerCallback, this.onError)
     }
 
 }

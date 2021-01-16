@@ -10,18 +10,33 @@ import FriendRequestPreviewer from './FriendRequestPreviewer'
 import FriendReqModal from './FriendReqModal';
 import ErrorMessageText from 'reusables/ErrorMessageText';
 import StaticInfiniteScroll from 'reusables/StaticInfiniteScroll';
+import DymanicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 
 export default class UserFriendSearch extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Friend Search",
+      title: "User Search",
     };
   };
+
 
   state = {
     errorMessage: null,
     isModalVisible: false,
+  }
+
+
+  componentDidMount() {
+    const { navigation } = this.props;
+    this.focusListener = navigation.addListener('didFocus', () => {
+      //Look into forcedUpdateRef definiton to learn why we're using this
+      if (this.friendReqPreviewer) this.friendReqPreviewer.forcedUpdateRef()
+    });
+  }
+
+  componentWillUnmount() {
+    this.focusListener.remove();
   }
 
   render() {
@@ -38,19 +53,18 @@ export default class UserFriendSearch extends React.Component {
           type="static"
           queryValidator={(query) => query.length > 0}
           parentEmptyStateComponent={
-            <StaticInfiniteScroll
+            <DymanicInfiniteScroll
               renderItem={this.itemRenderer}
-              dbref={database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`)}
-              orderBy="username"
+              dbref={database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`).orderByChild("username")}
               ListHeaderComponent={
                 <View>
                   <FriendRequestPreviewer
+                    ref={ref => this.friendReqPreviewer = ref}
                     style={{ borderColor: "lightgrey", borderWidth: 1, borderRadius: 10, paddingHorizontal: 8, marginBottom: 8 }} />
                   <Text style={{ fontWeight: "bold", textAlign: "center", fontSize: 18 }}>
                     Your Friends
                   </Text>
                 </View>
-
               }
             />
           }

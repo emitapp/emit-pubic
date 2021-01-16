@@ -72,9 +72,8 @@ class FriendRequestPreviewer extends React.Component {
 
         try {
             const response = await timedPromise(callableFunction(args), LONG_TIMEOUT);
-
             if (response.data.status === cloudFunctionStatuses.OK) {
-                //Don't do anything beucase this component will automatically be deleted by its parent
+                this.props.parent.forcedUpdateRef()                
             } else {
                 this.setState({
                     waitingForFuncResponse: false,
