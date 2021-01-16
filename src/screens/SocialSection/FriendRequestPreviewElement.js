@@ -73,7 +73,7 @@ class FriendRequestPreviewer extends React.Component {
         try {
             const response = await timedPromise(callableFunction(args), LONG_TIMEOUT);
             if (response.data.status === cloudFunctionStatuses.OK) {
-                this.props.parent.forcedUpdateRef()                
+                this.props.forcedUpdateMethod()                
             } else {
                 this.setState({
                     waitingForFuncResponse: false,

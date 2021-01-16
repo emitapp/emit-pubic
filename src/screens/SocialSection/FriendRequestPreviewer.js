@@ -85,7 +85,7 @@ class FriendRequestPreviewer extends React.Component {
 
     itemRenderer = (item) => {
         return (
-            <FriendRequestPreviewElement item={item} key={item.uid} parent = {this} />
+            <FriendRequestPreviewElement item={item} key={item.uid} forcedUpdateMethod = {this.forcedUpdateRef} />
         );
     }
 
