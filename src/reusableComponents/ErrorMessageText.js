@@ -1,6 +1,9 @@
 import React from 'react';
 import { Text } from 'react-native-elements';
 
+/**
+ * Standard error text. Defualts to null if the message is falsey (ie "", null or undefined)
+ */
 export default class ErrorMessageText extends React.PureComponent {
 	static defaultStyle = { color: "red", alignSelf: "center" }
 	render() {

@@ -44,7 +44,8 @@ export default class UserFriendSearch extends React.Component {
               orderBy="username"
               ListHeaderComponent={
                 <View>
-                  <FriendRequestPreviewer />
+                  <FriendRequestPreviewer
+                    style={{ borderColor: "lightgrey", borderWidth: 1, borderRadius: 10, paddingHorizontal: 8, marginBottom: 8 }} />
                   <Text style={{ fontWeight: "bold", textAlign: "center", fontSize: 18 }}>
                     Your Friends
                   </Text>

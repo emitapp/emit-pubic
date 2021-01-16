@@ -64,10 +64,6 @@ export default class SocialButtonHub extends React.Component {
                             title="Scan someone's Bitecode"
                             onPress={() => this.props.navigation.navigate('QRScanner')}
                         />
-                        <Button
-                            title="dfaf"
-                            onPress={() => this.props.navigation.navigate('FriendRequests')}
-                        />
                     </ScrollView>
                 )}
             </ThemeConsumer>

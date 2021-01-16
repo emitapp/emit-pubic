@@ -1,16 +1,17 @@
-import React from 'react';
-import { View } from 'react-native';
-import { Text, withTheme } from 'react-native-elements';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
-import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
+import React from 'react';
+import { View } from 'react-native';
+import { withTheme, Text } from 'react-native-elements';
 import ErrorMessageText from 'reusables/ErrorMessageText';
-import {UserSnippetListElement} from 'reusables/ListElements';
-
+import { logError } from 'utils/helpers';
+import FriendRequestPreviewElement from './FriendRequestPreviewElement';
+import { MinorActionButton } from 'reusables/ReusableButtons'
+import NavigationService from 'utils/NavigationService'
 
 class FriendRequestPreviewer extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props)
         this.ref = database().ref(`/friendRequests/${auth().currentUser.uid}/inbox`).limitToFirst(3)
         this.state = {
@@ -20,74 +21,74 @@ class FriendRequestPreviewer extends React.Component {
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.ref.on("value", this.refListenerCallback, this.onError)
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         this.ref.off();
     }
 
     render() {
-        console.log(this.state.listData)
-        if (this.state.gettingFirstLoad){
-            return(
-                <TimeoutLoadingComponent
-                    hasTimedOut={false}
-                    retryFunction={() => null}
-                />
+        if (this.state.gettingFirstLoad) {
+            return <ErrorMessageText message={this.state.errorMessage} />
+        }
+        if (this.state.listData.length == 0) {
+            return (
+                <View style={{ ...this.props.style, alignItems: "center", justifyContent: "center", }}>
+                    <Text style={{textAlign: "center", }}>
+                        No incoming friend requests.
+                    </Text>
+                    
+                    <MinorActionButton
+                        title="See outbox"
+                        onPress={() => NavigationService.navigate('FriendRequests')}
+                    />
+                </View>
             )
         }
         return (
-            <View style = {{...this.props.style, alignItems: "center", justifyContent: "center"}}>
-                <ErrorMessageText message = {this.state.errorMessage} />
+            <View style={{ ...this.props.style, alignItems: "center", justifyContent: "center", }}>
+                <Text style={{ fontWeight: "bold", textAlign: "center", fontSize: 18 }}>
+                    Friend Requests
+                </Text>
                 {this.state.listData.map(item => this.itemRenderer(item))}
+                <MinorActionButton
+                    title="See all"
+                    onPress={() => NavigationService.navigate('FriendRequests')}
+                />
             </View>
         )
     }
 
-    //TODO: work on this
     onError = (error) => {
-        if (error.name == "timeout") {
-            this.props.timedOut = true;
-            this.requestRerender();
-        } else {
-            if (this.props.errorHandler){
-                this.props.errorHandler(error)
-            } 
-            else{
-                logError(error)
-                this.errorMessage = error.message;
-                this.requestRerender()
-            }
-        }
+        logError(error)
+        this.errorMessage = error.message;
     }
 
     refListenerCallback = (snap) => {
         this.listData = this.transformSnapshotData(snap)
-        this.setState({gettingFirstLoad: false})
+        this.setState({ gettingFirstLoad: false })
     }
 
     transformSnapshotData = (snap) => {
         var listData = []
-        snap.forEach(childSnapshot =>{
+        snap.forEach(childSnapshot => {
             if (childSnapshot.exists())
                 listData.push({
-                    uid: childSnapshot.key, 
-                    key: childSnapshot.key,
+                    uid: childSnapshot.key,
                     ...childSnapshot.val(),
-                })           
+                })
         });
-        this.setState({listData})
+        this.setState({ listData })
     }
 
     itemRenderer = (item) => {
         return (
-          <UserSnippetListElement 
-          snippet={item}/>
+            <FriendRequestPreviewElement item={item} key={item.uid} />
         );
-      }
-    
+    }
+
 }
 
 export default withTheme(FriendRequestPreviewer)

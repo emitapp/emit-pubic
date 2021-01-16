@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Clipboard } from "react-native";
 import Snackbar from 'react-native-snackbar'
 
+//TODO: Make it possible to cancel fruend requests sent to you from here
 
 /**
  * This is the standard dialogue for viewing a user if you want the user to 
