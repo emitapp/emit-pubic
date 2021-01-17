@@ -1,6 +1,6 @@
 const defaultIconNames = {
     home: 'plus-circle',
-    feed: "rss",
+    feed: "home",
     users: 'user-friends',
     settings: 'cog',
 
