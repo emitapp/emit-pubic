@@ -107,7 +107,7 @@ export default class Main extends React.Component {
   setUpFCM = async () => {
     try{
       const response = await requestNotifications(['alert', 'sound'])
-      if (response.status != RESULTS.GRANTED){
+      if (response.status != RESULTS.GRANTED && response.status != RESULTS.LIMITED){
         logError(new Error("Denied notification permission"), false)
         return;
       }

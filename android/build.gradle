@@ -2,10 +2,10 @@
 
 buildscript {
     ext {
-        buildToolsVersion = "28.0.3"
-        minSdkVersion = 16
-        compileSdkVersion = 28
-        targetSdkVersion = 28
+        buildToolsVersion = "29.0.2"
+        minSdkVersion = 21
+        compileSdkVersion = 29
+        targetSdkVersion = 29
 
         //for react-native-netinfo and react-navigation
         appCompatVersion = "1.1.0-rc01" // this maps to androidx.appcompat 
@@ -22,6 +22,9 @@ buildscript {
         //for a version of vision that matched the version of googlePlayServicesVersion,
         //which might not exist
         googlePlayServicesVisionVersion = "19.0.0"
+
+        //https://github.com/wix/react-native-notifications/issues/649#issuecomment-701366821
+        kotlinVersion = "1.3.72"
     }
     repositories {
         google()
@@ -31,11 +34,13 @@ buildscript {
         }
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:3.4.2")
+        classpath("com.android.tools.build:gradle:3.5.3")
         classpath 'com.google.gms:google-services:4.3.3' // https://github.com/microsoft/react-native-code-push/issues/1640#issuecomment-553102136
         classpath 'com.google.firebase:perf-plugin:1.3.1'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.0.0'
 
+        //https://github.com/wix/react-native-notifications/issues/649#issuecomment-701366821
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -55,6 +60,6 @@ allprojects {
 
         google()
         jcenter()
-        maven { url 'https://jitpack.io' }
+        maven { url 'https://www.jitpack.io' }
     }
 }

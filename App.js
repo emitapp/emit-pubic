@@ -30,7 +30,7 @@ export default class App extends React.Component {
     //Don't unsubscribe, so that if the user is signed out (manually or automatically by Firebase),
     // he is still rerouted
     auth().onAuthStateChanged(this.handleAuthChange)
-    RNBootSplash.hide({ duration: 150 });
+    RNBootSplash.hide({ fade: true }).catch(() => console.log("cannot be hidden"));
   }
 
   render() {
