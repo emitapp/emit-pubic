@@ -62,8 +62,8 @@ export default class SearchableInfiniteScroll extends React.Component {
           value={this.state.searchBarValue}
           onSubmitEditing = {this.search}
         />
-        {this.props.children}
-        {/* <View style = {{flexDirection: "row", alignItems: "center", marginBottom: 16}}>
+        {this.props.children ? this.props.children : 
+        <View style = {{flexDirection: "row", alignItems: "center", marginBottom: 16}}>
           <Text style = {{marginHorizontal: 16}}>Search by...</Text>
 
           <FlatList
@@ -72,7 +72,7 @@ export default class SearchableInfiniteScroll extends React.Component {
             data={this.props.queryTypes}
             keyExtractor = {(item, index) => item.value}
           />
-        </View> */}
+        </View> }
 
       {(this.state.query == null) ? (
         <EmptyState 
@@ -86,7 +86,6 @@ export default class SearchableInfiniteScroll extends React.Component {
             generation = {this.state.searchGeneration}
             dbref = {this.props.dbref}
             orderBy = {this.state.currentSorter}
-            query = {this.state.query}
             startingPoint = {this.state.query}
             endingPoint = {`${this.state.query}\uf8ff`}
             {...otherProps}

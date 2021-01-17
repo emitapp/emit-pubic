@@ -1,5 +1,5 @@
 import React from 'react';
-import { SectionList, FlatList, View, Image } from 'react-native';
+import { FlatList, View, Image } from 'react-native';
 import { MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
 import {Text} from 'react-native-elements'

@@ -117,7 +117,7 @@ export class LocationListElement extends React.PureComponent {
 
 /**
  * Standard ListView element component that cander render both groups and friends
- * Required props: info
+ * Required props: snippet
  * Optional props: extraComponents, style, imageDiameter
  */
 export class RecipientListElement extends React.PureComponent {
@@ -127,7 +127,7 @@ export class RecipientListElement extends React.PureComponent {
   }
 
   render() {
-    const {snippet, groupInfo} = this.props;
+    const {snippet} = this.props;
 
     return (
       <ThemeConsumer>
@@ -137,7 +137,7 @@ export class RecipientListElement extends React.PureComponent {
         onPress={this.props.onPress}>
           {snippet.displayName ? <ProfilePicDisplayer diameter = {this.props.imageDiameter} uid = {snippet.uid} style = {{marginLeft: 8, marginRight: 8}} /> : <></>}
           <View style = {{flexDirection: "row"}}>
-            <Text style = {{fontSize: 18}}>{snippet.displayName ? snippet.displayName : groupInfo.name}</Text>
+            <Text style = {{fontSize: 18}}>{snippet.displayName ? snippet.displayName : snippet.name}</Text>
             {this.props.extraComponents}
           </View>
         </TouchableOpacity>
