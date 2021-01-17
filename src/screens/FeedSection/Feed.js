@@ -1,7 +1,7 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { View, StyleSheet, Image} from 'react-native';
+import { View, Image} from 'react-native';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import S from 'styling';
 import EmptyState from 'reusables/EmptyState'
@@ -49,14 +49,4 @@ export default class Feed extends React.Component {
     );
   }
 
-  styles = StyleSheet.create({
-    statusParentStyle: {
-      flexDirection: "row", 
-      alignItems: "center", 
-      alignSelf: "flex-start", 
-      padding: 6, 
-      borderRadius: 4,
-      marginTop: 4
-    }
-  });
 }
