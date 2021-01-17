@@ -18,7 +18,6 @@ export default class FeedElement extends React.Component {
     constructor(props) { 
         super(props);
         this.state = {
-            isFetchingData: false,
             attendees: {},
         }
     }
@@ -68,7 +67,7 @@ export default class FeedElement extends React.Component {
                 {this.props.item.groupInfo &&  <Text style = {{fontStyle: "italic"}}>Sent via {this.props.item.groupInfo.name} group</Text>}
                 <View>
                     {this.state.attendees[this.props.item.owner.uid] ?
-                    <Text>{this.state.attendees[this.props.item.owner.uid]}</Text> : <Text>No data</Text>}
+                    <Text>{this.state.attendees[this.props.item.owner.uid]}</Text> : <></>}
                 </View> 
                 
                 {this.props.item.note != undefined && this.props.item.note != "" &&
@@ -89,16 +88,12 @@ export default class FeedElement extends React.Component {
 
         const data = snapshot.val();
         let attendeesList = [];
-        let seenUser = false
         for (let id in data) {
-            if (id == user) {
-                seenUser = true
-            } else {
+            if (id != user) { 
+                // this is just so the user doesn't see their own username in the 
+                // feed the split second before it moves to the dashboard.
                 attendeesList.push(data[id]['displayName']);
             }
-        }
-        if (seenUser) {
-            attendeesList.push("You") // so "you" is always at
         }
 
         let string = ""
@@ -112,13 +107,7 @@ export default class FeedElement extends React.Component {
             string = `${attendeesList.pop()} and ${attendeesList.pop()} are in!`
         } else if (attendeesList.length == 1) {
             const attendee = attendeesList.pop();
-            if (attendee == "You") {
-                string = "You are in!" 
-            } else {
-                string = `${attendee} is in!` 
-            }
-        } else {
-            string = "No responses yet." 
+            string = `${attendee} is in!` 
         }
         return string;
     }
