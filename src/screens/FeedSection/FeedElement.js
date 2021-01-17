@@ -178,6 +178,7 @@ export default class FeedElement extends React.Component {
         }  
       }
 }
+
 const styles = StyleSheet.create({
     statusParentStyle: {
         flexDirection: "row", 
