@@ -7,6 +7,7 @@ import UserProfileSummary from 'reusables/UserProfileSummary'
 import UserBitecode from 'reusables/UserBitecode'
 import { MinorActionButton } from 'reusables/ReusableButtons'
 import AntIcon from 'react-native-vector-icons/AntDesign';
+import OctIcon from 'react-native-vector-icons/Octicons';
 
 export default class SocialButtonHub extends React.Component {
 
@@ -44,6 +45,13 @@ export default class SocialButtonHub extends React.Component {
                             icon={<AntIcon name="qrcode" size={40} color="white" />}
                             containerStyle={{ position: 'absolute', top: 16, left: 16 }}
                             onPress={() => this.setState({ QRVisible: true })}
+                        />
+
+                        <Button
+                            icon={<OctIcon name="gear" size={40} color={theme.colors.primary} />}
+                            containerStyle={{ position: 'absolute', top: 16, right: 16 }}
+                            onPress={() => this.props.navigation.navigate("SettingsStackNav")}
+                            type="clear"
                         />
 
                         <View style={styles.rowStyle}>
