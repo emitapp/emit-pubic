@@ -27,6 +27,13 @@ const defaultStyles = StyleSheet.create({
         height: 50,
         flexDirection: 'row'
     },
+    pillButton: {
+        justifyContent: "center",
+        alignItems: 'center',
+        borderRadius: 50, // A large hardcoded value to ensure the pill button is rounded
+        paddingHorizontal: 12,
+        paddingVertical: 6
+    },
     listElement: {
         paddingVertical: 8,
         alignItems: "center",

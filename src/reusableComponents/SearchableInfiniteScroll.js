@@ -7,6 +7,7 @@ import EmptyState from 'reusables/EmptyState'
 import S from 'styling'
 import DynamicInfiniteScroll from './DynamicInfiniteScroll'
 import StaticInfiniteScroll from './StaticInfiniteScroll'
+import SectionInfiniteScroll from './SectionInfiniteScroll'
 
 /**
  * This class is a wrapper for either a DynamicInifiteScroll or a StaticInfiniteScroll
@@ -17,6 +18,11 @@ import StaticInfiniteScroll from './StaticInfiniteScroll'
 //queryTypes: list of objects of the form {name: ..., value: ...} for each value that 
 //can be entered into the orderByChild value of a databse ref
 //queryValidator: a function that determines whether a querty is valid enough to attempt
+//
+//OPTIONAL PROPS:
+//additionData: a miscellaneous "catch all" object that probably should be removed
+// in the future - currently used to pass the "+ New Group" and "+ Add Friend"
+// buttons to SectionInfiniteScroll - of the form [{text: ..., func: ...},]
 
 //Also be sure to give this class all the props necessary for the 
 //chosen infinite scrolling component to work, 
@@ -29,7 +35,7 @@ export default class SearchableInfiniteScroll extends React.Component {
       searchBarValue: '', 
       query: this.getInitialQueryValue(), 
       searchGeneration: 0, 
-      currentSorter: this.props.queryTypes[0].value
+      currentSorter: this.props.queryTypes[0].value,
     }
   }
 
@@ -56,8 +62,8 @@ export default class SearchableInfiniteScroll extends React.Component {
           value={this.state.searchBarValue}
           onSubmitEditing = {this.search}
         />
-
-        <View style = {{flexDirection: "row", alignItems: "center", marginBottom: 16}}>
+        {this.props.children}
+        {/* <View style = {{flexDirection: "row", alignItems: "center", marginBottom: 16}}>
           <Text style = {{marginHorizontal: 16}}>Search by...</Text>
 
           <FlatList
@@ -66,7 +72,7 @@ export default class SearchableInfiniteScroll extends React.Component {
             data={this.props.queryTypes}
             keyExtractor = {(item, index) => item.value}
           />
-        </View>
+        </View> */}
 
       {(this.state.query == null) ? (
         <EmptyState 
@@ -80,11 +86,20 @@ export default class SearchableInfiniteScroll extends React.Component {
             generation = {this.state.searchGeneration}
             dbref = {this.props.dbref}
             orderBy = {this.state.currentSorter}
+            query = {this.state.query}
             startingPoint = {this.state.query}
             endingPoint = {`${this.state.query}\uf8ff`}
             {...otherProps}
           />
-        ) : (
+        ) : (this.props.type == "section" ? ( 
+          <SectionInfiniteScroll
+            generation = {this.state.searchGeneration}
+            dbref = {this.props.dbref}
+            orderBy = {this.props.queryTypes}
+            startingPoint = {this.state.query}
+            endingPoint = {`${this.state.query}\uf8ff`}
+            {...otherProps}
+          />) : ( 
           <DynamicInfiniteScroll
             generation = {this.state.searchGeneration}
             dbref = {this.props.dbref.orderByChild(this.state.currentSorter)}
@@ -92,7 +107,7 @@ export default class SearchableInfiniteScroll extends React.Component {
             endingPoint = {`${this.state.query}\uf8ff`}
             {...otherProps}
           />
-        )
+        ))
       )}
 
       </View>

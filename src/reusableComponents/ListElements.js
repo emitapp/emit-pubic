@@ -25,10 +25,10 @@ export class UserSnippetListElement extends React.PureComponent {
         <TouchableOpacity 
         style = {{...S.styles.listElement, ...this.props.style}}
         onPress={this.props.onPress}>
-          <ProfilePicDisplayer diameter = {this.props.imageDiameter} uid = {snippet.uid} style = {{marginRight: 16}} />
-          <View>
-            <Text style = {{fontWeight: 'bold', fontSize: 18}}>{snippet.displayName}</Text>
-            <Text style = {{color: theme.colors.grey2}}>@{snippet.username}</Text>
+          <ProfilePicDisplayer diameter = {this.props.imageDiameter} uid = {snippet.uid} style = {{marginLeft: 8, marginRight: 8}} />
+          <View style = {{flexDirection: "row"}}>
+            <Text style = {{fontSize: 18}}>{snippet.displayName}</Text>
+            <Text style = {{color: theme.colors.grey2, fontSize: 18, marginLeft: 6}}>@{snippet.username}</Text>
             {this.props.extraComponents}
           </View>
         </TouchableOpacity>
@@ -108,6 +108,39 @@ export class LocationListElement extends React.PureComponent {
             </Text>
           </View>
       </TouchableOpacity>
+      )}
+      </ThemeConsumer>
+    )
+  }
+}
+
+
+/**
+ * Standard ListView element component that cander render both groups and friends
+ * Required props: info
+ * Optional props: extraComponents, style, imageDiameter
+ */
+export class RecipientListElement extends React.PureComponent {
+
+  static defaultProps = {
+    imageDiameter: 55
+  }
+
+  render() {
+    const {snippet, groupInfo} = this.props;
+
+    return (
+      <ThemeConsumer>
+      {({ theme }) => (
+        <TouchableOpacity 
+        style = {{...S.styles.listElement, ...this.props.style}}
+        onPress={this.props.onPress}>
+          {snippet.displayName ? <ProfilePicDisplayer diameter = {this.props.imageDiameter} uid = {snippet.uid} style = {{marginLeft: 8, marginRight: 8}} /> : <></>}
+          <View style = {{flexDirection: "row"}}>
+            <Text style = {{fontSize: 18}}>{snippet.displayName ? snippet.displayName : groupInfo.name}</Text>
+            {this.props.extraComponents}
+          </View>
+        </TouchableOpacity>
       )}
       </ThemeConsumer>
     )
