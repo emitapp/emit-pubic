@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, View, Image } from 'react-native';
+import { TouchableOpacity, SectionList, FlatList, View, Image } from 'react-native';
 import { MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
 import {Text} from 'react-native-elements'
@@ -18,8 +18,8 @@ import {logError} from 'utils/helpers'
  */
 
 // Required props:
-// dbref: the databse ref to use
-// orderBy: the name of the key you're ordering by.
+// dbref: an array of database refs to use in the format {title: "title", ref: ref}
+// orderBy: the array of queryTypes to order each section by
 // renderItem: same as FLatlist RenderItem
 
 //Optinal props
@@ -45,7 +45,7 @@ export default class StaticInfiniteScroll extends React.Component {
         style: { flex: 1, width: "100%"},
         contentContainerStyle: {flexGrow: 1, marginHorizontal: 8},
         ItemSeparatorComponent: (() => <Divider />),
-        chunkSize: 10
+        // chunkSize: 10
     }
 
     constructor(props) {
@@ -53,11 +53,12 @@ export default class StaticInfiniteScroll extends React.Component {
 
         this.lastItemProperty = null;
         this.stopSearching = false; //Once it gets a null snapshot, it'll stop
-        this.listData = [];
+        this.sections = []; // A list of lists, to allow for section list support
         this.isLoading = true; //For when it's loading for the first time
         this.refreshing = false; //For when it's getting more info
         this.timedOut = false;
         this.errorMessage = "";
+        
     }
 
     componentDidMount = () => {
@@ -76,102 +77,57 @@ export default class StaticInfiniteScroll extends React.Component {
 
     initialize = () => {
         this.isLoading = true;
-        this.listData = [];
+        this.sections= [];
         this.lastItemProperty = null;
         this.stopSearching = false;
         this.timedOut = false;
         this.errorMessage = "";
         this.requestRerender();
-        this.retrieveInitialChunk(this.props.generation);
+        this.retrieveList(this.props.generation);
     }
 
-
-    retrieveInitialChunk = async (invocationGen) => {
+    retrieveList = async (invocationGen) => {
         try {
-            var ref = this.props.dbref.orderByChild(this.props.orderBy).limitToFirst(this.props.chunkSize)
-            if (this.props.startingPoint) ref = ref.startAt(this.props.startingPoint)
-            if (this.props.endingPoint) ref = ref.endAt(this.props.endingPoint)
+            for (i = 0; i < this.props.dbref.length; i++) {
+                var ref = this.props.dbref[i].ref.orderByChild(this.props.orderBy[i].value);
+                var title = this.props.dbref[i].title;
+                var footerData = this.props.additionalData[i];
+                
+                if (this.props.startingPoint) ref = ref.startAt(this.props.startingPoint)
+                if (this.props.endingPoint) ref = ref.endAt(this.props.endingPoint)
 
-            const initialSnapshot = await timedPromise(ref.once("value"), MEDIUM_TIMEOUT);
+                const snapshot = await timedPromise(ref.once("value"), MEDIUM_TIMEOUT);
+                
+                if (this.props.generation != invocationGen) return;
+                
+                var listData = []
+                snapshot.forEach(childSnapshot =>{
+                    if (childSnapshot.exists())
+                        listData.push({
+                            uid: childSnapshot.key, 
+                            ...childSnapshot.val()
+                        })
+                        
+                });
 
-            //Checking if your snapshot is no longer relevant
-            if (this.props.generation != invocationGen) return;
-
-            var listData = []
-            initialSnapshot.forEach(childSnapshot =>{
-                if (childSnapshot.exists())
-                    listData.push({
-                        uid: childSnapshot.key, 
-                        ...childSnapshot.val()
-                    })
-                    
-            });
-
-            if (listData.length == 0) {
+                if (listData.length == 0) {
                 this.stopSearching = true;
                 this.refreshing = false,
                     this.isLoading = false
                 this.requestRerender();
-            } else {
+                } else {
                 this.lastItemProperty =
                     listData[listData.length - 1][this.props.orderBy];
-
-                this.listData = listData
+                this.sections.push({title: title, data: listData, footerText: footerData.text, footerCallback: footerData.func});
                 this.isLoading = false
                 this.requestRerender()
+                }
             }
         }
         catch (error) {
             this.onError(error)
         }
-    };
-
-    retrieveMore = async (invocationGen) => {
-        try {
-            if (this.stopSearching || this.refreshing) return;
-            this.refreshing = true;
-            this.requestRerender();
-
-            var ref = this.props.dbref
-                .orderByChild(this.props.orderBy)
-                .limitToFirst(this.props.chunkSize)
-                .startAt(this.lastItemProperty)
-            if (this.props.endingPoint) ref = ref.endAt(this.props.endingPoint)
-
-            const additionalSnapshot = await timedPromise(ref.once("value"), MEDIUM_TIMEOUT);
-
-            //Checking if your snapshot is no longer relevant
-            if (this.props.generation != invocationGen) return;
-
-            var additionaListData = []
-            additionalSnapshot.forEach(childSnapshot =>{
-                if (childSnapshot.exists())
-                    additionaListData.push({
-                        key: childSnapshot.key, 
-                        ...childSnapshot.val()
-                    })
-            });
-
-            //Removing the first element since startAt is inclusive
-            additionaListData.shift();
-
-            if (additionaListData.length == 0) {
-                this.stopSearching = true;
-                this.refreshing = false;
-                this.requestRerender();
-            } else {
-                this.lastItemProperty =
-                    additionaListData[additionaListData.length - 1][this.props.orderBy];
-
-                this.listData = [...this.listData, ...additionaListData]
-                this.refreshing = false;
-                this.requestRerender();
-            }
-        }
-        catch (error) {
-            this.onError(error)
-        }
-    };
+    }
 
     onError = (error) => {
         if (error.name == "timeout") {
@@ -187,6 +143,17 @@ export default class StaticInfiniteScroll extends React.Component {
                 this.requestRerender()
             }
         }
+    }
+
+    renderSectionFooter = ({section: {footerText, footerCallback}}) => {
+        return (
+            <View>
+                <Divider />
+                <TouchableOpacity onPress={footerCallback}>
+                    <Text style={{fontSize: 18, marginTop: 8, marginBottom: 8}}>{footerText}</Text>
+                </TouchableOpacity>
+            </View>
+        )
     }
 
     renderFooter = () => {
@@ -242,23 +209,27 @@ export default class StaticInfiniteScroll extends React.Component {
                         hasTimedOut={this.timedOut}
                         retryFunction={() => {
                             this.timedOut = false;
-                            this.retrieveInitialChunk(this.props.generation)
+                            this.retrieveList(this.props.generation)
                         }}
                     />
                 )
             }
         } else {
             const {style, ...otherProps} = this.props
-              
             return (
                 <View style = {style}>
                     <ErrorMessageText message = {this.errorMessage} />
-                    <FlatList
-                        data={this.listData}
+                    <SectionList
+                        sections={this.sections}
                         keyExtractor={item => item.uid}
-                        ListFooterComponent={this.renderFooter}
-                        onEndReached={() => this.retrieveMore(this.props.generation)}
-                        onEndReachedThreshold={0.1}
+                        // ListFooterComponent={this.renderFooter}
+                        // onEndReached={() => this.retrieveMore(this.props.generation)}
+                        // onEndReachedThreshold={0.1}
+                        renderSectionHeader={({section: {title}}) => (
+                            <Text style={{marginTop: 4, color: "blue", fontSize: 12}}>{title}</Text>
+                        )}
+                        // An optional clickable button to add onto the ends of each sectionlist
+                        renderSectionFooter={this.renderSectionFooter}
                         refreshing={this.refreshing}
                         ListEmptyComponent = {this.renderEmptyState}
                         {...otherProps}

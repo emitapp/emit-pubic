@@ -22,6 +22,7 @@ class NewBroadcastForm extends React.Component {
     constructor(props){
         super(props)
         this.passableBroadcastInfo = { //Information that's directly edited by other screens
+            activitySelected: "",
             timeText: "In 5 minutes",
             broadcastTTL: 1000 * 60 * 5,
             TTLRelative: true,
@@ -72,8 +73,14 @@ class NewBroadcastForm extends React.Component {
             message = {this.state.errorMessage} 
             style ={{ color: '#2900BD', fontWeight: "bold" }} />
 
+            <FormSubtitle title = "What" />
+            <FormInput
+                onPress = {() => this.props.navigation.navigate("NewBroadcastFormActivity", this.passableBroadcastInfo)}
+                value = {this.state.passableBroadcastInfo.activitySelected}
+                placeholder = "Select an activity"
+            />
             
-            <FormSubtitle title = "Time" />
+            <FormSubtitle title = "When" />
 
             <FormInput
                 onPress = {() => this.props.navigation.navigate("NewBroadcastFormTime", this.passableBroadcastInfo)}

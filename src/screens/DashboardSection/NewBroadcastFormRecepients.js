@@ -1,14 +1,13 @@
-import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 import React from 'react';
-import { ScrollView, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { CheckBox, Text, ThemeConsumer } from 'react-native-elements';
 import { ClearHeader } from 'reusables/Header';
-import { UserSnippetListElement, UserGroupListElement } from 'reusables/ListElements';
+import { RecipientListElement } from 'reusables/ListElements';
 import MainLinearGradient from 'reusables/MainLinearGradient';
+import { PillButton } from 'reusables/ReusableButtons';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
-import {BannerButton} from 'reusables/ReusableButtons'
-import S from 'styling'
 
 
 export default class NewBroadcastFormRecepients extends React.Component {
@@ -20,21 +19,40 @@ export default class NewBroadcastFormRecepients extends React.Component {
         let navigationParams = props.navigation.state.params
         this.mode = navigationParams.mode
         let userUid = auth().currentUser.uid
+        this.dbRef = [{title: "GROUPS", ref: database().ref(`/userGroupMemberships/${userUid}`)},
+        {title: "FRIENDS", ref: database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`)}]
+        this.footerButtons = [{text: "+ New Group", func: () => {console.log(this.props.navigation.state) ;this.props.navigation.navigate('GroupMemberAdder')}}, 
+        {text: "+ Add Friends", func: () => { this.props.navigation.push('UserSearch')}}]
+        this.rendererType = RecipientListElement
 
-        if (this.mode == "friends"){
-            this.state = {selectedSnippets: JSON.parse(JSON.stringify(navigationParams.data.recepientFriends))}
-            this.rendererType = UserSnippetListElement
-            this.dbRef = database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`)
-            this.queryTypes = [{name: "Display Name", value: "displayNameQuery"}, {name: "Username", value: "usernameQuery"}]    
-            this.mapper = ({username}) => `@${username} `
-            this.state.allFriends = navigationParams.data.allFriends
-        }else{ //Default to user groups
-            this.state = {selectedSnippets: JSON.parse(JSON.stringify(navigationParams.data.recepientGroups))}
-            this.rendererType = UserGroupListElement
-            this.dbRef = database().ref(`/userGroupMemberships/${userUid}`)
-            this.queryTypes = [{name: "Name", value: "name"}]
-            this.mapper = ({name}, index) => `[${index + 1}] ${name} `
-        }
+        
+
+        this.state = { selectedSnippets: JSON.parse(JSON.stringify(navigationParams.data.recepientFriends))}
+        
+        this.queryTypes = [{name: "Name", value: "name"}, {name: "Display Name", value: "displayNameQuery"}]
+        this.mapper = ({name}, index) => `[${index + 1}] ${name} `
+        this.state.allFriends = navigationParams.data.allFriends
+        
+        // if (this.mode == "friends"){
+        //     this.state = {selectedSnippets: JSON.parse(JSON.stringify(navigationParams.data.recepientFriends))}
+        //     this.rendererType = UserSnippetListElement
+        //     // this.dbRef = database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`)
+        //     this.queryTypes = [{name: "Display Name", value: "displayNameQuery"}, {name: "Username", value: "usernameQuery"}]    
+        //     this.mapper = ({username}) => `@${username} `
+            // this.state.allFriends = navigationParams.data.allFriends
+        // } else if (this.mode == "masks"){
+        //     this.state = {selectedSnippets: JSON.parse(JSON.stringify(navigationParams.data.recepientMasks))}
+        //     this.rendererType = FriendMaskListElement
+        //     this.dbRef = database().ref(`/userFriendGroupings/${userUid}/custom/snippets`)
+        //     this.queryTypes = [{name: "Name", value: "name"}]
+        //     this.mapper = ({name}, index) => `[${index + 1}] ${name} `
+        // }else{ //Default to user groups
+        //     this.state = {selectedSnippets: JSON.parse(JSON.stringify(navigationParams.data.recepientGroups))}
+        //     this.rendererType = UserGroupListElement
+        //     // this.dbRef = database().ref(`/userGroupMemberships/${userUid}`)
+        //     this.queryTypes = [{name: "Name", value: "name"}]
+        //     this.mapper = ({name}, index) => `[${index + 1}] ${name} `
+        // }
     }
 
     static navigationOptions = ClearHeader("New Broadcast")
@@ -49,21 +67,12 @@ export default class NewBroadcastFormRecepients extends React.Component {
                 <View style={{width: "100%", flexDirection: "row"}}>
                     <View style = {{flex: 1}}>
                         <Text h4 h4Style={{marginTop: 8, marginHorizontal: 18, fontWeight: "bold"}}>
-                            Who can see this broadcast?
+                            Who?
                         </Text>
                     </View>
-                    {this.mode == "friends" &&
-                        <View style = {{justifyContent: "center", alignItems: "center", marginRight: 16, marginLeft: -24}}>
-                            <CheckBox 
-                                checked = {this.state.allFriends} 
-                                containerStyle = {{margin: 0, padding: 0}}
-                                onIconPress = {this.selectAllFriends}
-                            />
-                            <Text style={{textAlign: "center"}}>Select All{"\n"}Friends</Text>
-                        </View>
-                    }
+                    
                 </View>
-
+{/* 
                 <ScrollView 
                 style = {{maxHeight: 55, width: "100%"}}>
                 {Object.keys(this.state.selectedSnippets).length != 0 && 
@@ -76,27 +85,46 @@ export default class NewBroadcastFormRecepients extends React.Component {
                     All friends selected
                     </Text>
                 }
-                </ScrollView>
+                </ScrollView> */}
 
                 <SearchableInfiniteScroll
-                type = "static"
+                type = "section"
                 queryValidator = {(query) => true}
                 queryTypes = {this.queryTypes}
                 renderItem = {this.itemRenderer}
                 dbref = {this.dbRef}
-                />
-                <BannerButton
-                iconName = {S.strings.confirm}
-                onPress = {this.saveRecepients}
-                title = "CONFIRM"
-                /> 
+                additionalData = {this.footerButtons}
+                >
+                    <View style = {{width: "100%", justifyContent: "center", alignItems: "flex-end"}}>
+                        <View style = {{flexDirection: "row", marginRight: 12}}>
+                            <CheckBox 
+                            checked = {this.state.allFriends}
+                            uncheckedColor = "orange"
+                            uncheckedIcon = "circle-o"
+                            checkedIcon = "check-circle"
+                            containerStyle = {{margin: 0, padding: 0}}
+                            onIconPress = {this.selectAllFriends}
+                            />
+                            <Text style={{textAlign: "center"}}>Select All Friends</Text>
+                        </View>
+                    </View> 
+                </SearchableInfiniteScroll>
+                <View style={styles.bottomBanner}>
+                    <Text>Test</Text>
+                    <PillButton
+                        onPress = {this.saveRecepients}
+                        title = "Done"
+                        contentColor = "white"
+                        extraStyles={{marginHorizontal: 10}}
+                        />  
+                </View>
             </View>          
         </MainLinearGradient>
         )}
         </ThemeConsumer>
       )
-    }
-
+    }   
+    
     saveRecepients = () => {
         if (this.mode == "friends"){
             const {allFriends} = this.state
@@ -116,7 +144,7 @@ export default class NewBroadcastFormRecepients extends React.Component {
               snippet={item} 
               groupInfo = {item}
               onPress={() => this.toggleSelection(item)}
-              imageDiameter = {45}
+              imageDiameter = {24}
             />
             {this.state.selectedSnippets[item.uid] && <CheckBox checked = {true} /> }
           </View>
@@ -141,3 +169,15 @@ export default class NewBroadcastFormRecepients extends React.Component {
         if (this.mode == "friends") this.setState({allFriends: false});
     }
 }
+
+const styles = StyleSheet.create({
+    bottomBanner:{
+        flexDirection: "row",
+        justifyContent: "space-between", 
+        alignItems: "center",
+        height: 48,
+        width: "100%",
+        borderTopWidth: 1,
+        borderColor: "lightgrey"
+    },
+})

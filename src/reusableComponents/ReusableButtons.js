@@ -42,7 +42,22 @@ class BannerButtonComponent extends React.PureComponent {
     }
 }
 
+class PillButtonComponent extends React.PureComponent {
+    render() {
+        const { theme } = this.props;
+        const backgroundColor = this.props.color ?? theme.colors.bannerButton
+        return (
+            <TouchableOpacity
+                style = {[styles.pillButton, {backgroundColor}, {...this.props.extraStyles}]}
+                onPress={this.props.onPress}>
+                <Text style = {{color: this.props.contentColor, fontWeight: "bold"}}>{this.props.title}</Text>
+            </TouchableOpacity>
+        )
+    }
+}
+
 const MinorActionButton = withTheme(MinorActionButtonComponent)
 const AdditionalOptionsButton = withTheme(AdditionalOptionsButtonComponent)
 const BannerButton = withTheme(BannerButtonComponent)
-export {MinorActionButton, AdditionalOptionsButton, BannerButton}
+const PillButton = withTheme(PillButtonComponent)
+export {MinorActionButton, AdditionalOptionsButton, BannerButton, PillButton}
