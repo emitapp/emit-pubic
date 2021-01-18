@@ -12,7 +12,7 @@ const Navigator = createStackNavigator(
   },
   {
     initialRouteName: 'Feed',
-    defaultNavigationOptions: Header("Feed")
+    defaultNavigationOptions: Header("Flares Feed")
   });
 
 export default class FeedStackNav extends React.Component {
