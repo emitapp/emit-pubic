@@ -3410,6 +3410,11 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
+emoji-datasource@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/emoji-datasource/-/emoji-datasource-6.0.0.tgz#892e66f8cca001459f33279294a21f231d174b51"
+  integrity sha512-WIExctYO+Ji8MKdPWpQhP9GDUitslISCWFCrARGLX0w4cf9+iLG/n2DAZf6mIC8c+s2pVJ9CS+kdWRZYo9h8mg==
+
 emoji-regex@^7.0.1:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-7.0.3.tgz#933a04052860c85e83c122479c4748a8e4c72156"
@@ -7497,6 +7502,13 @@ react-native-elements@^3.1.0:
     react-native-ratings "^7.3.0"
     react-native-safe-area-context "^3.1.9"
     react-native-size-matters "^0.3.1"
+
+react-native-emoji-selector@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-emoji-selector/-/react-native-emoji-selector-0.2.0.tgz#b1ed980cd585a3fd0fca1da6a29006c1a5979615"
+  integrity sha512-+rPPWG5vl5AexdH8udEwtzdq9QUGD6kp+dQ8C/459d3ScM0S3UnT/qAvhmpsTgCbgjpdwiJIcrKNxKmGEDb15g==
+  dependencies:
+    emoji-datasource "^6.0.0"
 
 react-native-fast-image@^7.0.2:
   version "7.0.2"

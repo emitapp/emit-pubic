@@ -48,11 +48,14 @@ export default class FeedElement extends React.Component {
 
                     <View style = {{flexDirection: 'row'}}>
                         <View style = {{alignItems: "center", justifyContent: "center", marginTop: -18, marginRight: 8}}>
-                                <Text style = {{fontSize: 50}}>🍲</Text>         
+                                {this.props.item.emoji ? 
+                                    <Text style = {{fontSize: 50}}>{this.props.item.emoji}</Text>  :
+                                    <Text style = {{fontSize: 50}}>🍲</Text>} 
                         </View>
-                        
                         <View style = {{flexDirection: 'column'}}>
-                            <Text style = {{fontSize: 22, fontFamily: "NunitoSans-Semibold"}}>{this.props.item.location}</Text>
+                            {this.props.item.name ? 
+                                <Text style = {{fontSize: 22, fontFamily: "NunitoSans-Semibold"}}>{this.props.item.name}</Text> :
+                                <Text style = {{fontSize: 22, fontFamily: "NunitoSans-Semibold"}}>{this.props.item.location}</Text>}
                             <View style = {{flexDirection: 'row'}}>
                                 <ProfilePicDisplayer diameter = {22} uid = {this.props.item.owner.uid} style = {{marginRight: 10}} />
                                 <Text style = {{fontSize: 14, fontFamily: "NunitoSans-Semibold"}}>{this.props.item.owner.displayName}</Text>         
