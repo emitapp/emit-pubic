@@ -25,7 +25,7 @@ export default class NewBroadcastFormActivity extends React.Component {
 
 
     static navigationOptions = ({ navigationOptions }) => {
-        return ClearHeader(navigationOptions, "New Broadcast")
+        return ClearHeader("New Broadcast")
     };
 
     render() {

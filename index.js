@@ -6,6 +6,8 @@ import 'react-native-gesture-handler' //For react-navigation
 import messaging from '@react-native-firebase/messaging';
 import { handleFCMMessage } from 'utils/fcmNotificationHandlers';
 import codePush from "react-native-code-push";
+import 'react-native-get-random-values' //https://github.com/uuidjs/uuid#getrandomvalues-not-supported
+
 
 const CodePushApp = codePush(App)
 

@@ -80,11 +80,7 @@ export default class SearchableInfiniteScroll extends React.Component {
         </View> }
 
       {(this.state.query == null) ? (
-        <EmptyState 
-          image = {<FontAwesomeIcon name="search" size={50} color = {theme.colors.grey1} />}
-          title = "Search for something"
-          message="We'll do our best to find it!"
-        />
+        this.renderEmptyState()
       ) : (
         this.props.type == "static" ? (   
           <StaticInfiniteScroll

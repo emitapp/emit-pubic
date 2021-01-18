@@ -1,16 +1,15 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { TouchableOpacity, View, Image } from 'react-native';
-import { BannerButton } from 'reusables/ReusableButtons';
+import { Image, TouchableOpacity, View } from 'react-native';
+import { Text } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import CountdownComponent from 'reusables/CountdownComponent';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
+import EmptyState from 'reusables/EmptyState';
+import ErrorMessageText from 'reusables/ErrorMessageText';
 import S from 'styling';
 import { epochToDateString } from 'utils/helpers';
-import EmptyState from 'reusables/EmptyState'
-import {Badge, Text} from 'react-native-elements'
-import CountdownComponent from 'reusables/CountdownComponent'
-import ErrorMessageText from 'reusables/ErrorMessageText';
-import Icon from 'react-native-vector-icons/FontAwesome'
 
 export default class ActiveBroadcasts extends React.Component {
 
@@ -39,12 +38,6 @@ export default class ActiveBroadcasts extends React.Component {
                 message = "You haven't made any broadcasts yet." 
               />
             }
-          />
-
-          <BannerButton
-            onPress={() => this.props.navigation.navigate('NewBroadcastForm', {needUserConfirmation: true})}
-            iconName = {S.strings.add}
-            title = "CREATE NEW BROADCAST"
           />
       </View>
     )

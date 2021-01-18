@@ -63,7 +63,6 @@ class FriendReqDialogue extends React.Component {
             <ThemeConsumer>
                 {({ theme }) => (
                     <View style={styles.container}>
-
                         <MaskedView
                             style={{
                                 width: ModalWidth,
@@ -77,8 +76,8 @@ class FriendReqDialogue extends React.Component {
                                         backgroundColor: 'black',
                                         width: "100%",
                                         height: "100%",
-                                        borderTopRightRadius: theme.Overlay.borderRadius,
-                                        borderTopLeftRadius: theme.Overlay.borderRadius
+                                        borderTopRightRadius: theme.Overlay.overlayStyle.borderRadius,
+                                        borderTopLeftRadius: theme.Overlay.overlayStyle.borderRadius
                                     }}
                                 />
                             }>
@@ -393,7 +392,7 @@ export default class FriendReqModal extends React.Component {
                 style={{ justifyContent: "center", alignItems: "center" }}
                 onRequestClose={this.attemptClose}
                 onBackdropPress={this.attemptClose}
-                width={ModalWidth}
+                overlayStyle = {{width: ModalWidth}}
             >
                 <FriendReqDialogue
                     selectedUserData={this.state.selectedUser}

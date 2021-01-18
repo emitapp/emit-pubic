@@ -103,10 +103,12 @@ export default theme = {
     },
 
     Overlay: {
-        windowBackgroundColor: "rgba(0, 0, 0, .5)",
-        width: "auto",
-        height: "auto",
-        borderRadius: 16
+        overlayStyle: {
+            windowBackgroundColor: "rgba(0, 0, 0, .5)",
+            width: "auto",
+            height: "auto",
+            borderRadius: 16
+        }
     },
 
     SearchBar:{

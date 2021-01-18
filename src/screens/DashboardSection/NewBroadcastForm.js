@@ -36,7 +36,6 @@ class NewBroadcastForm extends React.Component {
         this.state = {
             showingMore: false,
             passableBroadcastInfo: this.passableBroadcastInfo,
-            autoConfirm: true,
             note: "",
             customMaxResponders: false,
             maxResponders: "",
@@ -118,15 +117,6 @@ class NewBroadcastForm extends React.Component {
 
             {this.state.showingMore &&
                 <>
-                <CheckBox
-                    title='Auto-confirm'
-                    checkedColor='white'
-                    uncheckedColor="white"
-                    checked = {this.state.autoConfirm}
-                    textStyle = {{color: "white", fontWeight: "bold"}}
-                    containerStyle = {{alignSelf: "flex-start", marginLeft: 0, padding: 0, marginTop: 16}}
-                    onIconPress = {() => this.setState({autoConfirm: !this.state.autoConfirm})}
-                />
 
                 <FormSubtitle title = "Max Responders" />
 
@@ -289,7 +279,6 @@ class NewBroadcastForm extends React.Component {
             const creationFunction = functions().httpsCallable('createActiveBroadcast');
             let params = {
                 ownerUid: uid, 
-                autoConfirm: this.state.autoConfirm,
                 location: this.state.passableBroadcastInfo.location,
                 deathTimestamp: this.state.passableBroadcastInfo.broadcastTTL,
                 timeStampRelative: this.state.passableBroadcastInfo.TTLRelative,
