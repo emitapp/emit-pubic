@@ -97,8 +97,8 @@ export default class SearchableInfiniteScroll extends React.Component {
             generation = {this.state.searchGeneration}
             dbref = {this.props.dbref}
             orderBy = {this.props.queryTypes}
-            startingPoint = {this.state.query}
-            endingPoint = {`${this.state.query}\uf8ff`}
+            startingPoint = {new Array(this.props.dbref.length).fill(this.state.query)}
+            endingPoint = {new Array(this.props.dbref.length).fill(`${this.state.query}\uf8ff`)}
             {...otherProps}
           />) : ( 
           <DynamicInfiniteScroll

@@ -13,7 +13,7 @@ import { logError } from 'utils/helpers'
  * Use this class if you want to impliment an infinite scroll
  * for multiple refs
  * Currently it doesn't support pagination - since this was made 
- * from StaticInfiniteScroll's code, we've commented out the parts of it
+ * from StaticInfiniteScroll's and DyanmicInfiniteScroll's code, we've commented out the parts of it
  * that relate to pagination
  * //TODO: add pagination
  */
@@ -25,8 +25,8 @@ import { logError } from 'utils/helpers'
 
 //Optinal props
 //additionalData: additional content to display at the bottom per section. of the form {text: <text>, func: <lambda>}
-//startingPoint: the value to be used for .startat in the refs
-//endingPoint: the value to be used for .endat in the refs
+//startingPoint: array of values to be used for .startat in the refs
+//endingPoint: array of values to be used for .endat in the refs
 //emptyStateComponent: Will be rendered when the list is empty 
 // chunkSize: Size of chunks to get from firebase rtdb  (default 10) <--------- currently not used since there's no pagination
 // errorHandler: what the component should do upon facing SDK errors (not timeout erros tho, those are handled by the compenent)
@@ -62,14 +62,20 @@ export default class SectionInfiniteScroll extends React.Component {
         this.isLoading = true; //For when it's loading for the first time
         this.timedOut = false;
         this.errorMessage = "";
+        this.processedRefs = []
     }
 
     componentDidMount = () => {
         this.initialize();
     };
 
+    componentWillUnmount = () => {
+        this.removeListeners
+    }
+
     componentDidUpdate = (prevProps) => {
         if (this.props.generation != prevProps.generation) {
+            this.removeListeners()
             this.initialize();
         }
     }
@@ -80,54 +86,70 @@ export default class SectionInfiniteScroll extends React.Component {
 
     initialize = () => {
         this.isLoading = true;
-        this.sections = [];
+        this.sections = new Array(this.props.dbref.length).fill("uninitialized");;
         //this.lastItemProperty = null;
         //this.stopSearching = false;
         this.timedOut = false;
         this.errorMessage = "";
         this.requestRerender();
-        this.retrieveAllData(this.props.generation);
+        this.setListeners()
     }
 
-    retrieveAllData = async (invocationGen) => {
+    refListenerCallback = async (snapshot, refIndex) => {
         try {
-            for (i = 0; i < this.props.dbref.length; i++) {
-                var ref = this.props.dbref[i].ref.orderByChild(this.props.orderBy[i].value);
-                var title = this.props.dbref[i].title;
-                var footerData = this.props.additionalData[i];
+            var title = this.props.dbref[refIndex].title;
+            var footerData = { text: null, func: null }
+            if (this.props.additionalData && this.props.additionalData.length > refIndex) {
+                footerData = this.props.additionalData[refIndex];
+            }
 
-                if (this.props.startingPoint) ref = ref.startAt(this.props.startingPoint)
-                if (this.props.endingPoint) ref = ref.endAt(this.props.endingPoint)
-                const snapshot = await timedPromise(ref.once("value"), MEDIUM_TIMEOUT);
+            var listData = []
+            snapshot.forEach(childSnapshot => {
+                if (childSnapshot.exists())
+                    listData.push({
+                        uid: childSnapshot.key,
+                        ...childSnapshot.val()
+                    })
 
-                if (this.props.generation != invocationGen) return;
+            });
 
-                var listData = []
-                snapshot.forEach(childSnapshot => {
-                    if (childSnapshot.exists())
-                        listData.push({
-                            uid: childSnapshot.key,
-                            ...childSnapshot.val()
-                        })
-
-                });
-
-                if (listData.length == 0) {
-                    //this.stopSearching = true;
-                    //this.refreshing = false,
-                    this.isLoading = false
-                    this.requestRerender();
-                } else {
-                    //this.lastItemProperty = listData[listData.length - 1][this.props.orderBy];
-                    this.sections.push({ title: title, data: listData, footerText: footerData.text, footerCallback: footerData.func });
-                    this.isLoading = false
-                    this.requestRerender()
-                }
+            if (listData.length == 0) {
+                //this.stopSearching = true;
+                //this.refreshing = false,
+                this.isLoading = false
+                // this.requestRerender();
+            } else {
+                //this.lastItemProperty = listData[listData.length - 1][this.props.orderBy];
+                this.sections[refIndex] = ({ title: title, data: listData, footerText: footerData.text, footerCallback: footerData.func });
+                this.isLoading = false
+                this.requestRerender()
             }
         }
         catch (error) {
             this.onError(error)
         }
+    }
+
+    setListeners = () => {
+        try {
+            const {startingPoint, endingPoint} = this.props
+            for (let i = 0; i < this.props.dbref.length; i++) {
+                var ref = this.props.dbref[i].ref.orderByChild(this.props.orderBy[i].value);
+                if (startingPoint && startingPoint[i]) ref = ref.startAt(startingPoint[i])
+                if (endingPoint && endingPoint[i]) ref = ref.endAt(endingPoint[i])
+                ref.on("value", (snap) => this.refListenerCallback(snap, i), this.onError)
+                this.processedRefs.push(ref)
+            }
+        }
+        catch (error) {
+            this.onError(error)
+        }
+    };
+
+    removeListeners = () => {
+        this.processedRefs.forEach(ref => {
+            ref.off()
+        });
     }
 
     onError = (error) => {
@@ -222,7 +244,7 @@ export default class SectionInfiniteScroll extends React.Component {
                 <View style={style}>
                     <ErrorMessageText message={this.errorMessage} />
                     <SectionList
-                        sections={this.sections}
+                        sections={this.sections.filter((x) => x != "uninitialized")}
                         keyExtractor={item => item.uid}
                         // ListFooterComponent={this.renderFooter}
                         // onEndReached={() => this.retrieveMore(this.props.generation)}
