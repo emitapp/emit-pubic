@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import functions from '@react-native-firebase/functions';
 import messaging from '@react-native-firebase/messaging';
 import React from 'react';
-import { View, Platform, TouchableOpacity } from 'react-native'
+import { View, Platform, TouchableOpacity, Pressable } from 'react-native'
 import { requestNotifications, RESULTS } from 'react-native-permissions';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
@@ -18,6 +18,7 @@ import SettingsStackNav from "./Settings/SettingsStackNav";
 import MainTheme from 'styling/mainTheme'
 import { cloudFunctionStatuses } from 'utils/serverValues'
 import CircularView from 'reusables/CircularView'
+import NavigationService from 'utils/NavigationService';
 
 const renderTab = (props, targetRouteName, iconName) => {
   const focused = props.navigation.state.routes[props.navigation.state.index].routeName == targetRouteName
@@ -59,25 +60,7 @@ const Tab = createBottomTabNavigator(
           //https://github.com/react-navigation/react-navigation/blob/5c7f892d77298f5c89534fa78a1a6a59c7f35a60/packages/tabs/src/views/BottomTabBar.tsx#L36
           <View {...props} style={{ ...props.style, height: 49, flexDirection: "row", justifyContent: 'center', alignItems: 'center' }}>
             {renderTab(props, "FeedStackNav", "fire")}
-
-            <TouchableOpacity
-              style={{ alignSelf: "flex-end" }}
-              onPress={() => props.navigation.navigate('NewBroadcastForm', { needUserConfirmation: true })}
-            >
-              <CircularView style={{ backgroundColor: MainTheme.colors.primary }} diameter={60} >
-                {/** 
-               * // TODO: Link back to MainTheme
-               **/}
-                <CircularView style={{ backgroundColor: "lightgrey" }} diameter={55} >
-                  <CircularView style={{ backgroundColor: 'white' }} diameter={45} >
-                    <View style={{ alignItems: "center", justifyContent: "center" }}>
-                      <AwesomeIcon name="plus" size={30} color={MainTheme.colors.primary} />
-                    </View>
-                  </CircularView>
-                </CircularView>
-              </CircularView>
-            </TouchableOpacity>
-
+            <FlareCreationButton />
             {renderTab(props, "DashboardStackNav", "home")}
           </View>
         )
@@ -132,7 +115,7 @@ export default class Main extends React.Component {
   setUpFCM = async () => {
     try {
       const response = await requestNotifications(['alert', 'sound'])
-      if (response.status != RESULTS.GRANTED && response.status != RESULTS.LIMITED){
+      if (response.status != RESULTS.GRANTED && response.status != RESULTS.LIMITED) {
         logError(new Error("Denied notification permission"), false)
         return;
       }
@@ -200,5 +183,55 @@ export default class Main extends React.Component {
     } catch (err) {
       if (err.name != "timeout") logError(err)
     }
+  }
+}
+
+
+
+class FlareCreationButton extends React.PureComponent {
+
+  pressedColors = {
+    outerBorder: "lightgrey",
+    innerBorder: "white",
+    innerCircle: MainTheme.colors.primary,
+    iconColor: "white"
+  }
+
+  unpressedColors = {
+    outerBorder: MainTheme.colors.primary,
+    innerBorder: "lightgrey",
+    innerCircle: "white",
+    iconColor: MainTheme.colors.primary
+  }
+
+  state = {
+    pressedDown: false
+  }
+
+  render() {
+    const { pressedDown } = this.state;
+    return (
+      <Pressable
+        style={{ alignSelf: "flex-end" }}
+        onPressIn={() => this.setState({ pressedDown: true })}
+        onPressOut={() => this.setState({ pressedDown: false })}
+        onPress={() => NavigationService.navigate('NewBroadcastForm', { needUserConfirmation: true })}
+        android_ripple={{ color: MainTheme.colors.primary, borderless: true }}
+      >
+        <CircularView
+          style={{ backgroundColor: pressedDown ? this.pressedColors.outerBorder : this.unpressedColors.outerBorder }} diameter={60} >
+          {/** 
+         * // TODO: Link back to MainTheme
+         **/}
+          <CircularView style={{ backgroundColor: pressedDown ? this.pressedColors.innerBorder : this.unpressedColors.innerBorder }} diameter={55} >
+            <CircularView style={{ backgroundColor: pressedDown ? this.pressedColors.innerCircle : this.unpressedColors.innerCircle}} diameter={45} >
+              <View style={{ alignItems: "center", justifyContent: "center" }}>
+                <AwesomeIcon name="plus" size={30} color={pressedDown ? this.pressedColors.iconColor : this.unpressedColors.iconColor} />
+              </View>
+            </CircularView>
+          </CircularView>
+        </CircularView>
+      </Pressable>
+    )
   }
 }
