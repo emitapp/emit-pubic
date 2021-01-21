@@ -67,6 +67,7 @@ export default class SearchableInfiniteScroll extends React.Component {
           value={this.state.searchBarValue}
           onSubmitEditing = {this.search}
         />
+        {/** //FIXME: there should be a cleaner way to do this */}
         {this.props.children ? this.props.children : 
         <View style = {{flexDirection: "row", alignItems: "center", marginBottom: 16}}>
           <Text style = {{marginHorizontal: 16}}>Search by...</Text>

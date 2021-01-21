@@ -1,20 +1,21 @@
 import React from 'react';
 import { TouchableOpacity, SectionList, FlatList, View, Image } from 'react-native';
 import { MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
-import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
-import {Text} from 'react-native-elements'
+import { TimeoutLoadingComponent } from 'reusables/LoadingComponents'
+import { Text } from 'react-native-elements'
 import EmptyState from 'reusables/EmptyState'
 import { Divider } from "react-native-elements"
 import ErrorMessageText from 'reusables/ErrorMessageText';
-import {logError} from 'utils/helpers'
+import { logError } from 'utils/helpers'
 
 
 /**
  * Use this class if you want to impliment an infinite scroll
- * for some data that you don't expect to update during the time the
- * user is looking at the app.
- * It will use ref.once() and will also append new sections 
- * instead of re-getting the whole dataset
+ * for multiple refs
+ * Currently it doesn't support pagination - since this was made 
+ * from StaticInfiniteScroll's code, we've commented out the parts of it
+ * that relate to pagination
+ * //TODO: add pagination
  */
 
 // Required props:
@@ -23,10 +24,11 @@ import {logError} from 'utils/helpers'
 // renderItem: same as FLatlist RenderItem
 
 //Optinal props
-//startingPoint: the value to be used for .startat in retrieveInitialChunk
-//endingPoint: the value to be used for .endat in both retrieveInitialChunk and retrieveMore
+//additionalData: additional content to display at the bottom per section. of the form {text: <text>, func: <lambda>}
+//startingPoint: the value to be used for .startat in the refs
+//endingPoint: the value to be used for .endat in the refs
 //emptyStateComponent: Will be rendered when the list is empty 
-// chunkSize: Size of chunks to get from firebase rtdb  (default 10)
+// chunkSize: Size of chunks to get from firebase rtdb  (default 10) <--------- currently not used since there's no pagination
 // errorHandler: what the component should do upon facing SDK errors (not timeout erros tho, those are handled by the compenent)
 
 // generation: used to indicate to the scrollview that it shoudl reset
@@ -39,11 +41,11 @@ import {logError} from 'utils/helpers'
 //For data integrity, it is unsafe for the firebase api calls to be made and not having thier
 //resolved promises update the necessary variables immediately.
 
-export default class StaticInfiniteScroll extends React.Component {
+export default class SectionInfiniteScroll extends React.Component {
 
     static defaultProps = {
-        style: { flex: 1, width: "100%"},
-        contentContainerStyle: {flexGrow: 1, marginHorizontal: 8},
+        style: { flex: 1, width: "100%" },
+        contentContainerStyle: { flexGrow: 1, marginHorizontal: 8 },
         ItemSeparatorComponent: (() => <Divider />),
         // chunkSize: 10
     }
@@ -51,14 +53,15 @@ export default class StaticInfiniteScroll extends React.Component {
     constructor(props) {
         super(props);
 
-        this.lastItemProperty = null;
-        this.stopSearching = false; //Once it gets a null snapshot, it'll stop
+        //this.lastItemProperty = null;
+        //this.stopSearching = false; //Once it gets a null snapshot, it'll stop
+        //this.refreshing = false; //For when it's getting more info
+
+
         this.sections = []; // A list of lists, to allow for section list support
         this.isLoading = true; //For when it's loading for the first time
-        this.refreshing = false; //For when it's getting more info
         this.timedOut = false;
         this.errorMessage = "";
-        
     }
 
     componentDidMount = () => {
@@ -77,50 +80,48 @@ export default class StaticInfiniteScroll extends React.Component {
 
     initialize = () => {
         this.isLoading = true;
-        this.sections= [];
-        this.lastItemProperty = null;
-        this.stopSearching = false;
+        this.sections = [];
+        //this.lastItemProperty = null;
+        //this.stopSearching = false;
         this.timedOut = false;
         this.errorMessage = "";
         this.requestRerender();
-        this.retrieveList(this.props.generation);
+        this.retrieveAllData(this.props.generation);
     }
 
-    retrieveList = async (invocationGen) => {
+    retrieveAllData = async (invocationGen) => {
         try {
             for (i = 0; i < this.props.dbref.length; i++) {
                 var ref = this.props.dbref[i].ref.orderByChild(this.props.orderBy[i].value);
                 var title = this.props.dbref[i].title;
                 var footerData = this.props.additionalData[i];
-                
+
                 if (this.props.startingPoint) ref = ref.startAt(this.props.startingPoint)
                 if (this.props.endingPoint) ref = ref.endAt(this.props.endingPoint)
-
                 const snapshot = await timedPromise(ref.once("value"), MEDIUM_TIMEOUT);
-                
+
                 if (this.props.generation != invocationGen) return;
-                
+
                 var listData = []
-                snapshot.forEach(childSnapshot =>{
+                snapshot.forEach(childSnapshot => {
                     if (childSnapshot.exists())
                         listData.push({
-                            uid: childSnapshot.key, 
+                            uid: childSnapshot.key,
                             ...childSnapshot.val()
                         })
-                        
+
                 });
 
                 if (listData.length == 0) {
-                this.stopSearching = true;
-                this.refreshing = false,
+                    //this.stopSearching = true;
+                    //this.refreshing = false,
                     this.isLoading = false
-                this.requestRerender();
+                    this.requestRerender();
                 } else {
-                this.lastItemProperty =
-                    listData[listData.length - 1][this.props.orderBy];
-                this.sections.push({title: title, data: listData, footerText: footerData.text, footerCallback: footerData.func});
-                this.isLoading = false
-                this.requestRerender()
+                    //this.lastItemProperty = listData[listData.length - 1][this.props.orderBy];
+                    this.sections.push({ title: title, data: listData, footerText: footerData.text, footerCallback: footerData.func });
+                    this.isLoading = false
+                    this.requestRerender()
                 }
             }
         }
@@ -134,10 +135,10 @@ export default class StaticInfiniteScroll extends React.Component {
             this.timedOut = true;
             this.requestRerender();
         } else {
-            if (this.props.errorHandler){
+            if (this.props.errorHandler) {
                 this.props.errorHandler(error)
-            } 
-            else{
+            }
+            else {
                 logError(error)
                 this.errorMessage = error.message;
                 this.requestRerender()
@@ -145,93 +146,94 @@ export default class StaticInfiniteScroll extends React.Component {
         }
     }
 
-    renderSectionFooter = ({section: {footerText, footerCallback}}) => {
+    renderSectionFooter = ({ section: { footerText, footerCallback } }) => {
+        if (!footerText) return null;
         return (
             <View>
                 <Divider />
                 <TouchableOpacity onPress={footerCallback}>
-                    <Text style={{fontSize: 18, marginTop: 8, marginBottom: 8}}>{footerText}</Text>
+                    <Text style={{ fontSize: 18, marginTop: 8, marginBottom: 8 }}>{footerText}</Text>
                 </TouchableOpacity>
             </View>
         )
     }
 
-    renderFooter = () => {
-        if (this.refreshing) {
-            return (
-                <TimeoutLoadingComponent
-                    hasTimedOut={this.timedOut}
-                    retryFunction={() => {
-                        this.timedOut = false;
-                        this.refreshing = false;
-                        this.retrieveMore(this.props.generation)
-                    }}
-                />
-            )
-        }
-        else if (this.stopSearching && this.listData.length != 0) {
-            return (
-                <Text style={{width: "100%", textAlign: "center", marginTop: 8}}>
-                ~That's all folks!~
-                </Text>);
-        } else {
-            return null;
-        }
-    }
+    // renderFooter = () => {
+    //     if (this.refreshing) {
+    //         return (
+    //             <TimeoutLoadingComponent
+    //                 hasTimedOut={this.timedOut}
+    //                 retryFunction={() => {
+    //                     this.timedOut = false;
+    //                     this.refreshing = false;
+    //                     this.retrieveMore(this.props.generation)
+    //                 }}
+    //             />
+    //         )
+    //     }
+    //     else if (this.stopSearching && this.listData.length != 0) {
+    //         return (
+    //             <Text style={{width: "100%", textAlign: "center", marginTop: 8}}>
+    //             ~That's all folks!~
+    //             </Text>);
+    //     } else {
+    //         return null;
+    //     }
+    // }
 
     renderEmptyState = () => {
-        if (this.props.emptyStateComponent) 
+        if (this.props.emptyStateComponent)
             return this.props.emptyStateComponent
         return (
-            <EmptyState 
-                image =  {
-                    <Image source={require('media/NoSearchResults.png')} 
-                    style = {{height: 80, marginBottom: 8}} 
-                    resizeMode = 'contain' />
+            <EmptyState
+                image={
+                    <Image source={require('media/NoSearchResults.png')}
+                        style={{ height: 80, marginBottom: 8 }}
+                        resizeMode='contain' />
                 }
-                title = "No results." 
-                message = "Looks like we didn't find anything." 
+                title="No results."
+                message="Looks like we didn't find anything."
             />
         )
     }
 
     render() {
         if (this.isLoading) {
-            if (this.errorMessage){
+            if (this.errorMessage) {
                 return (
-                    <View style = {{...this.props.style, justifyContent: "center"}}>
-                        <ErrorMessageText message = {this.errorMessage} />
+                    <View style={{ ...this.props.style, justifyContent: "center" }}>
+                        <ErrorMessageText message={this.errorMessage} />
                     </View>
                 )
-            }else{
+            } else {
                 return (
                     <TimeoutLoadingComponent
                         hasTimedOut={this.timedOut}
                         retryFunction={() => {
                             this.timedOut = false;
-                            this.retrieveList(this.props.generation)
+                            this.retrieveAllData(this.props.generation)
                         }}
                     />
                 )
             }
         } else {
-            const {style, ...otherProps} = this.props
+            const { style, ...otherProps } = this.props
             return (
-                <View style = {style}>
-                    <ErrorMessageText message = {this.errorMessage} />
+                <View style={style}>
+                    <ErrorMessageText message={this.errorMessage} />
                     <SectionList
                         sections={this.sections}
                         keyExtractor={item => item.uid}
                         // ListFooterComponent={this.renderFooter}
                         // onEndReached={() => this.retrieveMore(this.props.generation)}
                         // onEndReachedThreshold={0.1}
-                        renderSectionHeader={({section: {title}}) => (
-                            <Text style={{marginTop: 4, color: "blue", fontSize: 12}}>{title}</Text>
+                        renderSectionHeader={({ section: { title } }) => (
+                            <Text style={{ marginTop: 4, color: "blue", fontSize: 12 }}>{title}</Text>
                         )}
                         // An optional clickable button to add onto the ends of each sectionlist
                         renderSectionFooter={this.renderSectionFooter}
-                        refreshing={this.refreshing}
-                        ListEmptyComponent = {this.renderEmptyState}
+                        //refreshing={this.refreshing}
+                        ListEmptyComponent={this.renderEmptyState}
                         {...otherProps}
                     />
                 </View>
