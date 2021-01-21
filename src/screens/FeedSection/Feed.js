@@ -44,6 +44,7 @@ export default class Feed extends React.Component {
   }
 
   itemRenderer = ({item}) => {
+    if (item.status) return null; //Don't show flares you've responded to 
     return (
      <FeedElement
        navigation={this.props.navigation}

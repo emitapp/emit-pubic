@@ -70,7 +70,7 @@ export default class SectionInfiniteScroll extends React.Component {
     };
 
     componentWillUnmount = () => {
-        this.removeListeners
+        this.removeListeners()
     }
 
     componentDidUpdate = (prevProps) => {
@@ -117,7 +117,7 @@ export default class SectionInfiniteScroll extends React.Component {
                 //this.stopSearching = true;
                 //this.refreshing = false,
                 this.isLoading = false
-                // this.requestRerender();
+                this.requestRerender();
             } else {
                 //this.lastItemProperty = listData[listData.length - 1][this.props.orderBy];
                 this.sections[refIndex] = ({ title: title, data: listData, footerText: footerData.text, footerCallback: footerData.func });
