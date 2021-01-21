@@ -2,7 +2,7 @@ import auth from '@react-native-firebase/auth';
 import React from 'react';
 import { View, ScrollView, RefreshControl, StyleSheet } from 'react-native';
 import {Button, Text, ThemeConsumer} from 'react-native-elements'
-import { logError, getFullVersionInfo } from 'utils/helpers';
+import { logError, getFullVersionInfo, ShowNotSupportedAlert } from 'utils/helpers';
 import UserProfileSummary from 'reusables/UserProfileSummary'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import FeatherIcon from 'react-native-vector-icons/Feather'
@@ -127,12 +127,13 @@ export default class SettingsMain extends React.Component {
     }
 
     sendEmailVerification = () => {
-      this.setState({verificationEmailError: ""})
-      auth().currentUser.sendEmailVerification()
-      .catch(error => {
-        this.setState({verificationEmailError: error.message})
-        logError(error)
-      })
+      ShowNotSupportedAlert()
+      // this.setState({verificationEmailError: ""})
+      // auth().currentUser.sendEmailVerification()
+      // .catch(error => {
+      //   this.setState({verificationEmailError: error.message})
+      //   logError(error)
+      // })
     }
   }
 

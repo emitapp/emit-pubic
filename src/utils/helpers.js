@@ -121,3 +121,13 @@ export const getFullHardwareInfo = async() => {
     return "<Error Getting Hardware Info>"
   }
 }
+
+import {Alert} from 'react-native';
+/**
+ * Standard alert to show when something's not ready for use yet (or is broken due ot new developments)
+ */
+export const ShowNotSupportedAlert = (customMessage = null) => {
+  Alert.alert(
+    "Not yet, young whippersnapper 👴🏾", 
+    customMessage || "Either this feature is broken, or might break something, or hasn't been tested enough. Maybe try again when its ready.")
+}
