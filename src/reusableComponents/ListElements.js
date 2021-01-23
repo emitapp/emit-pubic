@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
 import S from 'styling';
-import {Text, ThemeConsumer} from 'react-native-elements'
+import { Text, ThemeConsumer } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 
@@ -21,18 +21,18 @@ export class UserSnippetListElement extends React.PureComponent {
     const snippet = this.props.snippet
     return (
       <ThemeConsumer>
-      {({ theme }) => (
-        <TouchableOpacity 
-        style = {{...S.styles.listElement, ...this.props.style}}
-        onPress={this.props.onPress}>
-          <ProfilePicDisplayer diameter = {this.props.imageDiameter} uid = {snippet.uid} style = {{marginLeft: 8, marginRight: 8}} />
-          <View style = {{flexDirection: "row"}}>
-            <Text style = {{fontSize: 18}}>{snippet.displayName}</Text>
-            <Text style = {{color: theme.colors.grey2, fontSize: 18, marginLeft: 6}}>@{snippet.username}</Text>
-            {this.props.extraComponents}
-          </View>
-        </TouchableOpacity>
-      )}
+        {({ theme }) => (
+          <TouchableOpacity
+            style={{ ...S.styles.listElement, ...this.props.style }}
+            onPress={this.props.onPress}>
+            <ProfilePicDisplayer diameter={this.props.imageDiameter} uid={snippet.uid} style={{ marginLeft: 8, marginRight: 8 }} />
+            <View style={{ flexDirection: "row" }}>
+              <Text style={{ fontSize: 18 }}>{snippet.displayName}</Text>
+              <Text style={{ color: theme.colors.grey2, fontSize: 18, marginLeft: 6 }}>@{snippet.username}</Text>
+              {this.props.extraComponents}
+            </View>
+          </TouchableOpacity>
+        )}
       </ThemeConsumer>
     )
   }
@@ -41,18 +41,28 @@ export class UserSnippetListElement extends React.PureComponent {
 /**
  * Standard ListView element component for viewing user groups.
  * Required props: groupInfo
+ * Optional prop: imageDiameter
  */
 export class UserGroupListElement extends React.PureComponent {
 
+  static defaultProps = {
+    imageDiameter: 30
+  }
+
   render() {
-    const {groupInfo, onPress} = this.props
+    const { groupInfo, onPress } = this.props
     return (
-      <TouchableOpacity 
-        style = {{...S.styles.listElement, ...this.props.style}}
-        onPress = {onPress}>
-          <View style = {{marginLeft: 8}}>
-            <Text style = {{fontWeight: 'bold', fontSize: 18}} >{groupInfo.name}</Text>
-          </View>
+      <TouchableOpacity
+        style={{ ...S.styles.listElement, ...this.props.style }}
+        onPress={onPress}>
+        <View style={{ marginLeft: 8, flexDirection: "row" }}>
+          <ProfilePicDisplayer
+            diameter={this.props.imageDiameter}
+            uid={groupInfo.uid}
+            style={{ marginLeft: 8, marginRight: 8 }}
+            groupPic={true} />
+          <Text style={{ fontWeight: 'bold', fontSize: 18 }} >{groupInfo.name}</Text>
+        </View>
       </TouchableOpacity>
     )
   }
@@ -65,25 +75,25 @@ export class UserGroupListElement extends React.PureComponent {
 export class LocationListElement extends React.PureComponent {
 
   render() {
-    const {locationInfo, onPress} = this.props
+    const { locationInfo, onPress } = this.props
     return (
       <ThemeConsumer>
-      {({ theme }) => (
-      <TouchableOpacity 
-        style = {{...S.styles.listElement, ...this.props.style}}
-        onPress = {onPress}>
-          <View style = {{marginLeft: 8, marginVertical: 8, width: "100%", flexDirection: "row"}}>
-            <View style = {{width: 40}}>
-              {locationInfo.geolocation !== undefined && locationInfo.geolocation !== null && 
-                <Icon name="location-on" size={20} color={theme.colors.grey2} style = {{marginHorizontal: 8}}/>
-              }
+        {({ theme }) => (
+          <TouchableOpacity
+            style={{ ...S.styles.listElement, ...this.props.style }}
+            onPress={onPress}>
+            <View style={{ marginLeft: 8, marginVertical: 8, width: "100%", flexDirection: "row" }}>
+              <View style={{ width: 40 }}>
+                {locationInfo.geolocation !== undefined && locationInfo.geolocation !== null &&
+                  <Icon name="location-on" size={20} color={theme.colors.grey2} style={{ marginHorizontal: 8 }} />
+                }
+              </View>
+              <Text style={{ fontSize: 16 }}>
+                {locationInfo.name}
+              </Text>
             </View>
-            <Text style = {{fontSize: 16}}>
-              {locationInfo.name}
-            </Text>
-          </View>
-      </TouchableOpacity>
-      )}
+          </TouchableOpacity>
+        )}
       </ThemeConsumer>
     )
   }
@@ -102,21 +112,21 @@ export class RecipientListElement extends React.PureComponent {
   }
 
   render() {
-    const {snippet} = this.props;
+    const { snippet } = this.props;
 
     return (
       <ThemeConsumer>
-      {({ theme }) => (
-        <TouchableOpacity 
-        style = {{...S.styles.listElement, ...this.props.style}}
-        onPress={this.props.onPress}>
-          {snippet.displayName ? <ProfilePicDisplayer diameter = {this.props.imageDiameter} uid = {snippet.uid} style = {{marginLeft: 8, marginRight: 8}} /> : <></>}
-          <View style = {{flexDirection: "row"}}>
-            <Text style = {{fontSize: 18}}>{snippet.displayName ? snippet.displayName : snippet.name}</Text>
-            {this.props.extraComponents}
-          </View>
-        </TouchableOpacity>
-      )}
+        {({ theme }) => (
+          <TouchableOpacity
+            style={{ ...S.styles.listElement, ...this.props.style }}
+            onPress={this.props.onPress}>
+            {snippet.displayName ? <ProfilePicDisplayer diameter={this.props.imageDiameter} uid={snippet.uid} style={{ marginLeft: 8, marginRight: 8 }} /> : <></>}
+            <View style={{ flexDirection: "row" }}>
+              <Text style={{ fontSize: 18 }}>{snippet.displayName ? snippet.displayName : snippet.name}</Text>
+              {this.props.extraComponents}
+            </View>
+          </TouchableOpacity>
+        )}
       </ThemeConsumer>
     )
   }
