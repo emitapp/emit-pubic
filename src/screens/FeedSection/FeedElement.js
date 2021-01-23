@@ -118,6 +118,7 @@ export default class FeedElement extends React.Component {
      * @returns a View including the formatted time left.
      */
     timeLeftRenderer = (time) => {
+
         let string = ""
         let metric = ""
         if (time.h){

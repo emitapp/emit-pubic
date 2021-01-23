@@ -14,12 +14,15 @@ import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/LoadingC
 import S from "styling";
 import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, responderStatuses } from 'utils/serverValues';
+import { ProfilePicList } from 'reusables/ProfilePicComponents';
+import ProfilePicDisplayer from 'reusables/ProfilePicComponents'
 
 export default class BroadcastViewer extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = { 
+            attendees: [],
             errorMessage: null, 
             broadcastData: null,
             isModalVisible: false,
@@ -33,20 +36,27 @@ export default class BroadcastViewer extends React.Component {
     database()
     .ref(`activeBroadcasts/${this.broadcastSnippet.owner.uid}/public/${this.broadcastSnippet.uid}`)
     .on('value', snap => this.setState({broadcastData: snap.val()}))
+
+    database()
+    .ref(`/activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)
+    .on('value', snap => this.updateAttendees(snap.val()))
   }
 
   componentWillUnmount = () => {
     database()
     .ref(`activeBroadcasts/${this.broadcastSnippet.owner.uid}/public/${this.broadcastSnippet.uid}`)
     .off()
+
+    database()
+    .ref(`/activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)
+    .off()
   }
-
-
 
   render() {
     const {broadcastData} = this.state
     return (
       <View style={{...S.styles.containerFlexStart, alignItems: "flex-start", marginHorizontal: 16}}>
+        
         <DefaultLoadingModal isVisible={this.state.isModalVisible} />
         
         <ErrorMessageText message = {this.state.errorMessage} />
@@ -56,83 +66,128 @@ export default class BroadcastViewer extends React.Component {
         }
 
         {broadcastData && 
-          <>
-              <UserSnippetListElement  snippet={this.broadcastSnippet.owner} onPress={null}/>
-              <Divider />
-              <Text h4 h4Style = {{marginVertical: 8}}>Will be at</Text>
+          <View style={{width: "100%"}}>
+              <View style={{alignItems: "center"}}>
+                <View style={{flexDirection: "row"}}>
+                  <View style={{alignItems: "center", justifyContent: "center", marginTop: -16, marginBottom: 8, marginRight: 8}}>
+                    {broadcastData.emoji ? <Text style = {{fontSize: 50}}>{broadcastData.emoji}</Text> : <Text style = {{fontSize: 50}}>🍲</Text> }
+                  </View>
+                  <Text style={{fontSize: 32, marginBottom: 8}}>{broadcastData.location}</Text>
+                </View>
+                <View style={{flexDirection: "row", alignItems: "center", justifyContent: "center"}}>
+                  <View style={{justifyContent: "center"}}>
+                    <ProfilePicDisplayer diameter = {32} uid = {this.broadcastSnippet.owner.uid} />
+                  </View>
+                  <Text style={{marginLeft: 4, marginBottom: 8, color: "#3F83F9"}}>{this.broadcastSnippet.owner.displayName}</Text>
+                </View>
+                <CountdownComponent deadLine = {broadcastData.deathTimestamp}  renderer = {this.timeLeftRenderer} />
+            </View>
+            <Divider style = {{marginVertical: 8}} />
+            <View >
+              <Text style = {{marginTop: -8, fontSize: 24, marginLeft: 4, color: "grey", marginBottom: 8}}>Location</Text>
+              <Text style = {{fontSize: 18, marginLeft: 4}}>{broadcastData.location}</Text>
               <View style = {{flexDirection: "row", alignItems: "center"}}>
                 {broadcastData.geolocation && 
                   <Button
                     icon={ <Icon name="location-pin" size={20} color = "white" /> }
                     onPress = {this.openLocationOnMap}
                     containerStyle = {{marginRight: 8, marginLeft: 0}}
-                  />    
-                }
-                <Text style = {{fontSize: 18}}>{broadcastData.location}</Text>
+                  /> }
               </View>
-              <CountdownComponent deadLine = {broadcastData.deathTimestamp}  renderer = {this.timeLeftRenderer} />
-              {broadcastData.note != undefined &&
-                <AutolinkText style = {{fontStyle: "italic", marginTop: 8, fontSize: 18, color: "grey", marginLeft: 4, borderLeftColor: "grey", borderLeftWidth: 2, paddingLeft: 8}}>
-                  {broadcastData.note}
-                </AutolinkText>
-              }
-          </>
+            </View>
+            {broadcastData.note != undefined &&
+              <View>
+                <Text style = {{marginTop: 8, fontSize: 24, marginLeft: 4, color: "grey"}}>
+                Note
+                </Text>
+                  <AutolinkText style = {{marginTop: 8, fontSize: 16, marginLeft: 4}}>{broadcastData.note}</AutolinkText>
+              </View>
+            }   
+          </View>
         }
-
-        <Divider style = {{marginVertical: 8}} />
         {(broadcastData && broadcastData.locked) && 
             <LockNotice message={"This broadcast has react the response limit it's creator set. It won't receive any more responses."} />
         }
-
-        {this.displayBroadcastAction()}
-        <Divider style = {{marginVertical: 8}} />
-
         {broadcastData && 
-            <Text style = {{alignSelf: "center"}}>{broadcastData.totalConfirmations} user(s) have confirmed to join</Text>
+          <View>
+            <Text style = {{marginTop: 8, fontSize: 24, marginLeft: 4, marginBotton: 4, color: "grey"}}>
+              Who's In
+            </Text>
+            <Text style = {{alignSelf: "center", marginLeft: 4, marginBottom: 4}}>{broadcastData.totalConfirmations} user(s) are in!</Text>
+            <View style={{height: 36}}> 
+              {this.state.attendees.length > 0 &&
+              <ProfilePicList 
+                        uids={this.state.attendees} 
+                        diameter={36}
+                        style = {{marginLeft: 0, marginRight: 2}}/>}
+            </View> 
+          </View>
         }
 
-        <DynamicInfiniteScroll
-          renderItem = {this.itemRenderer}
-          dbref = {database().ref(`activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)}
-          emptyStateComponent = {<Text style = {{alignSelf: "center"}}> Nothing to see here </Text>}
-        />
+        <Divider style = {{marginVertical: 8}} />
+
+        {broadcastData && this.displayBroadcastAction()}
+           
       </View>
     )
   }
 
+  updateAttendees = (data) => {
+    var attendeesNew = []
+    for (var id in data) {
+      attendeesNew.push(id)
+    }
+    this.setState({attendees: attendeesNew})
+  }
+
   displayBroadcastAction = () => {
-    if (!this.broadcastSnippet.status){
-      return (<Button 
-        title="Express Interest" 
-        onPress={this.sendConfirmationRequest} 
-        containerStyle = {{alignSelf: "center"}}/>)
-    }else{
+    if (!this.broadcastSnippet.status) {
+      return (
+        <View style={{alignSelf: "center"}}>
+          <Button 
+            title="I'm In" 
+            onPress={this.sendConfirmationRequest} 
+            containerStyle = {{alignSelf: "center"}}/>
+        </View>
+      )
+    } else {
       let color = "green"
       if (this.broadcastSnippet.status == responderStatuses.PENDING) color = "grey"
       return (
-        <Text style = {{fontSize: 18, marginVertical: 8}}>
-        Status: <Text style={{color, fontSize: 18}}> {this.broadcastSnippet.status} </Text>
-        </Text>
-      )
+        <View style={{flexDirection: "row", alignSelf: "center"}}>
+          <Button 
+          title="I'm Out" 
+          onPress={console.log("cancel")} // TODO: call cancel function
+          containerStyle = {{alignSelf: "center"}}/>
+          <Button 
+            title="Chat" 
+            onPress={console.log("go to chat")} // TODO: Use navigator to go to chat
+            containerStyle = {{alignSelf: "center"}}/>
+        </View> 
+      ) 
     }
+  }
+
+  sendCancellationRequest = async () => {
+    // TODO: sent cloud function request to cancel confirmation
   }
 
   sendConfirmationRequest = async () => {
     this.setState({isModalVisible: true})
-    try{
+    try {
       const requestFunction = functions().httpsCallable('setBroadcastResponse');
       const response = await timedPromise(requestFunction({
         broadcasterUid: this.broadcastSnippet.owner.uid,
         broadcastUid: this.broadcastSnippet.uid
       }), LONG_TIMEOUT);
 
-      if (response.data.status === cloudFunctionStatuses.OK){
+      if (response.data.status === cloudFunctionStatuses.OK) {
         this.broadcastSnippet.status = responderStatuses.CONFIRMED
-      }else{
+      } else {
         this.setState({errorMessage: response.data.message})
         logError(new Error("Problematic setBroadcastResponse function response: " + response.data.message))
       }
-    }catch(err){
+    } catch(err) {
       if (err.name != "timeout") logError(err)      
       this.setState({errorMessage: err.message})
     }
@@ -149,11 +204,10 @@ export default class BroadcastViewer extends React.Component {
 
   timeLeftRenderer = (time) => {
     let string = ""
-    string += time.h ? `${time.h} hours, ` : ""
-    string += time.m ? `${time.m} minutes, ` : ""
-    string += time.s ? `${time.s} seconds` : ""
+    string += time.h ? `${time.h} hours ` : ""
+    string += time.m ? `${time.m} minutes ` : ""
     return(
-        <Text style = {{fontSize: 18, marginTop: 8}}>in {string}</Text>
+        <Text style = {{fontSize: 16, marginTop: 8}}>Starts in {string}</Text>
     );
   }
 
@@ -163,8 +217,7 @@ export default class BroadcastViewer extends React.Component {
     let url = ""
     if (Platform.OS == "android"){
       url = `geo:0,0?q=${geolocation.latitude},${geolocation.longitude}(${pinTitle})`
-    }
-    else{
+    } else {
       url = `http://maps.apple.com/?ll=${geolocation.latitude},${geolocation.longitude}`
       url += `&q=${encodeURIComponent(pinTitle)}`
     }

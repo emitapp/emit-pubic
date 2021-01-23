@@ -1,7 +1,8 @@
 import storage from '@react-native-firebase/storage';
 import React from 'react';
-import { Image } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
+import { FlatList } from 'react-native-gesture-handler';
 import { logError } from 'utils/helpers';
 
 /**
@@ -28,6 +29,46 @@ export default class ProfilePicCircle extends React.Component {
         this.picComponent.refresh()
     }
 
+}
+
+/**
+ * This is a reusable component that displays profile pictues in a row
+ * Required props: `uids` (list of user uids),`diameter`, and spacing
+ */
+export class ProfilePicList extends React.Component {
+
+        itemRenderer = (uid) =>   { 
+        const {diameter, spacing, style, ...otherProps} = this.props
+        return (  
+            <View style={{...style}} >
+        <View style={{justifyContent:"center", alignItems: "center", width: diameter+2, height: diameter+2, borderRadius: (diameter + 2)/ 2, borderColor: "white", borderWidth: 2, padding: 1}}>
+            <ProfilePicRaw 
+            style={{ width: diameter, height: diameter, borderRadius: diameter / 2}}
+            uid = {uid.item}
+            ref = {ref => this.picComponent = ref}
+            {...otherProps}/>
+        </View></View>
+        )
+    }
+
+    render() {
+        const {uids, diameter, spacing, style, ...otherProps} = this.props
+        return (
+            <View style={{flexGrow: 1}}>
+            <FlatList
+                horizontal
+                data={uids}
+                keyExtractor={(item) => item}
+                renderItem={this.itemRenderer}
+                showsHorizontalScrollIndicator={false}
+            />
+            </View>
+        )
+    }
+
+    refresh = () => {
+        this.picComponent.refresh()
+    }
 }
 
 export class ProfilePicRaw extends React.Component {
