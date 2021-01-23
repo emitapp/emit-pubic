@@ -141,7 +141,6 @@ export default class BroadcastViewer extends React.Component {
   }
 
   displayBroadcastAction = () => {
-    console.log(this.broadcastSnippet.status)
     if (!this.broadcastSnippet.status || this.broadcastSnippet.status == responderStatuses.CANCELLED) {
       return (
         <View style={{alignSelf: "center", marginTop: 60}}>
