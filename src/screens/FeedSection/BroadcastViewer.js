@@ -67,7 +67,7 @@ export default class BroadcastViewer extends React.Component {
 
         {broadcastData && 
           <View style={{width: "100%"}}>
-              <View style={{alignItems: "center"}}>
+              <View style={{alignItems: "center", marginBottom: 50, marginTop: 50}}>
                 <View style={{flexDirection: "row"}}>
                   <View style={{alignItems: "center", justifyContent: "center", marginTop: -16, marginBottom: 8, marginRight: 8}}>
                     {broadcastData.emoji ? <Text style = {{fontSize: 50}}>{broadcastData.emoji}</Text> : <Text style = {{fontSize: 50}}>🍲</Text> }
@@ -109,7 +109,7 @@ export default class BroadcastViewer extends React.Component {
             <LockNotice message={"This broadcast has react the response limit it's creator set. It won't receive any more responses."} />
         }
         {broadcastData && 
-          <View>
+          <View >
             <Text style = {{marginTop: 8, fontSize: 24, marginLeft: 4, marginBotton: 4, color: "grey"}}>
               Who's In
             </Text>
@@ -117,9 +117,9 @@ export default class BroadcastViewer extends React.Component {
             <View style={{height: 36}}> 
               {this.state.attendees.length > 0 &&
               <ProfilePicList 
-                        uids={this.state.attendees} 
-                        diameter={36}
-                        style = {{marginLeft: 0, marginRight: 2}}/>}
+                uids={this.state.attendees} 
+                diameter={36}
+                style = {{marginLeft: 0, marginRight: 2}}/>}
             </View> 
           </View>
         }
@@ -143,7 +143,7 @@ export default class BroadcastViewer extends React.Component {
   displayBroadcastAction = () => {
     if (!this.broadcastSnippet.status) {
       return (
-        <View style={{alignSelf: "center"}}>
+        <View style={{alignSelf: "center", marginTop: 60}}>
           <Button 
             title="I'm In" 
             onPress={this.sendConfirmationRequest} 
@@ -154,7 +154,7 @@ export default class BroadcastViewer extends React.Component {
       let color = "green"
       if (this.broadcastSnippet.status == responderStatuses.PENDING) color = "grey"
       return (
-        <View style={{flexDirection: "row", alignSelf: "center"}}>
+        <View style={{flexDirection: "row", alignSelf: "center", marginTop: 60}}>
           <Button 
           title="I'm Out" 
           onPress={console.log("cancel")} // TODO: call cancel function
