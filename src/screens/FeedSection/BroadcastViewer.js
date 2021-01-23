@@ -141,48 +141,47 @@ export default class BroadcastViewer extends React.Component {
   }
 
   displayBroadcastAction = () => {
-    if (!this.broadcastSnippet.status) {
+    console.log(this.broadcastSnippet.status)
+    if (!this.broadcastSnippet.status || this.broadcastSnippet.status == responderStatuses.CANCELLED) {
       return (
         <View style={{alignSelf: "center", marginTop: 60}}>
           <Button 
             title="I'm In" 
-            onPress={this.sendConfirmationRequest} 
+            onPress={() => this.sendConfirmOrCancelRequest(true)} 
             containerStyle = {{alignSelf: "center"}}/>
         </View>
       )
     } else {
-      let color = "green"
-      if (this.broadcastSnippet.status == responderStatuses.PENDING) color = "grey"
       return (
         <View style={{flexDirection: "row", alignSelf: "center", marginTop: 60}}>
           <Button 
           title="I'm Out" 
-          onPress={console.log("cancel")} // TODO: call cancel function
+          onPress={() => this.sendConfirmOrCancelRequest(false)} 
           containerStyle = {{alignSelf: "center"}}/>
           <Button 
             title="Chat" 
-            onPress={console.log("go to chat")} // TODO: Use navigator to go to chat
+            onPress={() => console.log("go to chat")} // TODO: Use navigator to go to chat
             containerStyle = {{alignSelf: "center"}}/>
         </View> 
       ) 
     }
   }
 
-  sendCancellationRequest = async () => {
-    // TODO: sent cloud function request to cancel confirmation
-  }
-
-  sendConfirmationRequest = async () => {
+  sendConfirmOrCancelRequest = async (confirm) => {
     this.setState({isModalVisible: true})
     try {
       const requestFunction = functions().httpsCallable('setBroadcastResponse');
+
       const response = await timedPromise(requestFunction({
         broadcasterUid: this.broadcastSnippet.owner.uid,
-        broadcastUid: this.broadcastSnippet.uid
+        broadcastUid: this.broadcastSnippet.uid,
+        attendOrRemove: confirm
       }), LONG_TIMEOUT);
 
-      if (response.data.status === cloudFunctionStatuses.OK) {
+      if (confirm && response.data.status === cloudFunctionStatuses.OK) {
         this.broadcastSnippet.status = responderStatuses.CONFIRMED
+      } else if (response.data.status === cloudFunctionStatuses.OK) {
+        this.broadcastSnippet.status = responderStatuses.CANCELLED
       } else {
         this.setState({errorMessage: response.data.message})
         logError(new Error("Problematic setBroadcastResponse function response: " + response.data.message))

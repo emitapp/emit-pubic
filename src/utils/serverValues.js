@@ -8,6 +8,7 @@ export const cloudFunctionStatuses = {
 }
 
 export const responderStatuses = {
+    CANCELLED: "cancelled",
     CONFIRMED: "confirmed",
 }
 
