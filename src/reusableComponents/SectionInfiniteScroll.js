@@ -45,7 +45,6 @@ export default class StaticInfiniteScroll extends React.Component {
         style: { flex: 1, width: "100%"},
         contentContainerStyle: {flexGrow: 1, marginHorizontal: 8},
         ItemSeparatorComponent: (() => <Divider />),
-        
         // chunkSize: 10
     }
 
@@ -92,7 +91,7 @@ export default class StaticInfiniteScroll extends React.Component {
             for (i = 0; i < this.props.dbref.length; i++) {
                 var ref = this.props.dbref[i].ref.orderByChild(this.props.orderBy[i].value);
                 var title = this.props.dbref[i].title;
-                var footerData = this.props.additionalData && this.props.additionalData.length > 0 && this.props.additionalData[i];
+                var footerData = this.props.additionalData[i];
                 
                 if (this.props.startingPoint) ref = ref.startAt(this.props.startingPoint)
                 if (this.props.endingPoint) ref = ref.endAt(this.props.endingPoint)
@@ -112,20 +111,17 @@ export default class StaticInfiniteScroll extends React.Component {
                 });
 
                 if (listData.length == 0) {
-                    this.stopSearching = true;
-                    this.refreshing = false;
+                this.stopSearching = true;
+                this.refreshing = false,
+                    this.isLoading = false
+                this.requestRerender();
                 } else {
-                    this.lastItemProperty =
-                        listData[listData.length - 1][this.props.orderBy];
-                }
-                this.props.data && this.props.data.push(listData);
-                this.sections.push(
-                    footerData ? 
-                    {title: title, data: listData, footerText: footerData.text, footerCallback: footerData.func} :
-                    {title: title, data: listData, footerText: null, footerCallback: null}
-                    );
+                this.lastItemProperty =
+                    listData[listData.length - 1][this.props.orderBy];
+                this.sections.push({title: title, data: listData, footerText: footerData.text, footerCallback: footerData.func});
                 this.isLoading = false
                 this.requestRerender()
+                }
             }
         }
         catch (error) {
@@ -152,14 +148,10 @@ export default class StaticInfiniteScroll extends React.Component {
     renderSectionFooter = ({section: {footerText, footerCallback}}) => {
         return (
             <View>
-                {footerText &&
-                <View>
-                    <Divider />
-                    <TouchableOpacity onPress={footerCallback}>
-                        <Text style={{fontSize: 18, marginVertical: 8, marginLeft: 8}}>{footerText}</Text>
-                    </TouchableOpacity>
-                </View>
-                }
+                <Divider />
+                <TouchableOpacity onPress={footerCallback}>
+                    <Text style={{fontSize: 18, marginTop: 8, marginBottom: 8}}>{footerText}</Text>
+                </TouchableOpacity>
             </View>
         )
     }

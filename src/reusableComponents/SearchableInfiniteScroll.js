@@ -20,8 +20,7 @@ import SectionInfiniteScroll from './SectionInfiniteScroll'
 //queryValidator: a function that determines whether a querty is valid enough to attempt
 //
 //OPTIONAL PROPS:
-// data: populated in case the parent component needs to use the data pulled from the database
-//additionalData: a miscellaneous "catch all" object that probably should be removed
+//additionData: a miscellaneous "catch all" object that probably should be removed
 // in the future - currently used to pass the "+ New Group" and "+ Add Friend"
 // buttons to SectionInfiniteScroll - of the form [{text: ..., func: ...},]
 

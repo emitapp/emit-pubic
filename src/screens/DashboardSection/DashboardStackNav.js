@@ -12,8 +12,7 @@ import NewBroadcastFormActivity from './NewBroadcastFormActivity';
 import NewBroadcastFormTime from './NewBroadcastFormTime';
 import ResponsesScreen from './ResponsesViewer';
 import SavedLocations from './SavedLocations'
-import GroupMemberAdder from '../SocialSection/UserGroups/GroupMemberAdder'
-import UserFriendSearch from '../SocialSection/UserFriendSearch'
+
 
 const Navigator = createStackNavigator(
   {
@@ -26,8 +25,6 @@ const Navigator = createStackNavigator(
     NewBroadcastFormLocation,
     NewBroadcastFormRecepients,
     SavedLocations,
-    GroupMemberAdder,
-    UserFriendSearch,
   },
   {
     initialRouteName: 'ActiveBroadcasts',
@@ -39,7 +36,7 @@ export default class DashboardStackNav extends React.Component {
   //The tab view shouldn't show for certain screens in this section...
   static navigationOptions = ({navigation}) => {
     const routeName = navigation.state ? navigation.state.routes[navigation.state.index].routeName : "default"
-    var targetScreens = ["GroupMemberAdder","NewBroadcastFormActivity","NewBroadcastFormTime", "NewBroadcastForm", "LocationSelector", "NewBroadcastFormLocation", "NewBroadcastFormRecepients", "SavedLocations"]
+    var targetScreens = ["NewBroadcastFormActivity","NewBroadcastFormTime", "NewBroadcastForm", "LocationSelector", "NewBroadcastFormLocation", "NewBroadcastFormRecepients", "SavedLocations"]
     let showTabView = !targetScreens.includes(routeName)
     return {
       tabBarVisible: showTabView, 

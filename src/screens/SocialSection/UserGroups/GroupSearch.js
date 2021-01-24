@@ -33,7 +33,7 @@ export default class GroupSearch extends React.Component {
         <SearchableInfiniteScroll
           type = "dynamic"
           queryValidator = {(query) => true}
-          queryTypes = {[{name: "Name", value: "nameQuery"}]}
+          queryTypes = {[{name: "Name", value: "name"}]}
           renderItem = {this.itemRenderer}
           dbref = {database().ref(`/userGroupMemberships/${userUid}`)}
         />
