@@ -53,6 +53,7 @@ export default class SectionInfiniteScroll extends React.Component {
     constructor(props) {
         super(props);
 
+        //FIXME: Pagination comment block
         //this.lastItemProperty = null;
         //this.stopSearching = false; //Once it gets a null snapshot, it'll stop
         //this.refreshing = false; //For when it's getting more info
@@ -86,7 +87,8 @@ export default class SectionInfiniteScroll extends React.Component {
 
     initialize = () => {
         this.isLoading = true;
-        this.sections = new Array(this.props.dbref.length).fill("uninitialized");;
+        this.sections = new Array(this.props.dbref.length).fill("uninitialized");
+        //FIXME: Pagination comment block
         //this.lastItemProperty = null;
         //this.stopSearching = false;
         this.timedOut = false;
@@ -114,18 +116,17 @@ export default class SectionInfiniteScroll extends React.Component {
             });
 
             if (listData.length == 0) {
+                //FIXME: Pagination comment block
                 //this.stopSearching = true;
                 //this.refreshing = false,
-                this.isLoading = false
                 this.requestRerender();
             } else {
                 //this.lastItemProperty = listData[listData.length - 1][this.props.orderBy];
                 this.sections[refIndex] = ({ title: title, data: listData, footerText: footerData.text, footerCallback: footerData.func });
-                this.isLoading = false
                 this.requestRerender()
             }
-        }
-        catch (error) {
+            this.isLoading = false
+        } catch (error) {
             this.onError(error)
         }
     }
@@ -159,8 +160,7 @@ export default class SectionInfiniteScroll extends React.Component {
         } else {
             if (this.props.errorHandler) {
                 this.props.errorHandler(error)
-            }
-            else {
+            } else {
                 logError(error)
                 this.errorMessage = error.message;
                 this.requestRerender()
@@ -180,6 +180,7 @@ export default class SectionInfiniteScroll extends React.Component {
         )
     }
 
+    //FIXME: Pagination comment block
     // renderFooter = () => {
     //     if (this.refreshing) {
     //         return (
@@ -246,6 +247,7 @@ export default class SectionInfiniteScroll extends React.Component {
                     <SectionList
                         sections={this.sections.filter((x) => x != "uninitialized")}
                         keyExtractor={item => item.uid}
+                        //FIXME: Pagination comment block
                         // ListFooterComponent={this.renderFooter}
                         // onEndReached={() => this.retrieveMore(this.props.generation)}
                         // onEndReachedThreshold={0.1}
