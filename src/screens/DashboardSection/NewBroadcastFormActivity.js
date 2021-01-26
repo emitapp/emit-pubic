@@ -32,7 +32,7 @@ export default class NewBroadcastFormActivity extends React.Component {
 
     itemRenderer = ({ item }) => {
         return (
-          <View style = {{alignItems: "", width: "100%", flexDirection: "row"}}>
+          <View style = {{alignItems: "center", width: "100%", flexDirection: "row"}}>
             <ActivityListElement 
                 style = {{width: "100%"}}
                 emoji = {item.emoji}

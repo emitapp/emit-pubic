@@ -109,7 +109,7 @@ export default class NewBroadcastFormRecepients extends React.Component {
 
     itemRenderer = ({ item }) => {
         return (
-          <View style = {{alignItems: "", width: "100%", flexDirection: "row"}}>
+          <View style = {{alignItems: "center", width: "100%", flexDirection: "row"}}>
             <RecipientListElement
               style = {{flex: 1}}
               snippet={item} 
