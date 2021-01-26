@@ -110,7 +110,11 @@ export class RecipientListElement extends React.PureComponent {
         onPress={this.props.onPress}>
           <View style = {{flexDirection: "row", justifyContent: "space-between", width: "100%"}}>
             <View style = {{flexDirection: "row", alignItems: "center"}}>
-              {snippet.displayName ? <ProfilePicDisplayer diameter = {this.props.imageDiameter} uid = {snippet.uid} style = {{marginLeft: 8, marginRight: 8}} /> : <></>}
+               <ProfilePicDisplayer 
+                diameter = {this.props.imageDiameter} 
+                uid = {snippet.uid}
+                style = {{marginLeft: 8, marginRight: 8}} 
+                groupPic = {snippet.displayName? false : true}/>
               <Text style = {{fontSize: 18, marginRight: 8}}>{snippet.displayName ? snippet.displayName : snippet.name}</Text>
               {snippet.username && <Text style={{color: theme.colors.grey2}}>@{snippet.username}</Text>}
             </View>
