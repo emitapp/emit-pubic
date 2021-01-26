@@ -17,6 +17,10 @@ import { cloudFunctionStatuses, responderStatuses } from 'utils/serverValues';
 import { ProfilePicList } from 'reusables/ProfilePicComponents';
 import ProfilePicDisplayer from 'reusables/ProfilePicComponents'
 
+/**
+ * Class for viewing info about a broadcast.
+ * Only prop used is for navigation.
+ */
 export default class BroadcastViewer extends React.Component {
 
     constructor(props) {
@@ -110,7 +114,7 @@ export default class BroadcastViewer extends React.Component {
         }
         {broadcastData && 
           <View >
-            <Text style = {{marginTop: 8, fontSize: 24, marginLeft: 4, marginBotton: 4, color: "grey"}}>
+            <Text style = {{marginTop: 8, fontSize: 24, marginLeft: 4, marginBottom: 4, color: "grey"}}>
               Who's In
             </Text>
             <Text style = {{alignSelf: "center", marginLeft: 4, marginBottom: 4}}>{broadcastData.totalConfirmations} user(s) are in!</Text>
@@ -131,7 +135,11 @@ export default class BroadcastViewer extends React.Component {
       </View>
     )
   }
-
+/**
+ * Method to update the list of attendees with
+ * whatever data comes from the database call
+ * @param {*} data, a dictionary, the result of snapshot.val()
+ */
   updateAttendees = (data) => {
     var attendeesNew = []
     for (var id in data) {
@@ -165,7 +173,13 @@ export default class BroadcastViewer extends React.Component {
       ) 
     }
   }
-
+/**
+ * Calls cloud function that will either 
+ * confirm a user for an event, or take a user off an event
+ * depending on the confirm parameter
+ * @param {*} confirm a boolean, if true will confirm a user
+ * otherwise, it will take them off the broadcast
+ */
   sendConfirmOrCancelRequest = async (confirm) => {
     this.setState({isModalVisible: true})
     try {
