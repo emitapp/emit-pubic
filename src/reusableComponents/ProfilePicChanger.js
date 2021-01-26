@@ -24,7 +24,12 @@ const options = {
   }
 };
 
-//Optinal Props: groupPics, onSuccessfulUpload, groupUid
+/**
+ * This is a component that is used to change the pic associated with either an
+ * individual profile or a group. It manages everything itself, from permissions
+ * to image selection to uploading.
+ * Optinal Props: groupPic, onSuccessfulUpload, groupUid
+ */
 export default class ProfilePicChanger extends Component {
 
   state = {
