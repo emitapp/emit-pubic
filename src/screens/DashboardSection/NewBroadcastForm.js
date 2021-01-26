@@ -15,6 +15,7 @@ import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import {cloudFunctionStatuses, MAX_BROADCAST_NOTE_LENGTH} from 'utils/serverValues'
 import ErrorMessageText from 'reusables/ErrorMessageText';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { ProfilePicList } from 'reusables/ProfilePicComponents';
 
 
 class NewBroadcastForm extends React.Component {
@@ -22,6 +23,7 @@ class NewBroadcastForm extends React.Component {
     constructor(props){
         super(props)
         this.passableBroadcastInfo = { //Information that's directly edited by other screens
+            emojiSelected: "",
             activitySelected: "",
             timeText: "In 5 minutes",
             broadcastTTL: 1000 * 60 * 5,
@@ -75,9 +77,28 @@ class NewBroadcastForm extends React.Component {
             <FormSubtitle title = "What" />
             <FormInput
                 onPress = {() => this.props.navigation.navigate("NewBroadcastFormActivity", this.passableBroadcastInfo)}
-                value = {this.state.passableBroadcastInfo.activitySelected}
-                placeholder = "Select an activity"
-            />
+                placeholder = "Select an activity">
+                <Text style={{ fontSize: 18 }}>{this.state.passableBroadcastInfo.emojiSelected}</Text>
+                {this.state.passableBroadcastInfo.activitySelected && <Text> </Text>}
+                <Text style = {{ fontSize: 18 }} >{this.state.passableBroadcastInfo.activitySelected}</Text>
+            </FormInput>
+
+            <FormSubtitle title = "Who" />
+
+            <View style = {{flexDirection: "row", alignItems: "center", marginBottom: 24, marginLeft: 10}}>
+                    <View style={{justifyContent: "center", maxWidth: "85%"}}>
+                    <ProfilePicList 
+                        uids={Object.keys(this.state.passableBroadcastInfo.recepientFriends)}
+                        diameter={36}
+                        style = {{marginLeft: 0, marginRight: 2}}
+                    />
+                    </View>
+                <TouchableOpacity style={{justifyContent: "center"}} onPress={() => { return this.props.navigation.navigate("NewBroadcastFormRecepients", 
+                        {mode: "friends", data: this.state.passableBroadcastInfo})}}>
+                    <Icon style={{marginTop: -3}} size={44} color="white" name="add-circle-outline"></Icon>
+                </TouchableOpacity>
+            </View>
+
             
             <FormSubtitle title = "When" />
 
@@ -96,24 +117,6 @@ class NewBroadcastForm extends React.Component {
                         <Icon name="location-on" size={20} color = "white"/> 
                         : null}
             />
-
-            <FormSubtitle title = "Recepients" />
-
-            <View style = {{width: "100%", flexDirection: "row"}}>
-                <FormBox 
-                    onPress = {() => this.props.navigation.navigate("NewBroadcastFormRecepients", 
-                        {mode: "friends", data: this.state.passableBroadcastInfo})}
-                    amount = {this.state.passableBroadcastInfo.allFriends ? 
-                        "All" : `${Object.keys(this.state.passableBroadcastInfo.recepientFriends).length}`}
-                    title = "friends"
-                />
-                <FormBox 
-                    onPress = {() => this.props.navigation.navigate("NewBroadcastFormRecepients", 
-                        {mode: "groups", data: this.state.passableBroadcastInfo})}
-                    amount = {`${Object.keys(this.state.passableBroadcastInfo.recepientGroups).length}`}
-                    title = "groups"
-                />
-            </View>
 
             {this.state.showingMore &&
                 <>
@@ -339,29 +342,6 @@ class FormInput extends React.PureComponent {
     }
 }
 
-class FormBox extends React.PureComponent {
-    render (){
-        const {amount, title, ...otherProps} = this.props
-        return (
-            <View
-            style = {{
-                alignItems: "center",
-                justifyContent: "center", 
-                width: "20%",
-                aspectRatio: 1,
-                backgroundColor: "white",
-                borderRadius: 10,
-                marginRight: 16}}>
-            <TouchableOpacity 
-            {...otherProps}
-            style = {{alignItems: "center", justifyContent: "center"}}>  
-                <Text h4>{this.props.amount}</Text>
-                <Text style = {{fontWeight: "bold"}}>{this.props.title}</Text>
-            </TouchableOpacity>
-            </View>
-        )
-    }
-}
 
 
 class FormSubtitle extends React.PureComponent {
@@ -371,6 +351,7 @@ class FormSubtitle extends React.PureComponent {
                 fontFamily: "NunitoSans-Bold", 
                 marginBottom: 4, 
                 marginTop: 8,
+                marginLeft: 10,
                 fontSize: 22, 
                 color: "white", 
                 alignSelf: "flex-start"

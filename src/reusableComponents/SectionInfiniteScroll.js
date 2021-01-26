@@ -47,6 +47,7 @@ export default class SectionInfiniteScroll extends React.Component {
         style: { flex: 1, width: "100%" },
         contentContainerStyle: { flexGrow: 1, marginHorizontal: 8 },
         ItemSeparatorComponent: (() => <Divider />),
+        
         // chunkSize: 10
     }
 
@@ -115,20 +116,25 @@ export default class SectionInfiniteScroll extends React.Component {
 
             });
 
-            if (listData.length == 0) {
+            if (listData.length != 0) {
                 //FIXME: Pagination comment block
-                //this.stopSearching = true;
-                //this.refreshing = false,
-                this.requestRerender();
-            } else {
                 //this.lastItemProperty = listData[listData.length - 1][this.props.orderBy];
-                this.sections[refIndex] = ({ title: title, data: listData, footerText: footerData.text, footerCallback: footerData.func });
-                this.requestRerender()
+                this.sections[refIndex] = ({ 
+                    title: title, 
+                    data: listData, 
+                    footerText: footerData.text, 
+                    footerCallback: footerData.func 
+                });
             }
+
+            this.props.data && this.props.data.push(listData);
             this.isLoading = false
+            this.requestRerender()
+
         } catch (error) {
             this.onError(error)
         }
+
     }
 
     setListeners = () => {

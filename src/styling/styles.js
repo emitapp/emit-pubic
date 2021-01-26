@@ -30,7 +30,7 @@ const defaultStyles = StyleSheet.create({
     pillButton: {
         justifyContent: "center",
         alignItems: 'center',
-        borderRadius: 50, // A large hardcoded value to ensure the pill button is rounded
+        borderRadius: 100, // A large hardcoded value to ensure the pill button is rounded
         paddingHorizontal: 12,
         paddingVertical: 6
     },
@@ -40,5 +40,5 @@ const defaultStyles = StyleSheet.create({
         flexDirection: 'row',
       }
   })
-
+  
   export default defaultStyles

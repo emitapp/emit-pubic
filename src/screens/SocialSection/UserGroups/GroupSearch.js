@@ -47,11 +47,11 @@ export default class GroupSearch extends React.Component {
         </Overlay>
 
         <SearchableInfiniteScroll
-          type="dynamic"
-          queryValidator={(query) => true}
-          queryTypes={[{ name: "Name", value: "name" }]}
-          renderItem={this.itemRenderer}
-          dbref={database().ref(`/userGroupMemberships/${userUid}`)}
+          type = "dynamic"
+          queryValidator = {(query) => true}
+          queryTypes = {[{name: "Name", value: "nameQuery"}]}
+          renderItem = {this.itemRenderer}
+          dbref = {database().ref(`/userGroupMemberships/${userUid}`)}
         />
 
         <Button title="Join Group via invite code" onPress={() => this.setState({ isModalVisible: true })} />

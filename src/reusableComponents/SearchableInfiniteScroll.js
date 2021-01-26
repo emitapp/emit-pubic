@@ -20,7 +20,8 @@ import SectionInfiniteScroll from './SectionInfiniteScroll'
 //queryValidator: a function that determines whether a querty is valid enough to attempt
 //
 //OPTIONAL PROPS:
-//additionData: a miscellaneous "catch all" object that probably should be removed
+// data: populated in case the parent component needs to use the data pulled from the database
+// additionalData: a miscellaneous "catch all" object that probably should be removed
 // in the future - currently used to pass the "+ New Group" and "+ Add Friend"
 // buttons to SectionInfiniteScroll - of the form [{text: ..., func: ...},]
 
@@ -54,7 +55,7 @@ export default class SearchableInfiniteScroll extends React.Component {
 
   render() {
     const { type, queryTypes, queryValidator, dbref, style,
-      parentEmptyStateComponent, searchbarPlaceholder, ...otherProps } = this.props
+      parentEmptyStateComponent, searchbarPlaceholder, data, additionalData, ...otherProps } = this.props
     return (
       <ThemeConsumer>
       {({ theme }) => (
@@ -99,6 +100,8 @@ export default class SearchableInfiniteScroll extends React.Component {
             orderBy = {this.props.queryTypes}
             startingPoint = {new Array(this.props.dbref.length).fill(this.state.query)}
             endingPoint = {new Array(this.props.dbref.length).fill(`${this.state.query}\uf8ff`)}
+            data = { this.props.data }
+            additionalData = { this.props.additionalData }
             {...otherProps}
           />) : ( 
           <DynamicInfiniteScroll

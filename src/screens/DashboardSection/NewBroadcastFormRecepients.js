@@ -1,13 +1,16 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { CheckBox, Text, ThemeConsumer } from 'react-native-elements';
+import { TouchableOpacity, StyleSheet, View } from 'react-native';
+import { CheckBox, Text, ThemeConsumer, Icon } from 'react-native-elements';
 import { ClearHeader } from 'reusables/Header';
 import { RecipientListElement } from 'reusables/ListElements';
 import MainLinearGradient from 'reusables/MainLinearGradient';
 import { PillButton } from 'reusables/ReusableButtons';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
+import { ProfilePicList } from 'reusables/ProfilePicComponents';
+
+import { LogBox } from 'react-native';
 
 
 export default class NewBroadcastFormRecepients extends React.Component {
@@ -16,43 +19,23 @@ export default class NewBroadcastFormRecepients extends React.Component {
     //snippets just in case snippets contain nested objects
     constructor(props){
         super(props)
+
         let navigationParams = props.navigation.state.params
         this.mode = navigationParams.mode
         let userUid = auth().currentUser.uid
         this.dbRef = [{title: "GROUPS", ref: database().ref(`/userGroupMemberships/${userUid}`)},
         {title: "FRIENDS", ref: database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`)}]
-        this.footerButtons = [{text: "+ New Group", func: () => {console.log(this.props.navigation.state) ;this.props.navigation.navigate('GroupMemberAdder')}}, 
-        {text: "+ Add Friends", func: () => { this.props.navigation.push('UserSearch')}}]
+        this.footerButtons = [{text: "+ New Group", func: () => {this.props.navigation.navigate('GroupMemberAdder')}}, 
+        {text: "+ Add Friends", func: () => { this.props.navigation.navigate('UserFriendSearch')}}]
         this.rendererType = RecipientListElement
+        // List of UIDs to send back after obtaining from db
+        this.friendUids = []
 
         
 
         this.state = { selectedSnippets: JSON.parse(JSON.stringify(navigationParams.data.recepientFriends))}
-        
-        this.queryTypes = [{name: "Name", value: "name"}, {name: "Display Name", value: "displayNameQuery"}]
-        this.mapper = ({name}, index) => `[${index + 1}] ${name} `
+        this.queryTypes = [{name: "Name", value: "nameQuery"}, {name: "Display Name", value: "displayNameQuery"}, { name: "Username", value: "usernameQuery" }]
         this.state.allFriends = navigationParams.data.allFriends
-        
-        // if (this.mode == "friends"){
-        //     this.state = {selectedSnippets: JSON.parse(JSON.stringify(navigationParams.data.recepientFriends))}
-        //     this.rendererType = UserSnippetListElement
-        //     // this.dbRef = database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`)
-        //     this.queryTypes = [{name: "Display Name", value: "displayNameQuery"}, {name: "Username", value: "usernameQuery"}]    
-        //     this.mapper = ({username}) => `@${username} `
-            // this.state.allFriends = navigationParams.data.allFriends
-        // } else if (this.mode == "masks"){
-        //     this.state = {selectedSnippets: JSON.parse(JSON.stringify(navigationParams.data.recepientMasks))}
-        //     this.rendererType = FriendMaskListElement
-        //     this.dbRef = database().ref(`/userFriendGroupings/${userUid}/custom/snippets`)
-        //     this.queryTypes = [{name: "Name", value: "name"}]
-        //     this.mapper = ({name}, index) => `[${index + 1}] ${name} `
-        // }else{ //Default to user groups
-        //     this.state = {selectedSnippets: JSON.parse(JSON.stringify(navigationParams.data.recepientGroups))}
-        //     this.rendererType = UserGroupListElement
-        //     // this.dbRef = database().ref(`/userGroupMemberships/${userUid}`)
-        //     this.queryTypes = [{name: "Name", value: "name"}]
-        //     this.mapper = ({name}, index) => `[${index + 1}] ${name} `
-        // }
     }
 
     static navigationOptions = ClearHeader("New Broadcast")
@@ -72,20 +55,6 @@ export default class NewBroadcastFormRecepients extends React.Component {
                     </View>
                     
                 </View>
-{/* 
-                <ScrollView 
-                style = {{maxHeight: 55, width: "100%"}}>
-                {Object.keys(this.state.selectedSnippets).length != 0 && 
-                    <Text style = {{textAlign: "center", marginTop: 8}}>
-                    {Object.values(this.state.selectedSnippets).map(this.mapper)}
-                    </Text>
-                }
-                {this.mode == "friends" && this.state.allFriends &&  
-                    <Text style = {{textAlign: "center", marginTop: 8}}>
-                    All friends selected
-                    </Text>
-                }
-                </ScrollView> */}
 
                 <SearchableInfiniteScroll
                 type = "section"
@@ -93,30 +62,32 @@ export default class NewBroadcastFormRecepients extends React.Component {
                 queryTypes = {this.queryTypes}
                 renderItem = {this.itemRenderer}
                 dbref = {this.dbRef}
+                data = {this.friendUids}
                 additionalData = {this.footerButtons}
                 >
                     <View style = {{width: "100%", justifyContent: "center", alignItems: "flex-end"}}>
-                        <View style = {{flexDirection: "row", marginRight: 12}}>
-                            <CheckBox 
-                            checked = {this.state.allFriends}
-                            uncheckedColor = "orange"
-                            uncheckedIcon = "circle-o"
-                            checkedIcon = "check-circle"
-                            containerStyle = {{margin: 0, padding: 0}}
-                            onIconPress = {this.selectAllFriends}
-                            />
-                            <Text style={{textAlign: "center"}}>Select All Friends</Text>
-                        </View>
+                        <TouchableOpacity onPress={this.selectAllFriends} style = {{flexDirection: "row", marginRight: 12, alignItems: "center"}}>
+                            { this.state.allFriends ?
+                                <Icon style={{marginRight: 6}} type='font-awesome' name='check-circle' color="blue"/> :
+                                <Icon style={{marginRight: 6}} type='font-awesome' name='circle-o' color="blue"/>
+                            }
+                            <Text style={{color: "blue", textAlign: "center"}}>Select All Friends</Text>
+                        </TouchableOpacity>
                     </View> 
                 </SearchableInfiniteScroll>
                 <View style={styles.bottomBanner}>
-                    <Text>Test</Text>
+                    <View style={{maxWidth: "80%"}}>
+                    <ProfilePicList 
+                        uids={Object.keys(this.state.selectedSnippets)}
+                        diameter={36}
+                        style = {{marginLeft: 0, marginRight: 2}}
+                    /></View>
                     <PillButton
+                        extraStyle={{borderColor:"blue", width: "10%"}}
                         onPress = {this.saveRecepients}
                         title = "Done"
                         contentColor = "white"
-                        extraStyles={{marginHorizontal: 10}}
-                        />  
+                        />
                 </View>
             </View>          
         </MainLinearGradient>
@@ -138,21 +109,34 @@ export default class NewBroadcastFormRecepients extends React.Component {
 
     itemRenderer = ({ item }) => {
         return (
-          <View style = {{alignItems: "center", width: "100%", flexDirection: "row"}}>
-            <this.rendererType
+          <View style = {{alignItems: "", width: "100%", flexDirection: "row"}}>
+            <RecipientListElement
               style = {{flex: 1}}
               snippet={item} 
               groupInfo = {item}
               onPress={() => this.toggleSelection(item)}
               imageDiameter = {24}
-            />
-            {this.state.selectedSnippets[item.uid] && <CheckBox checked = {true} /> }
+              >
+                {this.state.selectedSnippets[item.uid] ?
+                    <Icon style={{marginRight: 6}} type='font-awesome' name='check-circle' color="orange"/> :
+                    <Icon style={{marginRight: 6}} type='font-awesome' name='circle-o' color="lightgrey"/> }
+            </RecipientListElement>
           </View>
         );
     }
 
     selectAllFriends = () => {
-        this.setState({allFriends: !this.state.allFriends, selectedSnippets: {}});
+        // TODO: modify to work with pagination once added
+        const friendSnippets = this.friendUids[1];
+        let copiedObj = {}
+        if (!this.state.allFriends) {
+            friendSnippets.forEach(snippet => {
+                const {uid, ...snippetSansUid} = snippet;
+                copiedObj[snippet.uid] = snippetSansUid;
+            })
+        }
+        this.setState({selectedSnippets: copiedObj, allFriends: !this.state.allFriends});
+
     }
 
     toggleSelection = (snippet) => {
@@ -165,8 +149,7 @@ export default class NewBroadcastFormRecepients extends React.Component {
             const {uid, ...snippetSansUid} = snippet
             copiedObj[snippet.uid] = snippetSansUid
         }
-        this.setState({selectedSnippets: copiedObj});
-        if (this.mode == "friends") this.setState({allFriends: false});
+        this.setState({selectedSnippets: copiedObj, allFriends: false});
     }
 }
 
@@ -174,8 +157,10 @@ const styles = StyleSheet.create({
     bottomBanner:{
         flexDirection: "row",
         justifyContent: "space-between", 
-        alignItems: "center",
-        height: 48,
+        alignItems: "flex-start",
+        height: 64,
+        paddingTop: 6,
+        paddingHorizontal: 10,
         width: "100%",
         borderTopWidth: 1,
         borderColor: "lightgrey"

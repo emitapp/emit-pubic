@@ -1,32 +1,47 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button, Text, ThemeConsumer } from 'react-native-elements';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Button, Text, ThemeConsumer, Icon } from 'react-native-elements';
 import { ClearHeader } from 'reusables/Header';
 import MainLinearGradient from 'reusables/MainLinearGradient';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { MAX_BROADCAST_WINDOW, MIN_BROADCAST_WINDOW, } from 'utils/serverValues';
-import { BannerButton } from 'reusables/ReusableButtons';
 import S from 'styling'
-import {epochToDateString} from 'utils/helpers'
 import ErrorMessageText from 'reusables/ErrorMessageText';
-
+import database from '@react-native-firebase/database';
+import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
+import { ActivityListElement } from 'reusables/ListElements';
 
 export default class NewBroadcastFormActivity extends React.Component {
 
     constructor(props){
         super(props)
-
-        this.state = {
-            // showingCustom: false,
-            // errorMessage: null
-        }
+        this.dbRef = [{title: "ACTIVITIES", ref: database().ref(`/activities`)}]
+        this.queryTypes = [{name: "Name", value: "nameQuery"}]
+        this.footerButtons = [{text: "Custom", func: () => {console.log("insert custom here")}}]
+        // TODO: implement custom footer button
     }
 
 
     static navigationOptions = ({ navigationOptions }) => {
         return ClearHeader("New Broadcast")
     };
+
+    saveActivity = (emoji, activityName) => {
+        this.props.navigation.state.params.emojiSelected = emoji;
+        this.props.navigation.state.params.activitySelected = activityName;
+        this.props.navigation.goBack();
+    }
+
+    itemRenderer = ({ item }) => {
+        return (
+          <View style = {{alignItems: "", width: "100%", flexDirection: "row"}}>
+            <ActivityListElement 
+                style = {{width: "100%"}}
+                emoji = {item.emoji}
+                activityName={item.name} 
+                onPress={() => { this.saveActivity(item.emoji, item.name)}}
+            />
+          </View>
+        );
+    }
 
     render() {
       return (
@@ -37,69 +52,16 @@ export default class NewBroadcastFormActivity extends React.Component {
                 <Text h4 h4Style={{marginTop: 8, fontWeight: "bold"}}>
                     Activity
                 </Text>
-                {/* <View style = {{flexDirection: "row", flex: 1}}>
-                <View style = {{flex: 1, marginHorizontal: 16, alignItems: "center"}}>
-                    <Text style = {{fontSize: 18, fontWeight: "bold", alignSelf: "flex-start"}}>
-                        in...
-                    </Text>
-                    <View style={styles.rowStyle}>
-                        {this.generateTimeButton(5, "black")}
-                        {this.generateTimeButton(10, "black")}
-                        {this.generateTimeButton(15, "black")}
-                    </View>
-                    <View style={styles.rowStyle}>
-                        {this.generateTimeButton(20, "black")}
-                        {this.generateTimeButton(25, "black")}
-                        {this.generateTimeButton(30, "black")}
-                    </View>
-                    <View style={styles.rowStyle}>
-                        {this.generateTimeButton(45, "black")}
-                        {this.generateTimeButton(60, "black")}
-                        {this.generateTimeButton(90, "black")}
-                    </View>
-
-                    {!this.state.showingCustom && 
-                        <Button
-                        title = "  Custom  "
-                        containerStyle = {{marginTop: 16}}
-                        onPress = {() => this.setState({showingCustom: true})}
-                        />
-                    }
-
-                    {this.state.showingCustom && 
-                        <>
-                        <View style = {{flexDirection: 'row', marginVertical: 8}}>
-                            <Button onPress={() => this.showPicker('date')} title="Choose Date" />
-                            <Button onPress={() => this.showPicker('time')} title="Choose Time" />
-                        </View>
-
-                        <ErrorMessageText message = {this.state.errorMessage} />
-
-                        <Text style={{ textAlign: "center" }}> Chosen date: </Text>
-                        <Text style={{ textAlign: "center", fontWeight: "bold", margin: 8 }}>
-                            {epochToDateString(this.state.date.getTime())}
-                        </Text>
-                        {this.state.showPicker &&
-                            <DateTimePicker value={this.state.date}
-                                style={{width:'100%'}}
-                                mode={this.state.pickerMode}
-                                is24Hour={false}
-                                display="default"
-                                onChange={this.setDate}
-                                minimumDate={this.minDate} />
-                            }
-                        </>
-                    }
-
-                </View>
-                </View>
-                {this.state.showingCustom && 
-                    <BannerButton
-                    iconName = {S.strings.confirm}
-                    onPress = {this.saveCustomTime}
-                    title = "CONFIRM"
-                    />  
-                } */}
+                <SearchableInfiniteScroll
+                type = "section"
+                queryValidator = {(query) => true}
+                queryTypes = {this.queryTypes}
+                renderItem = {this.itemRenderer}
+                dbref = {this.dbRef}
+                additionalData = {this.footerButtons}
+                >
+                    <View/>
+                </SearchableInfiniteScroll>
             </View>          
         </MainLinearGradient>
         )}

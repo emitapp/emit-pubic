@@ -4,7 +4,6 @@ import { Image, Text, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { FlatList } from 'react-native-gesture-handler';
 import { logError } from 'utils/helpers';
-
 /**
  * This is a reusable component that displays profile pictues
  * Required props: `uid` (uid of the user/group to display) and `diameter`
@@ -24,11 +23,9 @@ export default class ProfilePicCircle extends React.Component {
             />
         )
     }
-
     refresh = () => {
         this.picComponent.refresh()
     }
-
 }
 
 /**
@@ -36,7 +33,6 @@ export default class ProfilePicCircle extends React.Component {
  * Required props: `uids` (list of user uids),`diameter`, and spacing
  */
 export class ProfilePicList extends React.Component {
-
         itemRenderer = (uid) =>   { 
         const {diameter, spacing, style, ...otherProps} = this.props
         return (  
@@ -50,7 +46,7 @@ export class ProfilePicList extends React.Component {
         </View></View>
         )
     }
-
+    
     render() {
         const {uids, diameter, spacing, style, ...otherProps} = this.props
         return (
@@ -65,30 +61,25 @@ export class ProfilePicList extends React.Component {
             </View>
         )
     }
-
+    
     refresh = () => {
         this.picComponent.refresh()
     }
 }
-
 export class ProfilePicRaw extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = { downloadUrl: '' };
         this._isMounted = false; //Using this is an antipattern, but simple enough for now
     }
-
     componentDidMount() {
         if (!this.props.uid) return;
         this._isMounted = true;
         this.getURL();
     }
-
     componentWillUnmount() {
         this._isMounted = false;
     }
-
     render() {
         const { style, ...otherProps } = this.props
         if (!this.state.downloadUrl) {
@@ -112,7 +103,6 @@ export class ProfilePicRaw extends React.Component {
                 />)
         }
     }
-
     getURL = async () => {
         try {
             const listResult = this.props.groupPic ?
@@ -128,7 +118,6 @@ export class ProfilePicRaw extends React.Component {
             logError(err)
         }
     }
-
     refresh = () => {
         this.setState({ downloadUrl: '' }, this.getURL)
     }
