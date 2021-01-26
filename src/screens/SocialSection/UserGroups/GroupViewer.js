@@ -1,12 +1,17 @@
+import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
-import auth from '@react-native-firebase/auth'
-import functions from '@react-native-firebase/functions'
+import functions from '@react-native-firebase/functions';
 import React from 'react';
-import { View, Pressable } from 'react-native';
-import { Button, Divider, Input, Overlay, Text, ThemeConsumer, Tooltip } from 'react-native-elements';
+import { Pressable, View } from 'react-native';
+import { Button, Divider, Input, Overlay, Text, ThemeConsumer } from 'react-native-elements';
+import Snackbar from 'react-native-snackbar';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import ErrorMessageText from 'reusables/ErrorMessageText';
+import { ScrollingHeader } from "reusables/Header";
 import { UserSnippetListElement } from 'reusables/ListElements';
 import { DefaultLoadingModal, SmallLoadingComponent } from 'reusables/LoadingComponents';
+import ProfilePicChanger from 'reusables/ProfilePicChanger';
+import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
 import { AdditionalOptionsButton, BannerButton, MinorActionButton } from 'reusables/ReusableButtons';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
@@ -18,6 +23,8 @@ import { cloudFunctionStatuses, MAX_GROUP_NAME_LENGTH } from 'utils/serverValues
 import ErrorMessageText from 'reusables/ErrorMessageText';
 import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
 import ProfilePicChanger from 'reusables/ProfilePicChanger'
+import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
+import { cloudFunctionStatuses, groupRanks, MAX_GROUP_NAME_LENGTH } from 'utils/serverValues';
 
 export default class GroupScreen extends React.Component {
 
@@ -38,6 +45,7 @@ export default class GroupScreen extends React.Component {
 
   static refreshModes = {
     FIRST_LOAD: "first load",
+    INVITE_CODE_LOADED: "got invite code",
     NEW_RANK: "new rank",
     NEW_GROUP_DATA: "new group data"
   }
@@ -45,6 +53,7 @@ export default class GroupScreen extends React.Component {
   componentDidMount() {
     if (!this.groupSnippet) return; //Otherwise this person is viewing a group that already exists
     let shouldGoBack = false
+
     database()
       .ref(`/userGroups/${this.groupSnippet.uid}/snippet`)
       .on("value", snap => {
@@ -57,6 +66,7 @@ export default class GroupScreen extends React.Component {
           () => this.showDelayedSnackbar("Fetched group data")
         )
       })
+
     database()
       .ref(`/userGroups/${this.groupSnippet.uid}/memberUids/${auth().currentUser.uid}`)
       .on("value", snap => {
@@ -69,6 +79,11 @@ export default class GroupScreen extends React.Component {
           () => this.showDelayedSnackbar("Fetched user group rank")
         )
       })
+
+    database()
+      .ref(`/userGroupCodes/${this.groupSnippet.uid}`)
+      .once("value", snap => this.setState({ inviteCode: snap.val() }))
+
     if (shouldGoBack) {
       this.props.navigation.goBack()
     }
@@ -212,7 +227,6 @@ export default class GroupScreen extends React.Component {
                   style={{ marginLeft: 8, marginRight: 8 }}
                   groupPic={true}
                   ref={ref => this.profilePicComponent = ref}
-
                 />
               </Pressable>
               <View>
@@ -226,6 +240,10 @@ export default class GroupScreen extends React.Component {
                   <Text>{this.state.fetchedGroupData?.adminCount} members</Text>
                 </View>
               </View>
+            </View>
+
+            <View style = {{marginTop : 8}}>
+                <Text>Invite Code: {this.state.inviteCode}</Text>
             </View>
 
             {this.state.showProfilePicChanger &&
