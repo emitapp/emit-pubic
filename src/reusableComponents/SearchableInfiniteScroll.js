@@ -21,7 +21,7 @@ import SectionInfiniteScroll from './SectionInfiniteScroll'
 //
 //OPTIONAL PROPS:
 // data: populated in case the parent component needs to use the data pulled from the database
-//additionalData: a miscellaneous "catch all" object that probably should be removed
+// additionalData: a miscellaneous "catch all" object that probably should be removed
 // in the future - currently used to pass the "+ New Group" and "+ Add Friend"
 // buttons to SectionInfiniteScroll - of the form [{text: ..., func: ...},]
 
@@ -99,6 +99,8 @@ export default class SearchableInfiniteScroll extends React.Component {
             orderBy = {this.props.queryTypes}
             startingPoint = {this.state.query}
             endingPoint = {`${this.state.query}\uf8ff`}
+            data = { this.props.data }
+            additionalData = { this.props.additionalData }
             {...otherProps}
           />) : ( 
           <DynamicInfiniteScroll

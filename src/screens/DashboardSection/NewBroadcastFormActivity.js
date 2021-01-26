@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Text, ThemeConsumer, Icon } from 'react-native-elements';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ClearHeader } from 'reusables/Header';
 import MainLinearGradient from 'reusables/MainLinearGradient';
 import S from 'styling'
@@ -17,10 +16,7 @@ export default class NewBroadcastFormActivity extends React.Component {
         this.dbRef = [{title: "ACTIVITIES", ref: database().ref(`/activities`)}]
         this.queryTypes = [{name: "Name", value: "nameQuery"}]
         this.footerButtons = [{text: "Custom", func: () => {console.log("insert custom here")}}]
-        this.state = {
-            // showingCustom: false,
-            // errorMessage: null
-        }
+        // TODO: implement custom footer button
     }
 
 
@@ -28,9 +24,10 @@ export default class NewBroadcastFormActivity extends React.Component {
         return ClearHeader("New Broadcast")
     };
 
-    saveActivity = (activityName) => {
-        this.props.navigation.state.params.activitySelected = activityName
-        this.props.navigation.goBack()
+    saveActivity = (emoji, activityName) => {
+        this.props.navigation.state.params.emojiSelected = emoji;
+        this.props.navigation.state.params.activitySelected = activityName;
+        this.props.navigation.goBack();
     }
 
     itemRenderer = ({ item }) => {
@@ -40,7 +37,7 @@ export default class NewBroadcastFormActivity extends React.Component {
                 style = {{width: "100%"}}
                 emoji = {item.emoji}
                 activityName={item.name} 
-                onPress={() => { this.saveActivity(item.emoji + " " + item.name)}}
+                onPress={() => { this.saveActivity(item.emoji, item.name)}}
             />
           </View>
         );

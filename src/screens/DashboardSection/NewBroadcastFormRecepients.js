@@ -20,9 +20,6 @@ export default class NewBroadcastFormRecepients extends React.Component {
     constructor(props){
         super(props)
 
-        // This warning would not dismiss itself otherwise
-        LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
-
         let navigationParams = props.navigation.state.params
         this.mode = navigationParams.mode
         let userUid = auth().currentUser.uid
@@ -129,7 +126,7 @@ export default class NewBroadcastFormRecepients extends React.Component {
     }
 
     selectAllFriends = () => {
-        // When pagination is added, we'll need to change the functionality of select all a bit
+        // TODO: modify to work with pagination once added
         const friendSnippets = this.friendUids[1];
         let copiedObj = {}
         if (!this.state.allFriends) {
