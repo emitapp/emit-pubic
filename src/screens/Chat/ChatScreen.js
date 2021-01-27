@@ -71,7 +71,7 @@ export default class ChatScreen extends React.Component {
     const fireMessage = this.messageToFire(messages[0])
     const messagePath = this.chatrefPath + '/' + fireMessage.id
     const dbRef = database().ref(messagePath)
-    dbRef.set(fireMessage).then(() => console.log('Message sent')).catch(err => logError(err));
+    dbRef.set(fireMessage).catch(err => logError(err));
   }
 
   //makes test messages (needed for testing pagination and such)

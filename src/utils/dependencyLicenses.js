@@ -97,6 +97,12 @@ export default
         "licenseUrl": "https://github.com/react-native-community/lottie-react-native/raw/master/LICENSE",
         "parents": "biteup"
     },
+    "moment@2.29.1": {
+        "licenses": "MIT",
+        "repository": "https://github.com/moment/moment",
+        "licenseUrl": "https://github.com/moment/moment/raw/master/LICENSE",
+        "parents": "biteup"
+    },
     "react-native-autolink@3.0.0": {
         "licenses": "MIT",
         "repository": "https://github.com/joshswan/react-native-autolink",
@@ -133,6 +139,12 @@ export default
         "licenseUrl": "https://github.com/react-native-elements/react-native-elements/raw/master/LICENSE",
         "parents": "biteup"
     },
+    "react-native-emoji-selector@0.2.0": {
+        "licenses": "MIT",
+        "repository": "https://github.com/arronhunt/react-native-emoji-selector",
+        "licenseUrl": "https://github.com/arronhunt/react-native-emoji-selector/raw/master/LICENSE.md",
+        "parents": "biteup"
+    },
     "react-native-fast-image@7.0.2": {
         "licenses": "(MIT AND Apache-2.0)",
         "repository": "https://github.com/DylanVann/react-native-fast-image",
@@ -157,10 +169,28 @@ export default
         "licenseUrl": "https://github.com/software-mansion/react-native-gesture-handler/raw/master/LICENSE",
         "parents": "biteup"
     },
+    "react-native-get-random-values@1.5.1": {
+        "licenses": "MIT",
+        "repository": "https://github.com/LinusU/react-native-get-random-values",
+        "licenseUrl": "https://github.com/LinusU/react-native-get-random-values/raw/master/LICENSE",
+        "parents": "biteup"
+    },
+    "react-native-gifted-chat@0.16.3": {
+        "licenses": "MIT",
+        "repository": "https://github.com/FaridSafi/react-native-gifted-chat",
+        "licenseUrl": "https://github.com/FaridSafi/react-native-gifted-chat/raw/master/LICENSE",
+        "parents": "biteup"
+    },
     "react-native-image-picker@2.0.0": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-community/react-native-image-picker",
         "licenseUrl": "https://github.com/react-native-community/react-native-image-picker/raw/master/LICENSE.md",
+        "parents": "biteup"
+    },
+    "react-native-invertible-scroll-view@2.0.0": {
+        "licenses": "MIT",
+        "repository": "https://github.com/exponentjs/react-native-invertible-scroll-view",
+        "licenseUrl": "https://github.com/exponentjs/react-native-invertible-scroll-view/raw/master/LICENSE",
         "parents": "biteup"
     },
     "react-native-linear-gradient@2.5.6": {

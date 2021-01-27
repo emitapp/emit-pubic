@@ -167,7 +167,9 @@ export default class BroadcastViewer extends React.Component {
           containerStyle = {{alignSelf: "center"}}/>
           <Button 
             title="Chat" 
-            onPress={() => console.log("go to chat")} // TODO: Use navigator to go to chat
+            //TODO: Would a deep copy of this.broadcastSnippet be a good idea? Probably
+            //Will think about later
+            onPress={() => this.props.navigation.navigate("ChatScreen", {broadcast: this.broadcastSnippet})} 
             containerStyle = {{alignSelf: "center"}}/>
         </View> 
       ) 

@@ -43,7 +43,7 @@ export default class FeedElement extends React.Component {
         return (
             <TouchableOpacity 
                 style = {{marginVertical: 8, marginLeft: 8}}
-                onPress = {() => this.props.navigation.navigate('ChatScreen', {broadcast: this.props.item}) }>
+                onPress = {() => this.props.navigation.navigate('BroadcastViewer', {broadcast: this.props.item}) }>
                 <View style = {{flexDirection: 'row', justifyContent: "space-between"}}>
 
                     <View style = {{flexDirection: 'row'}}>

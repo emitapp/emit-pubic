@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 
 import PropTypes from 'prop-types'
+import moment from 'moment'
 
 /**
  * Component to reflect when and how date is rendered
