@@ -12,6 +12,7 @@ import NewBroadcastFormActivity from './NewBroadcastFormActivity';
 import NewBroadcastFormTime from './NewBroadcastFormTime';
 import ResponsesScreen from './ResponsesViewer';
 import SavedLocations from './SavedLocations'
+import ChatScreen from '../Chat/ChatScreen'
 import GroupMemberAdder from '../SocialSection/UserGroups/GroupMemberAdder'
 import UserFriendSearch from '../SocialSection/UserFriendSearch'
 

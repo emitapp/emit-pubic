@@ -21,7 +21,6 @@ export default class Feed extends React.Component {
       <View style={S.styles.container}>
 
           <ErrorMessageText message = {this.state.errorMessage} />
-
           <DynamicInfiniteScroll
             renderItem = {this.itemRenderer}
             generation = {0}
