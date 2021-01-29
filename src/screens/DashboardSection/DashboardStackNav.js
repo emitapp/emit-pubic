@@ -32,7 +32,7 @@ const Navigator = createStackNavigator(
   },
   {
     initialRouteName: 'ActiveBroadcasts',
-    defaultNavigationOptions: Header("Dashboard"),
+    defaultNavigationOptions: Header("My Flares"),
   });
 
 export default class DashboardStackNav extends React.Component {

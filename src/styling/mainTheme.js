@@ -5,6 +5,7 @@ const colors = {
     bannerButton: "#FCA31B",
     bannerButtonGreen: "mediumseagreen",
     bannerButtonRed: "crimson",
+    bannerButtonBlue: "#3b43d6",
 
     statusBar: "#c43e00",
 

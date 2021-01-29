@@ -101,9 +101,9 @@ export default class SectionInfiniteScroll extends React.Component {
     refListenerCallback = async (snapshot, refIndex) => {
         try {
             var title = this.props.dbref[refIndex].title;
-            var footerData = { text: null, func: null }
+            var customData = { text: null, func: null }
             if (this.props.additionalData && this.props.additionalData.length > refIndex) {
-                footerData = this.props.additionalData[refIndex];
+                customData = this.props.additionalData[refIndex];
             }
 
             var listData = []
@@ -116,14 +116,15 @@ export default class SectionInfiniteScroll extends React.Component {
 
             });
 
-            if (listData.length != 0) {
-                //FIXME: Pagination comment block
-                //this.lastItemProperty = listData[listData.length - 1][this.props.orderBy];
+            //FIXME: Pagination comment block
+            //this.lastItemProperty = listData[listData.length - 1][this.props.orderBy];
+            // Do not render sectionlist unless there is neither a custom button nor any list data
+            if (listData.length > 0 || customData.text != null) {
                 this.sections[refIndex] = ({ 
                     title: title, 
                     data: listData, 
-                    footerText: footerData.text, 
-                    footerCallback: footerData.func 
+                    customText: customData.text, 
+                    customCallback: customData.func 
                 });
             }
 
@@ -174,16 +175,19 @@ export default class SectionInfiniteScroll extends React.Component {
         }
     }
 
-    renderSectionFooter = ({ section: { footerText, footerCallback } }) => {
-        if (!footerText) return null;
+
+    renderSectionHeader=({ section: { title, customText, customCallback} }) => {
         return (
             <View>
-                <Divider />
-                <TouchableOpacity onPress={footerCallback}>
-                    <Text style={{ fontSize: 18, marginTop: 8, marginBottom: 8 }}>{footerText}</Text>
-                </TouchableOpacity>
-            </View>
-        )
+                <Text style={{ marginTop: 4, color: "blue", fontSize: 12 }}>{title}</Text>
+                {customText &&
+                    <View>
+                        <TouchableOpacity onPress={customCallback}>
+                            <Text style={{ fontSize: 18, marginTop: 8, marginBottom: 8 }}>{customText}</Text>
+                        </TouchableOpacity>
+                        <Divider />
+                    </View> }
+            </View> )
     }
 
     //FIXME: Pagination comment block
@@ -251,17 +255,17 @@ export default class SectionInfiniteScroll extends React.Component {
                 <View style={style}>
                     <ErrorMessageText message={this.errorMessage} />
                     <SectionList
+                        stickySectionHeadersEnabled={false}
+                        showsVerticalScrollIndicator={false}
+                        style={{ flex: 0 }}
                         sections={this.sections.filter((x) => x != "uninitialized")}
                         keyExtractor={item => item.uid}
                         //FIXME: Pagination comment block
                         // ListFooterComponent={this.renderFooter}
                         // onEndReached={() => this.retrieveMore(this.props.generation)}
                         // onEndReachedThreshold={0.1}
-                        renderSectionHeader={({ section: { title } }) => (
-                            <Text style={{ marginTop: 4, color: "blue", fontSize: 12 }}>{title}</Text>
-                        )}
+                        renderSectionHeader={this.renderSectionHeader}
                         // An optional clickable button to add onto the ends of each sectionlist
-                        renderSectionFooter={this.renderSectionFooter}
                         //refreshing={this.refreshing}
                         ListEmptyComponent={this.renderEmptyState}
                         {...otherProps}

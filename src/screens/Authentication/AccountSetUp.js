@@ -40,7 +40,7 @@ export default class AccountSetUp extends React.Component {
 
           <View style = {{
             justifyContent: 'center',
-            alignItems: 'center', 
+            alignItems: 'center',
             borderRadius: 30, 
             backgroundColor: "white", 
             height: "auto",
@@ -55,8 +55,7 @@ export default class AccountSetUp extends React.Component {
             <ErrorMessageText message = {this.state.errorMessage} />
 
             <Text style = {{marginBottom: 8}}>
-              The name that people will see associated with your account. 
-              It can be whatever you want, and you can always change it later
+              What do you want your friends to call you?
             </Text>
             <Input
               label = "Display Name"
@@ -72,8 +71,7 @@ export default class AccountSetUp extends React.Component {
             />
 
             <Text style = {{marginBottom: 8}}>
-              You’re username must be unique, and you can’t change it. 
-              It must contain only A-Z, a-z, 0-9, underscores or hyphens.
+              Your username is how your friends add you on Biteup
             </Text>
             <Input
               label = "Username"
@@ -143,10 +141,10 @@ export default class AccountSetUp extends React.Component {
         }), LONG_TIMEOUT)
 
         if (response.data.status == cloudFunctionStatuses.OK){
-          this.setState({ errorMessage: response.data.mess })
+          await AsyncStorage.setItem(ASYNC_SETUP_KEY, "yes");
+          this.props.navigation.navigate('CovidWarningPage');
         }else{
-          await AsyncStorage.setItem(ASYNC_SETUP_KEY, "yes")
-          this.props.navigation.navigate('MainTabNav')
+          this.setState({ errorMessage: response.data.message })
         }
       }catch(error){
         this.setState({ errorMessage: error.message })

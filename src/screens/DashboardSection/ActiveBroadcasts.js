@@ -2,7 +2,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
 import { Image, TouchableOpacity, View } from 'react-native';
-import { Text } from 'react-native-elements';
+import { Text, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CountdownComponent from 'reusables/CountdownComponent';
 import EmptyState from 'reusables/EmptyState';
@@ -10,15 +10,16 @@ import ErrorMessageText from 'reusables/ErrorMessageText';
 import SectionInfiniteScroll from 'reusables/SectionInfiniteScroll';
 import S from 'styling';
 import { epochToDateString } from 'utils/helpers';
-import FeedElement from '../FeedSection/FeedElement'
+import FeedElement from '../FeedSection/FeedElement';
+import { MinorActionButton, PillButton } from 'reusables/ReusableButtons';
 
 export default class ActiveBroadcasts extends React.Component {
 
   state = {
     errorMessage: null,
   }
-  firstSectionTitle = "My Flares"
-  secondSectionTitle = "Flares I'm into"
+  firstSectionTitle = "SENT"
+  secondSectionTitle = "JOINED"
 
   render() {
     return (
@@ -44,8 +45,14 @@ export default class ActiveBroadcasts extends React.Component {
                   resizeMode='contain' />
               }
               title="Pretty chill day, huh?"
-              message="Flares you've made or are into will apprear here"
-            />
+              message="Flares you make and join will appear here"
+            >
+              <Button 
+                title = "Send a new Flare" 
+                onPress={() => this.props.navigation.navigate('NewBroadcastForm', { needUserConfirmation: true })}
+                buttonStyle = {{borderWidth: 2, width: 150, height: 36, marginTop: 22}}
+                titleStyle = {{ fontSize: 13}}/>
+            </EmptyState>
           }
         />
       </View>

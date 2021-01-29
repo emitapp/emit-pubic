@@ -12,7 +12,8 @@ class EmptyState extends React.Component {
             <View style = {{...this.props.style, alignItems: "center", justifyContent: "center"}}>
                 {this.props.image}
                 <Text h4 h4Style={{fontWeight: "bold"}}>{this.props.title}</Text>
-                <Text style={{color: this.props.theme.colors.grey1, textAlign: "center"}}>{this.props.message}</Text>
+                <Text style={{color: this.props.theme.colors.grey1, marginTop: 6, textAlign: "center", width: "60%"}}>{this.props.message}</Text>
+                {this.props.children}
             </View>
         )
     }

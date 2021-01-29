@@ -59,9 +59,9 @@ const Tab = createBottomTabNavigator(
           //Height gotten from 
           //https://github.com/react-navigation/react-navigation/blob/5c7f892d77298f5c89534fa78a1a6a59c7f35a60/packages/tabs/src/views/BottomTabBar.tsx#L36
           <View {...props} style={{ ...props.style, height: 49, flexDirection: "row", justifyContent: 'center', alignItems: 'center' }}>
-            {renderTab(props, "FeedStackNav", "fire")}
+            {renderTab(props, "FeedStackNav", "home")}
             <FlareCreationButton />
-            {renderTab(props, "DashboardStackNav", "home")}
+            {renderTab(props, "DashboardStackNav", "fire")}
           </View>
         )
       }

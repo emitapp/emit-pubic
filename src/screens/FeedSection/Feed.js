@@ -34,7 +34,7 @@ export default class Feed extends React.Component {
                   resizeMode = 'contain' />
                 }
                 title = "It's pretty quiet here." 
-                message = "You have no flares in your feed right now." 
+                message = "Flares from your friends and groups show up here" 
               />
             }
           />

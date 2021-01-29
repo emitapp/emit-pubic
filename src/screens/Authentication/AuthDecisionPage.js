@@ -44,7 +44,7 @@ export default class Loading extends React.Component {
       if (!user){ 
         this.props.navigation.navigate('LandingPage');
       }else{
-        const isSetUp = await AsyncStorage.getItem(ASYNC_SETUP_KEY)
+        const isSetUp = await AsyncStorage.getItem(ASYNC_SETUP_KEY);
         if (isSetUp){
           this.props.navigation.navigate('MainTabNav');
         }else{ 

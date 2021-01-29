@@ -26,16 +26,16 @@ export default class LandingPage extends React.Component {
               </View>
 
               <Button
-              title = "Sign in"
+              title = "Create Account"
               buttonStyle = {{height: 50, width: 256}}
               titleStyle = {{fontSize: 22}}
-              onPress = {() => this.props.navigation.navigate("Login")}
+              onPress = {() => this.props.navigation.navigate("SignUp")}
               />
 
               <Text 
               style={{marginTop: 20, textDecorationLine: 'underline', color: "white"}}
-              onPress = {() => this.props.navigation.navigate("SignUp")}>
-                  New to Biteup? Sign up for free
+              onPress = {() => this.props.navigation.navigate("Login")}>
+                  Returning to Biteup? Sign in here
               </Text>
             </ImageBackground>
       )

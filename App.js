@@ -12,6 +12,7 @@ import Login from 'screens/Authentication/Login';
 import PasswordReset from 'screens/Authentication/PasswordReset'
 import SignUp from 'screens/Authentication/SignUp';
 import MainTabNav from 'screens/MainTabNav';
+import CovidWarningPage from 'screens/Onboarding/CovidWarningPage';
 import MainTheme from 'styling/mainTheme';
 import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError } from 'utils/helpers';
 import NavigationService from 'utils/NavigationService';
@@ -70,6 +71,7 @@ const Navigator = createAppContainer(
     MainTabNav,
     LandingPage,
     PasswordReset,
+    CovidWarningPage,
   },
   {
     initialRouteName: 'AuthDecisionPage'
