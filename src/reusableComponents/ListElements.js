@@ -139,7 +139,7 @@ export class ActivityListElement extends React.PureComponent {
         style = {{...S.styles.listElement, ...this.props.style}}
         onPress = {onPress}>
           <View style = {{marginLeft: 8, flexDirection: "row", alignItems: 'center'}}>
-            <Text style={{fontSize: 24}}>{emoji}</Text>
+            <Text style={{fontSize: 16}}>{emoji}</Text>
             <Text style = {{marginLeft: 6, fontSize: 18}} >{activityName}</Text>
           </View>
       </TouchableOpacity>

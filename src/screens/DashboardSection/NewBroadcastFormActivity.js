@@ -1,90 +1,116 @@
+import { Picker } from 'emoji-mart-native'; //TODO: Not a fan of this, might change it
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Button, Text, ThemeConsumer, Icon } from 'react-native-elements';
+import { Pressable, SectionList, View } from 'react-native';
+import { Overlay, SearchBar, Text, ThemeConsumer } from 'react-native-elements';
 import { ClearHeader } from 'reusables/Header';
-import MainLinearGradient from 'reusables/MainLinearGradient';
-import S from 'styling'
-import ErrorMessageText from 'reusables/ErrorMessageText';
-import database from '@react-native-firebase/database';
-import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import { ActivityListElement } from 'reusables/ListElements';
+import MainLinearGradient from 'reusables/MainLinearGradient';
+import { MinorActionButton } from 'reusables/ReusableButtons';
+import { getAllActivities } from 'utils/activitesList';
 
 export default class NewBroadcastFormActivity extends React.Component {
 
-    constructor(props){
-        super(props)
-        this.dbRef = [{title: "ACTIVITIES", ref: database().ref(`/activities`)}]
-        this.queryTypes = [{name: "Name", value: "nameQuery"}]
-        this.footerButtons = [{text: "Custom", func: () => {console.log("insert custom here")}}]
-        // TODO: implement custom footer button
-    }
+  state = {
+    query: "",
+    gettingCustom: false
+  }
 
 
-    static navigationOptions = ({ navigationOptions }) => {
-        return ClearHeader("New Broadcast")
-    };
+  static navigationOptions = ({ navigationOptions }) => {
+    return ClearHeader("New Broadcast")
+  };
 
-    saveActivity = (emoji, activityName) => {
-        this.props.navigation.state.params.emojiSelected = emoji;
-        this.props.navigation.state.params.activitySelected = activityName;
-        this.props.navigation.goBack();
-    }
+  saveActivity = (emoji, activityName) => {
+    this.props.navigation.state.params.emojiSelected = emoji;
+    this.props.navigation.state.params.activitySelected = activityName;
+    this.props.navigation.goBack();
+  }
 
-    itemRenderer = ({ item }) => {
-        return (
-          <View style = {{alignItems: "center", width: "100%", flexDirection: "row"}}>
-            <ActivityListElement 
-                style = {{width: "100%"}}
-                emoji = {item.emoji}
-                activityName={item.name} 
-                onPress={() => { this.saveActivity(item.emoji, item.name)}}
-            />
-          </View>
-        );
-    }
+  itemRenderer = ({ item }) => {
+    return (
+      <View style={{ alignItems: "center", width: "100%", flexDirection: "row" }}>
+        <ActivityListElement
+          style={{ width: "100%" }}
+          emoji={item.emoji}
+          activityName={item.name}
+          onPress={() => { this.saveActivity(item.emoji, item.name) }}
+        />
+      </View>
+    );
+  }
 
-    render() {
-      return (
-        <ThemeConsumer>
+  render() {
+    return (
+      <ThemeConsumer>
         {({ theme }) => (
-        <MainLinearGradient theme={theme}> 
-            <View style = {{flex: 1, backgroundColor: "white", width: "100%", borderTopEndRadius: 50, borderTopStartRadius: 50}}>
-                <Text h4 h4Style={{marginTop: 8, fontWeight: "bold"}}>
-                    Activity
-                </Text>
-                <SearchableInfiniteScroll
-                type = "section"
-                queryValidator = {(query) => true}
-                queryTypes = {this.queryTypes}
-                renderItem = {this.itemRenderer}
-                dbref = {this.dbRef}
-                additionalData = {this.footerButtons}
-                >
-                    <View/>
-                </SearchableInfiniteScroll>
-            </View>          
-        </MainLinearGradient>
-        )}
-        </ThemeConsumer>
-      )
+          <MainLinearGradient theme={theme}>
+            <View style={{ flex: 1, backgroundColor: "white", width: "100%", borderTopEndRadius: 50, borderTopStartRadius: 50 }}>
+
+              <Overlay
+                isVisible={this.state.gettingCustom}>
+                <>
+                  <Picker
+                    native={true}
+                    onSelect={emoji => this.setState(
+                      {gettingCustom: false}, 
+                      () => this.saveActivity(emoji.native, this.state.query.trim()))} />
+                  <MinorActionButton
+                    title="Close"
+                    onPress={() => {this.setState({ gettingCustom: false })}} />
+                </>
+              </Overlay>
+
+
+              <SearchBar
+                autoCapitalize="none"
+                placeholder="Search for or type in your activity"
+                onChangeText={query => this.setState({ query })}
+                value={this.state.query}
+                containerStyle={{ marginTop: 24 }}
+              />
+              <SectionList
+                sections={this.getFilteredSectionData()}
+                keyExtractor={item => item.name + item.emoji}
+                renderItem={this.itemRenderer}
+                renderSectionHeader={({ section: { sectionName } }) => (
+                  <Text style={{ fontWeight: "bold", textAlign: "center", fontSize: 18 }}>{sectionName}</Text>
+                )}
+                ListHeaderComponent={this.state.query.trim() &&
+                  <Pressable
+                    style={{ alignItems: "center", backgroundColor: "grey", padding: 8 }}
+                    onPress={() => this.setState({ gettingCustom: true })}>
+                    <Text>
+                      Make custom activity
+                    </Text>
+                  </Pressable>
+                }
+              />
+              <View />
+            </View>
+          </MainLinearGradient>
+        )
+        }
+      </ThemeConsumer>
+    )
+  }
+
+  getEmojiForCustom = () => {
+
+  }
+
+  getFilteredSectionData = () => {
+    let activities = getAllActivities()
+    let { query } = this.state
+    if (!query) return activities
+    query = query.toLowerCase().trim()
+    //use the query to find all activites that either have a section or name
+    //that fits the query
+    for (const section of activities) {
+      if (section.sectionName.toLowerCase().includes(query)) continue;
+      section.data = section.data.filter(activity => activity.name.toLowerCase().includes(query))
     }
+    //Remove sections that now have 0 activities
+    activities = activities.filter(section => section.data.length > 0)
+    return activities
+  }
 }
-
-
-const styles = StyleSheet.create({
-    timeButton:{
-        justifyContent: "center", 
-        alignItems: "center",
-        height: "100%",
-        width: "25%",
-        borderRadius: 10,
-        borderWidth: 3
-    },
-    rowStyle: {
-        width: "100%",
-        flexDirection: "row",
-        marginVertical: 8,
-        height: 50,
-        justifyContent: "space-between",
-    },
-})

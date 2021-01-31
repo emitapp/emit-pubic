@@ -31,8 +31,6 @@ export default class NewBroadcastFormRecepients extends React.Component {
         // List of UIDs to send back after obtaining from db
         this.friendUids = []
 
-        
-
         this.state = { selectedSnippets: JSON.parse(JSON.stringify(navigationParams.data.recepientFriends))}
         this.queryTypes = [{name: "Name", value: "nameQuery"}, {name: "Display Name", value: "displayNameQuery"}, { name: "Username", value: "usernameQuery" }]
         this.state.allFriends = navigationParams.data.allFriends

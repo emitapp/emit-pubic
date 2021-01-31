@@ -3,18 +3,18 @@ import { Alert } from 'react-native';
 import { createStackNavigator } from 'react-navigation-stack';
 import Header from 'reusables/Header';
 import NavigationService from 'utils/NavigationService';
+import UserFriendSearch from '../SocialSection/UserFriendSearch';
+import GroupMemberAdder from '../SocialSection/UserGroups/GroupMemberAdder';
 import ActiveBroadcasts from './ActiveBroadcasts';
 import LocationSelector from './LocationSelector';
 import NewBroadcastForm from './NewBroadcastForm';
+import NewBroadcastFormActivity from './NewBroadcastFormActivity';
+import NewBroadcastFormDuration from './NewBroadcastFormDuration';
 import NewBroadcastFormLocation from './NewBroadcastFormLocation';
 import NewBroadcastFormRecepients from './NewBroadcastFormRecepients';
-import NewBroadcastFormActivity from './NewBroadcastFormActivity';
 import NewBroadcastFormTime from './NewBroadcastFormTime';
 import ResponsesScreen from './ResponsesViewer';
-import SavedLocations from './SavedLocations'
-import ChatScreen from '../Chat/ChatScreen'
-import GroupMemberAdder from '../SocialSection/UserGroups/GroupMemberAdder'
-import UserFriendSearch from '../SocialSection/UserFriendSearch'
+import SavedLocations from './SavedLocations';
 
 const Navigator = createStackNavigator(
   {
@@ -29,6 +29,7 @@ const Navigator = createStackNavigator(
     SavedLocations,
     GroupMemberAdder,
     UserFriendSearch,
+    NewBroadcastFormDuration
   },
   {
     initialRouteName: 'ActiveBroadcasts',
@@ -40,7 +41,7 @@ export default class DashboardStackNav extends React.Component {
   //The tab view shouldn't show for certain screens in this section...
   static navigationOptions = ({navigation}) => {
     const routeName = navigation.state ? navigation.state.routes[navigation.state.index].routeName : "default"
-    var targetScreens = ["GroupMemberAdder","NewBroadcastFormActivity","NewBroadcastFormTime", "NewBroadcastForm", "LocationSelector", "NewBroadcastFormLocation", "NewBroadcastFormRecepients", "SavedLocations"]
+    var targetScreens = ["GroupMemberAdder","NewBroadcastFormActivity","NewBroadcastFormTime", "NewBroadcastForm", "LocationSelector", "NewBroadcastFormLocation", "NewBroadcastFormRecepients", "SavedLocations", "NewBroadcastFormDuration"]
     let showTabView = !targetScreens.includes(routeName)
     return {
       tabBarVisible: showTabView, 

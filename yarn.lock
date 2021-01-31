@@ -3439,10 +3439,13 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-emoji-datasource@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/emoji-datasource/-/emoji-datasource-6.0.0.tgz#892e66f8cca001459f33279294a21f231d174b51"
-  integrity sha512-WIExctYO+Ji8MKdPWpQhP9GDUitslISCWFCrARGLX0w4cf9+iLG/n2DAZf6mIC8c+s2pVJ9CS+kdWRZYo9h8mg==
+emoji-mart-native@^0.6.2-beta:
+  version "0.6.2-beta"
+  resolved "https://registry.yarnpkg.com/emoji-mart-native/-/emoji-mart-native-0.6.2-beta.tgz#18b007897d25de8f6ed9099005ea99062bfe63e7"
+  integrity sha512-dCT7lyBieP9/zE3goiHbd7qH20SMvs3wUcMSogFjQ42cVQ5bKiWpPVwsfl5uRYF1CPNWU93hZygr4iAtgqIjDQ==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    prop-types "^15.6.0"
 
 emoji-regex@^7.0.1:
   version "7.0.3"
@@ -7339,7 +7342,7 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.3"
 
-prop-types@^15.5.10, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.7.x:
+prop-types@^15.5.10, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.7.x:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -7546,13 +7549,6 @@ react-native-elements@^3.1.0:
     react-native-ratings "^7.3.0"
     react-native-safe-area-context "^3.1.9"
     react-native-size-matters "^0.3.1"
-
-react-native-emoji-selector@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/react-native-emoji-selector/-/react-native-emoji-selector-0.2.0.tgz#b1ed980cd585a3fd0fca1da6a29006c1a5979615"
-  integrity sha512-+rPPWG5vl5AexdH8udEwtzdq9QUGD6kp+dQ8C/459d3ScM0S3UnT/qAvhmpsTgCbgjpdwiJIcrKNxKmGEDb15g==
-  dependencies:
-    emoji-datasource "^6.0.0"
 
 react-native-fast-image@^7.0.2:
   version "7.0.2"
