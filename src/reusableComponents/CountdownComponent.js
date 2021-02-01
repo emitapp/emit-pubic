@@ -13,7 +13,7 @@ export default class CountdownComponent extends React.Component {
     }
   
     componentDidMount() {
-      let timeLeftVar = this.secondsToTime(this.state.secondsLeft);
+      let timeLeftVar = CountdownComponent.secondsToTime(this.state.secondsLeft);
       this.setState({ time: timeLeftVar });
       this.startTimer()
     }
@@ -32,7 +32,7 @@ export default class CountdownComponent extends React.Component {
       // Remove one second, set state so a re-render happens.
       let secondsLeft = this.state.secondsLeft - 1;
       this.setState({
-        time: this.secondsToTime(secondsLeft),
+        time: CountdownComponent.secondsToTime(secondsLeft),
         secondsLeft,
       });
       
@@ -42,7 +42,8 @@ export default class CountdownComponent extends React.Component {
       }
     }
   
-    secondsToTime(secs){
+    //TODO: maybe move this to utils?
+    static secondsToTime(secs){
       let hours = Math.floor(secs / (60 * 60));
   
       let divisor_for_minutes = secs % (60 * 60);

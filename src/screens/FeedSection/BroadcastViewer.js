@@ -6,16 +6,15 @@ import { Button, Divider, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Entypo';
 import AutolinkText from 'reusables/AutolinkText';
 import LockNotice from 'reusables/BroadcastLockNotice';
-import CountdownComponent from 'reusables/CountdownComponent';
-import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import ErrorMessageText from 'reusables/ErrorMessageText';
+import FlareTimeStatus from 'reusables/FlareTimeStatus';
 import { UserSnippetListElement } from 'reusables/ListElements';
 import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/LoadingComponents';
+import ProfilePicDisplayer, { ProfilePicList } from 'reusables/ProfilePicComponents';
 import S from "styling";
 import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, responderStatuses } from 'utils/serverValues';
-import { ProfilePicList } from 'reusables/ProfilePicComponents';
-import ProfilePicDisplayer from 'reusables/ProfilePicComponents'
+
 
 /**
  * Class for viewing info about a broadcast.
@@ -23,167 +22,173 @@ import ProfilePicDisplayer from 'reusables/ProfilePicComponents'
  */
 export default class BroadcastViewer extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = { 
-            attendees: [],
-            errorMessage: null, 
-            broadcastData: null,
-            isModalVisible: false,
-            showConfirmed: false
-        }
-
-        this.broadcastSnippet = this.props.navigation.getParam('broadcast', {uid: " ", owner: {uid: " "}})
+  constructor(props) {
+    super(props);
+    this.state = {
+      attendees: [],
+      errorMessage: null,
+      broadcastData: null,
+      isModalVisible: false,
+      showConfirmed: false
     }
+
+    this.broadcastSnippet = this.props.navigation.getParam('broadcast', { uid: " ", owner: { uid: " " } })
+  }
 
   componentDidMount = () => {
     database()
-    .ref(`activeBroadcasts/${this.broadcastSnippet.owner.uid}/public/${this.broadcastSnippet.uid}`)
-    .on('value', snap => this.setState({broadcastData: snap.val()}))
+      .ref(`activeBroadcasts/${this.broadcastSnippet.owner.uid}/public/${this.broadcastSnippet.uid}`)
+      .on('value', snap => this.setState({ broadcastData: snap.val() }))
 
     database()
-    .ref(`/activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)
-    .on('value', snap => this.updateAttendees(snap.val()))
+      .ref(`/activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)
+      .on('value', snap => this.updateAttendees(snap.val()))
   }
 
   componentWillUnmount = () => {
     database()
-    .ref(`activeBroadcasts/${this.broadcastSnippet.owner.uid}/public/${this.broadcastSnippet.uid}`)
-    .off()
+      .ref(`activeBroadcasts/${this.broadcastSnippet.owner.uid}/public/${this.broadcastSnippet.uid}`)
+      .off()
 
     database()
-    .ref(`/activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)
-    .off()
+      .ref(`/activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)
+      .off()
   }
 
   render() {
-    const {broadcastData} = this.state
+    const { broadcastData } = this.state
     return (
-      <View style={{...S.styles.containerFlexStart, alignItems: "flex-start", marginHorizontal: 16}}>
-        
-        <DefaultLoadingModal isVisible={this.state.isModalVisible} />
-        
-        <ErrorMessageText message = {this.state.errorMessage} />
+      <View style={{ ...S.styles.containerFlexStart, alignItems: "flex-start", marginHorizontal: 16 }}>
 
+        <DefaultLoadingModal isVisible={this.state.isModalVisible} />
+        <ErrorMessageText message={this.state.errorMessage} />
         {!broadcastData &&
-            <TimeoutLoadingComponent hasTimedOut={false} retryFunction={() => null}/>
+          <TimeoutLoadingComponent hasTimedOut={false} retryFunction={() => null} />
         }
 
-        {broadcastData && 
-          <View style={{width: "100%"}}>
-              <View style={{alignItems: "center", marginBottom: 50, marginTop: 50}}>
-                <View style={{flexDirection: "row"}}>
-                  <View style={{alignItems: "center", justifyContent: "center", marginTop: -16, marginBottom: 8, marginRight: 8}}>
-                    {broadcastData.emoji ? <Text style = {{fontSize: 50}}>{broadcastData.emoji}</Text> : <Text style = {{fontSize: 50}}>🍲</Text> }
-                  </View>
-                  <Text style={{fontSize: 32, marginBottom: 8}}>{broadcastData.location}</Text>
+        {broadcastData &&
+          <View style={{ width: "100%" }}>
+
+            <View style={{ alignItems: "center", marginBottom: 25, marginTop: 25 }}>
+              <View style={{ flexDirection: "row" }}>
+                <View style={{ alignItems: "center", justifyContent: "center", marginTop: -16, marginBottom: 8, marginRight: 8 }}>
+                  {broadcastData.emoji ? <Text style={{ fontSize: 50 }}>{broadcastData.emoji}</Text> : <Text style={{ fontSize: 50 }}>🍲</Text>}
                 </View>
-                <View style={{flexDirection: "row", alignItems: "center", justifyContent: "center"}}>
-                  <View style={{justifyContent: "center"}}>
-                    <ProfilePicDisplayer diameter = {32} uid = {this.broadcastSnippet.owner.uid} />
-                  </View>
-                  <Text style={{marginLeft: 4, marginBottom: 8, color: "#3F83F9"}}>{this.broadcastSnippet.owner.displayName}</Text>
-                </View>
-                <CountdownComponent deadLine = {broadcastData.deathTimestamp}  renderer = {this.timeLeftRenderer} />
-            </View>
-            <Divider style = {{marginVertical: 8}} />
-            <View >
-              <Text style = {{marginTop: -8, fontSize: 24, marginLeft: 4, color: "grey", marginBottom: 8}}>Location</Text>
-              <Text style = {{fontSize: 18, marginLeft: 4}}>{broadcastData.location}</Text>
-              <View style = {{flexDirection: "row", alignItems: "center"}}>
-                {broadcastData.geolocation && 
-                  <Button
-                    icon={ <Icon name="location-pin" size={20} color = "white" /> }
-                    onPress = {this.openLocationOnMap}
-                    containerStyle = {{marginRight: 8, marginLeft: 0}}
-                  /> }
+                <Text style={{ fontSize: 32, marginBottom: 8 }}>{broadcastData.location}</Text>
               </View>
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                <View style={{ justifyContent: "center" }}>
+                  <ProfilePicDisplayer diameter={32} uid={this.broadcastSnippet.owner.uid} />
+                </View>
+                <Text style={{ marginLeft: 4, marginBottom: 8, color: "#3F83F9" }}>{this.broadcastSnippet.owner.displayName}</Text>
+              </View>
+
+              <FlareTimeStatus item = {broadcastData} />
+
             </View>
+
+            <Divider style={{ marginBottom: 8 }} />
+
+            {broadcastData.location != undefined &&
+              <View>
+                <Text style={{ fontSize: 24, marginLeft: 4, color: "grey", marginBottom: 8 }}>Location</Text>
+                <Text style={{ fontSize: 18, marginLeft: 4 }}>{broadcastData.location}</Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  {broadcastData.geolocation &&
+                    <Button
+                      icon={<Icon name="location-pin" size={20} color="white" />}
+                      onPress={this.openLocationOnMap}
+                      containerStyle={{ marginRight: 8, marginLeft: 0 }}
+                    />}
+                </View>
+              </View>
+            }
+
             {broadcastData.note != undefined &&
               <View>
-                <Text style = {{marginTop: 8, fontSize: 24, marginLeft: 4, color: "grey"}}>
-                Note
+                <Text style={{ marginTop: 8, fontSize: 24, marginLeft: 4, color: "grey" }}>
+                  Note
                 </Text>
-                  <AutolinkText style = {{marginTop: 8, fontSize: 16, marginLeft: 4}}>{broadcastData.note}</AutolinkText>
+                <AutolinkText style={{ marginTop: 8, fontSize: 16, marginLeft: 4 }}>{broadcastData.note}</AutolinkText>
               </View>
-            }   
+            }
           </View>
         }
-        {(broadcastData && broadcastData.locked) && 
-            <LockNotice message={"This broadcast has react the response limit it's creator set. It won't receive any more responses."} />
+
+        {(broadcastData && broadcastData.locked) &&
+          <LockNotice message={"This broadcast has react the response limit it's creator set. It won't receive any more responses."} />
         }
-        {broadcastData && 
+
+        {broadcastData &&
           <View >
-            <Text style = {{marginTop: 8, fontSize: 24, marginLeft: 4, marginBottom: 4, color: "grey"}}>
+            <Text style={{ marginTop: 8, fontSize: 24, marginLeft: 4, marginBottom: 4, color: "grey" }}>
               Who's In
             </Text>
-            <Text style = {{alignSelf: "center", marginLeft: 4, marginBottom: 4}}>{broadcastData.totalConfirmations} user(s) are in!</Text>
-            <View style={{height: 36}}> 
+            <Text style={{ alignSelf: "center", marginLeft: 4, marginBottom: 4 }}>{broadcastData.totalConfirmations} user(s) are in!</Text>
+            <View style={{ height: 36 }}>
               {this.state.attendees.length > 0 &&
-              <ProfilePicList 
-                uids={this.state.attendees} 
-                diameter={36}
-                style = {{marginLeft: 0, marginRight: 2}}/>}
-            </View> 
+                <ProfilePicList
+                  uids={this.state.attendees}
+                  diameter={36}
+                  style={{ marginLeft: 0, marginRight: 2 }} />}
+            </View>
           </View>
         }
 
-        <Divider style = {{marginVertical: 8}} />
-
         {broadcastData && this.displayBroadcastAction()}
-           
+
       </View>
     )
   }
-/**
- * Method to update the list of attendees with
- * whatever data comes from the database call
- * @param {*} data, a dictionary, the result of snapshot.val()
- */
+  /**
+   * Method to update the list of attendees with
+   * whatever data comes from the database call
+   * @param {*} data, a dictionary, the result of snapshot.val()
+   */
   updateAttendees = (data) => {
     var attendeesNew = []
     for (var id in data) {
       attendeesNew.push(id)
     }
-    this.setState({attendees: attendeesNew})
+    this.setState({ attendees: attendeesNew })
   }
 
   displayBroadcastAction = () => {
     if (!this.broadcastSnippet.status || this.broadcastSnippet.status == responderStatuses.CANCELLED) {
       return (
-        <View style={{alignSelf: "center", marginTop: 60}}>
-          <Button 
-            title="I'm In" 
-            onPress={() => this.sendConfirmOrCancelRequest(true)} 
-            containerStyle = {{alignSelf: "center"}}/>
+        <View style={{ alignSelf: "center", marginTop: 60 }}>
+          <Button
+            title="I'm In"
+            onPress={() => this.sendConfirmOrCancelRequest(true)}
+            containerStyle={{ alignSelf: "center" }} />
         </View>
       )
     } else {
       return (
-        <View style={{flexDirection: "row", alignSelf: "center", marginTop: 60}}>
-          <Button 
-          title="I'm Out" 
-          onPress={() => this.sendConfirmOrCancelRequest(false)} 
-          containerStyle = {{alignSelf: "center"}}/>
-          <Button 
-            title="Chat" 
+        <View style={{ flexDirection: "row", alignSelf: "center", marginTop: 60 }}>
+          <Button
+            title="I'm Out"
+            onPress={() => this.sendConfirmOrCancelRequest(false)}
+            containerStyle={{ alignSelf: "center" }} />
+          <Button
+            title="Chat"
             //TODO: Would a deep copy of this.broadcastSnippet be a good idea? Probably
             //Will think about later
-            onPress={() => this.props.navigation.navigate("ChatScreen", {broadcast: this.broadcastSnippet})} 
-            containerStyle = {{alignSelf: "center"}}/>
-        </View> 
-      ) 
+            onPress={() => this.props.navigation.navigate("ChatScreen", { broadcast: this.broadcastSnippet })}
+            containerStyle={{ alignSelf: "center" }} />
+        </View>
+      )
     }
   }
-/**
- * Calls cloud function that will either 
- * confirm a user for an event, or take a user off an event
- * depending on the confirm parameter
- * @param {*} confirm a boolean, if true will confirm a user
- * otherwise, it will take them off the broadcast
- */
+  /**
+   * Calls cloud function that will either 
+   * confirm a user for an event, or take a user off an event
+   * depending on the confirm parameter
+   * @param {*} confirm a boolean, if true will confirm a user
+   * otherwise, it will take them off the broadcast
+   */
   sendConfirmOrCancelRequest = async (confirm) => {
-    this.setState({isModalVisible: true})
+    this.setState({ isModalVisible: true })
     try {
       const requestFunction = functions().httpsCallable('setBroadcastResponse');
 
@@ -198,30 +203,21 @@ export default class BroadcastViewer extends React.Component {
       } else if (response.data.status === cloudFunctionStatuses.OK) {
         this.broadcastSnippet.status = responderStatuses.CANCELLED
       } else {
-        this.setState({errorMessage: response.data.message})
+        this.setState({ errorMessage: response.data.message })
         logError(new Error("Problematic setBroadcastResponse function response: " + response.data.message))
       }
-    } catch(err) {
-      if (err.name != "timeout") logError(err)      
-      this.setState({errorMessage: err.message})
+    } catch (err) {
+      if (err.name != "timeout") logError(err)
+      this.setState({ errorMessage: err.message })
     }
-    this.setState({isModalVisible: false})
-  }
-  
-  itemRenderer = ({ item }) => {
-    return (
-      <UserSnippetListElement 
-      snippet={item} 
-      onPress={null}/>
-    );
+    this.setState({ isModalVisible: false })
   }
 
-  timeLeftRenderer = (time) => {
-    let string = ""
-    string += time.h ? `${time.h} hours ` : ""
-    string += time.m ? `${time.m} minutes ` : ""
-    return(
-        <Text style = {{fontSize: 16, marginTop: 8}}>Starts in {string}</Text>
+  itemRenderer = ({ item }) => {
+    return (
+      <UserSnippetListElement
+        snippet={item}
+        onPress={null} />
     );
   }
 
@@ -229,7 +225,7 @@ export default class BroadcastViewer extends React.Component {
     let geolocation = this.state.broadcastData.geolocation
     let pinTitle = `${this.broadcastSnippet.owner.username}'s planned location`
     let url = ""
-    if (Platform.OS == "android"){
+    if (Platform.OS == "android") {
       url = `geo:0,0?q=${geolocation.latitude},${geolocation.longitude}(${pinTitle})`
     } else {
       url = `http://maps.apple.com/?ll=${geolocation.latitude},${geolocation.longitude}`

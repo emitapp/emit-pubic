@@ -1,117 +1,167 @@
-import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
+import functions from '@react-native-firebase/functions';
 import React from 'react';
-import { Linking, StyleSheet, View } from 'react-native';
-import { Button, Text } from 'react-native-elements';
-import EntypoIcon from 'react-native-vector-icons/Entypo';
+import { Linking, Platform, View } from 'react-native';
+import { Button, Divider, Text } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/Entypo';
 import AutolinkText from 'reusables/AutolinkText';
 import LockNotice from 'reusables/BroadcastLockNotice';
-import CountdownComponent from 'reusables/CountdownComponent';
-import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import ErrorMessageText from 'reusables/ErrorMessageText';
+import FlareTimeStatus from 'reusables/FlareTimeStatus';
 import { UserSnippetListElement } from 'reusables/ListElements';
-import { DefaultLoadingModal } from 'reusables/LoadingComponents';
+import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/LoadingComponents';
+import ProfilePicDisplayer, { ProfilePicList } from 'reusables/ProfilePicComponents';
 import S from "styling";
-import { epochToDateString } from 'utils/helpers';
+import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
+import { cloudFunctionStatuses, responderStatuses } from 'utils/serverValues';
 
+
+/**
+ * Class for viewing info about a broadcast (owner side).
+ * Only prop used is for navigation.
+ */
 export default class ResponsesViewer extends React.Component {
 
   constructor(props) {
     super(props);
-    this.broadcastData = this.props.navigation.getParam('broadcast', { uid: " " })
-    this.respondersListPath = `activeBroadcasts/${auth().currentUser.uid}/responders/${this.broadcastData.uid}`
-
     this.state = {
+      attendees: [],
       errorMessage: null,
-      responseStatusDeltas: {},
       isModalVisible: false,
+      showConfirmed: false
     }
+
+    this.broadcastSnippet = this.props.navigation.getParam('broadcast', null)
+  }
+
+  componentDidMount = () => {
+    if (!this.broadcastSnippet) return
+    database()
+      .ref(`/activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)
+      .on('value', snap => this.updateAttendees(snap.val()))
+  }
+
+  componentWillUnmount = () => {
+    if (!this.broadcastSnippet) return
+    database()
+      .ref(`/activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)
+      .off()
   }
 
   render() {
-    return (
-      <View style={{ ...S.styles.containerFlexStart, alignItems: "flex-start" }}>
-        <DefaultLoadingModal isVisible={this.state.isModalVisible} />
+    if (!this.broadcastSnippet) return (<TimeoutLoadingComponent hasTimedOut={false} retryFunction={() => null} />)
 
+    return (
+      <View style={{ ...S.styles.containerFlexStart, alignItems: "flex-start", marginHorizontal: 16 }}>
+
+        <DefaultLoadingModal isVisible={this.state.isModalVisible} />
         <ErrorMessageText message={this.state.errorMessage} />
 
-        <View style={{ marginLeft: 16, marginBottom: 8 }}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            {this.broadcastData.geolocation &&
-              <Button
-                icon={<EntypoIcon name="location-pin" size={20} color="white" />}
-                onPress={this.openLocationOnMap}
-                containerStyle={{ marginRight: 8, marginLeft: 0 }}
-              />
-            }
-            <Text style={{ fontSize: 18 }}>{this.broadcastData.location}</Text>
-          </View>
-          <CountdownComponent deadLine={this.broadcastData.deathTimestamp} renderer={this.timeLeftRenderer} />
-          <Text>Death Time: {epochToDateString(this.broadcastData.deathTimestamp)}</Text>
+        <View style={{ width: "100%" }}>
 
-          {this.broadcastData.locked &&
-            <LockNotice message={"This broadcast has react the response limit you set. It won't receive any more responses."} />
+          <View style={{ alignItems: "center", marginBottom: 25, marginTop: 25 }}>
+            <View style={{ flexDirection: "row" }}>
+              <View style={{ alignItems: "center", justifyContent: "center", marginTop: -16, marginBottom: 8, marginRight: 8 }}>
+                {this.broadcastSnippet.emoji ? <Text style={{ fontSize: 50 }}>{this.broadcastSnippet.emoji}</Text> : <Text style={{ fontSize: 50 }}>🍲</Text>}
+              </View>
+            </View>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+              <View style={{ justifyContent: "center" }}>
+                <ProfilePicDisplayer diameter={32} uid={this.broadcastSnippet.owner.uid} />
+              </View>
+              <Text style={{ marginLeft: 4, marginBottom: 8, color: "#3F83F9" }}>{this.broadcastSnippet.owner.displayName}</Text>
+            </View>
+
+            <FlareTimeStatus item={this.broadcastSnippet} />
+          </View>
+
+          <Divider style={{ marginBottom: 8 }} />
+
+          {this.broadcastSnippet.location != undefined &&
+            <View>
+              <Text style={{ fontSize: 24, marginLeft: 4, color: "grey", marginBottom: 8 }}>Location</Text>
+              <Text style={{ fontSize: 18, marginLeft: 4 }}>{this.broadcastSnippet.location}</Text>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                {this.broadcastSnippet.geolocation &&
+                  <Button
+                    icon={<Icon name="location-pin" size={20} color="white" />}
+                    onPress={this.openLocationOnMap}
+                    containerStyle={{ marginRight: 8, marginLeft: 0 }}
+                  />}
+              </View>
+            </View>
           }
 
-          {this.broadcastData.note != undefined &&
-            <AutolinkText style={styles.noteStyle}>
-              {this.broadcastData.note}
-            </AutolinkText>
+          {this.broadcastSnippet.note != undefined &&
+            <View>
+              <Text style={{ marginTop: 8, fontSize: 24, marginLeft: 4, color: "grey" }}>
+                Note
+                </Text>
+              <AutolinkText style={{ marginTop: 8, fontSize: 16, marginLeft: 4 }}>{this.broadcastSnippet.note}</AutolinkText>
+            </View>
           }
         </View>
 
-        <DynamicInfiniteScroll
-          renderItem={this.itemRenderer}
-          generation={this.state.searchGeneration}
-          dbref={database().ref(this.respondersListPath)}
-          emptyStateComponent = {<Text style = {{alignSelf: "center"}}> Nothing to see here </Text>}
-        />
+        {(this.broadcastSnippet && this.broadcastSnippet.locked) &&
+          <LockNotice message={"This broadcast has react the response limit it's creator set. It won't receive any more responses."} />
+        }
+
+        {this.broadcastSnippet &&
+          <View >
+            <Text style={{ marginTop: 8, fontSize: 24, marginLeft: 4, marginBottom: 4, color: "grey" }}>
+              Who's In
+            </Text>
+            <Text style={{ alignSelf: "center", marginLeft: 4, marginBottom: 4 }}>{this.broadcastSnippet.totalConfirmations} user(s) are in!</Text>
+            <View style={{ height: 36 }}>
+              {this.state.attendees.length > 0 &&
+                <ProfilePicList
+                  uids={this.state.attendees}
+                  diameter={36}
+                  style={{ marginLeft: 0, marginRight: 2 }} />}
+            </View>
+          </View>
+        }
+
+        <Button
+          title="Chat"
+          //TODO: Would a deep copy of this.broadcastSnippet be a good idea? Probably
+          //Will think about later
+          onPress={() => this.props.navigation.navigate("ChatScreen", { broadcast: this.broadcastSnippet })}
+          containerStyle={{ alignSelf: "center" }} />
       </View>
     )
+  }
+  /**
+   * Method to update the list of attendees with
+   * whatever data comes from the database call
+   * @param {*} data, a dictionary, the result of snapshot.val()
+   */
+  updateAttendees = (data) => {
+    var attendeesNew = []
+    for (var id in data) {
+      attendeesNew.push(id)
+    }
+    this.setState({ attendees: attendeesNew })
   }
 
   itemRenderer = ({ item }) => {
     return (
-      <UserSnippetListElement snippet={item} style={{ flex: 1 }} />
-    )
-  }
-
-
-
-  timeLeftRenderer = (time) => {
-    let string = ""
-    string += time.h ? `${time.h} hours, ` : ""
-    string += time.m ? `${time.m} minutes, ` : ""
-    string += time.s ? `${time.s} seconds` : ""
-    return (
-      <Text style={{ fontSize: 18, marginTop: 8 }}>in {string}</Text>
+      <UserSnippetListElement
+        snippet={item}
+        onPress={null} />
     );
   }
 
   openLocationOnMap = () => {
-    let geolocation = this.broadcastData.geolocation
-    let pinTitle = `Your planned location`
+    let geolocation = this.state.this.broadcastSnippet.geolocation
+    let pinTitle = `${this.broadcastSnippet.owner.username}'s planned location`
     let url = ""
     if (Platform.OS == "android") {
-      url = `geo:${geolocation.latitude},${geolocation.longitude}?q=${geolocation.latitude},${geolocation.longitude}(${pinTitle})`
-    }
-    else {
+      url = `geo:0,0?q=${geolocation.latitude},${geolocation.longitude}(${pinTitle})`
+    } else {
       url = `http://maps.apple.com/?ll=${geolocation.latitude},${geolocation.longitude}`
       url += `&q=${encodeURIComponent(pinTitle)}`
     }
     Linking.openURL(url)
   }
 }
-
-const styles = StyleSheet.create({
-  noteStyle: {
-    fontStyle: "italic",
-    marginTop: 8,
-    fontSize: 18,
-    color: "grey",
-    marginLeft: 4,
-    borderLeftColor: "grey",
-    borderLeftWidth: 2,
-    paddingLeft: 8
-  }
-})

@@ -1,17 +1,17 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { Image, TouchableOpacity, View } from 'react-native';
-import { Text, Button } from 'react-native-elements';
+import { Image, Pressable, TouchableOpacity, View } from 'react-native';
+import { Button, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import CountdownComponent from 'reusables/CountdownComponent';
+import Ionicon from 'react-native-vector-icons/Ionicons';
 import EmptyState from 'reusables/EmptyState';
 import ErrorMessageText from 'reusables/ErrorMessageText';
+import FlareTimeStatus from 'reusables/FlareTimeStatus';
 import SectionInfiniteScroll from 'reusables/SectionInfiniteScroll';
 import S from 'styling';
-import { epochToDateString } from 'utils/helpers';
 import FeedElement from '../FeedSection/FeedElement';
-import { MinorActionButton, PillButton } from 'reusables/ReusableButtons';
+
 
 export default class ActiveBroadcasts extends React.Component {
 
@@ -35,8 +35,8 @@ export default class ActiveBroadcasts extends React.Component {
             { ref: database().ref(`/feeds/${auth().currentUser.uid}`), title: this.secondSectionTitle }
           ]}
           orderBy={[{ value: "deathTimestamp" }, { value: "status" }]}
-          startingPoint = {[null, "confirmed"]}
-          endingPoint = {[null, "confirmed"]}
+          startingPoint={[null, "confirmed"]}
+          endingPoint={[null, "confirmed"]}
           emptyStateComponent={
             <EmptyState
               image={
@@ -47,11 +47,11 @@ export default class ActiveBroadcasts extends React.Component {
               title="Pretty chill day, huh?"
               message="Flares you make and join will appear here"
             >
-              <Button 
-                title = "Send a new Flare" 
+              <Button
+                title="Send a new Flare"
                 onPress={() => this.props.navigation.navigate('NewBroadcastForm', { needUserConfirmation: true })}
-                buttonStyle = {{borderWidth: 2, width: 150, height: 36, marginTop: 22}}
-                titleStyle = {{ fontSize: 13}}/>
+                buttonStyle={{ borderWidth: 2, width: 150, height: 36, marginTop: 22 }}
+                titleStyle={{ fontSize: 13 }} />
             </EmptyState>
           }
         />
@@ -66,15 +66,27 @@ export default class ActiveBroadcasts extends React.Component {
           style={S.styles.listElement}
           onPress={() => this.props.navigation.navigate("ResponsesScreen", { broadcast: item })}>
           <View style={{ flexDirection: "column", flex: 1 }}>
-            <Text style={{ fontSize: 18, fontWeight: "bold" }}>{item.location}</Text>
-            <Text>{epochToDateString(item.deathTimestamp)}</Text>
-            <CountdownComponent
-              deadLine={item.deathTimestamp}
-              renderer={this.timeLeftRenderer}
-            />
-            <Text style={{ marginTop: 8 }}>{item.totalConfirmations} confirmations</Text>
+
+            <View style={{ flexDirection: "row" }}>
+              <View style={{ flexDirection: "row", flex: 1 }}>
+                <Text style={{ fontSize: 50, marginHorizontal: 8 }}>{item.emoji}</Text>
+                <View style={{ justifyContent: "center" }}>
+                  <Text style={{ fontSize: 20 }}>{item.activity}</Text>
+                  <Text style={{ fontSize: 18 }}>{item.totalConfirmations} people are in</Text>
+                </View>
+              </View>
+
+              <View>
+                <FlareTimeStatus item = {item} />
+                <Pressable onPress={() => this.props.navigation.navigate("ChatScreen", { broadcast: item })}>
+                  <Ionicon name="md-chatbubbles" color="grey" size={40} style={{ marginHorizontal: 8 }} />
+                </Pressable>
+              </View>
+
+            </View>
           </View>
 
+          <Text style={{ fontSize: 18, fontWeight: "bold" }}>{item.location}</Text>
           {item.locked && <Icon name="lock" color="grey" size={24} style={{ marginHorizontal: 8 }} />}
         </TouchableOpacity>
       );
@@ -85,19 +97,5 @@ export default class ActiveBroadcasts extends React.Component {
           item={item} />
       )
     }
-  }
-
-  timeLeftRenderer = (time) => {
-    let string = ""
-    string += time.h ? `${time.h} hours, ` : ""
-    string += time.m ? `${time.m} minutes, ` : ""
-    string += time.s ? `${time.s} seconds` : ""
-    return (
-      <View>
-        <Text>
-          {string}
-        </Text>
-      </View>
-    );
   }
 }

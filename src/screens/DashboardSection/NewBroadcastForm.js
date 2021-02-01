@@ -313,8 +313,6 @@ class NewBroadcastForm extends React.Component {
       if (this.state.note)
         params.note = this.state.note
 
-      console.log(params)
-
       const response = await timedPromise(creationFunction(params), LONG_TIMEOUT);
       if (response.data.status === cloudFunctionStatuses.OK) {
         this.props.navigation.state.params.needUserConfirmation = false;

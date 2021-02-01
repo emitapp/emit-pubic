@@ -1,14 +1,12 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { View, Image} from 'react-native';
+import { Image, View } from 'react-native';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
-import S from 'styling';
-import EmptyState from 'reusables/EmptyState'
-import CountdownComponent from 'reusables/CountdownComponent'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import EmptyState from 'reusables/EmptyState';
 import ErrorMessageText from 'reusables/ErrorMessageText';
-import FeedElement from "./FeedElement"; 
+import S from 'styling';
+import FeedElement from "./FeedElement";
 
 export default class Feed extends React.Component {
 
