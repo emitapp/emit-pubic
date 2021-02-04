@@ -14,6 +14,7 @@ import { logError, LONG_TIMEOUT, timedPromise, isOnlyWhitespace } from 'utils/he
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import { cloudFunctionStatuses, MAX_BROADCAST_NOTE_LENGTH } from 'utils/serverValues'
 import ErrorMessageText from 'reusables/ErrorMessageText';
+import SkypeRoomLinkGetter from 'reusables/SkypeRoomLinkGetter';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { ProfilePicList } from 'reusables/ProfilePicComponents';
 
@@ -44,7 +45,8 @@ class NewBroadcastForm extends React.Component {
       customMaxResponders: false,
       maxResponders: "",
       isModalVisible: false,
-      errorMessage: null
+      errorMessage: null,
+      isSkypeModalVisible: false
     }
   }
 
@@ -66,6 +68,16 @@ class NewBroadcastForm extends React.Component {
       <ThemeConsumer>
         {({ theme }) => (
           <MainLinearGradient theme={theme}>
+            <SkypeRoomLinkGetter
+              isVisible={this.state.isSkypeModalVisible}
+              onCancel={() => this.setState({ isSkypeModalVisible: false })}
+              onLinkReceived={(link) => {
+                let note = this.state.note
+                if (note) note += "\n"
+                note += "Video Conferencing Room (no account needed!): " + link
+                this.setState({ note, isSkypeModalVisible: false })
+              }} />
+
             <DefaultLoadingModal isVisible={this.state.isModalVisible} />
             <ScrollView
               style={{ width: "100%", flex: 1 }}
@@ -215,6 +227,13 @@ class NewBroadcastForm extends React.Component {
               }
 
               <Button
+                title={`Attach Video Conferencing Link`}
+                onPress={() => this.setState({ isSkypeModalVisible: true })}
+                titleStyle={{ color: theme.colors.primary }}
+                buttonStyle = {{backgroundColor: "white"}}  
+              />
+
+              <Button
                 title={`Show ${this.state.showingMore ? "less" : "more"}`}
                 type="clear"
                 onPress={() => this.setState({ showingMore: !this.state.showingMore })}
@@ -251,8 +270,8 @@ class NewBroadcastForm extends React.Component {
       this.setState({ isModalVisible: true, errorMessage: null })
       const uid = auth().currentUser.uid
 
-      if (isOnlyWhitespace(this.state.passableBroadcastInfo.activitySelected) || 
-          isOnlyWhitespace(this.state.passableBroadcastInfo.emojiSelected)) {
+      if (isOnlyWhitespace(this.state.passableBroadcastInfo.activitySelected) ||
+        isOnlyWhitespace(this.state.passableBroadcastInfo.emojiSelected)) {
         this.setState({ errorMessage: "Invalid activity", isModalVisible: false })
         return
       }
