@@ -41,7 +41,8 @@ export default class NotificationSettings extends React.Component {
       onNewBroadcastResponse: true,
       onNewFriend: true,
       onNewFriendRequest: true,
-      onAddedToGroup: true
+      onAddedToGroup: true,
+      onChat: true,
     }
   }
 
@@ -102,12 +103,20 @@ export default class NotificationSettings extends React.Component {
               onIconPress = {() => this.setState({onAddedToGroup: !this.state.onAddedToGroup})}
             />
             <CheckBox
-              title={`Someone responds to one of your ${`\n`} broadcasts`}
+              title={`Someone responds to one of your ${`\n`} flares`}
               fontFamily = "NunitoSans-Regular"
               textStyle = {{fontSize: 16}}
               checked = {this.state.onNewBroadcastResponse}
               containerStyle = {{alignSelf: "flex-start", marginLeft: 24, padding: 0, marginBottom: 16}}
               onIconPress = {() => this.setState({onNewBroadcastResponse: !this.state.onNewBroadcastResponse})}
+            />
+            <CheckBox
+              title={`When you get a chat message`}
+              fontFamily = "NunitoSans-Regular"
+              textStyle = {{fontSize: 16}}
+              checked = {this.state.onChat}
+              containerStyle = {{alignSelf: "flex-start", marginLeft: 24, padding: 0, marginBottom: 16}}
+              onIconPress = {() => this.setState({onChat: !this.state.onChat})}
             />
           </CollapsibleView>
 
@@ -115,7 +124,7 @@ export default class NotificationSettings extends React.Component {
 
           <CollapsibleView 
             style = {{ marginHorizontal: 8}}
-            title = "Get push notifications if you get broadcasts from..."
+            title = "Get push notifications if you get flares from..."
             flexOnExpand>
 
             <Text style = {{marginHorizontal: 8, textAlign: "center"}}>
@@ -152,7 +161,7 @@ export default class NotificationSettings extends React.Component {
         <BannerButton
             onPress={this.saveSettings}
             title="CONFIRM CHANGES"
-            iconName = {S.strings.add}
+            iconName = {S.strings.confirm}
         />
       </View>
     )
@@ -170,7 +179,8 @@ export default class NotificationSettings extends React.Component {
         onNewBroadcastResponse: data.notificationPrefs.onNewBroadcastResponse,
         onNewFriend: data.notificationPrefs.onNewFriend,
         onNewFriendRequest: data.notificationPrefs.onNewFriendRequest,
-        onAddedToGroup: data.notificationPrefs.onAddedToGroup     
+        onAddedToGroup: data.notificationPrefs.onAddedToGroup,
+        onChat: data.notificationPrefs.onChat     
       })
     }
   }
@@ -185,16 +195,17 @@ export default class NotificationSettings extends React.Component {
     try{
       const {
         onBroadcastFrom, onNewBroadcastResponse, onNewFriend,
-        onNewFriendRequest, onAddedToGroup
+        onNewFriendRequest, onAddedToGroup, onChat
       } = this.state
       const saveFunction = functions().httpsCallable('updateNotificationPrefs');
       const response = await timedPromise(saveFunction({
-        onBroadcastFrom, onNewFriend, onNewFriendRequest, onNewBroadcastResponse, onAddedToGroup
+        onBroadcastFrom, onNewFriend, onNewFriendRequest, onNewBroadcastResponse, onAddedToGroup,
+        onChat
       }), LONG_TIMEOUT);
 
       if (response.data.status !== cloudFunctionStatuses.OK){
           this.setState({errorMessage: response.data.message})
-          logError(new Error("Problematic updateNotificationPrefs fucntion response: " + response.data.message))
+          logError(new Error("Problematic updateNotificationPrefs function response: " + response.data.message))
       }
     }catch(err){
       if (err.name != "timeout") logError(err)  

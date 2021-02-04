@@ -1,9 +1,10 @@
 import MaskedView from '@react-native-community/masked-view';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
+import firestore from '@react-native-firebase/firestore';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View, Switch } from 'react-native';
 import { Button, Overlay, Text, ThemeConsumer } from 'react-native-elements';
 import { TimeoutLoadingComponent } from 'reusables/LoadingComponents';
 import { ProfilePicRaw } from 'reusables/ProfilePicComponents';
@@ -41,20 +42,26 @@ class FriendReqDialogue extends React.Component {
         }
 
         this.state = {
+            errorMessage: null,
             gettingInitialData: true, //Getting initial information from Firebase
             waitingForFuncResponse: false,  //Waiting for a response from the Firebase Cloud Function
             userInfo,
             timedOut: false, //Timed out during any of the operations 
             extraMessage: false,
             option: "", //Which cloud function the user can user for this other user
-            userSocials: null
+            userSocials: null,
+            flareNotificationToggle: false
         }
     }
-
 
     componentDidMount() {
         this.getInitialData();
         this.getSocialInfo();
+        this.getFlareNotificationInfo();
+    }
+
+    componentWillUnmount() {
+        if (this.unsubscribeFunction) this.unsubscribeFunction()
     }
 
     render() {
@@ -107,6 +114,17 @@ class FriendReqDialogue extends React.Component {
                         {this.displayOptionsLoading()}
 
                         {this.displayActionsPanel(theme)}
+
+
+                        <View style={{ alignItems: "center" }}>
+                            {this.state.option === actionOptions.REMOVE ?
+                                <Text>Receive Flare Notifications?</Text> :
+                                <Text>Receive Flare Notifications? (will be applied if they accept friend request)</Text>
+                            }
+                            <Switch value={this.state.flareNotificationToggle}
+                                onValueChange={(val) => this.updateNotificationPref(val)}
+                            />
+                        </View>
 
 
                         {userSocials !== null &&
@@ -189,6 +207,58 @@ class FriendReqDialogue extends React.Component {
         }
     }
 
+    /**
+     * Function to update flare notification preferences for a
+     * specific user.
+     * Since users don't have to be friends to accept this (its more conventient), this means that
+     * users can end up having some uids of non-friends (or to-be friends) in thier firestore fcm doc
+     */
+    updateNotificationPref = async (value) => {
+        this.setState({ flareNotificationToggle: value })
+        try {
+            const subscriptionFunc = functions().httpsCallable('changeFlareSubscription');
+            const id = this.userUid
+            const toggle = value
+            console.log(toggle)
+            const response = await timedPromise(
+                subscriptionFunc({ onBroadcastFrom: id, addUser: toggle }), 
+                LONG_TIMEOUT);
+
+            if (response.data.status !== cloudFunctionStatuses.OK) {
+                this.setState({ errorMessage: response.data.message })
+                logError(new Error("Problematic changeFlareSubscription function response: " + response.data.message))
+            }
+        } catch (err) {
+            if (err.name != "timeout") logError(err)
+            this.setState({ errorMessage: err.message })
+        }
+    }
+
+    /**
+     * Function to get initial notification info for a friend
+     * in order to set the toggle.
+     */
+    getFlareNotificationInfo() {
+        const onDataRetrievalError = (error) => {
+            this.setState({ errorMessage: error.message })
+            logError(error)
+        }
+
+        const onDataRetrieved = (docSnapshot) => {
+            if (!docSnapshot.exists) {
+                this.setState({ errorMessage: "Your notification data doesn't exists on our servers" })
+            } else {
+                const data = docSnapshot.data().notificationPrefs.onBroadcastFrom;
+                if (data.find(x => x  == this.userUid))
+                this.setState({ flareNotificationToggle: true })
+            }
+        }
+
+        this.unsubscribeFunction = firestore()
+            .collection('fcmData').doc(auth().currentUser.uid)
+            .onSnapshot(onDataRetrieved, onDataRetrievalError);
+    }
+
     getSocialInfo = async () => {
         try {
             const socialsRef = database().ref(`/userSnippetExtras/${this.userUid}`);
@@ -241,7 +311,6 @@ class FriendReqDialogue extends React.Component {
                     return
                 }
             }
-
 
             //Check if he's already a friend...
             const friendRef = database().ref(`/userFriendGroupings/${uid}/_masterUIDs/${this.userUid}`);
@@ -392,7 +461,7 @@ export default class FriendReqModal extends React.Component {
                 style={{ justifyContent: "center", alignItems: "center" }}
                 onRequestClose={this.attemptClose}
                 onBackdropPress={this.attemptClose}
-                overlayStyle = {{width: ModalWidth}}
+                overlayStyle={{ width: ModalWidth }}
             >
                 <FriendReqDialogue
                     selectedUserData={this.state.selectedUser}
@@ -428,7 +497,7 @@ const actionOptions = {
     SENDREQ: 'Send Friend Request',
     ACCEPTREQ: 'Accept Friend Request',
     //This one is paired with ACCEPTREQ so it's treated pretty different from the other options
-    REJECTREQ: 'Delete Friend Request', 
+    REJECTREQ: 'Delete Friend Request',
     CANCELREQ: 'Cancel Friend Request',
     REMOVE: 'Remove Friend',
     NONE: "Nothing"
