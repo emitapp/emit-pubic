@@ -14,7 +14,9 @@ import NewBroadcastFormLocation from './NewBroadcastFormLocation';
 import NewBroadcastFormRecepients from './NewBroadcastFormRecepients';
 import NewBroadcastFormTime from './NewBroadcastFormTime';
 import ResponsesScreen from './ResponsesViewer';
-import SavedLocations from './SavedLocations';
+import SavedLocations from './SavedLocations'
+import ChatScreen from '../Chat/ChatScreen'
+import BroadcastViewer from '../FeedSection/BroadcastViewer';
 
 const Navigator = createStackNavigator(
   {
@@ -29,6 +31,8 @@ const Navigator = createStackNavigator(
     SavedLocations,
     GroupMemberAdder,
     UserFriendSearch,
+    ChatScreen,
+    BroadcastViewer,
     NewBroadcastFormDuration
   },
   {

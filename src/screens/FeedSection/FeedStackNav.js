@@ -1,16 +1,14 @@
 import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
-import BroadcastViewer from './BroadcastViewer';
 import Feed from './Feed';
 import Header from 'reusables/Header'
-import ChatScreen from '../Chat/ChatScreen'
+import BroadcastViewer from './BroadcastViewer';
 
 
 const Navigator = createStackNavigator(
   {
     Feed,
-    BroadcastViewer,
-    ChatScreen
+    BroadcastViewer
   },
   {
     initialRouteName: 'Feed',

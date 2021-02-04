@@ -251,6 +251,7 @@ export default class SectionInfiniteScroll extends React.Component {
             }
         } else {
             const { style, ...otherProps } = this.props
+            
             return (
                 <View style={style}>
                     <ErrorMessageText message={this.errorMessage} />

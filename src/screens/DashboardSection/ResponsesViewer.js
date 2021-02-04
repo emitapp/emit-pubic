@@ -49,6 +49,8 @@ export default class ResponsesViewer extends React.Component {
   }
 
   render() {
+    // TODO: ResponsesViewer shares many similarities with BroadcastViewer - they should eventually be
+    // replaced by an abstracted reusableComponent that can function in place of both
     if (!this.broadcastSnippet) return (<TimeoutLoadingComponent hasTimedOut={false} retryFunction={() => null} />)
 
     return (
@@ -103,7 +105,7 @@ export default class ResponsesViewer extends React.Component {
         </View>
 
         {(this.broadcastSnippet && this.broadcastSnippet.locked) &&
-          <LockNotice message={"This broadcast has react the response limit it's creator set. It won't receive any more responses."} />
+          <LockNotice message={"This broadcast has reached the response limit it's creator set. It won't receive any more responses."} />
         }
 
         {this.broadcastSnippet &&

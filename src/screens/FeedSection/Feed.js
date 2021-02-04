@@ -5,8 +5,9 @@ import { Image, View } from 'react-native';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import EmptyState from 'reusables/EmptyState';
 import ErrorMessageText from 'reusables/ErrorMessageText';
+import FeedElement from "./FeedElement"; 
+import { responderStatuses } from 'utils/serverValues';
 import S from 'styling';
-import FeedElement from "./FeedElement";
 
 export default class Feed extends React.Component {
 
@@ -22,7 +23,7 @@ export default class Feed extends React.Component {
           <DynamicInfiniteScroll
             renderItem = {this.itemRenderer}
             generation = {0}
-            
+            filter = {item => item.status != responderStatuses.CONFIRMED}
             dbref = {database().ref(`/feeds/${auth().currentUser.uid}`)}
             emptyStateComponent = {
               <EmptyState 
@@ -41,9 +42,6 @@ export default class Feed extends React.Component {
   }
 
   itemRenderer = ({item}) => {
-    //Don't show flares you've responded to 
-    //TODO: Improve this later for flares you entered and later left
-    if (item.status) return null; 
     return (
      <FeedElement
        navigation={this.props.navigation}

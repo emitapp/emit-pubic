@@ -24,6 +24,7 @@ import {logError} from 'utils/helpers'
 //emptyStateComponent: Will be rendered when the list is empty 
 // chunkSize: Size of chunks to get from firebase rtdb (default 10)
 // errorHandler: what the component should do upon facing SDK errors (not timeout erros tho, those are handled by the compenent)
+// Filter: A function by which the list will be filtered
 
 //Also note that this compenent doesn't store lots of the variables it uses
 //in the state because this.setState() wouldn't update them immediately
@@ -191,7 +192,7 @@ export default class DymanicInfiniteScroll extends React.Component {
                 <View style = {style}>
                     <ErrorMessageText message = {this.errorMessage} />
                     <FlatList
-                        data={this.listData}
+                        data={this.props.filter ? this.listData.filter(this.props.filter) : this.listData}
                         keyExtractor={item => item.uid}
                         ListFooterComponent={this.renderFooter}
                         onEndReached={this.retrieveMoreData}

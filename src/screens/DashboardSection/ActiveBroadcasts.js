@@ -15,11 +15,16 @@ import FeedElement from '../FeedSection/FeedElement';
 
 export default class ActiveBroadcasts extends React.Component {
 
-  state = {
-    errorMessage: null,
-  }
-  firstSectionTitle = "SENT"
-  secondSectionTitle = "JOINED"
+  constructor(props){
+    super(props)
+    this.firstSectionTitle = "SENT"
+    this.secondSectionTitle = "JOINED"
+    this.generation = 0;
+    this.state = {
+      rerender: 0,
+      errorMessage: null,
+    }
+}
 
   render() {
     return (
@@ -29,7 +34,7 @@ export default class ActiveBroadcasts extends React.Component {
 
         <SectionInfiniteScroll
           renderItem={this.itemRenderer}
-          generation={0}
+          generation={this.state.rerender}
           dbref={[
             { ref: database().ref(`/activeBroadcasts/${auth().currentUser.uid}/public`), title: this.firstSectionTitle },
             { ref: database().ref(`/feeds/${auth().currentUser.uid}`), title: this.secondSectionTitle }
@@ -94,7 +99,10 @@ export default class ActiveBroadcasts extends React.Component {
       return (
         <FeedElement
           navigation={this.props.navigation}
-          item={item} />
+          item={item}
+          // Triggers a rerender by incrementing generation
+          // TODO: Switch this to redux eventually
+          rerenderCallback={() => this.setState({rerender: this.state.rerender + 1})} />
       )
     }
   }

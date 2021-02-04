@@ -116,7 +116,7 @@ export default class BroadcastViewer extends React.Component {
         }
 
         {(broadcastData && broadcastData.locked) &&
-          <LockNotice message={"This broadcast has react the response limit it's creator set. It won't receive any more responses."} />
+          <LockNotice message={"This broadcast has reached the response limit it's creator set. It won't receive any more responses."} />
         }
 
         {broadcastData &&
@@ -210,7 +210,15 @@ export default class BroadcastViewer extends React.Component {
       if (err.name != "timeout") logError(err)
       this.setState({ errorMessage: err.message })
     }
-    this.setState({ isModalVisible: false })
+    this.setState({isModalVisible: false})
+
+    // TODO: very hacky workaround for ref.on not updating properly. Fix this after investigating.
+    database()
+    .ref(`/activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)
+    .once('value').then(snap => this.updateAttendees(snap.val()))
+
+    const rerender = this.props.navigation.getParam('rerenderCallback');
+    rerender();
   }
 
   itemRenderer = ({ item }) => {

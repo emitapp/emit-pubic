@@ -41,11 +41,11 @@ export default class FeedElement extends React.Component {
   }
 
   render() {
-    const { item } = this.props
+    const { item, rerenderCallback } = this.props
     return (
       <TouchableOpacity
         style={{ marginVertical: 8, marginLeft: 8 }}
-        onPress={() => this.props.navigation.navigate('BroadcastViewer', { broadcast: item })}>
+        onPress={() => this.props.navigation.navigate('BroadcastViewer', { broadcast: item, rerenderCallback: rerenderCallback })}>
 
         <View style={{ flexDirection: "row" }}>
 
