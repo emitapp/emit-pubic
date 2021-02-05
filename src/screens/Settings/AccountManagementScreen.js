@@ -172,6 +172,8 @@ export default class AccountManagementScreen extends React.Component {
       this.setState({dataRequestModalCondition: 'loading'})
       setTimeout(() => this.setState({dataRequestModalCondition: error ? "error" : "success"}), 2000)
       setTimeout(() => this.setState({dataRequestModalCondition: 'disabled'}), 4000)
+
+      //TODO: Look at
       ShowNotSupportedAlert()
       //const response = await timedPromise(functions().httpsCallable('requestAllData')(), LONG_TIMEOUT);
     }catch(err){
@@ -244,6 +246,11 @@ export default class AccountManagementScreen extends React.Component {
 
 
   deleteAccount = async () => {
+
+    //TODO: Ovbiously, this should be looked at
+    ShowNotSupportedAlert()
+    return;
+
     this.setState({isModalVisible: true, deleteAccountError: null})
     try{
       if (!this.state.oldEmail3 || !this.state.oldPass3){
