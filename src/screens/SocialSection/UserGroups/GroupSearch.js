@@ -107,6 +107,7 @@ class InviteCodeDialogue extends React.PureComponent {
     return (
       <View style={{ justifyContent: "center", alignItems: "center" }}>
         <ErrorMessageText message={this.state.message} />
+        <Text>Invite codes are not case sensitive</Text>
         <SearchBar
           placeholder="Enter Code"
           onChangeText={inviteCode => this.setState({ inviteCode })}
@@ -138,7 +139,7 @@ class InviteCodeDialogue extends React.PureComponent {
     try {
       this.setState({ message: null })
       const groupIdSnap = await database().ref("userGroupCodes").orderByValue().
-        equalTo(this.state.inviteCode).once("value");
+        equalTo(this.state.inviteCode.toLowerCase()).once("value");
 
       if (!groupIdSnap.exists()) {
         this.setState({ message: "Group doesn't exist!" })

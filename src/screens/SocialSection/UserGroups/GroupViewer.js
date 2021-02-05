@@ -74,7 +74,7 @@ export default class GroupScreen extends React.Component {
 
     database()
       .ref(`/userGroupCodes/${this.groupSnippet.uid}`)
-      .once("value", snap => this.setState({ inviteCode: snap.val() }))
+      .once("value", snap => this.setState({ inviteCode: snap.val().toUpperCase()}))
 
     if (shouldGoBack) {
       this.props.navigation.goBack()
@@ -236,6 +236,7 @@ export default class GroupScreen extends React.Component {
 
             <View style = {{marginTop : 8}}>
                 <Text>Invite Code: {this.state.inviteCode}</Text>
+                <Text>Invite codes are case insensitive</Text>
             </View>
 
             {this.state.showProfilePicChanger &&
