@@ -18,7 +18,10 @@ export default class Name extends React.Component {
         if (this.props.currentMessage.user.name !== this.props.user.name) {
             return (
                 <View style={[styles[this.props.position].container, this.props.containerStyle[this.props.position]]}>
-                    <Text style={[styles[this.props.position].text, this.props.textStyle[this.props.position]]}>
+                    <Text style={
+                        [styles[this.props.position].text, 
+                        this.props.textStyle[this.props.position],
+                        { color: 'black', textAlign: "left", fontSize: 12}]}>
                         {this.props.currentMessage.user.name}
                     </Text>
                 </View>
