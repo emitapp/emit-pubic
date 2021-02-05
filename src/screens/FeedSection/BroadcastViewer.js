@@ -4,6 +4,7 @@ import React from 'react';
 import { Linking, Platform, View } from 'react-native';
 import { Button, Divider, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Entypo';
+import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import AutolinkText from 'reusables/AutolinkText';
 import LockNotice from 'reusables/BroadcastLockNotice';
 import ErrorMessageText from 'reusables/ErrorMessageText';
@@ -12,7 +13,7 @@ import { UserSnippetListElement } from 'reusables/ListElements';
 import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/LoadingComponents';
 import ProfilePicDisplayer, { ProfilePicList } from 'reusables/ProfilePicComponents';
 import S from "styling";
-import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
+import { logError, LONG_TIMEOUT, shareFlare, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, responderStatuses } from 'utils/serverValues';
 
 
@@ -66,6 +67,13 @@ export default class BroadcastViewer extends React.Component {
           <TimeoutLoadingComponent hasTimedOut={false} retryFunction={() => null} />
         }
 
+        <Button
+          icon={<AwesomeIcon name="share-square" size={30} color="black" />}
+          containerStyle={{ position: 'absolute', top: 8, left: 8 }}
+          onPress={() => shareFlare(this.broadcastSnippet)}
+          type="clear"
+        />
+
         {broadcastData &&
           <View style={{ width: "100%" }}>
 
@@ -83,7 +91,7 @@ export default class BroadcastViewer extends React.Component {
                 <Text style={{ marginLeft: 4, marginBottom: 8, color: "#3F83F9" }}>{this.broadcastSnippet.owner.displayName}</Text>
               </View>
 
-              <FlareTimeStatus item = {broadcastData} />
+              <FlareTimeStatus item={broadcastData} />
 
             </View>
 
@@ -210,12 +218,12 @@ export default class BroadcastViewer extends React.Component {
       if (err.name != "timeout") logError(err)
       this.setState({ errorMessage: err.message })
     }
-    this.setState({isModalVisible: false})
+    this.setState({ isModalVisible: false })
 
     // TODO: very hacky workaround for ref.on not updating properly. Fix this after investigating.
     database()
-    .ref(`/activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)
-    .once('value').then(snap => this.updateAttendees(snap.val()))
+      .ref(`/activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)
+      .once('value').then(snap => this.updateAttendees(snap.val()))
 
     const rerender = this.props.navigation.getParam('rerenderCallback');
     rerender();

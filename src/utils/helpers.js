@@ -44,10 +44,11 @@ export const isOnlyWhitespace = (str) => {
  * Converts epoch timestamps to date strings
  * @param {Number} epochMillis The epoch timestamp
  */
-export const epochToDateString = (epochMillis) =>
-{
-  let options = {hour: "2-digit", minute: "2-digit", timeZoneName: "short", 
-    day: "2-digit", month: "short", year: "numeric"}
+export const epochToDateString = (epochMillis) => {
+  let options = {
+    hour: "2-digit", minute: "2-digit", timeZoneName: "short",
+    day: "2-digit", month: "short", year: "numeric"
+  }
   return new Date(epochMillis).toLocaleString(undefined, options)
 }
 
@@ -63,7 +64,7 @@ import crashlytics from '@react-native-firebase/crashlytics';
 export const logError = (error, includeCrashlytics = true, extraLoggingInfo) => {
   if (extraLoggingInfo) console.log(extraLoggingInfo)
   console.log(error)
-  if (includeCrashlytics){
+  if (includeCrashlytics) {
     if (extraLoggingInfo) crashlytics().log(extraLoggingInfo)
     crashlytics().recordError(error)
   }
@@ -77,20 +78,20 @@ export const ASYNC_SETUP_KEY = "accountSetUp";
 
 
 import DeviceInfo from 'react-native-device-info';
-import {Platform} from 'react-native'
+import { Platform } from 'react-native'
 import codePush from 'react-native-code-push'
 /**
  * Gets the full versioning info of the app
  */
-export const getFullVersionInfo = async() => {
-  try{
+export const getFullVersionInfo = async () => {
+  try {
     let versionInfo = DeviceInfo.getApplicationName()
     versionInfo += ` ${DeviceInfo.getSystemName()} v${DeviceInfo.getVersion()} (Build No.${DeviceInfo.getBuildNumber()})`
     const codePushPackageInfo = await codePush.getUpdateMetadata()
     if (codePushPackageInfo) versionInfo += ` Codepush Package ${codePushPackageInfo.label}`
     else versionInfo += ` Using Base Binary`
     return versionInfo
-  }catch(err){
+  } catch (err) {
     logError(err)
     return "<Error Getting Versioning Info>"
   }
@@ -99,35 +100,65 @@ export const getFullVersionInfo = async() => {
 /**
  * Gets the full hardware info of the device
  */
-export const getFullHardwareInfo = async() => {
-  try{
+export const getFullHardwareInfo = async () => {
+  try {
     let hardwareInfo = ""
     hardwareInfo += `Manufacturer: ${await DeviceInfo.getManufacturer()}\n`
     hardwareInfo += `Model: ${DeviceInfo.getModel() || "unknown"}\n`
     hardwareInfo += `Device: ${DeviceInfo.getBrand()} ${DeviceInfo.getDeviceId()} (${DeviceInfo.getDeviceType()})\n`
-    if (Platform.OS === "android"){
+    if (Platform.OS === "android") {
       hardwareInfo += `Name: ${await DeviceInfo.getDevice()}\n`
       hardwareInfo += `Product: ${await DeviceInfo.getProduct()}\n`
       hardwareInfo += `Android API: ${await DeviceInfo.getApiLevel()}\n`
       hardwareInfo += `Hardware name (from kernel): ${await DeviceInfo.getHardware()}\n`
-    }else{
+    } else {
       hardwareInfo += `iOS: ${Platform.Version}\n`
     }
     hardwareInfo += `Airplane mode: ${await DeviceInfo.isAirplaneMode() ? "on" : "off"}\n`
     hardwareInfo += `System-wide location services enabled: ${await DeviceInfo.isLocationEnabled() ? "yes" : "no"}`
     return hardwareInfo;
-  }catch(err){
+  } catch (err) {
     logError(err)
     return "<Error Getting Hardware Info>"
   }
 }
 
-import {Alert} from 'react-native';
+import { Alert } from 'react-native';
 /**
  * Standard alert to show when something's not ready for use yet (or is broken due ot new developments)
  */
 export const ShowNotSupportedAlert = (customMessage = null) => {
   Alert.alert(
-    "Not yet, young whippersnapper 👴🏾", 
+    "Not yet, young whippersnapper 👴🏾",
     customMessage || "Either this feature is broken, or might break something, or hasn't been tested enough. Maybe try again when its ready.")
+}
+
+
+import { Share } from 'react-native';
+/**
+ * Allows users to share a flare using native UI
+ */
+export const shareFlare = (flare) => {
+  let message = ""
+  message += `Join ${flare.owner.displayName} ${flare.emoji} ${flare.activity}! \n`
+  message += `${flare.totalConfirmations} are currently in! \n`
+  message += `Start time: around ${epochToDateString(flare.startingTime)}. \n`
+  message += `Duration: about `
+
+  //Calculating duration real quick ...
+  let minutes = Math.ceil((flare.duration / (1000 * 60)) % 60)
+  let hours = Math.floor((flare.duration / (1000 * 60 * 60)) % 24)
+  if (minutes) message += `${minutes} minutes `
+  if (hours) message += `${hours} hours`
+  message += '\n'
+
+  if (flare.location){
+    message += `The owner added location information! \n ${flare.location} \n`
+    if (flare.geolocation) message += `Pin: ${flare.geolocation.latitude}, ${flare.geolocation.longitude} \n`
+  }
+
+  if (flare.note){
+    message += `\n ${flare.note}\n`
+  }
+  Share.share({ message }).catch(err => logError(err));
 }

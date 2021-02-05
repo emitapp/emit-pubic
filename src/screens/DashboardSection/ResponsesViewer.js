@@ -1,9 +1,9 @@
 import database from '@react-native-firebase/database';
-import functions from '@react-native-firebase/functions';
 import React from 'react';
 import { Linking, Platform, View } from 'react-native';
 import { Button, Divider, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Entypo';
+import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import AutolinkText from 'reusables/AutolinkText';
 import LockNotice from 'reusables/BroadcastLockNotice';
 import ErrorMessageText from 'reusables/ErrorMessageText';
@@ -12,8 +12,7 @@ import { UserSnippetListElement } from 'reusables/ListElements';
 import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/LoadingComponents';
 import ProfilePicDisplayer, { ProfilePicList } from 'reusables/ProfilePicComponents';
 import S from "styling";
-import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
-import { cloudFunctionStatuses, responderStatuses } from 'utils/serverValues';
+import { shareFlare } from 'utils/helpers';
 
 
 /**
@@ -58,6 +57,13 @@ export default class ResponsesViewer extends React.Component {
 
         <DefaultLoadingModal isVisible={this.state.isModalVisible} />
         <ErrorMessageText message={this.state.errorMessage} />
+
+        <Button
+          icon={<AwesomeIcon name="share-square" size={30} color="black" />}
+          containerStyle={{ position: 'absolute', top: 8, left: 8 }}
+          onPress={() => shareFlare(this.broadcastSnippet)}
+          type="clear"
+        />
 
         <View style={{ width: "100%" }}>
 
