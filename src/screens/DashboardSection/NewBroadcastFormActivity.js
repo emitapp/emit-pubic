@@ -1,7 +1,9 @@
 import { Picker } from 'emoji-mart-native'; //TODO: Not a fan of this, might change it
 import React from 'react';
-import { Pressable, SectionList, View } from 'react-native';
+import { Alert, Linking, Pressable, SectionList, View } from 'react-native';
 import { Overlay, SearchBar, Text, ThemeConsumer } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/Entypo';
+import AwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { ClearHeader } from 'reusables/Header';
 import { ActivityListElement } from 'reusables/ListElements';
 import MainLinearGradient from 'reusables/MainLinearGradient';
@@ -52,11 +54,11 @@ export default class NewBroadcastFormActivity extends React.Component {
                   <Picker
                     native={true}
                     onSelect={emoji => this.setState(
-                      {gettingCustom: false}, 
+                      { gettingCustom: false },
                       () => this.saveActivity(emoji.native, this.state.query.trim()))} />
                   <MinorActionButton
                     title="Close"
-                    onPress={() => {this.setState({ gettingCustom: false })}} />
+                    onPress={() => { this.setState({ gettingCustom: false }) }} />
                 </>
               </Overlay>
 
@@ -73,17 +75,11 @@ export default class NewBroadcastFormActivity extends React.Component {
                 keyExtractor={item => item.name + item.emoji}
                 renderItem={this.itemRenderer}
                 renderSectionHeader={({ section: { sectionName } }) => (
-                  <Text style={{ fontWeight: "bold", textAlign: "center", fontSize: 18 }}>{sectionName}</Text>
+                  <Text style={{ fontWeight: "bold", textAlign: "center", fontSize: 18, marginTop: 16 }}>
+                    {sectionName}
+                  </Text>
                 )}
-                ListHeaderComponent={this.state.query.trim() &&
-                  <Pressable
-                    style={{ alignItems: "center", backgroundColor: "grey", padding: 8 }}
-                    onPress={() => this.setState({ gettingCustom: true })}>
-                    <Text>
-                      Make custom activity
-                    </Text>
-                  </Pressable>
-                }
+                ListHeaderComponent={this.state.query.trim() && this.renderHeader()}
               />
               <View />
             </View>
@@ -94,8 +90,24 @@ export default class NewBroadcastFormActivity extends React.Component {
     )
   }
 
-  getEmojiForCustom = () => {
+  renderHeader = () => {
+    return (
+      <View>
+        <Pressable
+          style={{ alignItems: "center", backgroundColor: "lightgrey", padding: 8, flexDirection: "row", justifyContent: "center" }}
+          onPress={() => this.setState({ gettingCustom: true })}>
+          <Icon name="plus" size={30} color="black" />
+          <Text style={{ fontWeight: "bold" }}> Make custom activity </Text>
+        </Pressable>
+        <Pressable
+          style={{ alignItems: "center", backgroundColor: "white", padding: 8, flexDirection: "row", justifyContent: "center", borderColor: "lightgrey", borderWidth: 1 }}
+          onPress={this.goToSuggestionForm}>
+          <AwesomeIcon name="lightbulb-o" size={30} color="black" />
+          <Text style={{ fontWeight: "bold" }}> Suggest more activites! </Text>
+        </Pressable>
+      </View>
 
+    )
   }
 
   getFilteredSectionData = () => {
@@ -112,5 +124,12 @@ export default class NewBroadcastFormActivity extends React.Component {
     //Remove sections that now have 0 activities
     activities = activities.filter(section => section.data.length > 0)
     return activities
+  }
+
+  goToSuggestionForm = async () => {
+    const url = "https://forms.gle/4r75s9CHYDX8s6cGA"
+    const supported = await Linking.canOpenURL(url);
+    if (supported)  Linking.openURL(url);
+    else Alert.alert(`Don't know how to open this URL: ${url}`);
   }
 }

@@ -115,16 +115,17 @@ class FriendReqDialogue extends React.Component {
 
                         {this.displayActionsPanel(theme)}
 
-
-                        <View style={{ alignItems: "center" }}>
-                            {this.state.option === actionOptions.REMOVE ?
-                                <Text>Receive Flare Notifications?</Text> :
-                                <Text>Receive Flare Notifications? (will be applied if they accept friend request)</Text>
-                            }
-                            <Switch value={this.state.flareNotificationToggle}
-                                onValueChange={(val) => this.updateNotificationPref(val)}
-                            />
-                        </View>
+                        {(!this.state.gettingInitialData && this.state.option != actionOptions.NONE) &&
+                            <View style={{ alignItems: "center" }}>
+                                {this.state.option === actionOptions.REMOVE ?
+                                    <Text>Receive Flare Notifications?</Text> :
+                                    <Text>Receive Flare Notifications? (will be applied if they accept friend request)</Text>
+                                }
+                                <Switch value={this.state.flareNotificationToggle}
+                                    onValueChange={(val) => this.updateNotificationPref(val)}
+                                />
+                            </View>
+                        }
 
 
                         {userSocials !== null &&
@@ -221,7 +222,7 @@ class FriendReqDialogue extends React.Component {
             const toggle = value
             console.log(toggle)
             const response = await timedPromise(
-                subscriptionFunc({ onBroadcastFrom: id, addUser: toggle }), 
+                subscriptionFunc({ onBroadcastFrom: id, addUser: toggle }),
                 LONG_TIMEOUT);
 
             if (response.data.status !== cloudFunctionStatuses.OK) {
@@ -249,8 +250,8 @@ class FriendReqDialogue extends React.Component {
                 this.setState({ errorMessage: "Your notification data doesn't exists on our servers" })
             } else {
                 const data = docSnapshot.data().notificationPrefs.onBroadcastFrom;
-                if (data.find(x => x  == this.userUid))
-                this.setState({ flareNotificationToggle: true })
+                if (data.find(x => x == this.userUid))
+                    this.setState({ flareNotificationToggle: true })
             }
         }
 

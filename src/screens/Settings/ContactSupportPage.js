@@ -16,52 +16,55 @@ export default class ContactSupportPage extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-        title: "Get in Touch",    
+      title: "Get in Touch",
     };
   };
 
-  state = {mailError: null}
+  state = { mailError: null }
 
   render() {
     return (
-      <ScrollView 
-      style={{flex: 1, marginTop: 8}} 
-      contentContainerStyle = {{
-        justifyContent: 'flex-start', 
-        alignItems: 'center', 
-        marginHorizontal: 4,
-        paddingBottom: 16}}>
+      <ScrollView
+        style={{ flex: 1, marginTop: 8 }}
+        contentContainerStyle={{
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+          marginHorizontal: 4,
+          paddingBottom: 16
+        }}>
 
+        <Divider style={{ marginVertical: 12 }} />
+        <Text h4>Contact Us</Text>
+        <Text style={{ marginHorizontal: 8, marginBottom: 8 }}>
+          Do you have a question to ask, or feedback to give?{"\n"}
+          We'd love to hear from you! You can contact us at
+          <Text style={{ fontWeight: "bold" }}>
+            {" " + config.PROJECT_CONTACT_EMAIL + " "}
+          </Text>
+          or use the button below.
+        </Text>
+        <ErrorMessage message={this.state.mailError} />
+        <Button
+          title="Email Us"
+          onPress={this.composeMail}
+          icon={<Icon name="envelope-open-text" color="white" size={24} style={{ marginRight: 8 }} />}
+        />
+
+
+        <Divider style={{ marginVertical: 12 }} />
         <Text h4>Learn More</Text>
-        <Text style = {{marginHorizontal: 8, marginBottom: 8}}>
-          Like Biteup? Thanks! It was made out of lots of passion. 
+        <Text style={{ marginHorizontal: 8, marginBottom: 8 }}>
+          Like Biteup? Thanks! It was made out of lots of passion.
           If you'd like to learn more about the project, have a look at our website at
-          <Text style = {{fontWeight :"bold"}}>
+          <Text style={{ fontWeight: "bold" }}>
             {" " + config.PROJECT_WEBSITE}
           </Text>.
           {"\n"}(P.S: We have merchandise, if that's your kind of thing.)
         </Text>
         <Button
-          title = "Visit Website"
-          onPress={() => Linking.openURL(config.PROJECT_WEBSITE) }
-          icon = {<Icon name = "globe-africa" color = "white" size={24} style = {{marginRight: 8}}/>}
-        />
-
-        <Divider style = {{marginVertical: 12}}/>
-        <Text h4>Contact Us</Text>
-        <Text style = {{marginHorizontal: 8, marginBottom: 8}}>
-          Do you have a question to ask, or feedback to give?{"\n"}
-          We'd love to hear from you! You can contact us at 
-          <Text style = {{fontWeight :"bold"}}>
-            {" " + config.PROJECT_CONTACT_EMAIL + " "}
-          </Text>
-          or use the button below.
-        </Text>
-        <ErrorMessage message = {this.state.mailError} />
-        <Button
-          title = "Email Us"
-          onPress={this.composeMail}
-          icon = {<Icon name = "envelope-open-text" color = "white" size={24} style = {{marginRight: 8}}/>}
+          title="Visit Website"
+          onPress={() => Linking.openURL(config.PROJECT_WEBSITE)}
+          icon={<Icon name="globe-africa" color="white" size={24} style={{ marginRight: 8 }} />}
         />
 
         {
@@ -100,15 +103,15 @@ export default class ContactSupportPage extends React.Component {
   }
 
   composeMail = async () => {
-    this.setState({mailError: null})
-    try{
+    this.setState({ mailError: null })
+    try {
       let body = `\n\n\n\n\nPlease don't delete the section below\n`
       body += "-----------\n"
       body += `User ID: ${auth().currentUser.uid}\n`
       body += `${await getFullVersionInfo()}\n\n${await getFullHardwareInfo()}`
       Linking.openURL(`mailto:${config.PROJECT_CONTACT_EMAIL}?body=${body}`)
-    }catch(err){
-      this.setState({mailError: err.message})
+    } catch (err) {
+      this.setState({ mailError: err.message })
       logError(err)
     }
   }

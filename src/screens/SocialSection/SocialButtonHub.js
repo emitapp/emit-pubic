@@ -72,6 +72,13 @@ export default class SocialButtonHub extends React.Component {
                             title="Scan someone's Bitecode"
                             onPress={() => this.props.navigation.navigate('QRScanner')}
                         />
+
+                        <Button
+                            title="Get in Touch with us!"
+                            buttonStyle = {{backgroundColor: "skyblue"}}
+                            onPress = {() => this.props.navigation.navigate("ContactSupportPage")}
+                            />
+                        <Text>{`We'd love to hear from you!\nWe'll try to reply individually.`}</Text>
                     </ScrollView>
                 )}
             </ThemeConsumer>
