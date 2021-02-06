@@ -55,7 +55,7 @@ export default class SearchableInfiniteScroll extends React.Component {
 
   render() {
     const { type, queryTypes, queryValidator, dbref, style,
-      parentEmptyStateComponent, searchbarPlaceholder, data, additionalData, ...otherProps } = this.props
+      parentEmptyStateComponent, searchbarPlaceholder, onSectionData, additionalData, ...otherProps } = this.props
     return (
       <ThemeConsumer>
       {({ theme }) => (
@@ -100,7 +100,7 @@ export default class SearchableInfiniteScroll extends React.Component {
             orderBy = {this.props.queryTypes}
             startingPoint = {new Array(this.props.dbref.length).fill(this.state.query)}
             endingPoint = {new Array(this.props.dbref.length).fill(`${this.state.query}\uf8ff`)}
-            data = { this.props.data }
+            onSectionData = { onSectionData }
             additionalData = { this.props.additionalData }
             {...otherProps}
           />) : ( 

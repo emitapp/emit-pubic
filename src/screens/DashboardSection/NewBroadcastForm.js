@@ -103,13 +103,14 @@ class NewBroadcastForm extends React.Component {
                 <View style={{ justifyContent: "center", maxWidth: "85%" }}>
                   <ProfilePicList
                     uids={Object.keys(this.state.passableBroadcastInfo.recepientFriends)}
+                    groupUids={Object.keys(this.state.passableBroadcastInfo.recepientGroups)}
                     diameter={36}
                     style={{ marginLeft: 0, marginRight: 2 }}
                   />
                 </View>
                 <TouchableOpacity style={{ justifyContent: "center" }} onPress={() => {
                   return this.props.navigation.navigate("NewBroadcastFormRecepients",
-                    { mode: "friends", data: this.state.passableBroadcastInfo })
+                    { data: this.state.passableBroadcastInfo })
                 }}>
                   <Icon style={{ marginTop: -3 }} size={44} color="white" name="add-circle-outline"></Icon>
                 </TouchableOpacity>
@@ -230,7 +231,7 @@ class NewBroadcastForm extends React.Component {
                 title={`Attach Video Conferencing Link`}
                 onPress={() => this.setState({ isSkypeModalVisible: true })}
                 titleStyle={{ color: theme.colors.primary }}
-                buttonStyle = {{backgroundColor: "white"}}  
+                buttonStyle={{ backgroundColor: "white" }}
               />
 
               <Button

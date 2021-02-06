@@ -30,6 +30,7 @@ import { logError } from 'utils/helpers'
 //emptyStateComponent: Will be rendered when the list is empty 
 // chunkSize: Size of chunks to get from firebase rtdb  (default 10) <--------- currently not used since there's no pagination
 // errorHandler: what the component should do upon facing SDK errors (not timeout erros tho, those are handled by the compenent)
+// onSectionData : callback called when data is gotten from ref. Gets ref's title and the data received
 
 // generation: used to indicate to the scrollview that it shoudl reset
 //Generation is used to prevent api calls that were called for previous
@@ -128,7 +129,7 @@ export default class SectionInfiniteScroll extends React.Component {
                 });
             }
 
-            this.props.data && this.props.data.push(listData);
+            this.props.onSectionData && this.props.onSectionData(title, listData)
             this.isLoading = false
             this.requestRerender()
 
