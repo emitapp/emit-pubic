@@ -226,7 +226,7 @@ export default class BroadcastViewer extends React.Component {
       .once('value').then(snap => this.updateAttendees(snap.val()))
 
     const rerender = this.props.navigation.getParam('rerenderCallback');
-    rerender();
+    rerender && rerender();
   }
 
   itemRenderer = ({ item }) => {
