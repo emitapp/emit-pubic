@@ -1,0 +1,16 @@
+diff --git a/node_modules/react-native/react.gradle b/node_modules/react-native/react.gradle
+index c28cbd4..8efa979 100644
+--- a/node_modules/react-native/react.gradle
++++ b/node_modules/react-native/react.gradle
+@@ -264,6 +264,11 @@ afterEvaluate {
+                 enabled(currentBundleTask.enabled)
+             }
+ 
++            // mergeResources task runs before the bundle file is copied to the intermediate asset directory from Android plugin 4.1+.
++            // This ensures to copy the bundle file before mergeResources task starts
++            def mergeResourcesTask = tasks.findByName("merge${targetName}Resources")
++            mergeResourcesTask.dependsOn(currentAssetsCopyTask)
++
+             packageTask.dependsOn(currentCopyResTask)
+             if (buildPreBundleTask != null) {
+                 buildPreBundleTask.dependsOn(currentCopyResTask)

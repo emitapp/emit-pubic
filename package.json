@@ -14,7 +14,8 @@
     "test": "jest",
     "lint": "eslint .",
     "updateLicenses": "sh src/utils/updateLicenses.sh",
-    "env": "yarn rnuc .env"
+    "env": "yarn rnuc .env",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.12.1",
@@ -35,6 +36,8 @@
     "lottie-ios": "3.1.3",
     "lottie-react-native": "^3.3.2",
     "moment": "^2.29.1",
+    "patch-package": "^6.2.2",
+    "postinstall-postinstall": "^2.1.0",
     "react": "16.13.1",
     "react-native": "0.63.4",
     "react-native-autolink": "^3.0.0",
