@@ -42,7 +42,7 @@ export default class PasswordReset extends React.Component {
               </Text>
 
               <Text  style={{textAlign: "center", marginVertical:8}}>
-                Enter the email for your Biteup account's email address so that we can send a password reset email.
+                Enter the email for your Emit account's email address so that we can send a password reset email.
               </Text>
 
               <ErrorMessageText message = {this.state.errorMessage} />

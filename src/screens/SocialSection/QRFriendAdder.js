@@ -9,7 +9,7 @@ export default class ScanScreen extends Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-        title: "Bitecode Scanner",    
+        title: "Emitcode Scanner",    
     };
   };
 
@@ -29,7 +29,7 @@ export default class ScanScreen extends Component {
                 {this.state.QRData == "" &&
                 <>
                     <Text style={styles.centerText}>
-                        Scan a Bitecode to send a friend request!
+                        Scan a Emitcode to send a friend request!
                     </Text>
                     <View style = {{width: "100%", flex: 1}}>
                         <QRCodeScanner

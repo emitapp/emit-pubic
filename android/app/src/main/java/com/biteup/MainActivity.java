@@ -1,4 +1,4 @@
-package com.biteup;
+package com.emit;
 import android.os.Bundle; // <- for react-native-bootsplash
 import com.zoontek.rnbootsplash.RNBootSplash; 
 
@@ -15,7 +15,7 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "biteup";
+    return "emit";
   }
 
   @Override

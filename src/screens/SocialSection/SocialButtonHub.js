@@ -4,7 +4,7 @@ import { Text, ThemeConsumer, Button, Overlay } from 'react-native-elements';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import UserProfileSummary from 'reusables/UserProfileSummary'
-import UserBitecode from 'reusables/UserBitecode'
+import UserEmitcode from 'reusables/UserEmitcode'
 import { MinorActionButton } from 'reusables/ReusableButtons'
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import OctIcon from 'react-native-vector-icons/Octicons';
@@ -32,9 +32,9 @@ export default class SocialButtonHub extends React.Component {
                             onRequestClose={() => this.setState({ QRVisible: false })}>
                             <View>
                                 <Text style={{ textAlign: "center", marginVertical: 8, fontWeight: "bold" }}>
-                                    Your Bitecode
+                                    Your Emitcode
                                 </Text>
-                                <UserBitecode color={theme.colors.primary} />
+                                <UserEmitcode color={theme.colors.primary} />
                                 <MinorActionButton
                                     title="Go Back"
                                     onPress={() => this.setState({ QRVisible: false })} />
@@ -69,7 +69,7 @@ export default class SocialButtonHub extends React.Component {
                         </View>
 
                         <Button
-                            title="Scan someone's Bitecode"
+                            title="Scan someone's Emitcode"
                             onPress={() => this.props.navigation.navigate('QRScanner')}
                         />
 

@@ -49,7 +49,7 @@ export default class AccountSetUp extends React.Component {
 
             <Text h4
               style = {{ marginVertical: 8, fontWeight: 'bold'}}>
-                Finish setting up your Biteup Account
+                Finish setting up your Emit Account
             </Text>
 
             <ErrorMessageText message = {this.state.errorMessage} />
@@ -71,7 +71,7 @@ export default class AccountSetUp extends React.Component {
             />
 
             <Text style = {{marginBottom: 8}}>
-              Your username is how your friends add you on Biteup
+              Your username is how your friends add you on Emit
             </Text>
             <Input
               label = "Username"

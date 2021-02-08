@@ -54,7 +54,7 @@ export default class ContactSupportPage extends React.Component {
         <Divider style={{ marginVertical: 12 }} />
         <Text h4>Learn More</Text>
         <Text style={{ marginHorizontal: 8, marginBottom: 8 }}>
-          Like Biteup? Thanks! It was made out of lots of passion.
+          Like Emit? Thanks! It was made out of lots of passion.
           If you'd like to learn more about the project, have a look at our website at
           <Text style={{ fontWeight: "bold" }}>
             {" " + config.PROJECT_WEBSITE}
@@ -71,9 +71,9 @@ export default class ContactSupportPage extends React.Component {
           // <Divider style = {{marginVertical: 12}}/>
           // <Text h4>Support Us</Text>
           // <Text style = {{marginHorizontal: 8, marginBottom: 8}}>
-          //   Biteup may be free to use, but it certainly costs money to keep up. 
+          //   Emit may be free to use, but it certainly costs money to keep up. 
           //   We use a lot of web services, many of which are paid. Supporting us helps keep 
-          //   Biteup running and encourages further development.
+          //   Emit running and encourages further development.
           //   {"\n"}Any and all support is appreciated!
           // </Text>
           // <View style = {{flexDirection: "row", alignSelf: "stretch", justifyContent: "space-around"}}>

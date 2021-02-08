@@ -10,5 +10,5 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_SSH_KEY_FOR_MIRRORING }}
         with:
-          source-repo: 'git@github.com:biteup/biteup.git'
-          destination-repo: 'git@bitbucket.org:biteup/app-mirror.git'
+          source-repo: 'git@github.com:emitapp/emit.git'
+          destination-repo: 'git@bitbucket.org:emitapp/app-mirror.git'

@@ -21,7 +21,7 @@ export default class LandingPage extends React.Component {
                   resizeMode = 'contain'
                 />
                 <Text h1 h1Style = {{color: 'white', fontFamily: 'NunitoSans-SemiBold'}}>
-                  Biteup
+                  Emit
                 </Text>
               </View>
 
@@ -35,7 +35,7 @@ export default class LandingPage extends React.Component {
               <Text 
               style={{marginTop: 20, textDecorationLine: 'underline', color: "white"}}
               onPress = {() => this.props.navigation.navigate("Login")}>
-                  Returning to Biteup? Sign in here
+                  Returning to Emit? Sign in here
               </Text>
             </ImageBackground>
       )

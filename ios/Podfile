@@ -2,14 +2,14 @@ require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 platform :ios, '12.0'
 
-project 'biteup',
+project 'emit',
         'Dev.Debug' => :debug,
         'Dev.Release' => :release, 
         'Prod.Debug' => :debug,
         'Prod.Release' => :release
 
-target 'biteup' do
-  # Pods for biteup
+target 'emit' do
+  # Pods for emit
   config = use_native_modules!
   use_react_native!(:path => config["reactNativePath"])
 
@@ -24,7 +24,7 @@ target 'biteup' do
   pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
   pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications"
 
-  target 'biteupTests' do
+  target 'emitTests' do
     inherit! :complete
     # Pods for testing
   end

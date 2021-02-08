@@ -291,7 +291,7 @@ class FriendReqDialogue extends React.Component {
                 this.setState({
                     gettingInitialData: false,
                     option: actionOptions.NONE,
-                    extraMessage: "Invalid Bitecode"
+                    extraMessage: "Invalid Emitcode"
                 })
                 return;
             }

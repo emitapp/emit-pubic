@@ -47,8 +47,8 @@ export default class AccountManagementScreen extends React.Component {
 
         <Text h4>Request your Data</Text>
         <Text style = {{marginHorizontal: 8}}>
-          You can request for all the data that Biteup has that pertains to you sent to your account's registered  email address.
-          It only takes a few minutes. Note that this action doesn't delete this data or alter it in any way in Biteup's databases.
+          You can request for all the data that Emit has that pertains to you sent to your account's registered  email address.
+          It only takes a few minutes. Note that this action doesn't delete this data or alter it in any way in Emit's databases.
           You can only do this every 72 hours.
         </Text>
         <Button

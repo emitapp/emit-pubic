@@ -22,7 +22,7 @@ export default class OfflineNotice extends PureComponent {
     this.connectedToNetwork = false;
     //The banner will have a short time period where it's inactive
     //This will prevent the banner showing up annoyingly when the user is 
-    //just initially opening the app and connecting to Biteup
+    //just initially opening the app and connecting to Emit
     this.bannerInactive = true; 
     this.state = {
       isVisible: false,
@@ -80,7 +80,7 @@ export default class OfflineNotice extends PureComponent {
       this.setState({
         isVisible: true,
         color: "gold",
-        text: "Connecting to Biteup...",
+        text: "Connecting to Emit...",
         textColor: "black"
       })
     }else{
@@ -126,7 +126,7 @@ export default class OfflineNotice extends PureComponent {
   networkAdviceAlert = () => {
     Alert.alert(
       "Connection Advice",
-      "Having trouble connecting to Biteup? Make sure your network has internet access. If it does, maybe check our server status page.",
+      "Having trouble connecting to Emit? Make sure your network has internet access. If it does, maybe check our server status page.",
       [
         {
           text: "Check Status Page",

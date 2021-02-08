@@ -68,7 +68,7 @@ export default class UserFriendSearch extends React.Component {
               }
             />
           }
-          searchbarPlaceholder="Search for Biteup users"
+          searchbarPlaceholder="Search for Emit users"
           queryTypes={[{ name: "Display Name", value: "displayNameQuery" }, { name: "Username", value: "usernameQuery" }]}
           renderItem={this.itemRenderer}
           dbref={database().ref("/userSnippets")}

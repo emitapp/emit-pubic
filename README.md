@@ -1,4 +1,4 @@
-#  <img src="./readme_media/BiteupLogo.png" height= 50 align="left" /> Biteup
+#  <img src="./readme_media/EmitLogo.png" height= 50 align="left" /> Emit
 ![My Motivations](https://img.shields.io/badge/Powered%20by-passion-brightgreen?style=for-the-badge)
 
 A mobile app for making it easier to catch up with friends spontaneously.

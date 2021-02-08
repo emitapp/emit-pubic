@@ -79,7 +79,7 @@ export default class EditProfileScreen extends React.Component {
           <Text style = {{textAlign: "center", marginBottom: 16, marginHorizontal: 8}}>
           Note that even though you can change your display name as many times as you want,
           certain parts of the app will still show your old display name to you and other users.
-          This is why Biteup also associates a unique unchangeable hander (eg @john_doe) 
+          This is why Emit also associates a unique unchangeable hander (eg @john_doe) 
           to make sure everyone is still easily identifiable.
           </Text>
           <Input
