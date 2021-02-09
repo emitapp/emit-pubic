@@ -3,12 +3,12 @@ import { createStackNavigator } from 'react-navigation-stack';
 import Feed from './Feed';
 import Header from 'reusables/Header'
 import BroadcastViewer from './BroadcastViewer';
-
-
+import UserFriendSearch from "./../SocialSection/UserFriendSearch"
 const Navigator = createStackNavigator(
   {
     Feed,
-    BroadcastViewer
+    BroadcastViewer,
+    UserFriendSearch
   },
   {
     initialRouteName: 'Feed',

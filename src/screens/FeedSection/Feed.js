@@ -2,6 +2,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
 import { Image, View } from 'react-native';
+import { Button } from 'react-native-elements';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import EmptyState from 'reusables/EmptyState';
 import ErrorMessageText from 'reusables/ErrorMessageText';
@@ -32,10 +33,17 @@ export default class Feed extends React.Component {
                   style = {{height: 80, marginBottom: 8}} 
                   resizeMode = 'contain' />
                 }
-                title = "It's pretty quiet here." 
-                message = "Flares from your friends and groups show up here" 
-              />
+                title = "Looks pretty quiet here" 
+                message = "Flares your friends or groups send will show up here!" 
+              >
+                <Button
+                title="Add friends"
+                onPress={() => this.props.navigation.navigate('UserFriendSearch')}
+                buttonStyle={{ borderWidth: 2, width: 150, height: 36, marginTop: 22 }}
+                titleStyle={{ fontSize: 13 }} />
+              </EmptyState>
             }
+            
           />
       </View>
     )
