@@ -33,7 +33,7 @@ export default class Feed extends React.Component {
                   style = {{height: 80, marginBottom: 8}} 
                   resizeMode = 'contain' />
                 }
-                title = "Want to see more Flares?" 
+                title = "Want to see more flares?" 
                 message = "Flares your friends & groups send will show up here!" 
               >
                 <Button
