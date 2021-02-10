@@ -74,7 +74,7 @@ export default class SocialButtonHub extends React.Component {
                         />
 
                         <Button
-                            title="Get in Touch with us!"
+                            title="Get in touch with us!"
                             buttonStyle = {{backgroundColor: "skyblue"}}
                             onPress = {() => this.props.navigation.navigate("ContactSupportPage")}
                             />

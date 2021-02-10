@@ -29,16 +29,16 @@ export default class Feed extends React.Component {
             emptyStateComponent = {
               <EmptyState 
                 image =  { 
-                  <Image source={require('media/EmptyFeed.png')} 
+                  <Image source={require('media/NoFriendReqs.png')} 
                   style = {{height: 80, marginBottom: 8}} 
                   resizeMode = 'contain' />
                 }
-                title = "Looks pretty quiet here" 
-                message = "Flares your friends or groups send will show up here!" 
+                title = "Want to see more Flares?" 
+                message = "Flares your friends & groups send will show up here!" 
               >
                 <Button
                 title="Add friends"
-                onPress={() => this.props.navigation.navigate('UserFriendSearch')}
+                onPress={() => this.props.navigation.navigate('SocialButtonHub')}
                 buttonStyle={{ borderWidth: 2, width: 150, height: 36, marginTop: 22 }}
                 titleStyle={{ fontSize: 13 }} />
               </EmptyState>
