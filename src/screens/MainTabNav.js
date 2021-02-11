@@ -215,7 +215,7 @@ class FlareCreationButton extends React.PureComponent {
         style={{ alignSelf: "flex-end" }}
         onPressIn={() => this.setState({ pressedDown: true })}
         onPressOut={() => this.setState({ pressedDown: false })}
-        onPress={() => NavigationService.navigate('NewBroadcastForm', { needUserConfirmation: true })}
+        onPress={() => NavigationService.navigate('NewBroadcastForm', { needUserConfirmation: false })}
         android_ripple={{ color: MainTheme.colors.primary, borderless: true }}
       >
         <CircularView

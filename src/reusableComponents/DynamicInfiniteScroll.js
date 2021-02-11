@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, View, Image } from 'react-native';
+import { FlatList, View, Image, RefreshControl } from 'react-native';
 import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
 import EmptyState from 'reusables/EmptyState'
 import {Divider} from 'react-native-elements'
@@ -49,6 +49,7 @@ export default class DymanicInfiniteScroll extends React.Component {
         this.currentChunkSize = this.props.chunkSize;
         this.lastUsedRef;
         this.errorMessage = "";
+        this.refreshing = false;
     }
 
     componentDidMount = () => {
@@ -170,6 +171,18 @@ export default class DymanicInfiniteScroll extends React.Component {
         )
     }
 
+    wait = (timeout) => {
+        return new Promise(resolve => {
+            setTimeout(resolve, timeout);
+        });
+    }
+
+    onRefresh = () => {
+        this.wait(500).then(() => {
+            this.lastUsedRef.off();
+            this.initialize();})
+    }
+
     render() {
         if (this.gettingFirstLoad) {
             if (this.errorMessage){
@@ -197,7 +210,9 @@ export default class DymanicInfiniteScroll extends React.Component {
                         ListFooterComponent={this.renderFooter}
                         onEndReached={this.retrieveMoreData}
                         onEndReachedThreshold={0.1}
-                        refreshing={this.refreshing}
+                        refreshControl={
+                            <RefreshControl refreshing={this.refreshing} onRefresh={this.onRefresh} />
+                        }
                         contentContainerStyle = {{flex: 1}}
                         ListEmptyComponent = {this.renderEmptyState}
                         {...otherProps}

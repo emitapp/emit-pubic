@@ -1,30 +1,35 @@
 export const getAllActivities = () => [
     {
-        sectionName: "Hangout",
+        sectionName: "Featured",
         data: [
-            { emoji: "🎦", name: "Video Call" },
+            { emoji: "🧪", name: "COVID Test" },
             { emoji: "🥳", name: "Online Party" },
         ]
     },
     {
-        sectionName: "Academic",
+        sectionName: "Study",
         data: [
             { emoji: "📝", name: "Problem Sets" },
             { emoji: "📋", name: "Exam Prep" },
-            { emoji: "📚", name: "General Studying" },
+            { emoji: "📚", name: "Studying" },
+            { emoji: "📓", name: "Project" },
         ]
     },
     {
         sectionName: "Entertainment",
         data: [
-            { emoji: "🎬", name: "Streaming/Teleparty" },
+            { emoji: "🎬", name: "Netflix" },
+            { emoji: "🦠", name: "Covidopoly"},
             { emoji: "🎮", name: "Gaming" },
-            { emoji: "🃏", name: "Online Poker" },
+            { emoji: "🕵️", name: "Codenames"},
+            { emoji: "🏝️", name: "Catan"},
             { emoji: "🔎", name: "Among Us" },
+            { emoji: "💀", name: "Secret Hitler"},
+            { emoji: "🃏", name: "Poker" },
             { emoji: "🏎️", name: "Rocket League" },
             { emoji: "♟", name: "Chess" },
             { emoji: "🥊", name: "Super Smash Bros." },
-            { emoji: "🖌️", name: "skribbl.io" },
+            { emoji: "🖌️", name: "Skribbl.io" },
             { emoji: "⚔️", name: "League of Legends" },
             { emoji: "🔫", name: "Call of Duty" },
             { emoji: "⚽", name: "FIFA" },
@@ -36,8 +41,11 @@ export const getAllActivities = () => [
             { emoji: "🥞", name: "Breakfast" },
             { emoji: "🍲", name: "Dinner" },
             { emoji: "🌯", name: "Lunch" },
-            { emoji: "🧋", name: "Bubble Tea" },
             { emoji: "🍻", name: "Drinks" },
+            { emoji: "🧋", name: "Bubble Tea" },
+            { emoji: "🥤", name: "Smoothie" },
+            { emoji: "🍳", name: "Cooking" },
+            { emoji: "🥧", name: "Baking"},
         ]
     },
     {
@@ -45,6 +53,7 @@ export const getAllActivities = () => [
         data: [
             { emoji: "🏃‍♀️", name: "Running" },
             { emoji: "🚶", name: "Walk" },
+            { emoji: "🧗", name: "Rock Climbing"},
             { emoji: "💪", name: "Workout" },
             { emoji: "⚽️", name: "Soccer" },
             { emoji: "🏀", name: "Basketball" },

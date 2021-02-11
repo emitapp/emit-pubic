@@ -65,7 +65,7 @@ export default class NewBroadcastFormActivity extends React.Component {
 
               <SearchBar
                 autoCapitalize="none"
-                placeholder="Search for or type in your activity"
+                placeholder="Search or Create New Activity"
                 onChangeText={query => this.setState({ query })}
                 value={this.state.query}
                 containerStyle={{ marginTop: 24 }}

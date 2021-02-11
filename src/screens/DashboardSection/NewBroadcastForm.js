@@ -26,8 +26,8 @@ class NewBroadcastForm extends React.Component {
     this.passableBroadcastInfo = { //Information that's directly edited by other screens
       emojiSelected: "",
       activitySelected: "",
-      startingTimeText: "In 5 minutes",
-      startingTime: 1000 * 60 * 5,
+      startingTimeText: "Now",
+      startingTime: 0,
       startingTimeRelative: true,
       location: "",
       geolocation: null,
@@ -38,6 +38,7 @@ class NewBroadcastForm extends React.Component {
       duration: null,
       durationText: "1 hour"
     }
+    this.broadcastInfoPrototype = {...this.passableBroadcastInfo}
     this.state = {
       showingMore: false,
       passableBroadcastInfo: this.passableBroadcastInfo,
@@ -59,8 +60,17 @@ class NewBroadcastForm extends React.Component {
     });
   }
 
+  
+
+
   componentWillUnmount() {
     this.focusListener.remove();
+  }
+  
+  componentDidUpdate() {
+    if (JSON.stringify(this.broadcastInfoPrototype) !== JSON.stringify(this.state.passableBroadcastInfo)) {
+      this.props.navigation.state.params.needUserConfirmation = true;
+    }
   }
 
   render() {
@@ -122,7 +132,7 @@ class NewBroadcastForm extends React.Component {
               <FormInput
                 onPress={() => this.props.navigation.navigate("NewBroadcastFormTime", this.passableBroadcastInfo)}
                 value={this.state.passableBroadcastInfo.startingTimeText}
-                errorMessage={this.state.passableBroadcastInfo.duration ? "" : "By defualt your flares will last 1 hour after they're sent."}
+                errorMessage={this.state.passableBroadcastInfo.duration ? "" : "By default your flares will last 1 hour after they're sent."}
                 errorStyle={{ color: "white" }}
               />
 

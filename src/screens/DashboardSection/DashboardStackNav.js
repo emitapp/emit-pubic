@@ -60,7 +60,7 @@ export default class DashboardStackNav extends React.Component {
       if (!lastState) return Navigator.router.getStateForAction(action, lastState);
       const currentRoute = lastState.routes[lastState.index]
       if (!currentRoute.params?.needUserConfirmation) return Navigator.router.getStateForAction(action, lastState);
-    
+      
       if (action.type == 'Navigation/BACK' ){
         Alert.alert('Are you sure?', "If you go back your broadcast data will be erased", [
           {

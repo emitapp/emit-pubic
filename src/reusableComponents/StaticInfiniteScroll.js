@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, View, Image } from 'react-native';
+import { FlatList, View, Image, RefreshControl } from 'react-native';
 import { MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
 import {Text} from 'react-native-elements'
@@ -228,6 +228,18 @@ export default class StaticInfiniteScroll extends React.Component {
         )
     }
 
+    wait = (timeout) => {
+        return new Promise(resolve => {
+            setTimeout(resolve, timeout);
+        });
+    }
+
+    onRefresh = () => {
+        this.wait(500).then(() => {
+            this.initialize();
+        })
+    }
+
     render() {
         if (this.isLoading) {
             if (this.errorMessage){
@@ -260,6 +272,9 @@ export default class StaticInfiniteScroll extends React.Component {
                         onEndReached={() => this.retrieveMore(this.props.generation)}
                         onEndReachedThreshold={0.1}
                         refreshing={this.refreshing}
+                        refreshControl={
+                            <RefreshControl refreshing={this.refreshing} onRefresh={this.onRefresh} />
+                        }
                         ListEmptyComponent = {this.renderEmptyState}
                         {...otherProps}
                     />

@@ -17,7 +17,7 @@ export default class ActiveBroadcasts extends React.Component {
 
   constructor(props){
     super(props)
-    this.firstSectionTitle = "SENT"
+    this.firstSectionTitle = "EMITTED"
     this.secondSectionTitle = "JOINED"
     this.generation = 0;
     this.state = {
@@ -53,8 +53,8 @@ export default class ActiveBroadcasts extends React.Component {
               message="Flares you make and join will appear here"
             >
               <Button
-                title="Send a new Flare"
-                onPress={() => this.props.navigation.navigate('NewBroadcastForm', { needUserConfirmation: true })}
+                title="Emit New Flare"
+                onPress={() => this.props.navigation.navigate('NewBroadcastForm', { needUserConfirmation: false })}
                 buttonStyle={{ borderWidth: 2, width: 150, height: 36, marginTop: 22 }}
                 titleStyle={{ fontSize: 13 }} />
             </EmptyState>

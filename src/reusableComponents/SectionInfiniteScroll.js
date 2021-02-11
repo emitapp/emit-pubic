@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, SectionList, FlatList, View, Image } from 'react-native';
+import { TouchableOpacity, SectionList, FlatList, View, Image, RefreshControl } from 'react-native';
 import { MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import { TimeoutLoadingComponent } from 'reusables/LoadingComponents'
 import { Text } from 'react-native-elements'
@@ -58,7 +58,6 @@ export default class SectionInfiniteScroll extends React.Component {
         //FIXME: Pagination comment block
         //this.lastItemProperty = null;
         //this.stopSearching = false; //Once it gets a null snapshot, it'll stop
-        //this.refreshing = false; //For when it's getting more info
 
 
         this.sections = []; // A list of lists, to allow for section list support
@@ -66,6 +65,7 @@ export default class SectionInfiniteScroll extends React.Component {
         this.timedOut = false;
         this.errorMessage = "";
         this.processedRefs = []
+        this.refreshing = false;
     }
 
     componentDidMount = () => {
@@ -231,6 +231,19 @@ export default class SectionInfiniteScroll extends React.Component {
         )
     }
 
+    wait = (timeout) => {
+        return new Promise(resolve => {
+            setTimeout(resolve, timeout);
+        });
+    }
+
+    onRefresh = () => {
+        this.wait(500).then(() => {
+            this.removeListeners();
+            this.initialize();
+        })
+    }
+
     render() {
         if (this.isLoading) {
             if (this.errorMessage) {
@@ -269,6 +282,9 @@ export default class SectionInfiniteScroll extends React.Component {
                         renderSectionHeader={this.renderSectionHeader}
                         // An optional clickable button to add onto the ends of each sectionlist
                         //refreshing={this.refreshing}
+                        refreshControl={
+                            <RefreshControl refreshing={this.refreshing} onRefresh={this.onRefresh} />
+                        }
                         ListEmptyComponent={this.renderEmptyState}
                         {...otherProps}
                     />
