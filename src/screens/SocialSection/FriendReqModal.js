@@ -220,7 +220,6 @@ class FriendReqDialogue extends React.Component {
             const subscriptionFunc = functions().httpsCallable('changeFlareSubscription');
             const id = this.userUid
             const toggle = value
-            console.log(toggle)
             const response = await timedPromise(
                 subscriptionFunc({ onBroadcastFrom: id, addUser: toggle }),
                 LONG_TIMEOUT);

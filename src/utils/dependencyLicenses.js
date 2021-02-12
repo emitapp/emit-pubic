@@ -31,6 +31,12 @@ export default
         "licenseUrl": "https://github.com/react-native-community/react-native-netinfo/raw/master/LICENSE",
         "parents": "emit"
     },
+    "@react-native-community/push-notification-ios@1.8.0": {
+        "licenses": "MIT",
+        "repository": "https://github.com/react-native-community/push-notification-ios",
+        "licenseUrl": "https://github.com/react-native-community/push-notification-ios/raw/master/LICENSE",
+        "parents": "emit"
+    },
     "@react-native-firebase/app@10.4.0": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/app",
@@ -107,6 +113,18 @@ export default
         "licenses": "MIT",
         "repository": "https://github.com/moment/moment",
         "licenseUrl": "https://github.com/moment/moment/raw/master/LICENSE",
+        "parents": "emit"
+    },
+    "patch-package@6.2.2": {
+        "licenses": "MIT",
+        "repository": "https://github.com/ds300/patch-package",
+        "licenseUrl": "https://github.com/ds300/patch-package/raw/master/LICENSE",
+        "parents": "emit"
+    },
+    "postinstall-postinstall@2.1.0": {
+        "licenses": "MIT",
+        "repository": "https://github.com/ds300/postinstall-postinstall",
+        "licenseUrl": "https://github.com/ds300/postinstall-postinstall/raw/master/LICENSE",
         "parents": "emit"
     },
     "react-native-autolink@3.0.0": {
@@ -205,16 +223,16 @@ export default
         "licenseUrl": "https://github.com/react-native-community/react-native-maps/raw/master/LICENSE",
         "parents": "emit"
     },
-    "react-native-notifications@3.4.2": {
-        "licenses": "MIT",
-        "repository": "https://github.com/wix/react-native-notifications",
-        "licenseUrl": "https://github.com/wix/react-native-notifications/raw/master/LICENSE",
-        "parents": "emit"
-    },
     "react-native-permissions@3.0.0": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-community/react-native-permissions",
         "licenseUrl": "https://github.com/react-native-community/react-native-permissions/raw/master/LICENSE",
+        "parents": "emit"
+    },
+    "react-native-push-notification@7.2.1": {
+        "licenses": "MIT",
+        "repository": "https://github.com:zo0r/react-native-push-notification",
+        "licenseUrl": "https://github.com:zo0r/react-native-push-notification/raw/master/LICENSE",
         "parents": "emit"
     },
     "react-native-qrcode-scanner@1.5.1": {

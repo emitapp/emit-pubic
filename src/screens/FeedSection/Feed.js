@@ -6,20 +6,18 @@ import { Button } from 'react-native-elements';
 import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import EmptyState from 'reusables/EmptyState';
 import ErrorMessageText from 'reusables/ErrorMessageText';
-import FeedElement from "./FeedElement"; 
-import { responderStatuses } from 'utils/serverValues';
 import S from 'styling';
-
+import { responderStatuses } from 'utils/serverValues';
+import FeedElement from "./FeedElement";
 export default class Feed extends React.Component {
 
-  state = { 
-    errorMessage: null, 
+  state = {
+    errorMessage: null,
   }
 
   render() {
     return (
       <View style={S.styles.container}>
-
           <ErrorMessageText message = {this.state.errorMessage} />
           <DynamicInfiniteScroll
             renderItem = {this.itemRenderer}
@@ -49,11 +47,11 @@ export default class Feed extends React.Component {
     )
   }
 
-  itemRenderer = ({item}) => {
+  itemRenderer = ({ item }) => {
     return (
-     <FeedElement
-       navigation={this.props.navigation}
-       item={item}/>
+      <FeedElement
+        navigation={this.props.navigation}
+        item={item} />
     );
   }
 }

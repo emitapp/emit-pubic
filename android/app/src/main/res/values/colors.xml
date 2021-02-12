@@ -1,3 +1,4 @@
 <resources>
     <color name="bootsplash_background">#FA6C13</color>
+    <color name="notif_color">#FA6C13</color>
 </resources>

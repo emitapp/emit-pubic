@@ -29,7 +29,8 @@ const renderTab = (props, targetRouteName, iconName) => {
         height: "100%", width: "100%",
         justifyContent: "center", alignItems: "center", flex: 1
       }}
-      onPress={() => props.navigation.navigate(targetRouteName)}>
+      onPress={() => props.navigation.navigate(targetRouteName)}> 
+      {/** //TODO: onPress isn't perfect, I don't think tab touches take you back to parent screens anymore */}
       <View style={{ alignItems: "center", justifyContent: "center" }}>
         <AwesomeIcon name={iconName} size={30} color={tintColor} />
       </View>
@@ -139,8 +140,8 @@ export default class Main extends React.Component {
 
       //Not actually needed becuase this is done by defualt (unless disabled)
       //But meh
-      //also -> https://github.com/invertase/react-native-firebase/issues/3367#issuecomment-605907816
       await messaging().registerDeviceForRemoteMessages();
+
       this.syncToken() //Asyncronous
       this.setFCMListeners()
     } catch (err) {
@@ -172,7 +173,11 @@ export default class Main extends React.Component {
   syncToken = async () => {
     try {
       if (!messaging().isDeviceRegisteredForRemoteMessages) return;
-      const fcmToken = await messaging().getToken()
+      //getToken has (undefined, '*') arguments cuz of 
+      //https://github.com/invertase/react-native-firebase/issues/3714#issuecomment-741521581
+      //this issue might not be affecting us (because I don't think we use deleteToken),
+      //but it can't hurt to keep it in
+      const fcmToken = await messaging().getToken(undefined, '*')
       const cachedToken = await AsyncStorage.getItem(ASYNC_TOKEN_KEY)
       if (fcmToken != cachedToken) {
         const syncFunction = functions().httpsCallable('updateFCMTokenData')
