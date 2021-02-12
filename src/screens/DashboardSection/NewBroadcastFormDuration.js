@@ -25,7 +25,7 @@ export default class NewBroadcastFormDuration extends React.Component {
   }
 
 
-  static navigationOptions = ClearHeader("New Broadcast")
+  static navigationOptions = ClearHeader("New Flare")
 
   render() {
     return (

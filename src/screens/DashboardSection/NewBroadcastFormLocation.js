@@ -33,7 +33,7 @@ export default class NewBroadcastFormLocation extends React.Component {
         if (navigationParams.geolocation) this.state.locationPin = navigationParams.geolocation
     }
 
-    static navigationOptions = ClearHeader("New Broadcast")
+    static navigationOptions = ClearHeader("New Flare")
 
     componentDidMount() {
         const { navigation } = this.props;

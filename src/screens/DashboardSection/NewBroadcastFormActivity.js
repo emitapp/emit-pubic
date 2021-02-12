@@ -19,7 +19,7 @@ export default class NewBroadcastFormActivity extends React.Component {
 
 
   static navigationOptions = ({ navigationOptions }) => {
-    return ClearHeader("New Broadcast")
+    return ClearHeader("New Flare")
   };
 
   saveActivity = (emoji, activityName) => {

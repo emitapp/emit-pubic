@@ -22,7 +22,7 @@ export default class SavedLocations extends React.Component {
     }
   }
 
-  static navigationOptions = ClearHeader("New Broadcast")
+  static navigationOptions = ClearHeader("New Flare")
 
   render() {
     return (

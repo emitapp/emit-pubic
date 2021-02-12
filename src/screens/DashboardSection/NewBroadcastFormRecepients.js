@@ -37,7 +37,7 @@ export default class NewBroadcastFormRecepients extends React.Component {
     this.state.allFriends = navigationParams.data.allFriends
   }
 
-  static navigationOptions = ClearHeader("New Broadcast")
+  static navigationOptions = ClearHeader("New Flare")
 
   render() {
     return (

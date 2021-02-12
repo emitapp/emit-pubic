@@ -13,6 +13,7 @@ import PasswordReset from 'screens/Authentication/PasswordReset'
 import SignUp from 'screens/Authentication/SignUp';
 import MainTabNav from 'screens/MainTabNav';
 import CovidWarningPage from 'screens/Onboarding/CovidWarningPage';
+import SwiperOnboarding from 'screens/Onboarding/SwiperOnboarding';
 import MainTheme from 'styling/mainTheme';
 import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError } from 'utils/helpers';
 import NavigationService from 'utils/NavigationService';
@@ -72,6 +73,7 @@ const Navigator = createAppContainer(
     LandingPage,
     PasswordReset,
     CovidWarningPage,
+    SwiperOnboarding
   },
   {
     initialRouteName: 'AuthDecisionPage'

@@ -142,7 +142,7 @@ export default class AccountSetUp extends React.Component {
 
         if (response.data.status == cloudFunctionStatuses.OK){
           await AsyncStorage.setItem(ASYNC_SETUP_KEY, "yes");
-          this.props.navigation.navigate('CovidWarningPage');
+          this.props.navigation.navigate('SwiperOnboarding');
         }else{
           this.setState({ errorMessage: response.data.message })
         }

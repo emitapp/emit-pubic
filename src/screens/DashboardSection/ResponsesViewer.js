@@ -69,9 +69,10 @@ export default class ResponsesViewer extends React.Component {
 
           <View style={{ alignItems: "center", marginBottom: 25, marginTop: 25 }}>
             <View style={{ flexDirection: "row" }}>
-              <View style={{ alignItems: "center", justifyContent: "center", marginTop: -16, marginBottom: 8, marginRight: 8 }}>
-                {this.broadcastSnippet.emoji ? <Text style={{ fontSize: 50 }}>{this.broadcastSnippet.emoji}</Text> : <Text style={{ fontSize: 50 }}>🍲</Text>}
-              </View>
+              <View style={{ flexDirection:"row", alignItems: "center", justifyContent: "center", marginTop: -16, marginBottom: 8, marginRight: 8 }}>
+                <Text style={{ fontSize: 36 }}>{this.broadcastSnippet.emoji}</Text> 
+                <Text style={{ fontSize: 24 }}>{this.broadcastSnippet.activity}</Text>
+              </View> 
             </View>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
               <View style={{ justifyContent: "center" }}>

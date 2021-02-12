@@ -79,9 +79,10 @@ export default class BroadcastViewer extends React.Component {
 
             <View style={{ alignItems: "center", marginBottom: 25, marginTop: 25 }}>
               <View style={{ flexDirection: "row" }}>
-                <View style={{ alignItems: "center", justifyContent: "center", marginTop: -16, marginBottom: 8, marginRight: 8 }}>
-                  {broadcastData.emoji ? <Text style={{ fontSize: 50 }}>{broadcastData.emoji}</Text> : <Text style={{ fontSize: 50 }}>🍲</Text>}
-                </View>
+                <View style={{ flexDirection:"row", alignItems: "center", justifyContent: "center", marginTop: -16, marginBottom: 8, marginRight: 8 }}>
+                  <Text style={{ fontSize: 36 }}>{broadcastData.emoji}</Text> 
+                  <Text style={{ fontSize: 24 }}>{broadcastData.activity}</Text>
+                </View> 
                 <Text style={{ fontSize: 32, marginBottom: 8 }}>{broadcastData.location}</Text>
               </View>
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
