@@ -1,7 +1,6 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Pressable } from 'react-native';
 import { Button, Text, ThemeConsumer } from 'react-native-elements';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ClearHeader } from 'reusables/Header';
 import MainLinearGradient from 'reusables/MainLinearGradient';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -94,16 +93,36 @@ export default class NewBroadcastFormDuration extends React.Component {
 
 
 class TimeButton extends React.Component {
+
+  state = {
+      pressedDown: false
+  }
+
+  unpressedColors = {
+      outerBorder: "lightgrey",
+      innerBorder: "white",
+      iconColor: "white"
+  }
+
+  pressedColors = {
+      outerBorder: "lightgrey",
+      innerBorder: "lightgrey",
+      iconColor: "lightgrey"
+  }
+
   render() {
     const { text, color, onPress } = this.props
     return (
-      <View style={{ ...styles.timeButton, borderColor: this.props.color }}>
-        <TouchableOpacity
-          style={{ height: "100%", width: "100%", alignItems: "center", justifyContent: "center" }}
-          onPress={onPress}>
-          <Text style={{ color, fontWeight: "bold", fontSize: 20, textAlign: "center" }}>{text}</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={{ ...styles.timeButton, borderColor: this.props.color,
+            backgroundColor: this.state.pressedDown ? this.pressedColors.iconColor : this.unpressedColors.iconColor}}>
+            <Pressable
+                style={{ height: "100%", width: "100%", alignItems: "center", justifyContent: "center" }}
+                onPressIn={() => this.setState({ pressedDown: true })}
+                onPressOut={() => this.setState({ pressedDown: false })}
+                onPress={onPress}>
+                <Text style={{ color, fontWeight: "bold", fontSize: 20, textAlign: "center" }}>{text}</Text>
+            </Pressable>
+        </View>
     )
   }
 }
