@@ -61,13 +61,18 @@ export default class SwiperOnboarding extends React.Component {
             <View level={15}><Text style={styles.smallBlackText}>The app for spontaneous get-togethers</Text></View>
             </View>
             <View style={[styles.slide, { backgroundColor: '#ffffff'}]}>
-            <View style={{alignItems: "center"}} level={9}><Text style={styles.smallBlackText}>Click the "+" button</Text></View>
-            <View style={{alignItems: "center"}} level={5}><Text style={[styles.smallBlackText, {marginBottom: 16}]}> to send a flare 🔥 to your friends</Text></View>
+            <View style={{alignItems: "center"}} level={9}><Text style={styles.smallBlackText}>Flares are how you let your friends</Text></View>
+            <View style={{alignItems: "center"}} level={5}><Text style={[styles.smallBlackText, {marginBottom: 16}]}>know what you're up to 🔥</Text></View>
             <View style={{justifyContent: "center", alignItems: "center"}}><Image source={require("media/NewFlare.png")} style={{width: 250, height: 500, borderColor: "black", borderWidth: 1 }}/></View>
             </View>
             <View style={[styles.slide,{ backgroundColor: 'white', width: "100%", alignItems: "center" }]}>
-            <View style={{alignItems: "center"}} style={{marginBottom: 8}} level={8}><Text style={styles.smallBlackText}>Respond to flares people send to you</Text></View>
+            <View style={{alignItems: "center"}} level={9}><Text style={styles.smallBlackText}>Click the "+" button</Text></View>
+            <View style={{alignItems: "center"}} level={5}><Text style={[styles.smallBlackText, {marginBottom: 16}]}> to send a flare to your friends</Text></View>
             <View style={{justifyContent: "center", alignItems: "center"}}><Image source={require("media/Feed.png")} style={{width: 250, height: 500, borderColor: "black", borderWidth: 1}}/></View>
+            </View>
+            <View style={[styles.slide,{ backgroundColor: 'white', width: "100%", alignItems: "center" }]}>
+            <View style={{alignItems: "center"}} style={{marginBottom: 8}} level={8}><Text style={styles.smallBlackText}>Add groups and friends to send flares to!</Text></View>
+            <View style={{justifyContent: "center", alignItems: "center"}}><Image source={require("media/groups.png")} style={{width: 250, height: 500, borderColor: "black", borderWidth: 1}}/></View>
             </View>
       </AppIntro>
     );
