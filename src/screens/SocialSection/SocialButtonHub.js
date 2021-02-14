@@ -8,10 +8,13 @@ import UserEmitcode from 'reusables/UserEmitcode'
 import { MinorActionButton } from 'reusables/ReusableButtons'
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import OctIcon from 'react-native-vector-icons/Octicons';
+import StandardHeader from 'reusables/Header';
 
 export default class SocialButtonHub extends React.Component {
 
     state = { QRVisible: false, refreshing: false }
+
+    static navigationOptions = StandardHeader("My Profile");
 
     render() {
         return (

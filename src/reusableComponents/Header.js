@@ -9,13 +9,15 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 
 const profilePic = () => {
     return (
-        <TouchableOpacity onPress={() => NavigationService.navigate("SocialButtonHub")}>
-            <ProfilePicDisplayer
-                diameter={40}
-                uid={auth().currentUser.uid}
-                style={{ marginLeft: 10 }}
-            />
-        </TouchableOpacity>)
+        <View style={{position: "absolute", top: 0, right: 0}}>
+            <TouchableOpacity onPress={() => NavigationService.navigate("SocialButtonHub")}>
+                <ProfilePicDisplayer
+                    diameter={36}
+                    uid={auth().currentUser.uid}
+                    style={{ marginLeft: 10 }}
+                />
+            </TouchableOpacity>
+        </View>)
 }
 
 export default function StandardHeader(title) {
@@ -26,7 +28,7 @@ export default function StandardHeader(title) {
                 textStyle = { ...textStyle, ...styleObject }
             });
             return (
-                <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 10}}>
+                <View style={{ flexDirection: "row", alignItems: "flex-end", marginHorizontal: 10}}>
                     <Text style={{...textStyle, flex: 1}}> {title} </Text>
                     {profilePic()}
                 </View>
@@ -34,11 +36,19 @@ export default function StandardHeader(title) {
         },
         headerStyle: {
             backgroundColor: MainTheme.colors.primary,
+            ...Platform.select({
+                ios: {
+                  height: 58
+                },
+                default: {
+                }
+              })
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
             fontFamily: "NunitoSans-Regular",
             color: "white",
+            justifySelf: "flex-end",
             fontSize: 20
         }
     }

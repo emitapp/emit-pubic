@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import functions from '@react-native-firebase/functions';
 import messaging from '@react-native-firebase/messaging';
 import React from 'react';
-import { View, Platform, TouchableOpacity, Pressable } from 'react-native'
+import { StyleSheet, View, Platform, TouchableOpacity, Pressable } from 'react-native'
 import { requestNotifications, RESULTS } from 'react-native-permissions';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
@@ -27,19 +27,28 @@ const renderTab = (props, targetRouteName, iconName) => {
     <TouchableOpacity
       style={{
         height: "100%", width: "100%",
-        justifyContent: "center", alignItems: "center", flex: 1
+        justifyContent: "flex-start", alignItems: "center", flex: 1,
       }}
       onPress={() => props.navigation.navigate(targetRouteName)}> 
       {/** //TODO: onPress isn't perfect, I don't think tab touches take you back to parent screens anymore */}
-      <View style={{ alignItems: "center", justifyContent: "center" }}>
+      <View style={{ alignItems: "center", justifyContent: "center", marginTop: 6 }}>
         <AwesomeIcon name={iconName} size={30} color={tintColor} />
       </View>
       {focused && <View style={{
         position: "absolute", bottom: 0,
-        height: 5, width: 40,
+        height: 5,
         backgroundColor: props.activeTintColor,
         borderTopEndRadius: 8,
-        borderTopStartRadius: 8
+        borderTopStartRadius: 8,
+        ...Platform.select({
+          ios: {
+            width: 80
+          },
+          default: {
+            width: 40
+          }
+        })
+
       }} />}
     </TouchableOpacity>
   )
@@ -59,7 +68,20 @@ const Tab = createBottomTabNavigator(
         return (
           //Height gotten from 
           //https://github.com/react-navigation/react-navigation/blob/5c7f892d77298f5c89534fa78a1a6a59c7f35a60/packages/tabs/src/views/BottomTabBar.tsx#L36
-          <View {...props} style={{ ...props.style, height: 49, flexDirection: "row", justifyContent: 'center', alignItems: 'center' }}>
+          <View {...props} 
+            style={{ ...props.style, 
+              flexDirection: "row", 
+              justifyContent: 'center', 
+              alignItems: 'center',
+              ...Platform.select({
+                ios: {
+                  height: 70
+                },
+                default: {
+                  height: 49
+                }
+              })
+              }}>
             {renderTab(props, "FeedStackNav", "home")}
             <FlareCreationButton />
             {renderTab(props, "DashboardStackNav", "fire")}
@@ -217,7 +239,14 @@ class FlareCreationButton extends React.PureComponent {
     const { pressedDown } = this.state;
     return (
       <Pressable
-        style={{ alignSelf: "flex-end" }}
+        style={{ alignSelf: "flex-end",
+        ...Platform.select({
+          ios: {
+            marginBottom: 20
+          },
+          default: {
+          }
+        })}}
         onPressIn={() => this.setState({ pressedDown: true })}
         onPressOut={() => this.setState({ pressedDown: false })}
         onPress={() => NavigationService.navigate('NewBroadcastForm', { needUserConfirmation: false })}
@@ -240,3 +269,4 @@ class FlareCreationButton extends React.PureComponent {
     )
   }
 }
+  
