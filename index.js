@@ -22,29 +22,10 @@ function HeadlessCheckedApp({ isHeadless }) {
   return <CodePushApp />;
 }
 
-
-PushNotification.configure({}); // Must be outside of any component LifeCycle (such as `componentDidMount`).
-PushNotification.channelExists("mainChannel", function (exists) {
-  if (!exists) {
-    PushNotification.createChannel(
-      {
-        channelId: "mainChannel", 
-        channelName: "Main Channel", 
-        channelDescription: "Main notification channel for Emit", // (optional) default: undefined.
-      });
-  }
-});
-
-PushNotification.channelExists("chatChannel", function (exists) {
-  if (!exists) {
-    PushNotification.createChannel(
-      {
-        channelId: "chatChannel", 
-        channelName: "Chats", 
-        channelDescription: "Chat notifications from Emit",
-      });
-  }
-});
+// Must be outside of any component LifeCycle (such as `componentDidMount`).
+// Might not be needed since we're no longer using it in our fcm handlers
+// but we'll keep it in anyways
+PushNotification.configure({}); 
 
 AppRegistry.registerComponent(appName, () => HeadlessCheckedApp);
 
