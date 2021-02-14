@@ -40,7 +40,7 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to use your camera to enable Emitcode scanning and some profile picture functionality</string>
+	<string>$(PRODUCT_NAME) would like to use your camera for Emitcode scanning and taking pictures for your profile</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to know your location make map functionality smoother</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
