@@ -18,7 +18,7 @@ export const getAllActivities = () => [
     {
         sectionName: "Entertainment",
         data: [
-            { emoji: "🎬", name: "Netflix" }
+            { emoji: "🎬", name: "Netflix" },
             { emoji: "🎮", name: "Gaming" },
             { emoji: "🕵️", name: "Codenames"},
             { emoji: "🏝️", name: "Catan"},
@@ -27,7 +27,7 @@ export const getAllActivities = () => [
             { emoji: "🏎️", name: "Rocket League" },
             { emoji: "♟", name: "Chess" },
             { emoji: "🥊", name: "Super Smash Bros." },
-            { emoji: "💀", name: "Secret Hitler"},,
+            { emoji: "💀", name: "Secret Hitler"},
             { emoji: "🦠", name: "Covidopoly"},
             { emoji: "🖌️", name: "Skribbl.io" },
             { emoji: "⚔️", name: "League of Legends" },
