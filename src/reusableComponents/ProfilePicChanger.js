@@ -124,9 +124,7 @@ export default class ProfilePicChanger extends Component {
       await this.checkPermissions();
       this.setState({ pickingImage: true })
       ImagePicker.showImagePicker(options, response => {
-        if (response.didCancel) {
-          Alert.alert('You changed your mind?', 'Image selection cancelled');
-        } else if (response.error) {
+        if (response.error) {
           Alert.alert('Whoops!', `An error occured: ${response.error}`);
         } else {
           this.setState({ imageUri: response.uri, hasSuccessfullyPicked: true });
