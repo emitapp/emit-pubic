@@ -4,7 +4,7 @@ import crashlytics from '@react-native-firebase/crashlytics';
 import functions from '@react-native-firebase/functions';
 import messaging from '@react-native-firebase/messaging';
 import React from 'react';
-import { StatusBar } from 'react-native';
+import { StatusBar, Keyboard, Pressable } from 'react-native';
 import RNBootSplash from "react-native-bootsplash";
 import { ThemeProvider } from 'react-native-elements';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
@@ -39,12 +39,14 @@ export default class App extends React.Component {
 
   render() {
     return (
+    <Pressable onPress={Keyboard.dismiss} accessible={false} style = {{height: "100%"}}>
       <ThemeProvider theme={MainTheme}>
         <StatusBar backgroundColor={MainTheme.colors.statusBar} barStyle="light-content" />
         <Navigator ref={ref => NavigationService.setTopLevelNavigator(ref)} />
         <ConnectionBanner />
         <DevBuildBanner />
       </ThemeProvider>
+    </Pressable>
     )
   }
 
