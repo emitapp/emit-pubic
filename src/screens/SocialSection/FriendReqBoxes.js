@@ -25,7 +25,7 @@ export default class FriendReqBoxes extends React.Component {
     this.INBOX_INDEX = 0
     this.OUTBOX_INDEX = 1
     this.state = { 
-      boxIndex: this.INBOX_INDEX,
+      boxIndex: this.props.navigation.getParam('outbox', false) ? this.OUTBOX_INDEX : this.INBOX_INDEX,
       errorMessage: null, 
       searchGeneration: 0, 
       isModalVisible: false,
@@ -43,7 +43,7 @@ export default class FriendReqBoxes extends React.Component {
         <ButtonGroup
           onPress={this.toggleBox}
           selectedIndex={this.state.boxIndex}
-          buttons={["Inbox", "Outbox"]}
+          buttons={["Requests you received", "Requests you sent"]}
         />
 
             <ErrorMessageText message = {this.state.errorMessage} />
