@@ -4,7 +4,7 @@ import crashlytics from '@react-native-firebase/crashlytics';
 import functions from '@react-native-firebase/functions';
 import messaging from '@react-native-firebase/messaging';
 import React from 'react';
-import { StatusBar, Keyboard, Pressable } from 'react-native';
+import { StatusBar } from 'react-native';
 import RNBootSplash from "react-native-bootsplash";
 import { ThemeProvider } from 'react-native-elements';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
@@ -20,7 +20,7 @@ import MainTabNav from 'screens/MainTabNav';
 import CovidWarningPage from 'screens/Onboarding/CovidWarningPage';
 import SwiperOnboarding from 'screens/Onboarding/SwiperOnboarding';
 import MainTheme from 'styling/mainTheme';
-import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError, timedPromise, LONG_TIMEOUT } from 'utils/helpers';
+import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import NavigationService from 'utils/NavigationService';
 
 export default class App extends React.Component {
@@ -39,14 +39,12 @@ export default class App extends React.Component {
 
   render() {
     return (
-    <Pressable onPress={Keyboard.dismiss} accessible={false} style = {{height: "100%"}}>
       <ThemeProvider theme={MainTheme}>
         <StatusBar backgroundColor={MainTheme.colors.statusBar} barStyle="light-content" />
         <Navigator ref={ref => NavigationService.setTopLevelNavigator(ref)} />
         <ConnectionBanner />
         <DevBuildBanner />
       </ThemeProvider>
-    </Pressable>
     )
   }
 
