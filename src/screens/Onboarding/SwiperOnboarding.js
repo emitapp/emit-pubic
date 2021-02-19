@@ -45,10 +45,8 @@ export default class SwiperOnboarding extends React.Component {
             activeDotColor="#000000"
             leftTextColor="#000000" 
             rightTextColor="#000000"
-            onNextBtnClick={()=>{}}
             onDoneBtnClick={this.doneBtnHandle}
-            onSkipBtnClick={this.onSkipBtnHandle}
-            onSlideChange={()=>{}}>
+            onSkipBtnClick={this.onSkipBtnHandle}>
             <View style={[styles.slide,{ backgroundColor: '#ffffff' }]}>
             <View level={10}><Text style={styles.text}>Welcome to Emit!</Text></View>
             <View level={15}><Text style={styles.smallBlackText}>The app for spontaneous get-togethers</Text></View>

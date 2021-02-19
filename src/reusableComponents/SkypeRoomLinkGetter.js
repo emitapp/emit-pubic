@@ -53,7 +53,7 @@ export default class SkypeRoomLinkGetter extends React.Component {
           <Text style = {styles.instructionsText}>To add a video conferencing link to this flare's decription:</Text>
           <Text style = {styles.instructionsText}>1. "Create Free Meeting" button</Text>
           <Text style = {styles.instructionsText}>2. Press the orange "Done" button</Text>
-          <Text>Room will be open for 24 hours for free! No skype accont required.</Text>
+          <Text>Room will be open for 24 hours for free! No skype account required.</Text>
 
 
           <ErrorMessageText message={this.state.errorMessage} />

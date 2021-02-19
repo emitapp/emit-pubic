@@ -28,6 +28,7 @@ export const getAllActivities = () => [
             { emoji: "♟", name: "Chess" },
             { emoji: "🥊", name: "Super Smash Bros." },
             { emoji: "💀", name: "Secret Hitler"},
+            { emoji: "🦠", name: "Covidopoly"},
             { emoji: "🖌️", name: "Skribbl.io" },
             { emoji: "⚔️", name: "League of Legends" },
             { emoji: "🔫", name: "Call of Duty" },

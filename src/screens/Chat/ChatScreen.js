@@ -75,6 +75,7 @@ export default class ChatScreen extends React.Component {
         renderChatEmpty={this.renderEmptyState}
         renderLoadEarlier={() => null}   //to hide the load earlier button
         renderDay={this.renderDay}
+        bottomOffset={50}
       />
     )
   }

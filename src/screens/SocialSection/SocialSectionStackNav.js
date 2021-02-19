@@ -1,3 +1,7 @@
+/**
+ * THis class currently isn't in use as we needed to use a differnet method for 
+ * Getting to the profile screen that was less confising.
+ */
 import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
 import SocialButtonHub from './SocialButtonHub';

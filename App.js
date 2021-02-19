@@ -20,7 +20,7 @@ import MainTabNav from 'screens/MainTabNav';
 import CovidWarningPage from 'screens/Onboarding/CovidWarningPage';
 import SwiperOnboarding from 'screens/Onboarding/SwiperOnboarding';
 import MainTheme from 'styling/mainTheme';
-import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError, timedPromise, LONG_TIMEOUT } from 'utils/helpers';
+import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import NavigationService from 'utils/NavigationService';
 
 export default class App extends React.Component {

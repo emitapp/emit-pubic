@@ -42,7 +42,7 @@ class FriendRequestPreviewer extends React.Component {
                     
                     <MinorActionButton
                         title="See outbox"
-                        onPress={() => NavigationService.navigate('FriendRequests')}
+                        onPress={() => NavigationService.navigate('FriendRequests', {outbox: true})}
                     />
                 </View>
             )

@@ -48,7 +48,6 @@ export default function StandardHeader(title) {
         headerTitleStyle: {
             fontFamily: "NunitoSans-Regular",
             color: "white",
-            justifySelf: "flex-end",
             fontSize: 20
         }
     }

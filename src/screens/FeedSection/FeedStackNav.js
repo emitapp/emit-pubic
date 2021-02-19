@@ -3,12 +3,27 @@ import { createStackNavigator } from 'react-navigation-stack';
 import Feed from './Feed';
 import Header from 'reusables/Header'
 import BroadcastViewer from './BroadcastViewer';
-import SocialButtonHub from "./../SocialSection/SocialButtonHub"
+
+//For the Profile section...
+import UserFriendSearch from '../SocialSection/UserFriendSearch';
+import FriendRequests from '../SocialSection/FriendReqBoxes';
+import QRScanner from '../SocialSection/QRFriendAdder';
+import GroupMemberAdder from '../SocialSection/UserGroups/GroupMemberAdder';
+import GroupSearch from '../SocialSection/UserGroups/GroupSearch';
+import GroupViewer from '../SocialSection/UserGroups/GroupViewer';
+import SocialButtonHub from '../SocialSection/SocialButtonHub';
+
 const Navigator = createStackNavigator(
   {
     Feed,
     BroadcastViewer,
-    SocialButtonHub
+    SocialButtonHub,
+    FriendRequests,
+    QRScanner,
+    UserFriendSearch,
+    GroupMemberAdder,
+    GroupSearch,
+    GroupViewer
   },
   {
     initialRouteName: 'Feed',

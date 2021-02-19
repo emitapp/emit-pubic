@@ -3,8 +3,6 @@ import { Alert } from 'react-native';
 import { createStackNavigator } from 'react-navigation-stack';
 import Header from 'reusables/Header';
 import NavigationService from 'utils/NavigationService';
-import UserFriendSearch from '../SocialSection/UserFriendSearch';
-import GroupMemberAdder from '../SocialSection/UserGroups/GroupMemberAdder';
 import ActiveBroadcasts from './ActiveBroadcasts';
 import LocationSelector from './LocationSelector';
 import NewBroadcastForm from './NewBroadcastForm';
@@ -18,6 +16,15 @@ import SavedLocations from './SavedLocations'
 import ChatScreen from '../Chat/ChatScreen'
 import BroadcastViewer from '../FeedSection/BroadcastViewer';
 
+//For the Profile Section...
+import UserFriendSearch from '../SocialSection/UserFriendSearch';
+import FriendRequests from '../SocialSection/FriendReqBoxes';
+import QRScanner from '../SocialSection/QRFriendAdder';
+import GroupMemberAdder from '../SocialSection/UserGroups/GroupMemberAdder';
+import GroupSearch from '../SocialSection/UserGroups/GroupSearch';
+import GroupViewer from '../SocialSection/UserGroups/GroupViewer';
+import SocialButtonHub from '../SocialSection/SocialButtonHub';
+
 const Navigator = createStackNavigator(
   {
     ActiveBroadcasts,
@@ -29,11 +36,16 @@ const Navigator = createStackNavigator(
     NewBroadcastFormLocation,
     NewBroadcastFormRecepients,
     SavedLocations,
-    GroupMemberAdder,
-    UserFriendSearch,
     ChatScreen,
     BroadcastViewer,
-    NewBroadcastFormDuration
+    NewBroadcastFormDuration,
+    SocialButtonHub,
+    FriendRequests,
+    QRScanner,
+    UserFriendSearch,
+    GroupMemberAdder,
+    GroupSearch,
+    GroupViewer
   },
   {
     initialRouteName: 'ActiveBroadcasts',

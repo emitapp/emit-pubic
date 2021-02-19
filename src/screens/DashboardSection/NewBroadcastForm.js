@@ -1,23 +1,23 @@
+import auth from '@react-native-firebase/auth';
+import functions from '@react-native-firebase/functions';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
-import { Button, CheckBox, Input, Text, ThemeConsumer } from 'react-native-elements';
+import { Button, Input, Text, ThemeConsumer } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import Chip from 'reusables/Chip';
-import { ClearHeader } from 'reusables/Header';
-import MainLinearGradient from 'reusables/MainLinearGradient';
-import { withNavigation } from 'react-navigation';
-import { BannerButton } from 'reusables/ReusableButtons'
-import S from 'styling'
-import functions from '@react-native-firebase/functions';
-import auth from '@react-native-firebase/auth';
-import { logError, LONG_TIMEOUT, timedPromise, isOnlyWhitespace } from 'utils/helpers';
-import { DefaultLoadingModal } from 'reusables/LoadingComponents';
-import { cloudFunctionStatuses, MAX_BROADCAST_NOTE_LENGTH } from 'utils/serverValues'
-import ErrorMessageText from 'reusables/ErrorMessageText';
-import SkypeRoomLinkGetter from 'reusables/SkypeRoomLinkGetter';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { withNavigation } from 'react-navigation';
+import Chip from 'reusables/Chip';
+import ErrorMessageText from 'reusables/ErrorMessageText';
+import { ClearHeader } from 'reusables/Header';
+import { IosOnlyKeyboardAvoidingView } from "reusables/KeyboardComponents";
+import { DefaultLoadingModal } from 'reusables/LoadingComponents';
+import MainLinearGradient from 'reusables/MainLinearGradient';
 import { ProfilePicList } from 'reusables/ProfilePicComponents';
-
+import { BannerButton } from 'reusables/ReusableButtons';
+import SkypeRoomLinkGetter from 'reusables/SkypeRoomLinkGetter';
+import S from 'styling';
+import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
+import { cloudFunctionStatuses, MAX_BROADCAST_NOTE_LENGTH } from 'utils/serverValues';
 
 class NewBroadcastForm extends React.Component {
 
@@ -38,7 +38,7 @@ class NewBroadcastForm extends React.Component {
       duration: null,
       durationText: "1 hour"
     }
-    this.broadcastInfoPrototype = {...this.passableBroadcastInfo}
+    this.broadcastInfoPrototype = { ...this.passableBroadcastInfo }
     this.state = {
       showingMore: false,
       passableBroadcastInfo: this.passableBroadcastInfo,
@@ -60,13 +60,13 @@ class NewBroadcastForm extends React.Component {
     });
   }
 
-  
+
 
 
   componentWillUnmount() {
     this.focusListener.remove();
   }
-  
+
   componentDidUpdate() {
     if (JSON.stringify(this.broadcastInfoPrototype) !== JSON.stringify(this.state.passableBroadcastInfo)) {
       this.props.navigation.state.params.needUserConfirmation = true;
@@ -89,169 +89,178 @@ class NewBroadcastForm extends React.Component {
               }} />
 
             <DefaultLoadingModal isVisible={this.state.isModalVisible} />
-            <ScrollView
-              style={{ width: "100%", flex: 1 }}
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: 16 }}>
-
-              <ErrorMessageText
-                message={this.state.errorMessage}
-                style={{ color: '#2900BD', fontWeight: "bold" }} />
-
-              <FormSubtitle title="What" />
-              <FormInput
-                onPress={() => this.props.navigation.navigate("NewBroadcastFormActivity", this.passableBroadcastInfo)}
-                placeholder="Select an activity">
-                <Text style={{ fontSize: 18 }}>{this.state.passableBroadcastInfo.emojiSelected}</Text>
-                {this.state.passableBroadcastInfo.activitySelected && <Text> </Text>}
-                <Text style={{ fontSize: 18 }} >{this.state.passableBroadcastInfo.activitySelected}</Text>
-              </FormInput>
-
-              <FormSubtitle title="Who" />
-
-              <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8, marginLeft: 10 }}>
-                <View style={{ justifyContent: "center", maxWidth: "85%" }}>
-                  <ProfilePicList
-                    uids={Object.keys(this.state.passableBroadcastInfo.recepientFriends)}
-                    groupUids={Object.keys(this.state.passableBroadcastInfo.recepientGroups)}
-                    diameter={36}
-                    style={{ marginLeft: 0, marginRight: 2 }}
-                  />
-                </View>
-                <TouchableOpacity style={{ justifyContent: "center" }} onPress={() => {
-                  return this.props.navigation.navigate("NewBroadcastFormRecepients",
-                    { data: this.state.passableBroadcastInfo })
-                }}>
-                  <Icon style={{ marginTop: -3 }} size={44} color="white" name="add-circle-outline"></Icon>
-                </TouchableOpacity>
-              </View>
 
 
-              <FormSubtitle title="When" />
+            <IosOnlyKeyboardAvoidingView
+              behavior={"position"}
+              contentContainerStyle={{ flex: 1, width: "100%", justifyContent: 'center' }}
+              style={{ flex: 1, width: "100%", justifyContent: 'center' }}>
 
-              <FormInput
-                onPress={() => this.props.navigation.navigate("NewBroadcastFormTime", this.passableBroadcastInfo)}
-                value={this.state.passableBroadcastInfo.startingTimeText}
-                errorMessage={this.state.passableBroadcastInfo.duration ? "" : "By default your flares will last 1 hour after they're sent."}
-                errorStyle={{ color: "white" }}
-              />
+              <ScrollView
+                style={{ width: "100%", flex: 1 }}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingHorizontal: 16 }}>
 
-              <FormSubtitle title="Notes" />
+                <ErrorMessageText
+                  message={this.state.errorMessage}
+                  style={{ color: '#2900BD', fontWeight: "bold" }} />
 
-              <Input
-                multiline={true}
-                textAlignVertical="top"
-                numberOfLines={4}
-                inputContainerStyle={{ backgroundColor: "white" }}
-                placeholder="Enter any extra information you want in here"
-                value={this.state.note}
-                onChangeText={(note) => this.setState({ note })}
-                errorMessage={this.state.note.length > MAX_BROADCAST_NOTE_LENGTH ? "Too long" : undefined}
-              />
+                <FormSubtitle title="What" />
+                <FormInput
+                  onPress={() => this.props.navigation.navigate("NewBroadcastFormActivity", this.passableBroadcastInfo)}
+                  placeholder="Select an activity">
+                  <Text style={{ fontSize: 18 }}>{this.state.passableBroadcastInfo.emojiSelected}</Text>
+                  {this.state.passableBroadcastInfo.activitySelected && <Text> </Text>}
+                  <Text style={{ fontSize: 18 }} >{this.state.passableBroadcastInfo.activitySelected}</Text>
+                </FormInput>
 
-              {this.state.showingMore &&
-                <>
+                <FormSubtitle title="Who" />
 
-                  <FormSubtitle title="Duration" />
-
-                  <FormInput
-                    onPress={() => this.props.navigation.navigate("NewBroadcastFormDuration", this.passableBroadcastInfo)}
-                    value={this.state.passableBroadcastInfo.durationText}
-                  />
-
-                  <FormSubtitle title="Place" />
-
-                  <FormInput
-                    onPress={() => this.props.navigation.navigate("NewBroadcastFormLocation", this.passableBroadcastInfo)}
-                    placeholder="Where are you going?"
-                    value={this.state.passableBroadcastInfo.location}
-                    icon={this.state.passableBroadcastInfo.geolocation ?
-                      <Icon name="location-on" size={20} color="white" />
-                      : null}
-                  />
-
-                  <FormSubtitle title="Max Responders" />
-
-                  <ScrollView
-                    containerStyle={{ flexDirection: "row" }}
-                    style={{ flex: 1 }}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}>
-                    <Chip
-                      mainColor="white"
-                      selected={!this.state.customMaxResponders && this.state.maxResponders == ""}
-                      onPress={() => this.setPredefinedMaxResponders("")}
-                      selectedTextColor="black"
-                      style={{ paddingHorizontal: 16 }}>
-                      <Text>N/A</Text>
-                    </Chip>
-                    <Chip
-                      selected={!this.state.customMaxResponders && this.state.maxResponders == "2"}
-                      mainColor="white"
-                      onPress={() => this.setPredefinedMaxResponders("2")}
-                      selectedTextColor="black"
-                      style={{ paddingHorizontal: 16 }}>
-                      <Text>2</Text>
-                    </Chip>
-                    <Chip
-                      selected={!this.state.customMaxResponders && this.state.maxResponders == "5"}
-                      mainColor="white"
-                      onPress={() => this.setPredefinedMaxResponders("5")}
-                      selectedTextColor="black"
-                      style={{ paddingHorizontal: 16 }}>
-                      <Text>5</Text>
-                    </Chip>
-                    <Chip
-                      selected={!this.state.customMaxResponders && this.state.maxResponders == "10"}
-                      mainColor="white"
-                      onPress={() => this.setPredefinedMaxResponders("10")}
-                      selectedTextColor="black"
-                      style={{ paddingHorizontal: 16 }}>
-                      <Text>10</Text>
-                    </Chip>
-                    <Chip
-                      selected={this.state.customMaxResponders}
-                      mainColor="white"
-                      selectedTextColor="black"
-                      onPress={() => this.setState({ customMaxResponders: true })}
-                      style={{ paddingHorizontal: 16 }}>
-                      <Text>Custom</Text>
-                    </Chip>
-
-                  </ScrollView>
-
-                  {this.state.customMaxResponders &&
-                    <Input
-                      value={this.state.maxResponders}
-                      containerStyle={{ marginTop: 8 }}
-                      inputContainerStyle={{ backgroundColor: "white" }}
-                      keyboardType="number-pad"
-                      placeholder="Max number of allowed responders"
-                      onChangeText={(max) => this.setState({ maxResponders: max })}
-                      errorMessage={/^\d+$/.test(this.state.maxResponders) && parseInt(this.state.maxResponders) > 0 ?
-                        "" : "Only positive values are valid. If you won't want a max number of responders, choose N/A"
-                      }
-                      errorStyle={{ color: "white" }}
+                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8, marginLeft: 10 }}>
+                  <View style={{ justifyContent: "center", maxWidth: "85%" }}>
+                    <ProfilePicList
+                      uids={Object.keys(this.state.passableBroadcastInfo.recepientFriends)}
+                      groupUids={Object.keys(this.state.passableBroadcastInfo.recepientGroups)}
+                      diameter={36}
+                      style={{ marginLeft: 0, marginRight: 2 }}
                     />
-                  }
-                </>
-              }
+                  </View>
+                  <TouchableOpacity style={{ justifyContent: "center" }} onPress={() => {
+                    return this.props.navigation.navigate("NewBroadcastFormRecepients",
+                      { data: this.state.passableBroadcastInfo })
+                  }}>
+                    <Icon style={{ marginTop: -3 }} size={44} color="white" name="add-circle-outline"></Icon>
+                  </TouchableOpacity>
+                </View>
 
-              <Button
-                title={`Attach Video Conferencing Link`}
-                onPress={() => this.setState({ isSkypeModalVisible: true })}
-                titleStyle={{ color: theme.colors.primary }}
-                buttonStyle={{ backgroundColor: "white" }}
-              />
 
-              <Button
-                title={`Show ${this.state.showingMore ? "less" : "more"}`}
-                type="clear"
-                onPress={() => this.setState({ showingMore: !this.state.showingMore })}
-                titleStyle={{ color: "white" }}
-              />
+                <FormSubtitle title="When" />
 
-            </ScrollView>
+                <FormInput
+                  onPress={() => this.props.navigation.navigate("NewBroadcastFormTime", this.passableBroadcastInfo)}
+                  value={this.state.passableBroadcastInfo.startingTimeText}
+                  errorMessage={this.state.passableBroadcastInfo.duration ? "" : "By default your flares will last 1 hour after they're sent."}
+                  errorStyle={{ color: "white" }}
+                />
+
+                <FormSubtitle title="Notes" />
+
+                <Input
+                  multiline={true}
+                  textAlignVertical="top"
+                  numberOfLines={4}
+                  inputContainerStyle={{ backgroundColor: "white" }}
+                  placeholder="Enter any extra information you want in here"
+                  value={this.state.note}
+                  onChangeText={(note) => this.setState({ note })}
+                  errorMessage={this.state.note.length > MAX_BROADCAST_NOTE_LENGTH ? "Too long" : undefined}
+                />
+
+                {this.state.showingMore &&
+                  <>
+
+                    <FormSubtitle title="Duration" />
+
+                    <FormInput
+                      onPress={() => this.props.navigation.navigate("NewBroadcastFormDuration", this.passableBroadcastInfo)}
+                      value={this.state.passableBroadcastInfo.durationText}
+                    />
+
+                    <FormSubtitle title="Place" />
+
+                    <FormInput
+                      onPress={() => this.props.navigation.navigate("NewBroadcastFormLocation", this.passableBroadcastInfo)}
+                      placeholder="Where are you going?"
+                      value={this.state.passableBroadcastInfo.location}
+                      icon={this.state.passableBroadcastInfo.geolocation ?
+                        <Icon name="location-on" size={20} color="white" />
+                        : null}
+                    />
+
+                    <FormSubtitle title="Max Responders" />
+
+                    <ScrollView
+                      containerStyle={{ flexDirection: "row" }}
+                      style={{ flex: 1 }}
+                      horizontal
+                      showsHorizontalScrollIndicator={false}>
+                      <Chip
+                        mainColor="white"
+                        selected={!this.state.customMaxResponders && this.state.maxResponders == ""}
+                        onPress={() => this.setPredefinedMaxResponders("")}
+                        selectedTextColor="black"
+                        style={{ paddingHorizontal: 16 }}>
+                        <Text>N/A</Text>
+                      </Chip>
+                      <Chip
+                        selected={!this.state.customMaxResponders && this.state.maxResponders == "2"}
+                        mainColor="white"
+                        onPress={() => this.setPredefinedMaxResponders("2")}
+                        selectedTextColor="black"
+                        style={{ paddingHorizontal: 16 }}>
+                        <Text>2</Text>
+                      </Chip>
+                      <Chip
+                        selected={!this.state.customMaxResponders && this.state.maxResponders == "5"}
+                        mainColor="white"
+                        onPress={() => this.setPredefinedMaxResponders("5")}
+                        selectedTextColor="black"
+                        style={{ paddingHorizontal: 16 }}>
+                        <Text>5</Text>
+                      </Chip>
+                      <Chip
+                        selected={!this.state.customMaxResponders && this.state.maxResponders == "10"}
+                        mainColor="white"
+                        onPress={() => this.setPredefinedMaxResponders("10")}
+                        selectedTextColor="black"
+                        style={{ paddingHorizontal: 16 }}>
+                        <Text>10</Text>
+                      </Chip>
+                      <Chip
+                        selected={this.state.customMaxResponders}
+                        mainColor="white"
+                        selectedTextColor="black"
+                        onPress={() => this.setState({ customMaxResponders: true })}
+                        style={{ paddingHorizontal: 16 }}>
+                        <Text>Custom</Text>
+                      </Chip>
+
+                    </ScrollView>
+
+                    {this.state.customMaxResponders &&
+                      <Input
+                        value={this.state.maxResponders}
+                        containerStyle={{ marginTop: 8 }}
+                        inputContainerStyle={{ backgroundColor: "white" }}
+                        keyboardType="number-pad"
+                        placeholder="Max number of allowed responders"
+                        onChangeText={(max) => this.setState({ maxResponders: max })}
+                        errorMessage={/^\d+$/.test(this.state.maxResponders) && parseInt(this.state.maxResponders) > 0 ?
+                          "" : "Only positive values are valid. If you won't want a max number of responders, choose N/A"
+                        }
+                        errorStyle={{ color: "white" }}
+                      />
+                    }
+                  </>
+                }
+
+                <Button
+                  title={`Attach Video Conferencing Link`}
+                  onPress={() => this.setState({ isSkypeModalVisible: true })}
+                  titleStyle={{ color: theme.colors.primary }}
+                  buttonStyle={{ backgroundColor: "white" }}
+                />
+
+                <Button
+                  title={`Show ${this.state.showingMore ? "less" : "more"}`}
+                  type="clear"
+                  onPress={() => this.setState({ showingMore: !this.state.showingMore })}
+                  titleStyle={{ color: "white" }}
+                />
+
+              </ScrollView>
+            </IosOnlyKeyboardAvoidingView>
+
             <BannerButton
               color="white"
               onPress={this.sendBroadcast}

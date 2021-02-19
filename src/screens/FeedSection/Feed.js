@@ -36,7 +36,7 @@ export default class Feed extends React.Component {
               >
                 <Button
                 title="Add friends"
-                onPress={() => this.props.navigation.navigate('SocialButtonHub')}
+                onPress={() => this.props.navigation.navigate('UserFriendSearch')}
                 buttonStyle={{ borderWidth: 2, width: 150, height: 36, marginTop: 22 }}
                 titleStyle={{ fontSize: 13 }} />
               </EmptyState>

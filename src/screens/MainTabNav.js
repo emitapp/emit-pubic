@@ -5,20 +5,20 @@ import AsyncStorage from '@react-native-community/async-storage';
 import functions from '@react-native-firebase/functions';
 import messaging from '@react-native-firebase/messaging';
 import React from 'react';
-import { StyleSheet, View, Platform, TouchableOpacity, Pressable } from 'react-native'
+import { Platform, Pressable, TouchableOpacity, View } from 'react-native';
 import { requestNotifications, RESULTS } from 'react-native-permissions';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
+import { StackActions } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
+import CircularView from 'reusables/CircularView';
+import MainTheme from 'styling/mainTheme';
 import { handleFCMDeletion, handleFCMMessage } from 'utils/fcmNotificationHandlers';
 import { ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
+import NavigationService from 'utils/NavigationService';
+import { cloudFunctionStatuses } from 'utils/serverValues';
 import DashboardStackNav from "./DashboardSection/DashboardStackNav";
 import FeedStackNav from './FeedSection/FeedStackNav';
-import SocialStackNav from './SocialSection/SocialSectionStackNav'
 import SettingsStackNav from "./Settings/SettingsStackNav";
-import MainTheme from 'styling/mainTheme'
-import { cloudFunctionStatuses } from 'utils/serverValues'
-import CircularView from 'reusables/CircularView'
-import NavigationService from 'utils/NavigationService';
 
 const renderTab = (props, targetRouteName, iconName) => {
   const focused = props.navigation.state.routes[props.navigation.state.index].routeName == targetRouteName
@@ -29,8 +29,12 @@ const renderTab = (props, targetRouteName, iconName) => {
         height: "100%", width: "100%",
         justifyContent: "flex-start", alignItems: "center", flex: 1,
       }}
-      onPress={() => props.navigation.navigate(targetRouteName)}> 
-      {/** //TODO: onPress isn't perfect, I don't think tab touches take you back to parent screens anymore */}
+      onPress={() => {
+          {focused ? props.navigation.dispatch(StackActions.popToTop()) :
+          props.navigation.navigate(targetRouteName);
+        }}
+      }> 
+
       <View style={{ alignItems: "center", justifyContent: "center", marginTop: 6 }}>
         <AwesomeIcon name={iconName} size={30} color={tintColor} />
       </View>
@@ -58,7 +62,6 @@ const Tab = createBottomTabNavigator(
   {
     FeedStackNav,
     DashboardStackNav,
-    SocialStackNav,
     SettingsStackNav,
   },
   {
