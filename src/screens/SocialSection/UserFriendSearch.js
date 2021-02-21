@@ -9,7 +9,6 @@ import { Text } from "react-native-elements"
 import FriendRequestPreviewer from './FriendRequestPreviewer'
 import FriendReqModal from './FriendReqModal';
 import ErrorMessageText from 'reusables/ErrorMessageText';
-import StaticInfiniteScroll from 'reusables/StaticInfiniteScroll';
 import DymanicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 
 export default class UserFriendSearch extends React.Component {

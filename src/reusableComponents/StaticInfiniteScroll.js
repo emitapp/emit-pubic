@@ -19,7 +19,8 @@ import {logError} from 'utils/helpers'
 
 // Required props:
 // dbref: the databse ref to use
-// orderBy: the name of the key you're ordering by.
+//queryTypes: list of objects of the form {name: ..., value: ...} for each value that 
+//can be entered into the orderByChild value of a databse ref
 // renderItem: same as FLatlist RenderItem
 
 //Optinal props
@@ -51,13 +52,14 @@ export default class StaticInfiniteScroll extends React.Component {
     constructor(props) {
         super(props);
 
-        this.lastItemProperty = null;
-        this.stopSearching = false; //Once it gets a null snapshot, it'll stop
+        this.lastItemProperty = {}; //One per querytype
+        this.stopSearching = {}; //Once it gets a null snapshot, it'll stop. One per querytype
         this.listData = [];
-        this.isLoading = true; //For when it's loading for the first time
-        this.refreshing = false; //For when it's getting more info
+        this.isRetrievingInitial = true; //For when it's loading for the first time
+        this.retrievingMore = false; //For when it's getting more info
         this.timedOut = false;
         this.errorMessage = "";
+        this.refreshing = false
     }
 
     componentDidMount = () => {
@@ -75,51 +77,55 @@ export default class StaticInfiniteScroll extends React.Component {
     }
 
     initialize = () => {
-        this.isLoading = true;
+        this.lastItemProperty = {}; 
+        this.stopSearching = {};
+        this.isRetrievingInitial = true;
         this.listData = [];
-        this.lastItemProperty = null;
-        this.stopSearching = false;
         this.timedOut = false;
         this.errorMessage = "";
+        this.refreshing = false
         this.requestRerender();
         this.retrieveInitialChunk(this.props.generation);
     }
 
-
     retrieveInitialChunk = async (invocationGen) => {
         try {
-            var ref = this.props.dbref.orderByChild(this.props.orderBy).limitToFirst(this.props.chunkSize)
-            if (this.props.startingPoint) ref = ref.startAt(this.props.startingPoint)
-            if (this.props.endingPoint) ref = ref.endAt(this.props.endingPoint)
-
-            const initialSnapshot = await timedPromise(ref.once("value"), MEDIUM_TIMEOUT);
-
-            //Checking if your snapshot is no longer relevant
-            if (this.props.generation != invocationGen) return;
-
             var listData = []
-            initialSnapshot.forEach(childSnapshot =>{
-                if (childSnapshot.exists())
-                    listData.push({
-                        uid: childSnapshot.key, 
-                        ...childSnapshot.val()
-                    })
-                    
-            });
+            // Extract data across all query types, ensuring no duplicates are added
+            for (let i = 0; i < this.props.queryTypes.length; i++) {
+                const queryTypeValue = this.props.queryTypes[i].value
 
-            if (listData.length == 0) {
-                this.stopSearching = true;
-                this.refreshing = false,
-                    this.isLoading = false
-                this.requestRerender();
-            } else {
-                this.lastItemProperty =
-                    listData[listData.length - 1][this.props.orderBy];
+                var currentRef = this.props.dbref.orderByChild(queryTypeValue).limitToFirst(this.props.chunkSize)
+                if (this.props.startingPoint) currentRef = currentRef.startAt(this.props.startingPoint)
+                if (this.props.endingPoint) currentRef = currentRef.endAt(this.props.endingPoint)
+                const initialSnapshot = await timedPromise(currentRef.once("value"), MEDIUM_TIMEOUT);
 
-                this.listData = listData
-                this.isLoading = false
-                this.requestRerender()
+                // First checking if your snapshot is no longer relevant
+                if (this.props.generation != invocationGen) return;
+
+                let snapshotAsArray = []
+                initialSnapshot.forEach(childSnapshot =>{
+                    if (childSnapshot.exists()) {
+                        const data = {
+                            uid: childSnapshot.key, 
+                            ...childSnapshot.val()
+                        }
+                        // Don't insert duplicates
+                        if (!listData.some(d => d.uid === childSnapshot.key)) {
+                            listData.push(data)
+                        }
+                        snapshotAsArray.push(data)
+                    }
+                });
+
+                if (snapshotAsArray.length == 0) this.stopSearching[queryTypeValue] = true
+                else this.lastItemProperty[queryTypeValue] = snapshotAsArray[snapshotAsArray.length - 1][queryTypeValue];
             }
+            
+            if (listData.length != 0) this.listData = listData
+
+            this.isRetrievingInitial = false
+            this.requestRerender();
         }
         catch (error) {
             this.onError(error)
@@ -127,46 +133,49 @@ export default class StaticInfiniteScroll extends React.Component {
     };
 
     retrieveMore = async (invocationGen) => {
+        if (this.allStopSearching()) return;
         try {
-            if (this.stopSearching || this.refreshing) return;
-            this.refreshing = true;
+            if (this.retrievingMore) return;
+            this.retrievingMore = true;
             this.requestRerender();
 
-            var ref = this.props.dbref
-                .orderByChild(this.props.orderBy)
+            // Extract data across all query types, ensuring no duplicates are added
+            for (let i = 0; i < this.props.queryTypes.length; i++) {
+                const queryTypeValue = this.props.queryTypes[i].value
+                if (this.stopSearching[queryTypeValue]) return;
+
+                var currentRef = this.props.dbref.orderByChild(queryTypeValue)
                 .limitToFirst(this.props.chunkSize)
-                .startAt(this.lastItemProperty)
-            if (this.props.endingPoint) ref = ref.endAt(this.props.endingPoint)
+                .startAt(this.lastItemProperty[queryTypeValue])
+                if (this.props.endingPoint) currentRef = currentRef.endAt(this.props.endingPoint)
+                const initialSnapshot = await timedPromise(currentRef.once("value"), MEDIUM_TIMEOUT);
+                
+                // First checking if your snapshot is no longer relevant
+                if (this.props.generation != invocationGen) return;
 
-            const additionalSnapshot = await timedPromise(ref.once("value"), MEDIUM_TIMEOUT);
+                let snapshotAsArray = []
+                initialSnapshot.forEach(childSnapshot =>{
+                    
+                    if (childSnapshot.exists()) {
+                        const data = {
+                            uid: childSnapshot.key, 
+                            ...childSnapshot.val()
+                        }
+                        // Don't insert duplicates
+                        if (!this.listData.some(d => d.uid === childSnapshot.key)) {
+                            this.listData.push(data)
+                        }
+                        snapshotAsArray.push(data)
+                    }
+                });
 
-            //Checking if your snapshot is no longer relevant
-            if (this.props.generation != invocationGen) return;
-
-            var additionaListData = []
-            additionalSnapshot.forEach(childSnapshot =>{
-                if (childSnapshot.exists())
-                    additionaListData.push({
-                        uid: childSnapshot.key, 
-                        ...childSnapshot.val()
-                    })
-            });
-
-            //Removing the first element since startAt is inclusive
-            additionaListData.shift();
-
-            if (additionaListData.length == 0) {
-                this.stopSearching = true;
-                this.refreshing = false;
-                this.requestRerender();
-            } else {
-                this.lastItemProperty =
-                    additionaListData[additionaListData.length - 1][this.props.orderBy];
-
-                this.listData = [...this.listData, ...additionaListData]
-                this.refreshing = false;
-                this.requestRerender();
+                snapshotAsArray.shift() //Removing the first element since startAt is inclusive
+                if (snapshotAsArray.length == 0) this.stopSearching[queryTypeValue] = true
+                else this.lastItemProperty[queryTypeValue] = snapshotAsArray[snapshotAsArray.length - 1][queryTypeValue]; 
             }
+
+            this.retrievingMore = false;
+            this.requestRerender();
         }
         catch (error) {
             this.onError(error)
@@ -189,20 +198,29 @@ export default class StaticInfiniteScroll extends React.Component {
         }
     }
 
+
+    allStopSearching = () => {
+        let exhausted = true;
+        for (let i = 0; i < this.props.queryTypes.length; i++) {
+            const queryTypeValue = this.props.queryTypes[i].value
+            if (!this.stopSearching[queryTypeValue]) exhausted = false;
+        }
+        return exhausted
+    }
     renderFooter = () => {
-        if (this.refreshing) {
+        if (this.retrievingMore) {
             return (
                 <TimeoutLoadingComponent
                     hasTimedOut={this.timedOut}
                     retryFunction={() => {
                         this.timedOut = false;
-                        this.refreshing = false;
+                        this.retrievingMore = false;
                         this.retrieveMore(this.props.generation)
                     }}
                 />
             )
         }
-        else if (this.stopSearching && this.listData.length != 0) {
+        else if (this.allStopSearching() && this.listData.length != 0) {
             return (
                 <Text style={{width: "100%", textAlign: "center", marginTop: 8}}>
                 ~That's all folks!~
@@ -235,13 +253,15 @@ export default class StaticInfiniteScroll extends React.Component {
     }
 
     onRefresh = () => {
+        this.refreshing = true
+        this.requestRerender()
         this.wait(500).then(() => {
             this.initialize();
         })
     }
 
     render() {
-        if (this.isLoading) {
+        if (this.isRetrievingInitial) {
             if (this.errorMessage){
                 return (
                     <View style = {{...this.props.style, justifyContent: "center"}}>
