@@ -61,6 +61,8 @@ export default class SearchableInfiniteScroll extends React.Component {
         {({ theme }) => (
           <View style={{ ...S.styles.containerFlexStart, width: "100%", ...style }}>
 
+            {this.props.children}
+
             <SearchBar
               autoCapitalize="none"
               placeholder="Search"
