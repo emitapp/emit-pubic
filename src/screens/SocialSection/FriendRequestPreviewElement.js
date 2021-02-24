@@ -64,7 +64,7 @@ class FriendRequestPreviewer extends React.Component {
         var args;
         if (accepted) {
             callableFunction = functions().httpsCallable('acceptFriendRequest');
-            args = { from: auth().currentUser.uid, to: this.props.item.uid }
+            args = { from: auth().currentUser.uid, to: this.props.item.uid, subscribeToFlares: true }
         } else {
             callableFunction = functions().httpsCallable('cancelFriendRequest');
             args = { from: auth().currentUser.uid, to: this.props.item.uid, fromInbox: true }

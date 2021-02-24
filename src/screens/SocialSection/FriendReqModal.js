@@ -48,9 +48,12 @@ class FriendReqDialogue extends React.Component {
             userInfo,
             timedOut: false, //Timed out during any of the operations 
             extraMessage: false,
-            option: "", //Which cloud function the user can user for this other user
+            option: "", //Which cloud function the user can call
             userSocials: null,
-            flareNotificationToggle: false
+            subscribedInFirestore: false, //Has our user subcribed to this other user's flares?
+            localToggleValue: true, //What's the actual value of the toggle
+            toggleShouldUseFirestoreValue: false, 
+            //^ Should the toggle be set to sync with the firestore value or not? see getToggleValue()
         }
     }
 
@@ -115,14 +118,14 @@ class FriendReqDialogue extends React.Component {
 
                         {this.displayActionsPanel(theme)}
 
-                        {(!this.state.gettingInitialData && this.state.option != actionOptions.NONE) &&
+                        {(!this.state.gettingInitialData && this.state.option != actionOptions.NONE && !this.state.waitingForFuncResponse) &&
                             <View style={{ alignItems: "center" }}>
                                 {this.state.option === actionOptions.REMOVE ?
                                     <Text>Receive Flare Notifications?</Text> :
-                                    <Text>Receive Flare Notifications? (will be applied if they accept friend request)</Text>
+                                    <Text>Receive Flare Notifications? (will be applied if friend request is accepted)</Text>
                                 }
-                                <Switch value={this.state.flareNotificationToggle}
-                                    onValueChange={(val) => this.updateNotificationPref(val)}
+                                <Switch value={this.getToggleValue()}
+                                    onValueChange={(val) => this.onToggleChanged(val)}
                                 />
                             </View>
                         }
@@ -209,19 +212,56 @@ class FriendReqDialogue extends React.Component {
     }
 
     /**
-     * Function to update flare notification preferences for a
-     * specific user.
-     * Since users don't have to be friends to accept this (its more conventient), this means that
-     * users can end up having some uids of non-friends (or to-be friends) in thier firestore fcm doc
+     * Some notes about chooseToggleSyncState, getToggleValue and onToggleChanged
+     * This toggle does different things depening on the available option
+     * If you're already friends with this person, or you've sent them a friend
+     * request that they haven't responded to, then that means you've made the choise
+     * to either subscribe to them already or not. In that case, the toggle's value and changes
+     * to the toggle should be reflected in firebase. 
+     * Otherwise, you're now making that choise, so the toggle's value and changes to that value
+     * should be local and will be applied when the approporate cloud function is called
      */
-    updateNotificationPref = async (value) => {
-        this.setState({ flareNotificationToggle: value })
+
+    chooseToggleSyncState = (action) => {
+        switch (action) {
+            case actionOptions.SENDREQ:
+            case actionOptions.ACCEPTREQ:
+            case actionOptions.REJECTREQ:
+            case actionOptions.NONE:
+                this.setState({toggleShouldUseFirestoreValue: false})
+                break;
+
+            case actionOptions.CANCELREQ:
+            case actionOptions.REMOVE:
+                this.setState({toggleShouldUseFirestoreValue: true})
+                break;
+            
+        }
+    }
+
+    getToggleValue = () => {
+        return this.state.toggleShouldUseFirestoreValue ? this.state.subscribedInFirestore : this.state.localToggleValue
+    }
+
+    setToggleValue = (value) => {
+        if (this.state.toggleShouldUseFirestoreValue){
+            //you're probably setting the value optimistically, 
+            //expecting that a pending update tp firesotre will succeed
+            this.setState({subscribedInFirestore: value}) 
+        }else{
+            this.setState({localToggleValue: value}) 
+        }
+    }
+
+    onToggleChanged = async (newToggleValue) => {
+        this.setToggleValue(newToggleValue)
+        if (!this.state.toggleShouldUseFirestoreValue) return;
+
         try {
             const subscriptionFunc = functions().httpsCallable('changeFlareSubscription');
             const id = this.userUid
-            const toggle = value
             const response = await timedPromise(
-                subscriptionFunc({ onBroadcastFrom: id, addUser: toggle }),
+                subscriptionFunc({ onBroadcastFrom: id, addUser: newToggleValue }),
                 LONG_TIMEOUT);
 
             if (response.data.status !== cloudFunctionStatuses.OK) {
@@ -236,7 +276,7 @@ class FriendReqDialogue extends React.Component {
 
     /**
      * Function to get initial notification info for a friend
-     * in order to set the toggle.
+     * in order to set the toggle (if needed).
      */
     getFlareNotificationInfo() {
         const onDataRetrievalError = (error) => {
@@ -249,8 +289,7 @@ class FriendReqDialogue extends React.Component {
                 this.setState({ errorMessage: "Your notification data doesn't exists on our servers" })
             } else {
                 const data = docSnapshot.data().notificationPrefs.onBroadcastFrom;
-                if (data.find(x => x == this.userUid))
-                    this.setState({ flareNotificationToggle: true })
+                if (data.find(x => x == this.userUid)) this.setState({ subscribedInFirestore: true })
             }
         }
 
@@ -303,11 +342,14 @@ class FriendReqDialogue extends React.Component {
                 if (snippetSnapshot.exists()) {
                     this.setState({ userInfo: snippetSnapshot.val() })
                 } else {
-                    this.setState({
-                        gettingInitialData: false,
-                        option: actionOptions.NONE,
-                        extraMessage: "Looks like this user doesn't exist."
-                    })
+                    this.setState(
+                        {
+                            gettingInitialData: false,
+                            option: actionOptions.NONE,
+                            extraMessage: "Looks like this user doesn't exist."
+                        },
+                        () => this.chooseToggleSyncState(actionOptions.NONE)
+                    )
                     return
                 }
             }
@@ -316,7 +358,9 @@ class FriendReqDialogue extends React.Component {
             const friendRef = database().ref(`/userFriendGroupings/${uid}/_masterUIDs/${this.userUid}`);
             const friendSnapshot = await timedPromise(friendRef.once('value'), MEDIUM_TIMEOUT);
             if (friendSnapshot.exists()) {
-                this.setState({ gettingInitialData: false, option: actionOptions.REMOVE })
+                this.setState(
+                    { gettingInitialData: false, option: actionOptions.REMOVE },
+                    () => this.chooseToggleSyncState(actionOptions.REMOVE))
                 return;
             }
 
@@ -324,7 +368,9 @@ class FriendReqDialogue extends React.Component {
             const outboxRef = database().ref(`/friendRequests/${uid}/outbox/${this.userUid}`);
             const outboxSnapshot = await timedPromise(outboxRef.once('value'), MEDIUM_TIMEOUT);
             if (outboxSnapshot.exists()) {
-                this.setState({ gettingInitialData: false, option: actionOptions.CANCELREQ })
+                this.setState(
+                        { gettingInitialData: false, option: actionOptions.CANCELREQ },
+                        () => this.chooseToggleSyncState(actionOptions.CANCELREQ))
                 return;
             }
 
@@ -332,10 +378,16 @@ class FriendReqDialogue extends React.Component {
             const inboxRef = database().ref(`/friendRequests/${uid}/inbox/${this.userUid}`);
             const inboxSnapshot = await timedPromise(inboxRef.once('value'), MEDIUM_TIMEOUT);
             if (inboxSnapshot.exists()) {
-                this.setState({ gettingInitialData: false, option: actionOptions.ACCEPTREQ }) //REJECTREQ also accessible via this
+                this.setState(
+                        { gettingInitialData: false, option: actionOptions.ACCEPTREQ },
+                        () => this.chooseToggleSyncState(actionOptions.ACCEPTREQ)) //REJECTREQ also accessible via this
             } else {
-                this.setState({ gettingInitialData: false, option: actionOptions.SENDREQ })
+                this.setState(
+                        { gettingInitialData: false, option: actionOptions.SENDREQ },
+                        () => this.chooseToggleSyncState(actionOptions.SENDREQ))
             }
+
+
         } catch (err) {
             if (err.name == "timeout") {
                 this.setState({ timedOut: true })
@@ -353,7 +405,11 @@ class FriendReqDialogue extends React.Component {
     performAction = async (actionToDo) => {
         this.setState({ waitingForFuncResponse: true })
         var callableFunction;
-        let args = { from: auth().currentUser.uid, to: this.userUid }
+        let args = { 
+            from: auth().currentUser.uid, 
+            to: this.userUid,
+            subscribeToFlares: this.getToggleValue() //Not needed for all cloud funcs, but doesn't hurt to keep it in
+        }
         switch (actionToDo) {
             case actionOptions.SENDREQ:
                 callableFunction = functions().httpsCallable('sendFriendRequest');
@@ -417,7 +473,7 @@ class FriendReqDialogue extends React.Component {
                 newOption = actionOptions.REMOVE;
                 break;
         }
-
+        this.chooseToggleSyncState(newOption)
         this.setState({ option: newOption })
     }
 }
@@ -494,12 +550,37 @@ const ModalWidth = Dimensions.get('window').width * 0.7
 const ProfilePicHeight = Dimensions.get('window').width * 0.6
 
 const actionOptions = {
-    SENDREQ: 'Send Friend Request',
+    /**
+     * If you can send a request to this person
+     */
+    SENDREQ: 'Send Friend Request', 
+
+    /**
+     * If you can accept a friend request from this person
+     **/
     ACCEPTREQ: 'Accept Friend Request',
-    //This one is paired with ACCEPTREQ so it's treated pretty different from the other options
+
+    /**
+     * If you can reject a freind request 
+     * This one comes hand in hand with ACCEPTREQ
+     * so it's treated pretty different from the other options 
+     * (ACCEPTREQ sometimes represents) both of them
+     */
     REJECTREQ: 'Delete Friend Request',
+
+    /**
+     * If you've sent a friend request to this person and you want to remove it
+     */
     CANCELREQ: 'Cancel Friend Request',
+
+    /**
+     * If you're already freinds, the only option possible is cancelling the friendship
+     */
     REMOVE: 'Remove Friend',
+
+    /**
+     * The wildcard (invalid user uid, nonexsistent user, etc)
+     */
     NONE: "Nothing"
 }
 
