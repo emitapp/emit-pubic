@@ -6,18 +6,32 @@ import ProfilePicDisplayer from 'reusables/ProfilePicComponents'
 import NavigationService from 'utils/NavigationService';
 import auth from "@react-native-firebase/auth"
 import { TouchableOpacity } from "react-native-gesture-handler"
+import { subscribeToEvent, unsubscribeToEvent, events } from 'utils/subcriptionEvents'
 
-const profilePic = () => {
-    return (
-        <View style={{position: "absolute", top: 0, right: 0}}>
-            <TouchableOpacity onPress={() => NavigationService.navigate("SocialButtonHub")}>
-                <ProfilePicDisplayer
-                    diameter={36}
-                    uid={auth().currentUser.uid}
-                    style={{ marginLeft: 10 }}
-                />
-            </TouchableOpacity>
-        </View>)
+class HeaderProfilePic extends React.PureComponent {
+
+    componentDidMount() {
+        subscribeToEvent(events.PROFILE_PIC_CHNAGE, this, () => this.pictureComponet.refresh())
+    }
+
+    componentWillUnmount() {
+        unsubscribeToEvent(events.PROFILE_PIC_CHNAGE, this)
+    }
+
+    render() {
+        return (
+            <View style={{ position: "absolute", top: 0, right: 0 }}>
+                <TouchableOpacity onPress={() => NavigationService.navigate("SocialButtonHub")}>
+                    <ProfilePicDisplayer
+                        diameter={36}
+                        uid={auth().currentUser.uid}
+                        style={{ marginLeft: 10 }}
+                        ref={ref => this.pictureComponet = ref}
+                    />
+                </TouchableOpacity>
+            </View>
+        )
+    }
 }
 
 export default function StandardHeader(title) {
@@ -28,9 +42,9 @@ export default function StandardHeader(title) {
                 textStyle = { ...textStyle, ...styleObject }
             });
             return (
-                <View style={{ flexDirection: "row", alignItems: "flex-end", marginHorizontal: 10}}>
-                    <Text style={{...textStyle, flex: 1}}> {title} </Text>
-                    {profilePic()}
+                <View style={{ flexDirection: "row", alignItems: "flex-end", marginHorizontal: 10 }}>
+                    <Text style={{ ...textStyle, flex: 1 }}> {title} </Text>
+                    <HeaderProfilePic />
                 </View>
             )
         },
@@ -38,11 +52,11 @@ export default function StandardHeader(title) {
             backgroundColor: MainTheme.colors.primary,
             ...Platform.select({
                 ios: {
-                  height: 58
+                    height: 58
                 },
                 default: {
                 }
-              })
+            })
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -76,13 +90,13 @@ export function ScrollingHeader(title) {
                 textStyle = { ...textStyle, ...styleObject }
             });
             return (
-                <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 10}}>
+                <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 10 }}>
                     <ScrollingText
                         containerStyle={{ flex: 1 }}
                         textStyle={{ ...textStyle, minWidth: "100%" }}>
                         {title}
                     </ScrollingText>
-                    {profilePic()}
+                    <HeaderProfilePic />
                 </View>
             )
         },

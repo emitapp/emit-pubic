@@ -3,7 +3,7 @@ import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import React, { Component } from 'react';
 import { Platform, StyleSheet, View, Image, Alert, Linking } from 'react-native';
-import ImagePicker from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import { logError } from 'utils/helpers';
 import { v4 as uuidv4 } from 'uuid';
@@ -15,13 +15,8 @@ import ProfilePicCircle from 'reusables/ProfilePicComponents';
 import ErrorMessageText from 'reusables/ErrorMessageText';
 import { MinorActionButton } from 'reusables/ReusableButtons';
 
-
-const options = {
-  title: 'Select Image',
-  storageOptions: {
-    skipBackup: true,
-    path: 'images'
-  }
+const imagePickerOptions = {
+  mediaType: 'photo'
 };
 
 /**
@@ -58,14 +53,12 @@ export default class ProfilePicChanger extends Component {
             </Text>
             <Button
               title="Choose image from phone"
-              onPress={() => this.setState({ modalVisible: false }, this.pickImage)}
+              onPress={() => this.setState({ modalVisible: false }, this.pickImageFromGallery)}
               type='clear' />
-            {!this.props.groupPic &&
-              <Button
-                title="Create avatar"
-                onPress={() => this.setState({ modalVisible: false }, this.createAvatar)}
-                type='clear' />
-            }
+            <Button
+              title="Take image using camera"
+              onPress={() => this.setState({ modalVisible: false }, this.pickImageFromCamera)}
+              type='clear' />
             <MinorActionButton
               title="Close"
               onPress={() => this.setState({ modalVisible: false })} />
@@ -119,14 +112,34 @@ export default class ProfilePicChanger extends Component {
     );
   }
 
-  pickImage = async () => {
+  //When choosing the image from the gallery
+  pickImageFromGallery = async () => {
     try {
       await this.checkPermissions();
       this.setState({ pickingImage: true })
-      ImagePicker.showImagePicker(options, response => {
-        if (response.error) {
-          Alert.alert('Whoops!', `An error occured: ${response.error}`);
-        } else {
+      launchImageLibrary(imagePickerOptions, response => {
+        if (response.errorCode) {
+          Alert.alert('Whoops!', `An error occured: ${response.errorMessage}`);
+        } else if (!response.didCancel) {
+          this.setState({ imageUri: response.uri, hasSuccessfullyPicked: true });
+        }
+        this.setState({ pickingImage: false })
+      });
+    } catch (err) {
+      this.setState({ errorMessage: err.message, pickingImage: false })
+      logError(err)
+    }
+  };
+
+  //When you're taking the image using the camera
+  pickImageFromCamera = async () => {
+    try {
+      await this.checkPermissions();
+      this.setState({ pickingImage: true })
+      launchCamera(imagePickerOptions, response => {
+        if (response.errorCode) {
+          Alert.alert('Whoops!', `An error occured: ${response.errorMessage}`);
+        } else if (!response.didCancel) {
           this.setState({ imageUri: response.uri, hasSuccessfullyPicked: true });
         }
         this.setState({ pickingImage: false })
@@ -242,10 +255,6 @@ export default class ProfilePicChanger extends Component {
     } catch (err) {
       logError(err)
     }
-  }
-
-  createAvatar = () => {
-    Linking.openURL("https://personas.draftbit.com/")
   }
 }
 

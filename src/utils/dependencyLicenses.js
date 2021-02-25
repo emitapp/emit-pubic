@@ -199,10 +199,10 @@ export default
         "licenseUrl": "https://github.com/FaridSafi/react-native-gifted-chat/raw/master/LICENSE",
         "parents": "emit"
     },
-    "react-native-image-picker@2.0.0": {
+    "react-native-image-picker@3.2.1": {
         "licenses": "MIT",
-        "repository": "https://github.com/react-native-community/react-native-image-picker",
-        "licenseUrl": "https://github.com/react-native-community/react-native-image-picker/raw/master/LICENSE.md",
+        "repository": "https://github.com/react-native-image-picker/react-native-image-picker",
+        "licenseUrl": "https://github.com/react-native-image-picker/react-native-image-picker/raw/master/LICENSE.md",
         "parents": "emit"
     },
     "react-native-invertible-scroll-view@2.0.0": {
@@ -323,6 +323,12 @@ export default
         "licenses": "MIT",
         "repository": "https://github.com/facebook/react",
         "licenseUrl": "https://github.com/facebook/react/raw/master/LICENSE",
+        "parents": "emit"
+    },
+    "rn-falcon-app-intro@1.3.2": {
+        "licenses": "ISC",
+        "repository": "https://github.com/Richi2293/rn-falcon-app-intro",
+        "licenseUrl": "https://github.com/Richi2293/rn-falcon-app-intro/raw/master/LICENSE",
         "parents": "emit"
     },
     "uuid@8.3.2": {

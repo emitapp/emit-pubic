@@ -1,20 +1,29 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, ScrollView, RefreshControl } from 'react-native';
-import { Text, ThemeConsumer, Button, Overlay } from 'react-native-elements';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
-import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import UserProfileSummary from 'reusables/UserProfileSummary'
-import UserEmitcode from 'reusables/UserEmitcode'
-import { MinorActionButton } from 'reusables/ReusableButtons'
+import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Button, Overlay, Text, ThemeConsumer } from 'react-native-elements';
 import AntIcon from 'react-native-vector-icons/AntDesign';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import OctIcon from 'react-native-vector-icons/Octicons';
 import StandardHeader from 'reusables/Header';
+import { MinorActionButton } from 'reusables/ReusableButtons';
+import UserEmitcode from 'reusables/UserEmitcode';
+import UserProfileSummary from 'reusables/UserProfileSummary';
+import { subscribeToEvent, unsubscribeToEvent, events } from 'utils/subcriptionEvents'
 
 export default class SocialButtonHub extends React.Component {
 
     state = { QRVisible: false, refreshing: false }
 
     static navigationOptions = StandardHeader("My Profile");
+
+
+    componentDidMount() {
+        subscribeToEvent(events.PROFILE_PIC_CHNAGE, this, () => this.summaryComponent.refresh())
+    }
+
+    componentWillUnmount() {
+        unsubscribeToEvent(events.PROFILE_PIC_CHNAGE, this)
+    }
 
     render() {
         return (
@@ -78,9 +87,9 @@ export default class SocialButtonHub extends React.Component {
 
                         <Button
                             title="Get in touch with us!"
-                            buttonStyle = {{backgroundColor: "skyblue"}}
-                            onPress = {() => this.props.navigation.navigate("ContactSupportPage")}
-                            />
+                            buttonStyle={{ backgroundColor: "skyblue" }}
+                            onPress={() => this.props.navigation.navigate("ContactSupportPage")}
+                        />
                         <Text>{`We'd love to hear from you!\nWe'll try to reply individually.`}</Text>
                     </ScrollView>
                 )}

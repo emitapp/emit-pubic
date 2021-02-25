@@ -7688,10 +7688,10 @@ react-native-gifted-chat@^0.16.3:
     react-native-typing-animation "^0.1.7"
     uuid "3.4.0"
 
-react-native-image-picker@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-2.0.0.tgz#237f08109ec6824607de2458847700242186bd2a"
-  integrity sha512-svmQJ5bBuCgX9RG5DU3A38udgemze1/HtYUXgUAvP2i3LzrzW5ub5GT3L8n87pg/DNj2rRHi1wLtNaNEoV4ZAw==
+react-native-image-picker@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-3.2.1.tgz#97119ffef0ac2de2862f61ac38c2f5af99e9de18"
+  integrity sha512-nOBZzYGmE5qZ8JBCvhWHQA+umYnQ8Jd3HGmgxBnmi0/82mU2nwCCnrzHsb29Q+DD7YasYr64rm8uWBBow8L5Fw==
 
 react-native-invertible-scroll-view@^2.0.0:
   version "2.0.0"
