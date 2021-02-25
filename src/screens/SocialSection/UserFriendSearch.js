@@ -5,7 +5,7 @@ import { View } from 'react-native';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import { UserSnippetListElement } from 'reusables/ListElements';
 import S from 'styling';
-import { Text } from "react-native-elements"
+import { Text, Button } from "react-native-elements"
 import FriendRequestPreviewer from './FriendRequestPreviewer'
 import FriendReqModal from './FriendReqModal';
 import ErrorMessageText from 'reusables/ErrorMessageText';
@@ -18,7 +18,6 @@ export default class UserFriendSearch extends React.Component {
       title: "User Search",
     };
   };
-
 
   state = {
     errorMessage: null,
@@ -60,9 +59,19 @@ export default class UserFriendSearch extends React.Component {
                   <FriendRequestPreviewer
                     ref={ref => this.friendReqPreviewer = ref}
                     style={{ borderColor: "lightgrey", borderWidth: 1, borderRadius: 10, paddingHorizontal: 8, marginBottom: 8 }} />
-                  <Text style={{ fontWeight: "bold", textAlign: "center", fontSize: 18 }}>
-                    Your Friends
-                  </Text>
+
+                  <View style = {{flexDirection: "row", alignItems: "center"}}>
+                    <Text style={{ fontWeight: "bold", textAlign: "center", fontSize: 18, flex: 1 }}>
+                      Your Friends
+                    </Text>
+                    <Button
+                      containerStyle = {{marginHorizontal: 16}}
+                      onPress={() => { this.props.navigation.navigate("InviteContacts") }}
+                      title="Invite Contacts"
+                      accessibilityLabel="Invite contacts to Bitup" />
+                  </View>
+
+
                 </View>
               }
             />

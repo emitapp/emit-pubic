@@ -47,6 +47,8 @@
 	<string>$(PRODUCT_NAME) would like to save photos to your photo gallery (necessary for changing your profile picture)</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like access to your photo gallery to change your profile picture</string>
+	<key>NSContactsUsageDescription</key>
+  	<string>$(PRODUCT_NAME) would like access to contacts to invite others to the app</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

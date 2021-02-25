@@ -23,6 +23,8 @@ target 'emit' do
   pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
   pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
   pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications"
+  pod 'Permission-Contacts', :path => "#{permissions_path}/Contacts"
+
 
   target 'emitTests' do
     inherit! :complete

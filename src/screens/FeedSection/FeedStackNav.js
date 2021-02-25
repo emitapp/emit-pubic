@@ -12,6 +12,8 @@ import GroupMemberAdder from '../SocialSection/UserGroups/GroupMemberAdder';
 import GroupSearch from '../SocialSection/UserGroups/GroupSearch';
 import GroupViewer from '../SocialSection/UserGroups/GroupViewer';
 import SocialButtonHub from '../SocialSection/SocialButtonHub';
+import InviteContacts from '../SocialSection/InviteContacts'
+
 
 const Navigator = createStackNavigator(
   {
@@ -23,7 +25,8 @@ const Navigator = createStackNavigator(
     UserFriendSearch,
     GroupMemberAdder,
     GroupSearch,
-    GroupViewer
+    GroupViewer,
+    InviteContacts,
   },
   {
     initialRouteName: 'Feed',

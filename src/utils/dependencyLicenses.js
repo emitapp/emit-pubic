@@ -151,6 +151,12 @@ export default
         "licenseUrl": "https://github.com/microsoft/react-native-code-push/raw/master/LICENSE.md",
         "parents": "emit"
     },
+    "react-native-contacts@6.0.4": {
+        "licenses": "MIT",
+        "repository": "https://github.com/rt2zz/react-native-contacts",
+        "licenseUrl": "https://github.com/rt2zz/react-native-contacts/raw/master/LICENSE",
+        "parents": "emit"
+    },
     "react-native-device-info@7.3.1": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-device-info/react-native-device-info",
