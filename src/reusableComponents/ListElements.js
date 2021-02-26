@@ -33,6 +33,34 @@ export class UserSnippetListElement extends React.PureComponent {
     )
   }
 }
+
+/**
+ * Vertical ListView element component for viewing user snippets.
+ * Required props: snippet (the snippet to display) and onPress 
+ * Optional props: extraComponents, style, imageDiameter
+ */
+export class UserSnippetListElementVertical extends React.PureComponent {
+  static defaultProps = {
+    imageDiameter: 55
+  }
+  render() {
+    const snippet = this.props.snippet
+    return (
+      <ThemeConsumer>
+        {({ theme }) => (
+          <TouchableOpacity
+            style={{ ...S.styles.listElement, flexDirection: "column", ...this.props.style }}
+            onPress={this.props.onPress}>
+            <ProfilePicDisplayer diameter={this.props.imageDiameter} uid={snippet.uid} style={{ marginLeft: 8, marginRight: 8 }} />
+              <Text style={{ fontSize: 18 }}>{snippet.displayName}</Text>
+              <Text style={{ color: theme.colors.grey2, fontSize: 18, marginLeft: 6 }}>@{snippet.username}</Text>
+          </TouchableOpacity>
+        )}
+      </ThemeConsumer>
+    )
+  }
+}
+
 /**
  * Standard ListView element component for viewing user groups.
  * Required props: groupInfo

@@ -1,3 +1,6 @@
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import functions from '@react-native-firebase/functions';
 import React from 'react';
 import {
   Alert,
@@ -6,16 +9,20 @@ import {
   StyleSheet, View
 } from "react-native";
 import Contacts from 'react-native-contacts';
-import { Button, SearchBar, Text } from 'react-native-elements';
+import { Button, SearchBar, Text, Divider } from 'react-native-elements';
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
+import Snackbar from 'react-native-snackbar';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import EmptyState from 'reusables/EmptyState';
 import { SmallLoadingComponent } from 'reusables/LoadingComponents';
-import { logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
+import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
+import { cloudFunctionStatuses } from 'utils/serverValues';
 import ContactAvatar from './ContactAvatar';
 import ContactElement from './ContactElement';
-import auth from '@react-native-firebase/auth'
-import database from '@react-native-firebase/database'
+import { UserSnippetListElementVertical } from 'reusables/ListElements';
+import FriendReqModal from './FriendReqModal';
+
+
 export default class InviteContacts extends React.Component {
 
   constructor(props) {
@@ -26,8 +33,11 @@ export default class InviteContacts extends React.Component {
       searchValue: '',
       loading: true,
       invited: {},
-      username: ""
+      username: "",
+      suggestedContactFriends: []
     };
+
+    this.allContactEmails = []
   }
 
   componentDidMount() {
@@ -35,6 +45,7 @@ export default class InviteContacts extends React.Component {
     this.checkPermissions()
       .then(() => {
         this.loadContacts();
+        this.extractEmailsFromContacts()
       })
       .catch(err => {
         Alert.alert("Couldn't get contacts", "Emit probably hasn't been granted the permissions")
@@ -51,7 +62,7 @@ export default class InviteContacts extends React.Component {
         PERMISSIONS.IOS.CONTACTS
       let currentPermission = await check(permissionName);
       currentPermission = await this.requestIfNeeded(permissionName, currentPermission)
-      
+
       if (currentPermission != RESULTS.GRANTED && currentPermission != RESULTS.LIMITED) {
         logError(new Error("Essential Permission not Granted for contacts, aborted"), false)
         throw new Error("Invalid permissions")
@@ -90,16 +101,44 @@ export default class InviteContacts extends React.Component {
   }
 
   getSnippet = async () => {
-    try{
-        const uid = auth().currentUser.uid; 
-        const ref = database().ref(`/userSnippets/${uid}`);
-        const snapshot = await timedPromise(ref.once('value'), MEDIUM_TIMEOUT);
-        if (snapshot.exists()) this.setState({username: snapshot.val().username})
-    }catch(err){
-        this.setState({ username: ""})
-        if (err.name != "timeout") logError(err)
+    try {
+      const uid = auth().currentUser.uid;
+      const ref = database().ref(`/userSnippets/${uid}`);
+      const snapshot = await timedPromise(ref.once('value'), MEDIUM_TIMEOUT);
+      if (snapshot.exists()) this.setState({ username: snapshot.val().username })
+    } catch (err) {
+      this.setState({ username: "" })
+      if (err.name != "timeout") logError(err)
     }
-}
+  }
+
+  extractEmailsFromContacts = async () => {
+    this.state.contacts.forEach(c => {
+      if (!c.emailAddresses || c.emailAddresses.length == 0) return;
+      c.emailAddresses.forEach(emailObject => {
+        this.allContactEmails.push(emailObject.email)
+      })
+    })
+
+    try {
+      const response = await timedPromise(functions().httpsCallable('getUsersFromContacts')(this.allContactEmails), LONG_TIMEOUT);
+      if (response.data.status === cloudFunctionStatuses.OK) {
+        this.setState({ suggestedContactFriends: response.data.message })
+      } else {
+        Snackbar.show({
+          text: "Failed to get recommended friends from contacts",
+          duration: Snackbar.LENGTH_SHORT
+        });
+        logError(new Error(`Problematic getUsersFromContacts function response: ${response.data.message}`))
+      }
+    } catch (err) {
+      if (err.name != "timeout") logError(err)
+      Snackbar.show({
+        text: "Failed to get recommended friends from contacts",
+        duration: Snackbar.LENGTH_SHORT
+      });
+    }
+  }
 
   onPressContact = (contact) => {
     const currInvited = this.state.invited
@@ -117,7 +156,7 @@ export default class InviteContacts extends React.Component {
   search = (text) => {
     const phoneNumberRegex = /\b[\+]?[(]?[0-9]{2,6}[)]?[-\s\.]?[-\s\/\.0-9]{3,15}\b/m;
     const emailAddressRegex = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
-    if (text === "" || text === null) {
+    if (!text) {
       this.loadContacts();
     } else if (phoneNumberRegex.test(text)) {
       Contacts.getContactsByPhoneNumber(text).then(contacts => {
@@ -148,6 +187,9 @@ export default class InviteContacts extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <FriendReqModal
+          ref={modal => this.modal = modal} />
+
         <SearchBar
           placeholder="Search contacts"
           value={this.state.searchValue}
@@ -160,11 +202,12 @@ export default class InviteContacts extends React.Component {
               <SmallLoadingComponent isVisible={this.state.loading} />
             ) : (
               <FlatList
-                contentContainerStyle = {{flex: 1}}
+                contentContainerStyle={{ flex: 1 }}
                 data={this.state.contacts}
                 keyExtractor={(item) => item.recordID}
                 renderItem={({ item }) => this.contactRenderer(item)}
-                ListEmptyComponent={this.renderEmptyState} />
+                ListEmptyComponent={this.renderEmptyState}
+                ListHeaderComponent={this.renderSuggestionHeader} />
             )
         }
       </View>
@@ -209,6 +252,31 @@ export default class InviteContacts extends React.Component {
         title="No Contacts"
         message="Emit coulnd't find any contacts with phone numbers to invite."
       />
+    )
+  }
+
+  renderSuggestionHeader = () => {
+    if (this.state.suggestedContactFriends.length == 0) return null;
+    return (
+      <>
+        <Text style={{ fontWeight: "bold", margin: 10 }}>
+          Contacts already on Emit
+          </Text>
+        <FlatList
+          horizontal={true}
+          contentContainerStyle={{ flex: 1 }}
+          data={this.state.suggestedContactFriends}
+          keyExtractor={(item) => item.uid}
+          renderItem={({ item }) => {
+            return (
+              <UserSnippetListElementVertical 
+                snippet={item} 
+                onPress={() => this.modal.open(item)}/>
+            )
+          }} />
+        <Divider />
+      </>
+
     )
   }
 }

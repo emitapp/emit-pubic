@@ -79,7 +79,7 @@ class FriendRequestPreviewer extends React.Component {
                     waitingForFuncResponse: false,
                     errorText: response.data.message
                 })
-                logError(new Error(`Problematic ${this.state.option} function response: ${response.data.message}`))
+                logError(new Error(`Problematic accept/cancelFriendRequest function response: ${response.data.message}`))
             }
         } catch (err) {
             if (err.name == "timeout") {
