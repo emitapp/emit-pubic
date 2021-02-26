@@ -202,7 +202,7 @@ export default class InviteContacts extends React.Component {
               <SmallLoadingComponent isVisible={this.state.loading} />
             ) : (
               <FlatList
-                contentContainerStyle={{ flex: 1 }}
+                style={{ flex: 1 }}
                 data={this.state.contacts}
                 keyExtractor={(item) => item.recordID}
                 renderItem={({ item }) => this.contactRenderer(item)}
@@ -264,7 +264,6 @@ export default class InviteContacts extends React.Component {
           </Text>
         <FlatList
           horizontal={true}
-          contentContainerStyle={{ flex: 1 }}
           data={this.state.suggestedContactFriends}
           keyExtractor={(item) => item.uid}
           renderItem={({ item }) => {
