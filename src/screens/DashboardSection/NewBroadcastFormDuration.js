@@ -37,7 +37,7 @@ export default class NewBroadcastFormDuration extends React.Component {
                 </Text>
               <View style={{ flex: 1, marginHorizontal: 16, alignItems: "center" }}>
                 <Text style={{ fontSize: 18, fontWeight: "bold", alignSelf: "flex-start" }}>
-                  in...
+                  for...
                 </Text>
                 <View style={styles.rowStyle}>
                   {this.generateTimeButton(10, "black")}
@@ -46,7 +46,7 @@ export default class NewBroadcastFormDuration extends React.Component {
                 </View>
                 <View style={styles.rowStyle}>
                   {this.generateTimeButton(40, "black")}
-                  {this.generateTimeButton(45, "black")}
+                  {this.generateTimeButton(50, "black")}
                   {this.generateTimeButton(60, "black")}
                 </View>
                 <View style={styles.rowStyle}>
