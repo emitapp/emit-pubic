@@ -135,11 +135,11 @@ android {
 
     defaultConfig {
         multiDexEnabled true
-        applicationId "com.emit"
+        applicationId "com.getemit"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.2"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
     splits {

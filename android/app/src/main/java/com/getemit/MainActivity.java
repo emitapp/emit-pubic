@@ -1,4 +1,4 @@
-package com.emit;
+package com.getemit;
 import android.os.Bundle; // <- for react-native-bootsplash
 import com.zoontek.rnbootsplash.RNBootSplash; 
 
