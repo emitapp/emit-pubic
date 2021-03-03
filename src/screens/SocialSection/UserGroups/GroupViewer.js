@@ -3,7 +3,7 @@ import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
 import { Pressable, View } from 'react-native';
-import { Button, Divider, Input, Overlay, Text, ThemeConsumer } from 'react-native-elements';
+import { Button, Divider, Input, Overlay, Text, ThemeConsumer, Tooltip } from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import ErrorMessageText from 'reusables/ErrorMessageText';
@@ -55,7 +55,7 @@ export default class GroupScreen extends React.Component {
         }
         this.setState(
           this.initializeScreenState(GroupScreen.refreshModes.NEW_GROUP_DATA, snap.val()),
-          () => this.showDelayedSnackbar("Fetched group data")
+          () => console.log("Fetched group data")
         )
       })
 
@@ -68,13 +68,13 @@ export default class GroupScreen extends React.Component {
         }
         this.setState(
           this.initializeScreenState(GroupScreen.refreshModes.NEW_RANK, snap.val()),
-          () => this.showDelayedSnackbar("Fetched user group rank")
+          () => console.log("Fetched user group rank")
         )
       })
 
     database()
       .ref(`/userGroupCodes/${this.groupSnippet.uid}`)
-      .once("value", snap => this.setState({ inviteCode: snap.val().toUpperCase()}))
+      .once("value", snap => this.setState({ inviteCode: snap.val().toUpperCase() }))
 
     if (shouldGoBack) {
       this.props.navigation.goBack()
@@ -95,7 +95,8 @@ export default class GroupScreen extends React.Component {
       editingModalOpen,
       isModalVisible,
       fetchedUserRank,
-      fetchedGroupData
+      fetchedGroupData,
+      visibilityModalOpen
     } = this.state;
     if (!this.groupSnippet || !fetchedUserRank || !fetchedGroupData) {
       return (
@@ -149,19 +150,65 @@ export default class GroupScreen extends React.Component {
             </Overlay>
 
             <Overlay
+              isVisible={visibilityModalOpen}
+              onBackdropPress={() => this.closeVisibilityModal()}
+              onRequestClose={() => this.closeVisibilityModal()}
+              overlayStyle={{ width: "80%" }}>
+              <>
+                <Text style={{ margin: 8 }}>
+                  {this.state.fetchedGroupData.isPublic ?
+                    "Making the group private means members can only be join via invitation or by using the invite code." :
+                    "Making the group public means members can join via invitation, ivite code or by searching for the group."}
+                </Text>
+
+                <Button
+                  title="Proceed"
+                  onPress={() => this.updateGroupVisibility()}
+                />
+                <MinorActionButton
+                  title="Cancel"
+                  onPress={() => this.closeVisibilityModal()}
+                />
+              </>
+
+            </Overlay>
+
+            <Overlay
               isVisible={editingModalOpen}
               onBackdropPress={() => this.closeEditingModal()}
-              onRequestClose={() => this.closeEditingModal()}>
+              onRequestClose={() => this.closeEditingModal()}
+              overlayStyle={{ width: "60%" }}>
               <>
-                <Button
-                  title="Edit Name and Current Members"
-                  type="clear"
-                  titleStyle={{ color: theme.colors.black }}
-                  onPress={() =>
-                    this.closeEditingModal(
-                      () => this.enterEditingMode()
-                    )}
-                />
+                {this.state.fetchedUserRank == groupRanks.ADMIN &&
+                  <>
+                    <Button
+                      title="Edit Name and Current Members"
+                      type="clear"
+                      titleStyle={{ color: theme.colors.black }}
+                      onPress={() =>
+                        this.closeEditingModal(
+                          () => this.enterEditingMode()
+                        )}
+                    />
+
+                    <Button
+                      title={this.state.fetchedGroupData.isPublic ? "Make Group Private" : "Make Group Public"}
+                      type="clear"
+                      titleStyle={{ color: theme.colors.black }}
+                      onPress={() =>
+                        this.closeEditingModal(
+                          () => this.showVisbilityModal()
+                        )}
+                    />
+                  </>
+                }
+
+                {this.state.fetchedUserRank != groupRanks.ADMIN &&
+                  <Text style={{ color: "#555555", textAlign: "center", marginBottom: 8 }}>
+                    Only group admins can rename the group and remove other members.
+                  </Text>
+                }
+
                 <Button
                   title="Add Members"
                   titleStyle={{ color: theme.colors.black }}
@@ -184,7 +231,7 @@ export default class GroupScreen extends React.Component {
                   onPress={this.deleteGroup}
                 />
                 <MinorActionButton
-                  title="Close"
+                  title="Cancel"
                   onPress={() => this.closeEditingModal()}
                 />
               </>
@@ -211,32 +258,27 @@ export default class GroupScreen extends React.Component {
               </>
             }
 
-            <View style={{ flexDirection: "row", alignSelf: "stretch", justifyContent: "center", alignItems: "center" }}>
-              <Pressable onPress={() => this.setState({ showProfilePicChanger: true })}>
+            <View style={{ flexDirection: "row", alignSelf: "stretch", alignItems: "center", marginHorizontal: 16 }}>
+              <Pressable onPress={() => this.setState({ showProfilePicChanger: !this.state.showProfilePicChanger })}>
                 <ProfilePicDisplayer
-                  diameter={40}
+                  diameter={60}
                   uid={this.groupSnippet.uid}
                   style={{ marginLeft: 8, marginRight: 8 }}
                   groupPic={true}
                   ref={ref => this.profilePicComponent = ref}
                 />
               </Pressable>
-              <View>
-                <View style={{ flexDirection: "row", marginRight: 16 }}>
-                  <FontAwesomeIcon name="users" size={24} color="grey" style={{ marginHorizontal: 8 }} />
-                  <Text>{this.state.fetchedGroupData?.memberCount} admins</Text>
-                </View>
-
+              <View style={{ marginLeft: 8, flex: 1 }}>
                 <View style={{ flexDirection: "row" }}>
-                  <FontAwesomeIcon name="star" size={24} color="grey" style={{ marginHorizontal: 8 }} />
-                  <Text>{this.state.fetchedGroupData?.adminCount} members</Text>
+                  <FontAwesomeIcon name="users" size={24} color="grey" style={{ marginRight: 8 }} />
+                  <Text>{this.state.fetchedGroupData?.memberCount} members</Text>
+                </View>
+                <View>
+                  <Text>Invite Code: {this.state.inviteCode}</Text>
                 </View>
               </View>
-            </View>
 
-            <View style = {{marginTop : 8}}>
-                <Text>Invite Code: {this.state.inviteCode}</Text>
-                <Text>Invite codes are case insensitive</Text>
+              {this.displayDiscoverablilityBadge()}
             </View>
 
             {this.state.showProfilePicChanger &&
@@ -267,7 +309,7 @@ export default class GroupScreen extends React.Component {
                   extraStyles={{ flex: 1 }}
                   onPress={() => this.openEditingModal()}
                   iconName={S.strings.edit}
-                  title="EDIT"
+                  title="EDIT GROUP"
                 />
               </View>
             ) : (
@@ -300,6 +342,7 @@ export default class GroupScreen extends React.Component {
     let newState = {
       errorMessage: null,
       isModalVisible: false,
+      visibilityModalOpen: false,
       groupName: this.groupSnippet ? this.groupSnippet.name : "",
       inEditMode: false,
       newGroupName: this.groupSnippet ? this.groupSnippet.name : "",
@@ -363,6 +406,7 @@ export default class GroupScreen extends React.Component {
       } else {
         //If the method was successful, the fireabse listeners will clean up the state for us
         if (exitScreenWhenDone) this.props.navigation.goBack();
+        else this.setState({ errorMessage: null })
       }
     } catch (err) {
       if (err.name != 'timeout') logError(err)
@@ -448,6 +492,29 @@ export default class GroupScreen extends React.Component {
     );
   }
 
+  updateGroupVisibility = async () => {
+    try {
+      const cloudFunc = functions().httpsCallable('changeGroupVisibility')
+      console.log(this.groupSnippet)
+      const response = await timedPromise(cloudFunc(this.groupSnippet.uid), LONG_TIMEOUT);
+      if (response.data.status != cloudFunctionStatuses.OK) {
+        const message = (response.data.status == cloudFunctionStatuses.LEASE_TAKEN)
+          //LEASE status Currently not possible for this func, maybe later on tho
+          ? "This group is currently being edited by someone, please wait a few seconds"
+          : response.data.message
+        this.setState({
+          errorMessage: message,
+          visibilityModalOpen: false
+        })
+      } else {
+        this.setState({ visibilityModalOpen: false, errorMessage: null })
+      }
+    } catch (err) {
+      if (err.name != 'timeout') logError(err)
+      this.setState({ errorMessage: err.message, isModalVisible: false })
+    }
+  }
+
   selectUser = (user) => {
     this.setState({ currentlySelectedUser: user })
   }
@@ -465,6 +532,14 @@ export default class GroupScreen extends React.Component {
 
   openEditingModal = () => {
     this.setState({ editingModalOpen: true })
+  }
+
+  showVisbilityModal = () => {
+    this.setState({ visibilityModalOpen: true })
+  }
+
+  closeVisibilityModal = () => {
+    this.setState({ visibilityModalOpen: false })
   }
 
   enterEditingMode = () => {
@@ -493,6 +568,43 @@ export default class GroupScreen extends React.Component {
         });
       },
       150
+    )
+  }
+
+  displayDiscoverablilityBadge = () => {
+    let details = {
+      tooltip: "Members can only be join via invitation or by using the invite code.",
+      darkColor: "green",
+      backgroundColor: "azure",
+      title: "Private"
+    }
+    if (this.state.fetchedGroupData.isPublic) {
+      details = {
+        tooltip: "Members can join via invitation, invite code or by searching for the group.",
+        darkColor: "#111111",
+        backgroundColor: "gainsboro",
+        title: "Public"
+      }
+    }
+
+    return (
+      <Tooltip
+        popover={<Text>{details.tooltip}</Text>}
+        backgroundColor="lightgrey"
+        skipAndroidStatusBar={true}
+        height={130}>
+        <View style={{
+          borderColor: details.darkColor,
+          padding: 2,
+          borderRadius: 5,
+          borderWidth: 1,
+          backgroundColor: details.backgroundColor
+        }}>
+          <Text style={{ color: details.darkColor }}>
+            {details.title}
+          </Text>
+        </View>
+      </Tooltip>
     )
   }
 }

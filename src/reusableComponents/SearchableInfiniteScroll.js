@@ -65,7 +65,7 @@ export default class SearchableInfiniteScroll extends React.Component {
 
             <SearchBar
               autoCapitalize="none"
-              placeholder="Search"
+              placeholder={searchbarPlaceholder}
               onChangeText={searchBarValue => this.setState({ searchBarValue })}
               value={this.state.searchBarValue}
               onSubmitEditing={this.search}

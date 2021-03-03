@@ -7,6 +7,7 @@ import ErrorMessageText from 'reusables/ErrorMessageText';
 import { UserGroupListElement } from 'reusables/ListElements';
 import { BannerButton, MinorActionButton } from 'reusables/ReusableButtons';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
+import DymanicInfiniteScroll from 'reusables/DynamicInfiniteScroll'
 import S from 'styling';
 import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers'
 import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
@@ -25,6 +26,7 @@ export default class GroupSearch extends React.Component {
 
   state = {
     isModalVisible: false,
+    selectedPublicGroup: null
   }
 
   render() {
@@ -34,27 +36,42 @@ export default class GroupSearch extends React.Component {
 
         <Overlay isVisible={this.state.isModalVisible}>
           <View>
+            <GroupJoinDialogue
+              groupSnippet={this.state.selectedPublicGroup}
+              joinSuccessFunction={() => {
+                this.showDelayedSnackbar("Join Successful!")
+                this.setState({ isModalVisible: false })
+              }} />
 
-          <InviteCodeDialogue joinSuccessFunction={() => {
-            this.showDelayedSnackbar("Join Successful!")
-            this.setState({isModalVisible: false})
-          }} />
-
-          <MinorActionButton
-            title="Close"
-            onPress={() => this.setState({ isModalVisible: false })} />
-            </View>
+            <MinorActionButton
+              title="Close"
+              onPress={() => this.setState({ isModalVisible: false })} />
+          </View>
         </Overlay>
 
         <SearchableInfiniteScroll
-          type = "dynamic"
-          queryValidator = {(query) => true}
-          queryTypes = {[{name: "Name", value: "nameQuery"}]}
-          renderItem = {this.itemRenderer}
-          dbref = {database().ref(`/userGroupMemberships/${userUid}`)}
+          type="static"
+          queryValidator={(query) => query.length > 1}
+          parentEmptyStateComponent={
+            <DymanicInfiniteScroll
+              renderItem={this.itemRenderer}
+              dbref={database().ref(`/userGroupMemberships/${userUid}`).orderByChild("queryName")}
+              ListHeaderComponent={
+                <Text style={{ fontWeight: "bold", textAlign: "center", fontSize: 18, flex: 1 }}>
+                  Your Groups
+                </Text>
+              }
+            />
+          }
+          searchbarPlaceholder="Search Your Groups or Public Groups"
+          queryTypes={[{ name: "Name", value: "nameQuery" }]}
+          renderItem={this.publicGroupRenderer}
+          dbref={database().ref("/publicGroupSnippets")}
         />
 
-        <Button title="Join Group via invite code" onPress={() => this.setState({ isModalVisible: true })} />
+        <Button
+          title="Join Group via invite code"
+          onPress={() => this.setState({ isModalVisible: true, selectedPublicGroup: null })} />
 
         <BannerButton
           onPress={() => this.props.navigation.navigate('GroupMemberAdder')}
@@ -71,6 +88,15 @@ export default class GroupSearch extends React.Component {
       <UserGroupListElement
         groupInfo={item}
         onPress={() => this.props.navigation.navigate('GroupViewer', { group: item })}
+      />
+    );
+  }
+
+  publicGroupRenderer = ({ item }) => {
+    return (
+      <UserGroupListElement
+        groupInfo={item}
+        onPress={() => this.setState({ isModalVisible: true, selectedPublicGroup: item })}
       />
     );
   }
@@ -93,28 +119,41 @@ export default class GroupSearch extends React.Component {
   }
 }
 
-class InviteCodeDialogue extends React.PureComponent {
+//Give it a  groupSnippet and it will not show the invite code UX
+class GroupJoinDialogue extends React.PureComponent {
 
-  state = {
-    message: null,
-    inviteCode: "",
-    groupUid: null,
-    groupName: null,
-    groupMemberCount: null
+  constructor(props){
+    super (props)
+    this.state = {
+      groupsUserIsIn: [],
+      message: null,
+      inviteCode: "",
+      groupUid: props.groupSnippet ? props.groupSnippet.uid : null,
+      groupName: props.groupSnippet ? props.groupSnippet.name : null,
+      groupMemberCount: props.groupSnippet ? props.groupSnippet.memberCount : null
+    }
+    if (props.groupSnippet) this.checkIfMember(props.groupSnippet.uid)
   }
+
 
   render() {
     return (
       <View style={{ justifyContent: "center", alignItems: "center" }}>
         <ErrorMessageText message={this.state.message} />
-        <Text>Invite codes are not case sensitive</Text>
-        <SearchBar
-          placeholder="Enter Code"
-          onChangeText={inviteCode => this.setState({ inviteCode })}
-          value={this.state.inviteCode}
-          containerStyle={{ width: 300 }}
-          onSubmitEditing={this.findGroup}
-        />
+
+        {!this.props.groupSnippet &&
+          <>
+            <Text>Invite codes are not case sensitive</Text>
+            <SearchBar
+              placeholder="Enter Code"
+              onChangeText={inviteCode => this.setState({ inviteCode })}
+              value={this.state.inviteCode}
+              containerStyle={{ width: 300 }}
+              onSubmitEditing={this.findGroup}
+            />
+          </>
+        }
+
         {this.state.groupUid &&
           <>
             <Text>About to join...</Text>
@@ -128,7 +167,11 @@ class InviteCodeDialogue extends React.PureComponent {
 
             <Text h4>{this.state.groupName}</Text>
 
-            <Button title="Join" onPress={this.joinGroupViaCode} />
+            {this.state.groupsUserIsIn.includes(this.state.groupUid) ? (
+              <Text>You're already a member.</Text>
+            ) : (
+              <Button title="Join" onPress={this.props.groupSnippet ? this.joinPublicGroup : this.joinGroupViaCode} />
+            )}
           </>
         }
       </View>
@@ -146,11 +189,14 @@ class InviteCodeDialogue extends React.PureComponent {
         return
       }
 
-      const groupSnippet = await database()
-        .ref(`userGroups/${Object.keys(groupIdSnap.val())[0]}/snippet`).once("value");
+      const groupUid = Object.keys(groupIdSnap.val())[0]
 
+      const groupSnippet = await database()
+        .ref(`userGroups/${groupUid}/snippet`).once("value");
+
+      this.checkIfMember(groupUid)
       this.setState({
-        groupUid: Object.keys(groupIdSnap.val())[0],
+        groupUid,
         groupName: groupSnippet.val().name,
         groupMemberCount: groupSnippet.val().memberCount
       })
@@ -177,5 +223,25 @@ class InviteCodeDialogue extends React.PureComponent {
       this.setState({ message: error.message })
       logError(error)
     }
+  }
+
+  joinPublicGroup = async () => {
+    try {
+      //Just get the invite code and join via that. No need to reinvent the wheel.
+      const inviteCode = await database().ref(`userGroupCodes/${this.state.groupUid}`).once("value")
+      if (!inviteCode.exists()) return
+      this.setState({inviteCode: inviteCode.val()}, this.joinGroupViaCode)
+
+    } catch (error) {
+      this.setState({ message: error.message })
+      logError(error)
+    }
+  }
+
+  //We add it to a list since this is asynchonous so we don't want to use just a single boolena flag
+  checkIfMember = async (groupUid) => {
+    if (this.state.groupsUserIsIn.includes(groupUid)) return;
+    const membership = await database().ref(`/userGroupMemberships/${auth().currentUser.uid}/${groupUid}`).once("value")
+    if (membership.exists())this.setState({groupsUserIsIn: [...this.state.groupsUserIsIn, groupUid]})
   }
 }
