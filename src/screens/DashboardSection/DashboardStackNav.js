@@ -25,6 +25,7 @@ import GroupSearch from '../SocialSection/UserGroups/GroupSearch';
 import GroupViewer from '../SocialSection/UserGroups/GroupViewer';
 import SocialButtonHub from '../SocialSection/SocialButtonHub';
 import InviteContacts from '../SocialSection/InviteContacts'
+import JitsiComponent from 'reusables/JitsiComponent'
 
 
 const Navigator = createStackNavigator(
@@ -49,6 +50,7 @@ const Navigator = createStackNavigator(
     GroupSearch,
     GroupViewer,
     InviteContacts,
+    JitsiComponent
   },
   {
     initialRouteName: 'ActiveBroadcasts',
@@ -60,7 +62,8 @@ export default class DashboardStackNav extends React.Component {
   //The tab view shouldn't show for certain screens in this section...
   static navigationOptions = ({navigation}) => {
     const routeName = navigation.state ? navigation.state.routes[navigation.state.index].routeName : "default"
-    var targetScreens = ["GroupMemberAdder","NewBroadcastFormActivity","NewBroadcastFormTime", "NewBroadcastForm", "LocationSelector", "NewBroadcastFormLocation", "NewBroadcastFormRecepients", "SavedLocations", "NewBroadcastFormDuration"]
+    var targetScreens = ["GroupMemberAdder","NewBroadcastFormActivity","NewBroadcastFormTime", "NewBroadcastForm","LocationSelector",
+     "NewBroadcastFormLocation", "NewBroadcastFormRecepients", "SavedLocations", "NewBroadcastFormDuration", "JitsiComponent"]
     let showTabView = !targetScreens.includes(routeName)
     return {
       tabBarVisible: showTabView, 

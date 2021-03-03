@@ -14,7 +14,6 @@ import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import MainLinearGradient from 'reusables/MainLinearGradient';
 import { ProfilePicList } from 'reusables/ProfilePicComponents';
 import { BannerButton } from 'reusables/ReusableButtons';
-import SkypeRoomLinkGetter from 'reusables/SkypeRoomLinkGetter';
 import S from 'styling';
 import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, MAX_BROADCAST_NOTE_LENGTH } from 'utils/serverValues';
@@ -47,7 +46,6 @@ class NewBroadcastForm extends React.Component {
       maxResponders: "",
       isModalVisible: false,
       errorMessage: null,
-      isSkypeModalVisible: false
     }
   }
 
@@ -59,8 +57,6 @@ class NewBroadcastForm extends React.Component {
       this.setState({}) //Just call for a rerender
     });
   }
-
-
 
 
   componentWillUnmount() {
@@ -78,18 +74,8 @@ class NewBroadcastForm extends React.Component {
       <ThemeConsumer>
         {({ theme }) => (
           <MainLinearGradient theme={theme}>
-            <SkypeRoomLinkGetter
-              isVisible={this.state.isSkypeModalVisible}
-              onCancel={() => this.setState({ isSkypeModalVisible: false })}
-              onLinkReceived={(link) => {
-                let note = this.state.note
-                if (note) note += "\n"
-                note += "Video Conferencing Room (no account needed!): " + link
-                this.setState({ note, isSkypeModalVisible: false })
-              }} />
 
             <DefaultLoadingModal isVisible={this.state.isModalVisible} />
-
 
             <IosOnlyKeyboardAvoidingView
               behavior={"position"}
@@ -243,13 +229,6 @@ class NewBroadcastForm extends React.Component {
                     }
                   </>
                 }
-
-                <Button
-                  title={`Attach Video Conferencing Link`}
-                  onPress={() => this.setState({ isSkypeModalVisible: true })}
-                  titleStyle={{ color: theme.colors.primary }}
-                  buttonStyle={{ backgroundColor: "white" }}
-                />
 
                 <Button
                   title={`Show ${this.state.showingMore ? "less" : "more"}`}

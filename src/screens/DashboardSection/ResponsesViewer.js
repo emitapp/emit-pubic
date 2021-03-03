@@ -137,6 +137,10 @@ export default class ResponsesViewer extends React.Component {
           //Will think about later
           onPress={() => this.props.navigation.navigate("ChatScreen", { broadcast: this.broadcastSnippet })}
           containerStyle={{ alignSelf: "center" }} />
+        <Button 
+          title = "Video Chat 📹"
+          containerStyle={{ alignSelf: "center" }}
+          onPress={() => this.props.navigation.navigate("JitsiComponent", { meetingID: this.broadcastSnippet.uid, displayName: this.broadcastSnippet.owner.displayName })}/>
       </View>
     )
   }

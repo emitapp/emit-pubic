@@ -1,4 +1,5 @@
 import database from '@react-native-firebase/database';
+import auth from '@react-native-firebase/auth';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
 import { Linking, Platform, View } from 'react-native';
@@ -13,9 +14,8 @@ import { UserSnippetListElement } from 'reusables/ListElements';
 import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/LoadingComponents';
 import ProfilePicDisplayer, { ProfilePicList } from 'reusables/ProfilePicComponents';
 import S from "styling";
-import { logError, LONG_TIMEOUT, shareFlare, timedPromise } from 'utils/helpers';
+import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, shareFlare, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, responderStatuses } from 'utils/serverValues';
-
 
 /**
  * Class for viewing info about a broadcast.
@@ -30,9 +30,9 @@ export default class BroadcastViewer extends React.Component {
       errorMessage: null,
       broadcastData: null,
       isModalVisible: false,
+      userSnippet: null,
       showConfirmed: false
     }
-
     this.broadcastSnippet = this.props.navigation.getParam('broadcast', { uid: " ", owner: { uid: " " } })
   }
 
@@ -44,6 +44,7 @@ export default class BroadcastViewer extends React.Component {
     database()
       .ref(`/activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)
       .on('value', snap => this.updateAttendees(snap.val()))
+    this.getUserSnippet()
   }
 
   componentWillUnmount = () => {
@@ -162,6 +163,20 @@ export default class BroadcastViewer extends React.Component {
     this.setState({ attendees: attendeesNew })
   }
 
+  getUserSnippet = async () => {
+    try{
+        const uid = auth().currentUser.uid; 
+        const ref = database().ref(`/userSnippets/${uid}`);
+        const snapshot = await timedPromise(ref.once('value'), MEDIUM_TIMEOUT);
+        if (snapshot.exists()){
+            this.setState({ userSnippet: snapshot.val() })
+        }
+    } catch(err) {
+        this.setState({ userSnippet: {displayName: "-", username: "-"} })
+        if (err.name != "timeout") logError(err)
+    }
+}
+
   displayBroadcastAction = () => {
     if (!this.broadcastSnippet.status || this.broadcastSnippet.status == responderStatuses.CANCELLED) {
       return (
@@ -185,6 +200,12 @@ export default class BroadcastViewer extends React.Component {
             //Will think about later
             onPress={() => this.props.navigation.navigate("ChatScreen", { broadcast: this.broadcastSnippet })}
             containerStyle={{ alignSelf: "center" }} />
+            
+            <Button 
+              title = "Video Chat 📹"
+              containerStyle={{ alignSelf: "center" }}
+              onPress={() => this.props.navigation.navigate("JitsiComponent", { meetingID: this.broadcastSnippet.uid,
+              displayName: this.state.userSnippet.displayName })}/>
         </View>
       )
     }

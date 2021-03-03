@@ -13,6 +13,7 @@ import GroupSearch from '../SocialSection/UserGroups/GroupSearch';
 import GroupViewer from '../SocialSection/UserGroups/GroupViewer';
 import SocialButtonHub from '../SocialSection/SocialButtonHub';
 import InviteContacts from '../SocialSection/InviteContacts'
+import JitsiComponent from 'reusables/JitsiComponent'
 
 
 const Navigator = createStackNavigator(
@@ -27,6 +28,7 @@ const Navigator = createStackNavigator(
     GroupSearch,
     GroupViewer,
     InviteContacts,
+    JitsiComponent
   },
   {
     initialRouteName: 'Feed',
