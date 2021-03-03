@@ -135,30 +135,24 @@ export const ShowNotSupportedAlert = (customMessage = null) => {
 
 
 import { Share } from 'react-native';
+import database from '@react-native-firebase/database';
 /**
  * Allows users to share a flare using native UI
  */
-export const shareFlare = (flare) => {
-  let message = ""
-  message += `Join ${flare.owner.displayName} ${flare.emoji} ${flare.activity}! \n`
-  message += `${flare.totalConfirmations} are currently in! \n`
-  message += `Start time: around ${epochToDateString(flare.startingTime)}. \n`
-  message += `Duration: about `
+export const shareFlare = async (flare) => {
+  try {
+    const slugSnap = await database().ref("flareSlugs")
+      .orderByChild("flareUid")
+      .equalTo(flare.uid)
+      .once("value");
 
-  //Calculating duration real quick ...
-  let minutes = Math.ceil((flare.duration / (1000 * 60)) % 60)
-  let hours = Math.floor((flare.duration / (1000 * 60 * 60)) % 24)
-  if (minutes) message += `${minutes} minutes `
-  if (hours) message += `${hours} hours`
-  message += '\n'
-
-  if (flare.location){
-    message += `The owner added location information! \n ${flare.location} \n`
-    if (flare.geolocation) message += `Pin: ${flare.geolocation.latitude}, ${flare.geolocation.longitude} \n`
+    if (!slugSnap.exists()) return
+ 
+    const slug = Object.keys(slugSnap.val())[0]
+    const message = `Check out this flare and join me! https://flares.getemit.com/${slug}`
+    Share.share({ message });
+  } catch (err) {
+    if (err.name != "timeout") logError(err)
   }
 
-  if (flare.note){
-    message += `\n ${flare.note}\n`
-  }
-  Share.share({ message }).catch(err => logError(err));
 }
