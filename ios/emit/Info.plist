@@ -40,7 +40,7 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to use your camera for Emitcode scanning and taking pictures for your profile</string>
+	<string>$(PRODUCT_NAME) would like to use your camera for Emitcode scanning, taking pictures for your profile and video conferencing.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to know your location make map functionality smoother</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
@@ -49,6 +49,8 @@
 	<string>$(PRODUCT_NAME) would like access to your photo gallery to change your profile picture</string>
 	<key>NSContactsUsageDescription</key>
   	<string>$(PRODUCT_NAME) would like access to contacts to invite others to the app</string>
+	<key>NSMicrophoneUsageDescription</key>
+  	<string>Emit would like access to your microphone for video conferencing.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

@@ -9,17 +9,18 @@ import {
   StyleSheet, View
 } from "react-native";
 import Contacts from 'react-native-contacts';
-import { Button, SearchBar, Text, Divider } from 'react-native-elements';
-import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
+import { Button, Divider, SearchBar, Text } from 'react-native-elements';
+import { PERMISSIONS } from 'react-native-permissions';
 import Snackbar from 'react-native-snackbar';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import EmptyState from 'reusables/EmptyState';
+import { UserSnippetListElementVertical } from 'reusables/ListElements';
 import { SmallLoadingComponent } from 'reusables/LoadingComponents';
+import { checkAndGetPermissions } from 'utils/AppPermissions';
 import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses } from 'utils/serverValues';
 import ContactAvatar from './ContactAvatar';
 import ContactElement from './ContactElement';
-import { UserSnippetListElementVertical } from 'reusables/ListElements';
 import FriendReqModal from './FriendReqModal';
 
 
@@ -42,52 +43,20 @@ export default class InviteContacts extends React.Component {
 
   componentDidMount() {
     this.getSnippet(); //Since most of this module works without internet, there are failsafes in case this fails
-    this.checkPermissions()
-      .then(() => {
-        this.loadContacts();
-        this.extractEmailsFromContacts()
+    checkAndGetPermissions({ required: [PERMISSIONS.ANDROID.READ_CONTACTS] }, { required: [PERMISSIONS.IOS.CONTACTS] })
+      .then(permissionsGranted => {
+        if (permissionsGranted) {
+          this.loadContacts();
+          this.extractEmailsFromContacts()
+        } else {
+          Alert.alert("Couldn't get contacts", "Emit probably hasn't been granted the permissions")
+        }
       })
       .catch(err => {
-        Alert.alert("Couldn't get contacts", "Emit probably hasn't been granted the permissions")
+        logError(err)
+        Alert.alert("Couldn't get contacts", "Something went wrong!")
       })
   }
-
-  /**
-   * This promise rejects if there's not enough permissions
-   */
-  checkPermissions = async () => {
-    try {
-      const permissionName = Platform.OS == "android" ?
-        PERMISSIONS.ANDROID.READ_CONTACTS :
-        PERMISSIONS.IOS.CONTACTS
-      let currentPermission = await check(permissionName);
-      currentPermission = await this.requestIfNeeded(permissionName, currentPermission)
-
-      if (currentPermission != RESULTS.GRANTED && currentPermission != RESULTS.LIMITED) {
-        logError(new Error("Essential Permission not Granted for contacts, aborted"), false)
-        throw new Error("Invalid permissions")
-      }
-    } catch (err) {
-      logError(err, err.message != "Invalid permissions")
-      throw new Error("Invalid permissions")
-    }
-  }
-
-  requestIfNeeded = async (permission, checkResult) => {
-    try {
-      if (checkResult == RESULTS.GRANTED || checkResult == RESULTS.LIMITED) {
-        return checkResult;
-      } else if (checkResult == RESULTS.UNAVAILABLE || checkResult == RESULTS.BLOCKED) {
-        return checkResult;
-      } else {
-        let newStatus = await request(permission);
-        return newStatus;
-      }
-    } catch (err) {
-      logError(err)
-    }
-  }
-
 
   loadContacts() {
     Contacts.getAllWithoutPhotos()
@@ -268,9 +237,9 @@ export default class InviteContacts extends React.Component {
           keyExtractor={(item) => item.uid}
           renderItem={({ item }) => {
             return (
-              <UserSnippetListElementVertical 
-                snippet={item} 
-                onPress={() => this.modal.open(item)}/>
+              <UserSnippetListElementVertical
+                snippet={item}
+                onPress={() => this.modal.open(item)} />
             )
           }} />
         <Divider />

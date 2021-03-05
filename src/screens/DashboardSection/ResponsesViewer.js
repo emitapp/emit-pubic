@@ -58,21 +58,14 @@ export default class ResponsesViewer extends React.Component {
         <DefaultLoadingModal isVisible={this.state.isModalVisible} />
         <ErrorMessageText message={this.state.errorMessage} />
 
-        <Button
-          icon={<AwesomeIcon name="share-square" size={30} color="black" />}
-          containerStyle={{ position: 'absolute', top: 8, left: 8 }}
-          onPress={() => shareFlare(this.broadcastSnippet)}
-          type="clear"
-        />
-
         <View style={{ width: "100%" }}>
 
           <View style={{ alignItems: "center", marginBottom: 25, marginTop: 25 }}>
             <View style={{ flexDirection: "row" }}>
-              <View style={{ flexDirection:"row", alignItems: "center", justifyContent: "center", marginTop: -16, marginBottom: 8, marginRight: 8 }}>
-                <Text style={{ fontSize: 36 }}>{this.broadcastSnippet.emoji}</Text> 
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: -16, marginBottom: 8, marginRight: 8 }}>
+                <Text style={{ fontSize: 36 }}>{this.broadcastSnippet.emoji}</Text>
                 <Text style={{ fontSize: 24 }}>{this.broadcastSnippet.activity}</Text>
-              </View> 
+              </View>
             </View>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
               <View style={{ justifyContent: "center" }}>
@@ -137,10 +130,18 @@ export default class ResponsesViewer extends React.Component {
           //Will think about later
           onPress={() => this.props.navigation.navigate("ChatScreen", { broadcast: this.broadcastSnippet })}
           containerStyle={{ alignSelf: "center" }} />
-        <Button 
-          title = "Video Chat 📹"
+        <Button
+          title="Video Chat 📹"
           containerStyle={{ alignSelf: "center" }}
-          onPress={() => this.props.navigation.navigate("JitsiComponent", { meetingID: this.broadcastSnippet.uid, displayName: this.broadcastSnippet.owner.displayName })}/>
+          onPress={() => this.props.navigation.navigate("JitsiComponent", { meetingID: this.broadcastSnippet.uid, displayName: this.broadcastSnippet.owner.username })} />
+
+        <Button
+          icon={<AwesomeIcon name="share-square" size={30} color="black" />}
+          containerStyle={{ position: 'absolute', top: 8, left: 8 }}
+          onPress={() => shareFlare(this.broadcastSnippet)}
+          type="clear"
+        />
+
       </View>
     )
   }

@@ -68,22 +68,15 @@ export default class BroadcastViewer extends React.Component {
           <TimeoutLoadingComponent hasTimedOut={false} retryFunction={() => null} />
         }
 
-        <Button
-          icon={<AwesomeIcon name="share-square" size={30} color="black" />}
-          containerStyle={{ position: 'absolute', top: 8, left: 8 }}
-          onPress={() => shareFlare(this.broadcastSnippet)}
-          type="clear"
-        />
-
         {broadcastData &&
           <View style={{ width: "100%" }}>
 
             <View style={{ alignItems: "center", marginBottom: 25, marginTop: 25 }}>
               <View style={{ flexDirection: "row" }}>
-                <View style={{ flexDirection:"row", alignItems: "center", justifyContent: "center", marginTop: -16, marginBottom: 8, marginRight: 8 }}>
-                  <Text style={{ fontSize: 36 }}>{broadcastData.emoji}</Text> 
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: -16, marginBottom: 8, marginRight: 8 }}>
+                  <Text style={{ fontSize: 36 }}>{broadcastData.emoji}</Text>
                   <Text style={{ fontSize: 24 }}>{broadcastData.activity}</Text>
-                </View> 
+                </View>
                 <Text style={{ fontSize: 32, marginBottom: 8 }}>{broadcastData.location}</Text>
               </View>
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
@@ -147,6 +140,13 @@ export default class BroadcastViewer extends React.Component {
 
         {broadcastData && this.displayBroadcastAction()}
 
+        <Button
+          icon={<AwesomeIcon name="share-square" size={30} color="black" />}
+          containerStyle={{ position: 'absolute', top: 8, left: 8 }}
+          onPress={() => shareFlare(this.broadcastSnippet)}
+          type="clear"
+        />
+
       </View>
     )
   }
@@ -164,18 +164,18 @@ export default class BroadcastViewer extends React.Component {
   }
 
   getUserSnippet = async () => {
-    try{
-        const uid = auth().currentUser.uid; 
-        const ref = database().ref(`/userSnippets/${uid}`);
-        const snapshot = await timedPromise(ref.once('value'), MEDIUM_TIMEOUT);
-        if (snapshot.exists()){
-            this.setState({ userSnippet: snapshot.val() })
-        }
-    } catch(err) {
-        this.setState({ userSnippet: {displayName: "-", username: "-"} })
-        if (err.name != "timeout") logError(err)
+    try {
+      const uid = auth().currentUser.uid;
+      const ref = database().ref(`/userSnippets/${uid}`);
+      const snapshot = await timedPromise(ref.once('value'), MEDIUM_TIMEOUT);
+      if (snapshot.exists()) {
+        this.setState({ userSnippet: snapshot.val() })
+      }
+    } catch (err) {
+      this.setState({ userSnippet: { displayName: "-", username: "-" } })
+      if (err.name != "timeout") logError(err)
     }
-}
+  }
 
   displayBroadcastAction = () => {
     if (!this.broadcastSnippet.status || this.broadcastSnippet.status == responderStatuses.CANCELLED) {
@@ -200,12 +200,14 @@ export default class BroadcastViewer extends React.Component {
             //Will think about later
             onPress={() => this.props.navigation.navigate("ChatScreen", { broadcast: this.broadcastSnippet })}
             containerStyle={{ alignSelf: "center" }} />
-            
-            <Button 
-              title = "Video Chat 📹"
-              containerStyle={{ alignSelf: "center" }}
-              onPress={() => this.props.navigation.navigate("JitsiComponent", { meetingID: this.broadcastSnippet.uid,
-              displayName: this.state.userSnippet.displayName })}/>
+
+          <Button
+            title="Video Chat 📹"
+            containerStyle={{ alignSelf: "center" }}
+            onPress={() => this.props.navigation.navigate("JitsiComponent", {
+              meetingID: this.broadcastSnippet.uid,
+              displayName: this.state.userSnippet.username
+            })} />
         </View>
       )
     }

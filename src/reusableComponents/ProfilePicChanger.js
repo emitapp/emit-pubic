@@ -3,7 +3,7 @@ import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import React, { Component } from 'react';
 import { Platform, StyleSheet, View, Image, Alert, Linking } from 'react-native';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import { logError } from 'utils/helpers';
 import { v4 as uuidv4 } from 'uuid';
@@ -14,6 +14,7 @@ var RNFS = require('react-native-fs');
 import ProfilePicCircle from 'reusables/ProfilePicComponents';
 import ErrorMessageText from 'reusables/ErrorMessageText';
 import { MinorActionButton } from 'reusables/ReusableButtons';
+import { checkAndGetPermissions } from 'utils/AppPermissions'
 
 const imagePickerOptions = {
   mediaType: 'photo'
@@ -115,7 +116,11 @@ export default class ProfilePicChanger extends Component {
   //When choosing the image from the gallery
   pickImageFromGallery = async () => {
     try {
-      await this.checkPermissions();
+      if (! await this.checkPermissions()){
+        Alert.alert("Can't do that!", `We don't have enough permissions`);
+        return
+      }
+      
       this.setState({ pickingImage: true })
       launchImageLibrary(imagePickerOptions, response => {
         if (response.errorCode) {
@@ -134,7 +139,7 @@ export default class ProfilePicChanger extends Component {
   //When you're taking the image using the camera
   pickImageFromCamera = async () => {
     try {
-      await this.checkPermissions();
+      if (! await this.checkPermissions()) return;
       this.setState({ pickingImage: true })
       launchCamera(imagePickerOptions, response => {
         if (response.errorCode) {
@@ -208,52 +213,18 @@ export default class ProfilePicChanger extends Component {
   //This promise rejects if there's not enough permissions
   checkPermissions = async () => {
     try {
-      if (Platform.OS == "android") {
-        const permissionResults = await Promise.all([
-          check(PERMISSIONS.ANDROID.CAMERA),
-          check(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE),
-          check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE)])
-        const finalResults = []
-        finalResults[0] = await this.requestIfNeeded(PERMISSIONS.ANDROID.CAMERA, permissionResults[0])
-        finalResults[1] = await this.requestIfNeeded(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, permissionResults[1])
-        finalResults[2] = await this.requestIfNeeded(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, permissionResults[2])
-
-        if (finalResults[1] != RESULTS.GRANTED && finalResults[1] != RESULTS.LIMITED) {
-          logError(new Error("Essential Permission not Granted, aborted"), false)
-          throw new Error("Invalid permissions")
-        }
-      } else {
-        const permissionResults = await Promise.all([
-          check(PERMISSIONS.IOS.CAMERA),
-          check(PERMISSIONS.IOS.PHOTO_LIBRARY)])
-        const finalResults = []
-        finalResults[0] = await this.requestIfNeeded(PERMISSIONS.IOS.CAMERA, permissionResults[0])
-        finalResults[1] = await this.requestIfNeeded(PERMISSIONS.IOS.PHOTO_LIBRARY, permissionResults[1])
-
-        if (finalResults[1] != RESULTS.GRANTED && finalResults[1] != RESULTS.LIMITED) {
-          logError(new Error("Essential Permission not Granted, aborted"), false)
-          throw new Error("Invalid permissions")
-        }
-      }
-    } catch (err) {
-      logError(err, err.message != "Invalid permissions")
-      this.setState({ errorMessage: "Invalid permissions!" })
-      throw new Error("Invalid permissions")
-    }
-  }
-
-  requestIfNeeded = async (permission, checkResult) => {
-    try {
-      if (checkResult == RESULTS.GRANTED || checkResult == RESULTS.LIMITED) {
-        return checkResult;
-      } else if (checkResult == RESULTS.UNAVAILABLE || checkResult == RESULTS.BLOCKED) {
-        return checkResult;
-      } else {
-        let newStatus = await request(permission);
-        return newStatus;
-      }
+      return await checkAndGetPermissions(
+        {
+          required: [PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE],
+          optional: [PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.CAMERA]
+        },
+        {
+          required: [PERMISSIONS.IOS.PHOTO_LIBRARY],
+          optional: [PERMISSIONS.IOS.CAMERA]
+        })
     } catch (err) {
       logError(err)
+      this.setState({ errorMessage: err.message })
     }
   }
 }
