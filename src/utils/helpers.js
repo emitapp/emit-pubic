@@ -97,6 +97,10 @@ export const getFullVersionInfo = async () => {
   }
 }
 
+export const colorLog = (msg, color) => {
+  console.log("%c" + msg, "color:" + color + ";font-weight:bold;");
+}
+
 /**
  * Gets the full hardware info of the device
  */

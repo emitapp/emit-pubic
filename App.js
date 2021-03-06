@@ -20,21 +20,41 @@ import MainTabNav from 'screens/MainTabNav';
 import CovidWarningPage from 'screens/Onboarding/CovidWarningPage';
 import SwiperOnboarding from 'screens/Onboarding/SwiperOnboarding';
 import MainTheme from 'styling/mainTheme';
-import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
+import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise, colorLog } from 'utils/helpers';
 import NavigationService from 'utils/NavigationService';
+import codePush from "react-native-code-push";
+import { AppState } from "react-native";
+
+//You can make this false if you're testing something on a device and 
+//don't want codepush to interfere
+const CODEPUSH_ENABLED = true;
 
 export default class App extends React.Component {
 
   constructor(props) {
     super(props)
     this.topLevelNavigator = null
+
+    this.appState = AppState.currentState //will be "active"
+    this.lastBackgroundedTime = Date.now();
+    this.backgroundTimeThreshold = 30 * 60 * 1000; //30 minutes of backgorund time = codepush sync
   }
 
   componentDidMount = () => {
-    //Don't unsubscribe, so that if the user is signed out (manually or automatically by Firebase),
-    // he is still rerouted
+    //Don't unsubscribe, so that if the user is signed out 
+    //(manually or automatically by Firebase), he is still rerouted
     auth().onAuthStateChanged(this.handleAuthChange)
-    RNBootSplash.hide({ fade: true }).catch(() => console.log("cannot be hidden"));
+
+    //Fresh launch, look for and install codepush updates before removing launch screen.
+    codePush.sync({ installMode: codePush.InstallMode.IMMEDIATE })
+      .catch(err => logError(err))
+      .finally(() => this.removeSplashScreen())
+
+    AppState.addEventListener("change", this.handleAppStateChange);
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener("change", this.handleAppStateChange);
   }
 
   render() {
@@ -49,7 +69,7 @@ export default class App extends React.Component {
   }
 
   //if there's no internet there's a chance this will fail, so we won't
-  //include there errors in crashlytics
+  //include the errors in crashlytics
   //TODO: ^improve this 
   disassociateToken = async () => {
     try {
@@ -64,6 +84,9 @@ export default class App extends React.Component {
     }
   }
 
+  removeSplashScreen = () => {
+    RNBootSplash.hide({ fade: true }).catch(err => logError(err));
+  }
 
   handleAuthChange = async (user) => {
     try {
@@ -79,6 +102,23 @@ export default class App extends React.Component {
       logError(err)
     }
   }
+
+  //Sync with codepush if you've been in the background long enough.
+  handleAppStateChange = (nextAppState) => {
+    if (!CODEPUSH_ENABLED) return;
+    if (this.appState.match(/inactive|background/) &&
+      nextAppState === "active" &&
+      Date.now() - this.lastBackgroundedTime > this.backgroundTimeThreshold) {
+
+      RNBootSplash.show({ fade: false })
+        .then(_ => codePush.sync({ installMode: codePush.InstallMode.IMMEDIATE }))
+        .catch(err => logError(err))
+        .finally(() => this.removeSplashScreen())
+    }
+
+    if (nextAppState.match(/inactive|background/)) this.lastBackgroundedTime = Date.now()
+    this.appState = nextAppState;
+  };
 }
 
 //Using a switch navigator 

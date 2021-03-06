@@ -9,7 +9,16 @@ import codePush from "react-native-code-push";
 import 'react-native-get-random-values' //https://github.com/uuidjs/uuid#getrandomvalues-not-supported
 import PushNotification from "react-native-push-notification";
 
-const CodePushApp = codePush(App)
+//We'll manage the updating and whatnot to ourselves since we want a really 
+//reliable and fast update delivery
+//https://manurana.medium.com/codepush-update-strategies-for-a-react-native-app-6c0d2acd4f4c
+//(keep in mind emulators connected to RN server will
+//never be synched with codepush sicne we don't give them api keys)
+let codePushOptions = { 
+  checkFrequency: codePush.CheckFrequency.MANUAL 
+};
+
+const CodePushApp = codePush(codePushOptions)(App)
 
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
   await handleFCMMessage(remoteMessage)
