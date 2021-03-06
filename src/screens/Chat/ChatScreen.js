@@ -13,7 +13,6 @@ import Day from "./Day";
 import Name from './Name';
 import { isSameTime } from './utils';
 
-
 //The main entry point into the gifted-chat app
 export default class ChatScreen extends React.Component {
 
@@ -21,18 +20,15 @@ export default class ChatScreen extends React.Component {
 
   constructor(props) {
     super(props);
-    this.broadcastData = this.props.navigation.getParam('broadcast', { uid: " " })
-    this.ownerID = auth().currentUser.uid
-    if (this.broadcastData.owner) {
-      this.ownerID = this.broadcastData.owner.uid
-    }
+    this.broadcastData = this.props.navigation.getParam('broadcast', { uid: " ", owner: { uid: "xxx" } })
+    this.ownerID = this.broadcastData.owner.uid
     this.chatrefPath = `/activeBroadcasts/${this.ownerID}/chats/${this.broadcastData.uid}`
 
     this.paginationSize = 20
     this.state = {
       loadedUsername: null,
       messages: [],
-      lastRetrievedDate: 0,
+      lastRetrievedMessageId: 0,
     }
 
     //Manually redefining to allow better fine-tuned time chunking of messages
@@ -47,7 +43,6 @@ export default class ChatScreen extends React.Component {
     this.loadInitMessages();
   }
 
-  //I think this removes listeners? 
   componentWillUnmount() {
     database().ref(this.chatrefPath).off()
   }
@@ -65,7 +60,7 @@ export default class ChatScreen extends React.Component {
         }}
         renderMessage={this.renderMessage}
         messages={this.state.messages}
-        onSend={messages => this.onSend(messages)}
+        onSend={messages => this.sendNewMessages(messages)}
         renderBubble={this.renderBubble}
         renderTime={() => null} //We'll handle the time ourselves...
         renderAvatar={this.renderAvatar}
@@ -76,6 +71,7 @@ export default class ChatScreen extends React.Component {
         renderLoadEarlier={() => null}   //to hide the load earlier button
         renderDay={this.renderDay}
         bottomOffset={50}
+        keyboardShouldPersistTaps = "handled"
       />
     )
   }
@@ -84,48 +80,36 @@ export default class ChatScreen extends React.Component {
   async loadInitMessages() {
     database().ref(this.chatrefPath).limitToLast(this.paginationSize)
       .on('child_added', (snap) => {
-        const data = snap.val();
-        const msg = this.fireToMessage(data)
+        const msg = this.fireToMessage(snap.val())
         this.setState(previousState => ({
           messages: GiftedChat.append(previousState.messages, [msg]),
         }))
-        if (this.state.lastRetrievedDate == 0) {
-          this.state.lastRetrievedDate = msg._id
-        }
-
+        if (!this.state.lastRetrievedMessageId) this.state.lastRetrievedMessageId = msg._id
       });
   }
 
   //method triggered when user clicks send button in the chat
-  async onSend(messages = []) {
-    // this is for testing lots of messages, it should stay commented
-    // let msgs = new Array(10)
-    // for (let i = 0; i < 10; i++) {
-    //   const d = (new Date()).getTime()
-    //   msgs[i] = (this.makeTestMessage(i));
-    //   msgs[i].id = d
-    //   const messagePath = this.chatrefPath + '/' + d
-    //   const dbRef = database().ref(messagePath)
-    //   await dbRef.set(msgs[i]).then(() => console.log('Message sent'));
-    // }
-    messages[0]._id = messages[0].createdAt.getTime()
-
-    //TODO: consider using firebase.push()?
-    //TODO: get the name of the person and change their name to that when they send
-    const fireMessage = this.messageToFire(messages[0])
-    const messagePath = this.chatrefPath + '/' + fireMessage.id
-    const dbRef = database().ref(messagePath)
-    dbRef.set(fireMessage).catch(err => logError(err));
+  sendNewMessages = (messages = []) => {
+    const formattedMessage = this.messageToFire(messages[0])
+    this.sendToFirebase(formattedMessage)
   }
 
-  //makes test messages (used for testing pagination and such)
-  makeTestMessage(num) {
-    const msg = {
-      id: num,
-      text: "this is a test " + String(num),
-      user: { id: '200', name: 'swifty jjones' }
-    }
-    return msg
+  // this is for testing lots of messages, it should stay commented
+  // sentTestMessages = () => {   
+  //   for (let i = 0; i < 10; i++) {
+  //     let testMessage = {
+  //       text: "this is a test " + i.toString(),
+  //       user: { id: '200', name: 'swifty jjones' },
+  //     }
+  //     testMessage = messagesToFire(msg)
+  //     this.sendToFirebase(testMessage)
+  //   }
+  // }
+
+  //Expects the output to be from messageToFire
+  sendToFirebase = (message) => {
+    const path = this.chatrefPath + "/" + message._id;
+    database().ref(path).set(message).catch(err => logError(err));
   }
 
   //method to convert UI message to firebase object to be stored
@@ -138,9 +122,10 @@ export default class ChatScreen extends React.Component {
       video: null,
       id: null
     }
-    msg.user = { name: message.user.name, id: message.user._id }
+    msg.user = { name: message.user.name, _id: message.user._id }
     msg.text = message.text
-    msg.id = message._id
+    msg._id = database().ref(this.chatrefPath).push().key
+    msg.createdAt = database.ServerValue.TIMESTAMP
     return msg
   }
 
@@ -152,35 +137,39 @@ export default class ChatScreen extends React.Component {
       createdAt: null,
       user: { _id: null, name: null }
     }
-    msg._id = data.id;
+    msg._id = data._id;
     msg.text = data.text;
-    msg.createdAt = new Date(data.id);
-    msg.user = { _id: data.user.id, name: data.user.name }
+    msg.createdAt = new Date(data.createdAt);
+    msg.user = { _id: data.user._id, name: data.user.name }
     return msg
   }
 
   //for pagination
   onLoadEarlier = async () => {
     let self = this
+    let newMessages = new Array();
+    try {
+      const messagesSnapshot = await database().ref(this.chatrefPath).orderByKey()
+        .endAt(this.state.lastRetrievedMessageId)
+        .limitToLast(this.paginationSize)
+        .once('value');
 
-    let msgs = new Array();
-    await database().ref(this.chatrefPath).orderByKey()
-      .endAt(String(this.state.lastRetrievedDate - 1)).limitToLast(this.paginationSize)
-      .once('value').then(snapshot => {
-        snapshot.forEach(function (data) {
-          if (data) {
-            const msg = self.fireToMessage(data.val());
-            msgs.unshift(msg)
-          }
-        })
-        if (msgs.length != 0) {
-          this.state.lastRetrievedDate = msgs[msgs.length - 1].createdAt - 1
-          this.setState(previousState => ({
-            messages: GiftedChat.append(msgs, previousState.messages),
-          }))
-        }
-      });
+      messagesSnapshot.forEach(data => {
+        const msg = self.fireToMessage(data.val());
+        //EndAt is inclusive so we have to remove the dubplicated boundary message
+        if (msg._id == this.state.lastRetrievedMessageId) return;
+        newMessages.unshift(msg)
+      })
 
+      if (newMessages.length != 0) {
+        this.setState(previousState => ({
+          lastRetrievedMessageId: newMessages[newMessages.length - 1]._id,
+          messages: GiftedChat.append(newMessages, previousState.messages),
+        }))
+      }
+    }catch(err){
+      logError(err)
+    }
   }
 
   renderName(props) {

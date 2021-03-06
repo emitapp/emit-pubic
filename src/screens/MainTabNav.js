@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import functions from '@react-native-firebase/functions';
 import messaging from '@react-native-firebase/messaging';
 import React from 'react';
-import { Platform, Pressable, TouchableOpacity, View } from 'react-native';
+import { Keyboard, Platform, Pressable, TouchableOpacity, View } from 'react-native';
 import { requestNotifications, RESULTS } from 'react-native-permissions';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import { StackActions } from 'react-navigation';
@@ -30,10 +30,12 @@ const renderTab = (props, targetRouteName, iconName) => {
         justifyContent: "flex-start", alignItems: "center", flex: 1,
       }}
       onPress={() => {
-          {focused ? props.navigation.dispatch(StackActions.popToTop()) :
-          props.navigation.navigate(targetRouteName);
-        }}
-      }> 
+        {
+          focused ? props.navigation.dispatch(StackActions.popToTop()) :
+            props.navigation.navigate(targetRouteName);
+        }
+      }
+      }>
 
       <View style={{ alignItems: "center", justifyContent: "center", marginTop: 6 }}>
         <AwesomeIcon name={iconName} size={30} color={tintColor} />
@@ -67,30 +69,7 @@ const Tab = createBottomTabNavigator(
   {
     defaultNavigationOptions: ({ navigation }) =>
     ({
-      tabBarComponent: (props) => {
-        return (
-          //Height gotten from 
-          //https://github.com/react-navigation/react-navigation/blob/5c7f892d77298f5c89534fa78a1a6a59c7f35a60/packages/tabs/src/views/BottomTabBar.tsx#L36
-          <View {...props} 
-            style={{ ...props.style, 
-              flexDirection: "row", 
-              justifyContent: 'center', 
-              alignItems: 'center',
-              ...Platform.select({
-                ios: {
-                  height: 70
-                },
-                default: {
-                  height: 49
-                }
-              })
-              }}>
-            {renderTab(props, "FeedStackNav", "home")}
-            <FlareCreationButton />
-            {renderTab(props, "DashboardStackNav", "fire")}
-          </View>
-        )
-      }
+      tabBarComponent: (props) => <TabBarComponent  {...props} />
     }),
     tabBarOptions: {
       style: {
@@ -216,6 +195,53 @@ export default class Main extends React.Component {
   }
 }
 
+class TabBarComponent extends React.PureComponent {
+
+  state = {
+    isVisible: true
+  }
+
+  componentDidMount() {
+    this.keyboardWillShowSub = Keyboard.addListener('keyboardDidShow', this.keyboardWillShow)
+    this.keyboardWillHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardWillHide)
+  }
+
+  componentWillUnmount() {
+    this.keyboardWillShowSub.remove()
+    this.keyboardWillHideSub.remove()
+  }
+
+  keyboardWillShow = event => {
+    this.setState({ isVisible: false })
+  }
+
+  keyboardWillHide = event => {
+    this.setState({ isVisible: true })
+  }
+
+  render() {
+    if (!this.state.isVisible) return null
+    const { styleProps, ...otherProps } = this.props
+    return (
+      <View {...otherProps}
+        style={{
+          ...styleProps,
+          ...Platform.select({
+            //Height gotten from 
+            //https://github.com/react-navigation/react-navigation/blob/5c7f892d77298f5c89534fa78a1a6a59c7f35a60/packages/tabs/src/views/BottomTabBar.tsx#L36
+            ios: { height: 70 },
+            default: { height: 49 }
+          }),
+          flexDirection: "row",
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        {renderTab(otherProps, "FeedStackNav", "home")}
+        <FlareCreationButton />
+        {renderTab(otherProps, "DashboardStackNav", "fire")}
+      </View>)
+  }
+}
 
 
 class FlareCreationButton extends React.PureComponent {
@@ -242,14 +268,16 @@ class FlareCreationButton extends React.PureComponent {
     const { pressedDown } = this.state;
     return (
       <Pressable
-        style={{ alignSelf: "flex-end",
-        ...Platform.select({
-          ios: {
-            marginBottom: 20
-          },
-          default: {
-          }
-        })}}
+        style={{
+          alignSelf: "flex-end",
+          ...Platform.select({
+            ios: {
+              marginBottom: 20
+            },
+            default: {
+            }
+          })
+        }}
         onPressIn={() => this.setState({ pressedDown: true })}
         onPressOut={() => this.setState({ pressedDown: false })}
         onPress={() => NavigationService.navigate('NewBroadcastForm', { needUserConfirmation: false })}
@@ -261,7 +289,7 @@ class FlareCreationButton extends React.PureComponent {
          * // TODO: Link back to MainTheme
          **/}
           <CircularView style={{ backgroundColor: pressedDown ? this.pressedColors.innerBorder : this.unpressedColors.innerBorder }} diameter={55} >
-            <CircularView style={{ backgroundColor: pressedDown ? this.pressedColors.innerCircle : this.unpressedColors.innerCircle}} diameter={45} >
+            <CircularView style={{ backgroundColor: pressedDown ? this.pressedColors.innerCircle : this.unpressedColors.innerCircle }} diameter={45} >
               <View style={{ alignItems: "center", justifyContent: "center" }}>
                 <AwesomeIcon name="plus" size={30} color={pressedDown ? this.pressedColors.iconColor : this.unpressedColors.iconColor} />
               </View>
@@ -272,4 +300,3 @@ class FlareCreationButton extends React.PureComponent {
     )
   }
 }
-  
