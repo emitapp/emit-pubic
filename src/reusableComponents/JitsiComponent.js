@@ -1,3 +1,4 @@
+//Currently not in use, see https://github.com/emitapp/emit/issues/78
 import React from 'react';
 import { WebView } from 'react-native-webview';
 import { View, StyleSheet, SafeAreaView } from 'react-native'

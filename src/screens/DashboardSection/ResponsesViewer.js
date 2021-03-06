@@ -133,7 +133,7 @@ export default class ResponsesViewer extends React.Component {
         <Button
           title="Video Chat 📹"
           containerStyle={{ alignSelf: "center" }}
-          onPress={() => this.props.navigation.navigate("JitsiComponent", { meetingID: this.broadcastSnippet.uid, displayName: this.broadcastSnippet.owner.username })} />
+          onPress={() => Linking.openURL(encodeURI(`https://meet.jit.si/${this.broadcastSnippet.uid}#userInfo.displayName="${this.broadcastSnippet.owner.username}"&config.disableDeepLinking=true`))} />
 
         <Button
           icon={<AwesomeIcon name="share-square" size={30} color="black" />}

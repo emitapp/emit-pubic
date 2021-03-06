@@ -295,7 +295,7 @@ export default
         "licenseUrl": "https://github.com/oblador/react-native-vector-icons/raw/master/LICENSE",
         "parents": "emit"
     },
-    "react-native-webview@11.2.1": {
+    "react-native-webview@11.2.3": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-webview/react-native-webview",
         "licenseUrl": "https://github.com/react-native-webview/react-native-webview/raw/master/LICENSE",

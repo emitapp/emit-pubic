@@ -1,5 +1,5 @@
-import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
 import { Linking, Platform, View } from 'react-native';
@@ -204,10 +204,7 @@ export default class BroadcastViewer extends React.Component {
           <Button
             title="Video Chat 📹"
             containerStyle={{ alignSelf: "center" }}
-            onPress={() => this.props.navigation.navigate("JitsiComponent", {
-              meetingID: this.broadcastSnippet.uid,
-              displayName: this.state.userSnippet.username
-            })} />
+            onPress={() => Linking.openURL(encodeURI(`https://meet.jit.si/${this.broadcastSnippet.uid}#userInfo.displayName="${this.state.userSnippet.username}"&config.disableDeepLinking=true`))} />
         </View>
       )
     }
