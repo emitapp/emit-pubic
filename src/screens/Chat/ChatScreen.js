@@ -131,16 +131,12 @@ export default class ChatScreen extends React.Component {
 
   //method to convert firebase object to UI-facing chat message
   fireToMessage(data) {
-    const msg = {
-      _id: null,
-      text: null,
-      createdAt: null,
-      user: { _id: null, name: null }
-    }
+    const msg = {}
     msg._id = data._id;
     msg.text = data.text;
     msg.createdAt = new Date(data.createdAt);
-    msg.user = { _id: data.user._id, name: data.user.name }
+    msg.user = data.user
+    msg.system = data.system
     return msg
   }
 
