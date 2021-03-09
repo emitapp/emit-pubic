@@ -21,7 +21,7 @@ export default class DevBuildBanner extends PureComponent {
     if (this.state.isVisible) {
       return (
       <TouchableOpacity style={styles.networkBanner} onPress = {() => this.setState({isVisible: false})}>
-        <Text style={{flex: 1, textAlign: "center", fontSize: 12}}>Development Build</Text>
+        <Text style={{fontSize: 12, color: "white"}}>Dev</Text>
       </TouchableOpacity>
       );
     }else{
@@ -32,12 +32,15 @@ export default class DevBuildBanner extends PureComponent {
 
 const styles = StyleSheet.create({
   networkBanner: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
     height: 18,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    width,
     backgroundColor: 'white',
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
+    backgroundColor: "lightblue",
   },
 });
