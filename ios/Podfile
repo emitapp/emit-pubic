@@ -13,7 +13,7 @@ target 'emit' do
   config = use_native_modules!
   use_react_native!(:path => config["reactNativePath"])
 
-  pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '7.3.0'
+  pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '7.6.0'
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   pod 'react-native-geolocation', path: '../node_modules/@react-native-community/geolocation'
   pod 'RNFS', :path => '../node_modules/react-native-fs'
@@ -36,7 +36,9 @@ target 'emit' do
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
   # you should disable these next few lines.
-  use_flipper!(configurations: ['Dev.Debug', 'Prod.Debug'])
+  #https://github.com/facebook/react-native/issues/30836#issuecomment-791078919
+  #https://selleo.com/til/posts/eyh3ilyfwh-flipper-support-in-react-native-with-custom-ios-schemes
+  use_flipper!({'Flipper' => '0.78.0'}, configurations: ['Dev.Debug', 'Prod.Debug'])
   post_install do |installer|
     flipper_post_install(installer)
   end

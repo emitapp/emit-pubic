@@ -94,7 +94,7 @@ export default class Login extends React.Component {
       //If this succeeds, then the onAuthStateChanged listener set in App.js will handle navigation
       var signInPromise = auth().signInWithEmailAndPassword(this.state.email, this.state.password)
       await timedPromise(signInPromise, MEDIUM_TIMEOUT)
-      analyticsLoggingIn()
+      analyticsLoggingIn("email")
     } catch (err) {
       this.setState({ errorMessage: err.message, modalVisible: false })
       if (err.name != "timeout") logError(error)

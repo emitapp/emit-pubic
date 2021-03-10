@@ -88,7 +88,7 @@ export default class App extends React.Component {
     const route = navigationState.routes[navigationState.index];
     // dive into nested navigators
     if (route.routes) {
-      return getActiveRouteName(route);
+      return this.getActiveRouteName(route);
     }
     return route.routeName;
   }

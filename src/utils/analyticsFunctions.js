@@ -19,6 +19,9 @@ import { logError } from './helpers';
 // and underscores ("_"), and must start with an alphabetic character. 
 // The "firebase_", "google_", and "ga_" prefixes are reserved and should not be used
 
+//For info on getting events to show in debug mode:
+//https://firebase.google.com/docs/analytics/debugview
+
 export const analyticsSigningUp = (method) => {
     analytics().logSignUp({ method }).catch(err => logError(err))
 }
@@ -40,7 +43,6 @@ export const setAnalyticsID = () => {
 }
 
 export const analyticsScreenVisit = (screenName) => {
-    console.log(screenName)
     analytics().logScreenView({ screen_class: screenName, screen_name: screenName })
         .catch(err => logError(err))
 }
@@ -74,11 +76,11 @@ export const analyticsUserSharedFlare = (flareUid) => {
         .catch(err => logError(err))
 }
 
-export const analyticsLogFlareCreation = (flareUid, flareOwnerUid) => {
+export const analyticsLogFlareCreation = async (flareUid, flareOwnerUid) => {
     try {
         const snap = await getFlareAnalyticsData(flareUid, flareOwnerUid)
         if (!snap.exists()) {
-            logError("Couldn't get flare analytics data")
+            logError(new Error("Couldn't get flare analytics data"))
         } else {
             analytics().logEvent("flare_created", snap.val())
         }
@@ -87,7 +89,7 @@ export const analyticsLogFlareCreation = (flareUid, flareOwnerUid) => {
     }
 }
 
-export const analyticsVideoChatUsed = (flareUid, flareOwnerUid) => {
+export const analyticsVideoChatUsed = async (flareUid, flareOwnerUid) => {
     try {
         const snap = await getFlareAnalyticsData(flareUid, flareOwnerUid)
         if (!snap.exists()) {
@@ -101,7 +103,7 @@ export const analyticsVideoChatUsed = (flareUid, flareOwnerUid) => {
 }
 
 const getFlareAnalyticsData = async (flareUid, flareOwnerUid) => {
-    //ga_analytics
     const snap = await database().ref(`/activeBroadcasts/${flareOwnerUid}/private/${flareUid}/ga_analytics`).once("value")
+    console.log(snap.val())
     return snap
 }

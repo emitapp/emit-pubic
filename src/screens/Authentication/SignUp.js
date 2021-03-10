@@ -109,7 +109,7 @@ export default class SignUp extends React.Component {
       this.setState({ modalVisible: true })
       //If this succeeds, then the onAuthStateChanged listener set in App.js will handle navigation
       var signUpPromise = auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
-      analyticsSigningUp()
+      analyticsSigningUp("email")
       await timedPromise(signUpPromise, LONG_TIMEOUT)
     } catch (error) {
       this.setState({ errorMessage: error.message, modalVisible: false })
