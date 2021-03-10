@@ -140,6 +140,7 @@ export const ShowNotSupportedAlert = (customMessage = null) => {
 
 import { Share } from 'react-native';
 import database from '@react-native-firebase/database';
+import { analyticsUserSharedFlare } from './analyticsFunctions'
 /**
  * Allows users to share a flare using native UI
  */
@@ -155,6 +156,7 @@ export const shareFlare = async (flare) => {
     const slug = Object.keys(slugSnap.val())[0]
     const message = `Check out this flare and join me! https://flares.getemit.com/${slug}`
     Share.share({ message });
+    analyticsUserSharedFlare(flare.uid)
   } catch (err) {
     if (err.name != "timeout") logError(err)
   }

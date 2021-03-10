@@ -1,4 +1,5 @@
 import database from '@react-native-firebase/database';
+import auth from '@react-native-firebase/auth';
 import React from 'react';
 import { Linking, Platform, View } from 'react-native';
 import { Button, Divider, Text } from 'react-native-elements';
@@ -13,6 +14,8 @@ import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/LoadingC
 import ProfilePicDisplayer, { ProfilePicList } from 'reusables/ProfilePicComponents';
 import S from "styling";
 import { shareFlare } from 'utils/helpers';
+import { analyticsVideoChatUsed } from 'utils/analyticsFunctions';
+
 
 
 /**
@@ -133,7 +136,10 @@ export default class ResponsesViewer extends React.Component {
         <Button
           title="Video Chat 📹"
           containerStyle={{ alignSelf: "center" }}
-          onPress={() => Linking.openURL(encodeURI(`https://meet.jit.si/${this.broadcastSnippet.uid}#userInfo.displayName="${this.broadcastSnippet.owner.username}"&config.disableDeepLinking=true`))} />
+          onPress={() => {
+            Linking.openURL(encodeURI(`https://meet.jit.si/${this.broadcastSnippet.uid}#userInfo.displayName="${this.broadcastSnippet.owner.username}"&config.disableDeepLinking=true`))
+            analyticsVideoChatUsed(this.broadcastSnippet.uid, auth().currentUser.uid)
+          }} />
 
         <Button
           icon={<AwesomeIcon name="share-square" size={30} color="black" />}

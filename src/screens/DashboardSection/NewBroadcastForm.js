@@ -15,6 +15,7 @@ import MainLinearGradient from 'reusables/MainLinearGradient';
 import { ProfilePicList } from 'reusables/ProfilePicComponents';
 import { BannerButton } from 'reusables/ReusableButtons';
 import S from 'styling';
+import { analyticsLogFlareCreation } from 'utils/analyticsFunctions';
 import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, MAX_BROADCAST_NOTE_LENGTH } from 'utils/serverValues';
 
@@ -333,6 +334,7 @@ class NewBroadcastForm extends React.Component {
 
       const response = await timedPromise(creationFunction(params), LONG_TIMEOUT);
       if (response.data.status === cloudFunctionStatuses.OK) {
+        if (response.data.message) analyticsLogFlareCreation(response.data.message.flareUid, auth().currentUser.uid)
         this.props.navigation.state.params.needUserConfirmation = false;
         this.props.navigation.goBack()
       } else {

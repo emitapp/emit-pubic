@@ -16,6 +16,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import EmptyState from 'reusables/EmptyState';
 import { UserSnippetListElementVertical } from 'reusables/ListElements';
 import { SmallLoadingComponent } from 'reusables/LoadingComponents';
+import { analyticsUserInvitedSMS } from 'utils/analyticsFunctions';
 import { checkAndGetPermissions } from 'utils/AppPermissions';
 import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses } from 'utils/serverValues';
@@ -120,6 +121,7 @@ export default class InviteContacts extends React.Component {
     if (Platform.OS == 'android') body = encodeURIComponent(body)
     //Keep in mind this might not work on ios emulator
     Linking.openURL(`sms:${phoneNumber}${separator}body=${body}`)
+    analyticsUserInvitedSMS()
   }
 
   search = (text) => {

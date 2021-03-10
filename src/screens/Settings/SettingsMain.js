@@ -9,6 +9,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather'
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import ErrorMessageText from 'reusables/ErrorMessageText';
 import { subscribeToEvent, unsubscribeToEvent, events } from 'utils/subcriptionEvents'
+import { analyticsLoggingOut } from 'utils/analyticsFunctions';
 
 export default class SettingsMain extends React.Component {
 
@@ -118,6 +119,7 @@ export default class SettingsMain extends React.Component {
   signOut = async () => {
     try {
       await auth().signOut()
+      analyticsLoggingOut()
       //If this succeeds, then the onAuthStateChanged listener set in App.js will handle navigation
     } catch (err) {
       logError(err, true, "Sign out error!")

@@ -14,6 +14,7 @@ import { UserSnippetListElement } from 'reusables/ListElements';
 import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/LoadingComponents';
 import ProfilePicDisplayer, { ProfilePicList } from 'reusables/ProfilePicComponents';
 import S from "styling";
+import { analyticsVideoChatUsed } from 'utils/analyticsFunctions';
 import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, shareFlare, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, responderStatuses } from 'utils/serverValues';
 
@@ -204,7 +205,10 @@ export default class BroadcastViewer extends React.Component {
           <Button
             title="Video Chat 📹"
             containerStyle={{ alignSelf: "center" }}
-            onPress={() => Linking.openURL(encodeURI(`https://meet.jit.si/${this.broadcastSnippet.uid}#userInfo.displayName="${this.state.userSnippet.username}"&config.disableDeepLinking=true`))} />
+            onPress={() => {
+              Linking.openURL(encodeURI(`https://meet.jit.si/${this.broadcastSnippet.uid}#userInfo.displayName="${this.state.userSnippet.username}"&config.disableDeepLinking=true`))
+              analyticsVideoChatUsed(this.broadcastSnippet.uid, this.broadcastSnippet.owner.uid)
+            }} />
         </View>
       )
     }

@@ -9,6 +9,7 @@ import { ActivityListElement } from 'reusables/ListElements';
 import MainLinearGradient from 'reusables/MainLinearGradient';
 import { MinorActionButton } from 'reusables/ReusableButtons';
 import { getAllActivities } from 'utils/activitesList';
+import { analyticsLogSearch } from 'utils/analyticsFunctions';
 
 export default class NewBroadcastFormActivity extends React.Component {
 
@@ -69,6 +70,9 @@ export default class NewBroadcastFormActivity extends React.Component {
                 onChangeText={query => this.setState({ query })}
                 value={this.state.query}
                 containerStyle={{ marginTop: 24 }}
+                onBlur = {() => {
+                  if (this.state.query) analyticsLogSearch(this.state.query)
+                }}
               />
               <SectionList
                 sections={this.getFilteredSectionData()}

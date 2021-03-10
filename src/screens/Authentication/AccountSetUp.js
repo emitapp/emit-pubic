@@ -12,6 +12,7 @@ import { KeyboardAvoidingAndDismissingView } from 'reusables/KeyboardComponents'
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
 import { MinorActionButton } from 'reusables/ReusableButtons';
 import S from "styling";
+import { analyticsLoggingOut } from 'utils/analyticsFunctions';
 import { ASYNC_SETUP_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, MAX_DISPLAY_NAME_LENGTH, MAX_USERNAME_LENGTH, validDisplayName, validUsername } from 'utils/serverValues';
 export default class AccountSetUp extends React.Component {
@@ -109,6 +110,7 @@ export default class AccountSetUp extends React.Component {
   signOut = async () => {
     try {
       await auth().signOut()
+      analyticsLoggingOut()
     } catch (err) {
       logError(err, true, "Sign out error!")
     }

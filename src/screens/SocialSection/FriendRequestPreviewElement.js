@@ -9,6 +9,8 @@ import { UserSnippetListElement } from 'reusables/ListElements';
 import { SmallLoadingComponent, TimeoutLoadingComponent } from 'reusables/LoadingComponents';
 import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses } from 'utils/serverValues';
+import {friendActionOptions} from 'screens/SocialSection/FriendReqModal'
+import { analyticsFriendAction } from 'utils/analyticsFunctions';
 
 //TODO: maybe move this to the file that contains the other list elements?
 class FriendRequestPreviewer extends React.Component {
@@ -73,6 +75,7 @@ class FriendRequestPreviewer extends React.Component {
         try {
             const response = await timedPromise(callableFunction(args), LONG_TIMEOUT);
             if (response.data.status === cloudFunctionStatuses.OK) {
+                analyticsFriendAction(accepted ? friendActionOptions.ACCEPTREQ : friendActionOptions.REJECTREQ, args)
                 this.props.forcedUpdateMethod()                
             } else {
                 this.setState({

@@ -9,6 +9,7 @@ import { MinorActionButton } from 'reusables/ReusableButtons'
 import { DefaultLoadingModal } from 'reusables/LoadingComponents'
 import ErrorMessageText from 'reusables/ErrorMessageText';
 import { KeyboardAvoidingAndDismissingView } from 'reusables/KeyboardComponents';
+import { analyticsLoggingIn } from 'utils/analyticsFunctions';
 
 export default class Login extends React.Component {
 
@@ -93,6 +94,7 @@ export default class Login extends React.Component {
       //If this succeeds, then the onAuthStateChanged listener set in App.js will handle navigation
       var signInPromise = auth().signInWithEmailAndPassword(this.state.email, this.state.password)
       await timedPromise(signInPromise, MEDIUM_TIMEOUT)
+      analyticsLoggingIn()
     } catch (err) {
       this.setState({ errorMessage: err.message, modalVisible: false })
       if (err.name != "timeout") logError(error)

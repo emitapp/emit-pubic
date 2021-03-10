@@ -8,6 +8,7 @@ import S from 'styling'
 import DynamicInfiniteScroll from './DynamicInfiniteScroll'
 import StaticInfiniteScroll from './StaticInfiniteScroll'
 import SectionInfiniteScroll from './SectionInfiniteScroll'
+import { analyticsLogSearch } from 'utils/analyticsFunctions'
 
 /**
  * This class is a wrapper for either a DynamicInifiteScroll or a StaticInfiniteScroll
@@ -111,6 +112,7 @@ export default class SearchableInfiniteScroll extends React.Component {
   }
 
   search = () => {
+    analyticsLogSearch(this.state.searchBarValue)
     if (this.props.queryValidator(this.state.searchBarValue)) {
       this.setState({
         query: this.state.searchBarValue.toLowerCase(),

@@ -1,14 +1,15 @@
 import auth from '@react-native-firebase/auth';
 import React from 'react';
-import { ImageBackground, View, Linking, StatusBar } from 'react-native';
+import { ImageBackground, Linking, StatusBar, View } from 'react-native';
 import { Button, Input, Text, ThemeConsumer } from 'react-native-elements';
-import S from "styling";
-import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
-import { MinorActionButton } from 'reusables/ReusableButtons'
-import { DefaultLoadingModal } from 'reusables/LoadingComponents'
+import config from "react-native-ultimate-config";
 import ErrorMessageText from 'reusables/ErrorMessageText';
-import config from "react-native-ultimate-config"
 import { KeyboardAvoidingAndDismissingView } from 'reusables/KeyboardComponents';
+import { DefaultLoadingModal } from 'reusables/LoadingComponents';
+import { MinorActionButton } from 'reusables/ReusableButtons';
+import S from "styling";
+import { analyticsSigningUp } from 'utils/analyticsFunctions';
+import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 
 
 export default class SignUp extends React.Component {
@@ -108,6 +109,7 @@ export default class SignUp extends React.Component {
       this.setState({ modalVisible: true })
       //If this succeeds, then the onAuthStateChanged listener set in App.js will handle navigation
       var signUpPromise = auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+      analyticsSigningUp()
       await timedPromise(signUpPromise, LONG_TIMEOUT)
     } catch (error) {
       this.setState({ errorMessage: error.message, modalVisible: false })

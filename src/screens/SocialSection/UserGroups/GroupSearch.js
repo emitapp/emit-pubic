@@ -14,6 +14,7 @@ import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
 import { cloudFunctionStatuses } from 'utils/serverValues'
 import functions from '@react-native-firebase/functions';
 import Snackbar from 'react-native-snackbar';
+import { analyticsLogSearch, analyticsUserJoinedGroup } from 'utils/analyticsFunctions';
 
 export default class GroupSearch extends React.Component {
 
@@ -179,7 +180,9 @@ class GroupJoinDialogue extends React.PureComponent {
   }
 
   findGroup = async () => {
+    if (!this.state.inviteCode.trim()) return;
     try {
+      analyticsLogSearch(this.state.inviteCode.trim())
       this.setState({ message: null })
       const groupIdSnap = await database().ref("userGroupCodes").orderByValue().
         equalTo(this.state.inviteCode.toLowerCase()).once("value");
@@ -214,7 +217,10 @@ class GroupJoinDialogue extends React.PureComponent {
       const joinFunc = functions().httpsCallable('joinGroupViaCode');
       const response = await timedPromise(joinFunc(this.state.inviteCode), LONG_TIMEOUT);
       if (response.data.status === cloudFunctionStatuses.OK) {
+        const groupUid = response.data.message ? response.data.message.groupUid : null;
+        if (groupUid) analyticsUserJoinedGroup(groupUid)
         this.props.joinSuccessFunction()
+        
       } else {
         this.setState({ message: response.data.message })
         logError(new Error("Problematic joinGroupViaCode function response: " + response.data.message))

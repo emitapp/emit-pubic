@@ -24,6 +24,7 @@ import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise,
 import NavigationService from 'utils/NavigationService';
 import codePush from "react-native-code-push";
 import { AppState } from "react-native";
+import { analyticsAppOpen, analyticsScreenVisit, setAnalyticsID } from 'utils/analyticsFunctions';
 
 //You can make this false if you're testing something on a device and 
 //don't want codepush to interfere
@@ -46,9 +47,12 @@ export default class App extends React.Component {
     auth().onAuthStateChanged(this.handleAuthChange)
 
     //Fresh launch, look for and install codepush updates before removing launch screen.
-    codePush.sync({ installMode: codePush.InstallMode.IMMEDIATE })
-      .catch(err => logError(err))
-      .finally(() => this.removeSplashScreen())
+    if (CODEPUSH_ENABLED) {
+      codePush.sync({ installMode: codePush.InstallMode.IMMEDIATE })
+        .catch(err => logError(err))
+        .finally(() => this.removeSplashScreen())
+    }
+
 
     AppState.addEventListener("change", this.handleAppStateChange);
   }
@@ -61,11 +65,32 @@ export default class App extends React.Component {
     return (
       <ThemeProvider theme={MainTheme}>
         <StatusBar backgroundColor={MainTheme.colors.statusBar} barStyle="light-content" />
-        <Navigator ref={ref => NavigationService.setTopLevelNavigator(ref)} />
+        <Navigator
+          ref={ref => NavigationService.setTopLevelNavigator(ref)}
+          onNavigationStateChange={(prevState, currentState) => {
+            const currentRouteName = this.getActiveRouteName(currentState);
+            const previousRouteName = this.getActiveRouteName(prevState);
+            if (previousRouteName !== currentRouteName) {
+              analyticsScreenVisit(currentRouteName)
+            }
+          }} />
         <ConnectionBanner />
         <DevBuildBanner />
       </ThemeProvider>
     )
+  }
+
+  // gets the current screen from navigation state
+  getActiveRouteName = (navigationState) => {
+    if (!navigationState) {
+      return null;
+    }
+    const route = navigationState.routes[navigationState.index];
+    // dive into nested navigators
+    if (route.routes) {
+      return getActiveRouteName(route);
+    }
+    return route.routeName;
   }
 
   //if there's no internet there's a chance this will fail, so we won't
@@ -95,6 +120,7 @@ export default class App extends React.Component {
         await AsyncStorage.removeItem(ASYNC_SETUP_KEY)
         this.disassociateToken()
       } else {
+        setAnalyticsID()
         crashlytics().setUserId(user.uid).catch(err => logError(err))
       }
       NavigationService.navigate("AuthDecisionPage")
@@ -104,11 +130,13 @@ export default class App extends React.Component {
   }
 
   //Sync with codepush if you've been in the background long enough.
+  //Also log for analytics purposes
   handleAppStateChange = (nextAppState) => {
-    if (!CODEPUSH_ENABLED) return;
+    //Codepush
     if (this.appState.match(/inactive|background/) &&
       nextAppState === "active" &&
-      Date.now() - this.lastBackgroundedTime > this.backgroundTimeThreshold) {
+      Date.now() - this.lastBackgroundedTime > this.backgroundTimeThreshold &&
+      CODEPUSH_ENABLED) {
 
       RNBootSplash.show({ fade: false })
         .then(_ => codePush.sync({ installMode: codePush.InstallMode.IMMEDIATE }))
@@ -116,7 +144,12 @@ export default class App extends React.Component {
         .finally(() => this.removeSplashScreen())
     }
 
+    //Timestamp updating
     if (nextAppState.match(/inactive|background/)) this.lastBackgroundedTime = Date.now()
+
+    //Analytics
+    if (this.appState == "background" && nextAppState == "active") analyticsAppOpen()
+
     this.appState = nextAppState;
   };
 }

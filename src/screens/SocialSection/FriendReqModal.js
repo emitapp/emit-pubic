@@ -14,6 +14,7 @@ import { isValidDBPath, cloudFunctionStatuses } from 'utils/serverValues';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Clipboard } from "react-native";
 import Snackbar from 'react-native-snackbar'
+import { analyticsFriendAction } from 'utils/analyticsFunctions';
 
 /**
  * This is the standard dialogue for viewing a user if you want the user to 
@@ -118,9 +119,9 @@ class FriendReqDialogue extends React.Component {
 
                         {this.displayActionsPanel(theme)}
 
-                        {(!this.state.gettingInitialData && this.state.option != actionOptions.NONE && !this.state.waitingForFuncResponse) &&
+                        {(!this.state.gettingInitialData && this.state.option != friendActionOptions.NONE && !this.state.waitingForFuncResponse) &&
                             <View style={{ alignItems: "center" }}>
-                                {this.state.option === actionOptions.REMOVE ?
+                                {this.state.option === friendActionOptions.REMOVE ?
                                     <Text>Receive Flare Notifications?</Text> :
                                     <Text>Receive Flare Notifications? (will be applied if friend request is accepted)</Text>
                                 }
@@ -171,9 +172,9 @@ class FriendReqDialogue extends React.Component {
     }
 
     displayActionsPanel = (theme) => {
-        if (this.state.gettingInitialData || this.state.option == actionOptions.NONE) return;
+        if (this.state.gettingInitialData || this.state.option == friendActionOptions.NONE) return;
         let isWarningButton =
-            this.state.option === actionOptions.REMOVE || this.state.option === actionOptions.CANCELREQ
+            this.state.option === friendActionOptions.REMOVE || this.state.option === friendActionOptions.CANCELREQ
         if (!this.state.waitingForFuncResponse) {
             return (
                 <>
@@ -185,10 +186,10 @@ class FriendReqDialogue extends React.Component {
                             backgroundColor: isWarningButton ? theme.colors.error : theme.colors.primary
                         }}
                     />
-                    {this.state.option == actionOptions.ACCEPTREQ &&
+                    {this.state.option == friendActionOptions.ACCEPTREQ &&
                         <Button
-                            title={actionOptions.REJECTREQ}
-                            onPress={() => this.performAction(actionOptions.REJECTREQ)}
+                            title={friendActionOptions.REJECTREQ}
+                            onPress={() => this.performAction(friendActionOptions.REJECTREQ)}
                             containerStyle={{ marginVertical: 16 }}
                             buttonStyle={{ backgroundColor: theme.colors.grey1 }}
                             containerStyle={{ marginTop: 0 }}
@@ -224,15 +225,15 @@ class FriendReqDialogue extends React.Component {
 
     chooseToggleSyncState = (action) => {
         switch (action) {
-            case actionOptions.SENDREQ:
-            case actionOptions.ACCEPTREQ:
-            case actionOptions.REJECTREQ:
-            case actionOptions.NONE:
+            case friendActionOptions.SENDREQ:
+            case friendActionOptions.ACCEPTREQ:
+            case friendActionOptions.REJECTREQ:
+            case friendActionOptions.NONE:
                 this.setState({toggleShouldUseFirestoreValue: false})
                 break;
 
-            case actionOptions.CANCELREQ:
-            case actionOptions.REMOVE:
+            case friendActionOptions.CANCELREQ:
+            case friendActionOptions.REMOVE:
                 this.setState({toggleShouldUseFirestoreValue: true})
                 break;
             
@@ -320,7 +321,7 @@ class FriendReqDialogue extends React.Component {
             if (uid == this.userUid) {
                 this.setState({
                     gettingInitialData: false,
-                    option: actionOptions.NONE,
+                    option: friendActionOptions.NONE,
                     extraMessage: "This is you!"
                 })
                 return;
@@ -328,7 +329,7 @@ class FriendReqDialogue extends React.Component {
             if (!isValidDBPath(this.userUid)) {
                 this.setState({
                     gettingInitialData: false,
-                    option: actionOptions.NONE,
+                    option: friendActionOptions.NONE,
                     extraMessage: "Invalid Emitcode"
                 })
                 return;
@@ -345,10 +346,10 @@ class FriendReqDialogue extends React.Component {
                     this.setState(
                         {
                             gettingInitialData: false,
-                            option: actionOptions.NONE,
+                            option: friendActionOptions.NONE,
                             extraMessage: "Looks like this user doesn't exist."
                         },
-                        () => this.chooseToggleSyncState(actionOptions.NONE)
+                        () => this.chooseToggleSyncState(friendActionOptions.NONE)
                     )
                     return
                 }
@@ -359,8 +360,8 @@ class FriendReqDialogue extends React.Component {
             const friendSnapshot = await timedPromise(friendRef.once('value'), MEDIUM_TIMEOUT);
             if (friendSnapshot.exists()) {
                 this.setState(
-                    { gettingInitialData: false, option: actionOptions.REMOVE },
-                    () => this.chooseToggleSyncState(actionOptions.REMOVE))
+                    { gettingInitialData: false, option: friendActionOptions.REMOVE },
+                    () => this.chooseToggleSyncState(friendActionOptions.REMOVE))
                 return;
             }
 
@@ -369,8 +370,8 @@ class FriendReqDialogue extends React.Component {
             const outboxSnapshot = await timedPromise(outboxRef.once('value'), MEDIUM_TIMEOUT);
             if (outboxSnapshot.exists()) {
                 this.setState(
-                        { gettingInitialData: false, option: actionOptions.CANCELREQ },
-                        () => this.chooseToggleSyncState(actionOptions.CANCELREQ))
+                        { gettingInitialData: false, option: friendActionOptions.CANCELREQ },
+                        () => this.chooseToggleSyncState(friendActionOptions.CANCELREQ))
                 return;
             }
 
@@ -379,12 +380,12 @@ class FriendReqDialogue extends React.Component {
             const inboxSnapshot = await timedPromise(inboxRef.once('value'), MEDIUM_TIMEOUT);
             if (inboxSnapshot.exists()) {
                 this.setState(
-                        { gettingInitialData: false, option: actionOptions.ACCEPTREQ },
-                        () => this.chooseToggleSyncState(actionOptions.ACCEPTREQ)) //REJECTREQ also accessible via this
+                        { gettingInitialData: false, option: friendActionOptions.ACCEPTREQ },
+                        () => this.chooseToggleSyncState(friendActionOptions.ACCEPTREQ)) //REJECTREQ also accessible via this
             } else {
                 this.setState(
-                        { gettingInitialData: false, option: actionOptions.SENDREQ },
-                        () => this.chooseToggleSyncState(actionOptions.SENDREQ))
+                        { gettingInitialData: false, option: friendActionOptions.SENDREQ },
+                        () => this.chooseToggleSyncState(friendActionOptions.SENDREQ))
             }
 
 
@@ -395,7 +396,7 @@ class FriendReqDialogue extends React.Component {
                 logError(err)
                 this.setState({
                     gettingInitialData: false,
-                    option: actionOptions.NONE,
+                    option: friendActionOptions.NONE,
                     extraMessage: "Looks like something went wrong!"
                 })
             }
@@ -411,20 +412,20 @@ class FriendReqDialogue extends React.Component {
             subscribeToFlares: this.getToggleValue() //Not needed for all cloud funcs, but doesn't hurt to keep it in
         }
         switch (actionToDo) {
-            case actionOptions.SENDREQ:
+            case friendActionOptions.SENDREQ:
                 callableFunction = functions().httpsCallable('sendFriendRequest');
                 break;
-            case actionOptions.CANCELREQ:
+            case friendActionOptions.CANCELREQ:
                 callableFunction = functions().httpsCallable('cancelFriendRequest');
                 break;
-            case actionOptions.ACCEPTREQ:
+            case friendActionOptions.ACCEPTREQ:
                 callableFunction = functions().httpsCallable('acceptFriendRequest');
                 break;
-            case actionOptions.REJECTREQ:
+            case friendActionOptions.REJECTREQ:
                 callableFunction = functions().httpsCallable('cancelFriendRequest');
                 args.fromInbox = true;
                 break;
-            case actionOptions.REMOVE:
+            case friendActionOptions.REMOVE:
                 callableFunction = functions().httpsCallable('removeFriend');
                 break;
             default:
@@ -436,12 +437,13 @@ class FriendReqDialogue extends React.Component {
         try {
             const response = await timedPromise(callableFunction(args), LONG_TIMEOUT);
             if (response.data.status === cloudFunctionStatuses.OK) {
+                analyticsFriendAction(actionToDo, args)
                 this.refreshActionOption(actionToDo)
                 this.setState({ waitingForFuncResponse: false })
             } else {
                 this.setState({
                     waitingForFuncResponse: false,
-                    option: actionOptions.NONE,
+                    option: friendActionOptions.NONE,
                     gettingInitialData: false,
                     extraMessage: response.data.message
                 })
@@ -459,18 +461,18 @@ class FriendReqDialogue extends React.Component {
     }
 
     refreshActionOption = (lastChosenAction) => {
-        var newOption = actionOptions.NONE;
+        var newOption = friendActionOptions.NONE;
         switch (lastChosenAction) {
-            case actionOptions.SENDREQ:
-                newOption = actionOptions.CANCELREQ;
+            case friendActionOptions.SENDREQ:
+                newOption = friendActionOptions.CANCELREQ;
                 break;
-            case actionOptions.CANCELREQ:
-            case actionOptions.REMOVE:
-            case actionOptions.REJECTREQ:
-                newOption = actionOptions.SENDREQ;
+            case friendActionOptions.CANCELREQ:
+            case friendActionOptions.REMOVE:
+            case friendActionOptions.REJECTREQ:
+                newOption = friendActionOptions.SENDREQ;
                 break;
-            case actionOptions.ACCEPTREQ:
-                newOption = actionOptions.REMOVE;
+            case friendActionOptions.ACCEPTREQ:
+                newOption = friendActionOptions.REMOVE;
                 break;
         }
         this.chooseToggleSyncState(newOption)
@@ -549,7 +551,7 @@ export default class FriendReqModal extends React.Component {
 const ModalWidth = Dimensions.get('window').width * 0.7
 const ProfilePicHeight = Dimensions.get('window').width * 0.6
 
-const actionOptions = {
+export const friendActionOptions = {
     /**
      * If you can send a request to this person
      */
