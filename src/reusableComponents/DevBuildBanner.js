@@ -21,7 +21,7 @@ export default class DevBuildBanner extends PureComponent {
     if (this.state.isVisible) {
       return (
       <TouchableOpacity style={styles.networkBanner} onPress = {() => this.setState({isVisible: false})}>
-        <Text style={{fontSize: 12, color: "white"}}>Dev</Text>
+        <Text style={{fontSize: 12, color: "black"}}>Dev</Text>
       </TouchableOpacity>
       );
     }else{
