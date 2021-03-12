@@ -52,8 +52,21 @@ export default class SwiperOnboarding extends React.Component {
             <View level={15}><Text style={styles.smallBlackText}>The app for spontaneous get-togethers</Text></View>
             </View>
             <View style={[styles.slide, { backgroundColor: '#ffffff'}]}>
-            <View style={{alignItems: "center"}} level={9}><Text style={styles.smallBlackText}>Flares are how you let your friends</Text></View>
-            <View style={{alignItems: "center"}} level={5}><Text style={[styles.smallBlackText, {marginBottom: 16}]}>know what you're up to 🔥</Text></View>
+            <View style={{alignItems: "center"}} level={9}>
+              <Text style={{fontSize: 50}}>🔥</Text>
+              <Text style={{fontSize: 30, fontWeight: 'bold',color: "#FA6C13"}}>Why use Emit?</Text>
+            </View>
+            <View style={{alignItems: "center"}} level={5}>
+              <Text style={[styles.smallBlackText, {marginTop: 8}]}>Finding times to hang out</Text>
+              <Text style={styles.smallBlackText}>with friends can be hard</Text>
+              <Text style={[styles.smallBlackText]}>when they aren't all in an </Text>
+              <Text style={[styles.smallBlackText, {marginBottom: 16}]}>active group chat together</Text>
+              
+            </View>
+            </View>
+            <View style={[styles.slide, { backgroundColor: '#ffffff'}]}>
+            <View style={{alignItems: "center"}} level={9}><Text style={styles.smallBlackText}>With a few taps let your friends</Text></View>
+            <View style={{alignItems: "center"}} level={5}><Text style={[styles.smallBlackText, {marginBottom: 16}]}>know what you're down to do</Text></View>
             <View style={{justifyContent: "center", alignItems: "center"}}><Image source={require("media/NewFlare.png")} style={{width: 250, height: 500, borderColor: "black", borderWidth: 1 }}/></View>
             </View>
             <View style={[styles.slide,{ backgroundColor: 'white', width: "100%", alignItems: "center" }]}>
