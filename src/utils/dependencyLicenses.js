@@ -43,55 +43,55 @@ export default
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/analytics/raw/master/LICENSE",
         "parents": "emit"
     },
-    "@react-native-firebase/app@10.4.0": {
+    "@react-native-firebase/app@10.8.1": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/app",
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/app/raw/master/LICENSE",
         "parents": "emit"
     },
-    "@react-native-firebase/auth@10.4.0": {
+    "@react-native-firebase/auth@10.8.1": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/auth",
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/auth/raw/master/LICENSE",
         "parents": "emit"
     },
-    "@react-native-firebase/crashlytics@10.4.0": {
+    "@react-native-firebase/crashlytics@10.8.1": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/crashlytics",
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/crashlytics/raw/master/LICENSE",
         "parents": "emit"
     },
-    "@react-native-firebase/database@10.4.0": {
+    "@react-native-firebase/database@10.8.1": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/database",
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/database/raw/master/LICENSE",
         "parents": "emit"
     },
-    "@react-native-firebase/firestore@10.4.0": {
+    "@react-native-firebase/firestore@10.8.1": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/firestore",
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/firestore/raw/master/LICENSE",
         "parents": "emit"
     },
-    "@react-native-firebase/functions@10.4.0": {
+    "@react-native-firebase/functions@10.8.1": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/functions",
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/functions/raw/master/LICENSE",
         "parents": "emit"
     },
-    "@react-native-firebase/messaging@10.4.0": {
+    "@react-native-firebase/messaging@10.8.1": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/messaging",
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/messaging/raw/master/LICENSE",
         "parents": "emit"
     },
-    "@react-native-firebase/perf@10.4.0": {
+    "@react-native-firebase/perf@10.8.1": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/perf",
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/perf/raw/master/LICENSE",
         "parents": "emit"
     },
-    "@react-native-firebase/storage@10.4.0": {
+    "@react-native-firebase/storage@10.8.1": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/storage",
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/storage/raw/master/LICENSE",
@@ -101,6 +101,12 @@ export default
         "licenses": "BSD-3-Clause",
         "repository": "https://github.com/tunoltd/emoji-mart-native",
         "licenseUrl": "https://github.com/tunoltd/emoji-mart-native/raw/master/LICENSE",
+        "parents": "emit"
+    },
+    "libphonenumber-js@1.9.13": {
+        "licenses": "MIT",
+        "repository": "git+https://gitlab.com/catamphetamine/libphonenumber-js",
+        "licenseUrl": "git+https://gitlab.com/catamphetamine/libphonenumber-js",
         "parents": "emit"
     },
     "lottie-ios@3.1.3": {
@@ -239,6 +245,12 @@ export default
         "licenses": "MIT",
         "repository": "https://github.com/react-native-community/react-native-permissions",
         "licenseUrl": "https://github.com/react-native-community/react-native-permissions/raw/master/LICENSE",
+        "parents": "emit"
+    },
+    "react-native-phone-number-input@2.0.0": {
+        "licenses": "MIT",
+        "repository": "https://github.com/garganurag893/react-native-phone-number-input",
+        "licenseUrl": "https://github.com/garganurag893/react-native-phone-number-input/raw/master/LICENSE.md",
         "parents": "emit"
     },
     "react-native-push-notification@7.2.1": {

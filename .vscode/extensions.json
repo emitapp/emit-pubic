@@ -1,6 +1,6 @@
 {
     "recommendations": [
-        "eamodio.gitlens"
+        "eamodio.gitlens",
         "gruntfuggly.todo-tree"
     ]
 }

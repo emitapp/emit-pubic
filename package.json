@@ -3,19 +3,23 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "androidClean": "cd android && ./gradlew clean && cd ..",
     "androidDevDebug": "react-native run-android --variant=devDebug",
     "androidProdDebug": "react-native run-android --variant=prodDebug",
-    "androidAssembleDevRelease": "cd android && ./gradlew assembleDevRelease && cd ..",
-    "androidAssembleProdRelease": "cd android && ./gradlew assembleProdRelease && cd ..",
-    "iosDevDebug": "sh ios/runDevDebug.sh",
-    "iosProdDebug": "sh ios/runProdDebug.sh",
+    "androidAssembleDevRelease": "android/gradlew assembleDevRelease",
+    "androidAssembleProdRelease": "android/gradlew assembleProdRelease",
+    "androidClean": "android/gradlew clean && yarn run env",
+
+    "iosDevDebug": "sh bash_scripts/iosRunDevDebug.sh",
+    "iosProdDebug": "sh bash_scripts/iosRunProdDebug.sh",
+    "podInstall": "ios/pod install &&  yarn run env",
+
+    "updateLicenses": "sh bash_scripts/updateLicenses.sh",
+    "env": "yarn rnuc .env",
+    "postinstall": "sh bash_scripts/yarn-postinstall.sh",
+
     "startServer": "react-native start",
     "test": "jest",
-    "lint": "eslint .",
-    "updateLicenses": "sh src/utils/updateLicenses.sh",
-    "env": "yarn rnuc .env",
-    "postinstall": "patch-package"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.12.1",
@@ -35,6 +39,7 @@
     "@react-native-firebase/perf": "^10.4.0",
     "@react-native-firebase/storage": "^10.4.0",
     "emoji-mart-native": "^0.6.2-beta",
+    "libphonenumber-js": "^1.9.13",
     "lottie-ios": "3.1.3",
     "lottie-react-native": "^3.3.2",
     "moment": "^2.29.1",
@@ -60,6 +65,7 @@
     "react-native-linear-gradient": "^2.5.6",
     "react-native-maps": "0.27.1",
     "react-native-permissions": "^3.0.0",
+    "react-native-phone-number-input": "^2.0.0",
     "react-native-push-notification": "^7.2.1",
     "react-native-qrcode-scanner": "^1.5.1",
     "react-native-qrcode-svg": "^6.0.6",

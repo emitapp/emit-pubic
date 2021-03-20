@@ -44,12 +44,6 @@ export const isValidDBPath = (path) => {
 
 export const MAX_BROADCAST_WINDOW = 2879 //48 hours - 1 minute
 
-export const MAX_TWITTER_HANDLE_LENGTH = 15
-export const MAX_FACEBOOK_HANDLE_LENGTH = 100
-export const MAX_INSTAGRAM_HANDLE_LENGTH = 30
-export const MAX_SNAPCHAT_HANDLE_LENGTH = 30
-export const MAX_GITHUB_HANDLE_LENGTH = 39
-
 export const MAX_USERNAME_LENGTH = 30
 export const MAX_DISPLAY_NAME_LENGTH = 35
 export const MAX_LOCATION_NAME_LENGTH = 100

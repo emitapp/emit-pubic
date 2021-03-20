@@ -15,15 +15,24 @@ import S from "styling";
 import { analyticsLoggingOut } from 'utils/analyticsFunctions';
 import { ASYNC_SETUP_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, MAX_DISPLAY_NAME_LENGTH, MAX_USERNAME_LENGTH, validDisplayName, validUsername } from 'utils/serverValues';
+import PhoneInput from "react-native-phone-number-input";
+
 export default class AccountSetUp extends React.Component {
 
-  state = {
-    displayName: '',
-    displayNameError: null,
-    username: "",
-    usernameError: null,
-    errorMessage: null,
-    isModalVisible: false
+  constructor() {
+    super()
+    this.phoneInput = null
+    this.state = {
+      displayName: '',
+      displayNameError: null,
+      username: "",
+      usernameError: null,
+      errorMessage: null,
+      isModalVisible: false,
+
+      phonenumberInput: "",
+      fullPhoneNumberInput: ""
+    }
   }
 
   render() {
@@ -46,21 +55,23 @@ export default class AccountSetUp extends React.Component {
                 backgroundColor: "white",
                 height: "auto",
                 padding: 20,
-                marginHorizontal: 30
+                marginHorizontal: 20
               }}>
 
                 <Text h4
                   style={{ marginVertical: 8, fontWeight: 'bold' }}>
-                  Finish setting up your Emit Account
+                  Account Setup
                   </Text>
 
                 <ErrorMessageText message={this.state.errorMessage} />
 
-                <Text style={{ marginBottom: 8 }}>
-                  What do you want your friends to call you?
-                  </Text>
                 <Input
-                  label="Display Name"
+                  label={
+                    <Text style={{ marginBottom: 8 }}>
+                      <Text style={{ fontWeight: "bold" }}>Display Name {"\n"}</Text>
+                      What do you want your friends to call you?
+                      </Text>
+                  }
                   autoCapitalize="none"
                   placeholder="John Doe"
                   onChangeText={displayName => {
@@ -70,13 +81,17 @@ export default class AccountSetUp extends React.Component {
                   }}
                   value={this.state.displayName}
                   errorMessage={this.state.displayNameError}
+                  inputStyle={{ height: 20 }}
                 />
 
-                <Text style={{ marginBottom: 8 }}>
-                  Your username is how your friends add you on Emit
-                  </Text>
+
                 <Input
-                  label="Username"
+                  label={
+                    <Text style={{ marginBottom: 8 }}>
+                      <Text style={{ fontWeight: "bold" }}>Username {"\n"}</Text>
+                        Your username is how your friends add you on Emit.
+                      </Text>
+                  }
                   autoCapitalize="none"
                   placeholder="the_real_john"
                   onChangeText={username => {
@@ -87,7 +102,27 @@ export default class AccountSetUp extends React.Component {
                   }}
                   value={this.state.username}
                   errorMessage={this.state.usernameError}
+                  inputStyle={{ height: 20 }}
                 />
+
+                <View style={{ marginHorizontal: 8 }}>
+                  <Text style={{ marginBottom: 4 }}>
+                    <Text style={{ fontWeight: "bold" }}>Phone number (optional). </Text>
+                    Never public, but provides better friend recommendations from contacts.
+                  </Text>
+                  <PhoneInput
+                    ref={ref => this.phoneInput = ref}
+                    layout="first"
+                    defaultCode="US"
+                    placeholder="5550122345"
+                    value={this.state.phonenumberInput}
+                    onChangeText={text => this.setState({ phonenumberInput: text })}
+                    onChangeFormattedText={text => this.setState({ fullPhoneNumberInput: text })}
+                    containerStyle={{ height: 40, borderRadius: 8, width: "100%" }}
+                    textContainerStyle={{ backgroundColor: "#E6E6E6", borderRadius: 8, width: "100%", margin: 0, paddingVertical: 0 }}
+                  />
+                </View>
+
 
                 <Button
                   title="Finish"
@@ -118,6 +153,11 @@ export default class AccountSetUp extends React.Component {
 
   finishUserSetUp = async () => {
     try {
+      this.setState({ errorMessage: "" })
+      if (this.state.phonenumberInput && !this.phoneInput.isValidNumber(this.state.fullPhoneNumberInput)) {
+        this.setState({ errorMessage: "Invalid phone number!" })
+        return;
+      }
       if (!validDisplayName(this.state.displayName)) {
         this.setState({ errorMessage: "Invalid display name! Either too short or too long" })
         return;
@@ -126,6 +166,8 @@ export default class AccountSetUp extends React.Component {
         this.setState({ errorMessage: "Invalid username! It's either too long, too short or contains invalid characters" })
         return;
       }
+
+
 
       this.setState({ isModalVisible: true })
       const usernameRef = database().ref(`/usernames/${this.state.username.normalize("NFKC").toLowerCase()}`);
@@ -138,11 +180,16 @@ export default class AccountSetUp extends React.Component {
         return;
       }
 
-      const cloudFunc = functions().httpsCallable('createSnippet');
-      const response = await timedPromise(cloudFunc({
+      const args = {
         displayName: this.state.displayName,
         username: this.state.username
-      }), LONG_TIMEOUT)
+      }
+      if (this.state.phonenumberInput) {
+        args.telephone = this.state.fullPhoneNumberInput
+      }
+
+      const cloudFunc = functions().httpsCallable('createSnippet');
+      const response = await timedPromise(cloudFunc(args), LONG_TIMEOUT)
 
       if (response.data.status == cloudFunctionStatuses.OK) {
         await AsyncStorage.setItem(ASYNC_SETUP_KEY, "yes");

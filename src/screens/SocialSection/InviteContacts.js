@@ -24,7 +24,6 @@ import ContactAvatar from './ContactAvatar';
 import ContactElement from './ContactElement';
 import FriendReqModal from './FriendReqModal';
 
-
 export default class InviteContacts extends React.Component {
 
   constructor(props) {
@@ -40,6 +39,7 @@ export default class InviteContacts extends React.Component {
     };
 
     this.allContactEmails = []
+    this.allContactPhoneNumbers = []
   }
 
   componentDidMount() {
@@ -48,7 +48,6 @@ export default class InviteContacts extends React.Component {
       .then(permissionsGranted => {
         if (permissionsGranted) {
           this.loadContacts();
-          this.extractEmailsFromContacts()
         } else {
           Alert.alert("Couldn't get contacts", "Emit probably hasn't been granted the permissions")
         }
@@ -62,7 +61,7 @@ export default class InviteContacts extends React.Component {
   loadContacts() {
     Contacts.getAllWithoutPhotos()
       .then(contacts => {
-        this.setState({ contacts, loading: false });
+        this.setState({ contacts, loading: false }, () => this.getRecommendedFriends());
       })
       .catch(e => {
         this.setState({ loading: false });
@@ -82,18 +81,30 @@ export default class InviteContacts extends React.Component {
     }
   }
 
-  extractEmailsFromContacts = async () => {
+  getRecommendedFriends = async () => {
     this.state.contacts.forEach(c => {
-      if (!c.emailAddresses || c.emailAddresses.length == 0) return;
-      c.emailAddresses.forEach(emailObject => {
-        this.allContactEmails.push(emailObject.email)
-      })
+      //Getting email addresses
+      if (c.emailAddresses) {
+        c.emailAddresses.forEach(emailObject => {
+          this.allContactEmails.push(emailObject.email)
+        })
+      }
+
+      //Getting phone numbers
+      if (c.phoneNumbers) {
+        c.phoneNumbers.forEach(phoneNumberObject => {
+          this.allContactPhoneNumbers.push(phoneNumberObject.number)
+        })
+      }
     })
 
     try {
-      const response = await timedPromise(functions().httpsCallable('getUsersFromContacts')(this.allContactEmails), LONG_TIMEOUT);
+      const response = await timedPromise(
+        functions().httpsCallable('getUsersFromContacts')({emails: this.allContactEmails, phoneNumbers: this.allContactPhoneNumbers}),
+        LONG_TIMEOUT);
+        
       if (response.data.status === cloudFunctionStatuses.OK) {
-        this.setState({ suggestedContactFriends: response.data.message })
+        this.setState({ suggestedContactFriends: Object.values(response.data.message) })
       } else {
         Snackbar.show({
           text: "Failed to get recommended friends from contacts",

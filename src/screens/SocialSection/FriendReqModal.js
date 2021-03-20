@@ -134,14 +134,8 @@ class FriendReqDialogue extends React.Component {
 
                         {userSocials !== null &&
                             <>
-                                <Text style={{ alignSelf: "flex-start" }}>Other Socials:</Text>
-                                <View style={styles.buttonPanelContainer}>
-                                    <SocialsIcon name='facebook' data={userSocials.facebook} />
-                                    <SocialsIcon name='twitter' data={userSocials.twitter} />
-                                    <SocialsIcon name='instagram' data={userSocials.instagram} />
-                                    <SocialsIcon name='snapchat' data={userSocials.snapchat} />
-                                    <SocialsIcon name='github' data={userSocials.github} />
-                                </View>
+                                <Text style={{ alignSelf: "flex-start" }}>Bio:</Text>
+                                
                             </>
                         }
 
@@ -480,24 +474,6 @@ class FriendReqDialogue extends React.Component {
     }
 }
 
-class SocialsIcon extends React.Component {
-    render() {
-        const { data, name } = this.props
-        if (!data) return null;
-        return (
-            <Icon
-                name={name}
-                size={24}
-                color="dimgray"
-                onPress={() => {
-                    Clipboard.setString(data);
-                    Snackbar.show({ text: `"${data}" copied to clipboard`, duration: Snackbar.LENGTH_SHORT })
-                }} />
-        )
-    }
-}
-
-
 //This component can also be given the onClosed prop if 
 //you want to trigger something when it's been closed
 export default class FriendReqModal extends React.Component {
@@ -592,12 +568,5 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         justifyContent: 'center',
         alignItems: 'center'
-    },
-    buttonPanelContainer: {
-        flexDirection: "row",
-        marginTop: 8,
-        width: "100%",
-        justifyContent: 'space-evenly',
-        alignContent: "center",
     }
 })

@@ -25,10 +25,7 @@ import NavigationService from 'utils/NavigationService';
 import codePush from "react-native-code-push";
 import { AppState } from "react-native";
 import { analyticsAppOpen, analyticsScreenVisit, setAnalyticsID } from 'utils/analyticsFunctions';
-
-//You can make this false if you're testing something on a device and 
-//don't want codepush to interfere
-const CODEPUSH_ENABLED = true;
+import {_codepushEnabled, _shouldUseCloudFunctionEmulators, _EMULATOR_IP} from 'devsettings/index'
 
 export default class App extends React.Component {
 
@@ -42,15 +39,26 @@ export default class App extends React.Component {
   }
 
   componentDidMount = () => {
+
+    if (_shouldUseCloudFunctionEmulators()) {
+      console.log(
+        '%c%s',
+        'color: black; background: orange; font-size: 18px;',
+        'Using Firebase Cloud Functions Emulator 👷🏾‍♂️')
+      functions().useFunctionsEmulator(_EMULATOR_IP);
+    }
+
     //Don't unsubscribe, so that if the user is signed out 
     //(manually or automatically by Firebase), he is still rerouted
     auth().onAuthStateChanged(this.handleAuthChange)
 
     //Fresh launch, look for and install codepush updates before removing launch screen.
-    if (CODEPUSH_ENABLED) {
+    if (_codepushEnabled()) {
       codePush.sync({ installMode: codePush.InstallMode.IMMEDIATE })
         .catch(err => logError(err))
         .finally(() => this.removeSplashScreen())
+    }else{
+      this.removeSplashScreen()
     }
 
 
@@ -136,7 +144,7 @@ export default class App extends React.Component {
     if (this.appState.match(/inactive|background/) &&
       nextAppState === "active" &&
       Date.now() - this.lastBackgroundedTime > this.backgroundTimeThreshold &&
-      CODEPUSH_ENABLED) {
+      _codepushEnabled()) {
 
       RNBootSplash.show({ fade: false })
         .then(_ => codePush.sync({ installMode: codePush.InstallMode.IMMEDIATE }))

@@ -1,26 +1,26 @@
 
-import auth from '@react-native-firebase/auth'
-import database from '@react-native-firebase/database'
-import functions from '@react-native-firebase/functions'
-import React from 'react'
-import { ScrollView } from 'react-native'
-import { Button, Divider, Input, Text } from 'react-native-elements'
-import Snackbar from 'react-native-snackbar'
-import { SmallLoadingComponent, TimeoutLoadingComponent } from 'reusables/LoadingComponents'
-import ProfilePicChanger from 'reusables/ProfilePicChanger'
-import { logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers'
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import firestore from '@react-native-firebase/firestore';
+import functions from '@react-native-firebase/functions';
+import parsePhoneNumber from 'libphonenumber-js';
+import React from 'react';
+import { ScrollView, View } from 'react-native';
+import { Button, Divider, Input, Text } from 'react-native-elements';
+import PhoneInput from "react-native-phone-number-input";
+import Snackbar from 'react-native-snackbar';
+import ErrorMessageText from 'reusables/ErrorMessageText';
+import { SmallLoadingComponent, TimeoutLoadingComponent } from 'reusables/LoadingComponents';
+import MoreInformationTooltip from 'reusables/MoreInformationTooltip';
+import ProfilePicChanger from 'reusables/ProfilePicChanger';
+import { logError, MEDIUM_TIMEOUT, timedPromise, LONG_TIMEOUT } from 'utils/helpers';
 import {
   cloudFunctionStatuses,
-  MAX_FACEBOOK_HANDLE_LENGTH,
-  MAX_GITHUB_HANDLE_LENGTH,
-  MAX_SNAPCHAT_HANDLE_LENGTH,
-  MAX_TWITTER_HANDLE_LENGTH,
-  MAX_INSTAGRAM_HANDLE_LENGTH,
   validDisplayName
-} from 'utils/serverValues'
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import ErrorMessageText from 'reusables/ErrorMessageText';
-import { emitEvent, events } from 'utils/subcriptionEvents'
+} from 'utils/serverValues';
+import { emitEvent, events } from 'utils/subcriptionEvents';
+
+
 
 export default class EditProfileScreen extends React.Component {
 
@@ -34,24 +34,24 @@ export default class EditProfileScreen extends React.Component {
     super(props);
     this.state = {
       displayName: "",
-      hasSnippets: false,
+      hasInitialData: false,
       hasTimedOut: false,
       displayNameError: "",
       changingDisplayName: false,
-      facebook: null,
-      twitter: null,
-      instagram: null,
-      github: null,
-      snapchat: null,
-      socialsError: null,
-      updatingSocials: false
+
+      changingPhoneNumber: false,
+      phonenumberInput: "",
+      fullPhoneNumberInput: "",
+      phoneInputError: "",
+      initialPhoneCountry: "US"
     }
+    this.phoneInput = null
     this._isMounted = false; //Using this is an antipattern, but simple enough for now
   }
 
   componentDidMount() {
     this._isMounted = true
-    this.getSnippet()
+    this.getInitialData()
   }
 
   componentWillUnmount() {
@@ -59,7 +59,7 @@ export default class EditProfileScreen extends React.Component {
   }
 
   render() {
-    if (!this.state.hasSnippets) {
+    if (!this.state.hasInitialData) {
       return (
         <TimeoutLoadingComponent
           hasTimedOut={this.state.hasTimedOut}
@@ -78,13 +78,17 @@ export default class EditProfileScreen extends React.Component {
 
         <Divider style={{ marginVertical: 16 }} />
 
-        <Text h4>Edit Display Name</Text>
-        <Text style={{ textAlign: "center", marginBottom: 16, marginHorizontal: 8 }}>
-          Note that even though you can change your display name as many times as you want,
-          certain parts of the app will still show your old display name to you and other users.
-          This is why Emit also associates a unique unchangeable hander (eg @john_doe)
-          to make sure everyone is still easily identifiable.
-          </Text>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Text h4>Edit Display Name</Text>
+          <MoreInformationTooltip
+            message={"Note that even though you can change your display name as many times as you want ," +
+              "certain parts of the app will still show your old display name to you and other users. " +
+              "This is why Emit also associates a unique unchangeable hander (eg @john_doe)" +
+              "to make sure everyone is still easily identifiable."}
+            height={300}
+            width={250} />
+        </View>
+
         <Input
           autoCapitalize="none"
           label="Display Name"
@@ -100,104 +104,87 @@ export default class EditProfileScreen extends React.Component {
         {!this.state.changingDisplayName ? (
           <Button title="Update" onPress={this.updateDisplayName} />
         ) : (
-            <SmallLoadingComponent />
-          )}
+          <SmallLoadingComponent />
+        )}
 
         <Divider style={{ marginVertical: 16 }} />
 
-        <Text h4>Edit Social Links</Text>
-        <Text style={{ textAlign: "center", marginBottom: 16, marginHorizontal: 8 }}>
-          People will be able to see these when they check your profile. Exclude the @ in all your handles
-          </Text>
+        <View style={{ marginHorizontal: 8 }}>
 
-        <ErrorMessageText message={this.state.socialsError} />
+          <Text style={{ marginBottom: 4 }}>
+            <Text style={{ fontWeight: "bold" }}>Phone number (optional). </Text>
+              Never public, but provides better friend recommendations from contacts.
+            </Text>
 
-        <Input
-          autoCapitalize="none"
-          placeholder="Facebook name"
-          onChangeText={facebook => this.setState({ facebook })}
-          value={this.state.facebook}
-          leftIcon={<Icon name='facebook-square' size={24} />}
-          errorMessage={
-            (this.state.facebook && this.state.facebook.length > MAX_FACEBOOK_HANDLE_LENGTH) ?
-              `Your Facebook name can't be more than ${MAX_FACEBOOK_HANDLE_LENGTH} characters` : undefined
-          }
-        />
-        <Input
-          autoCapitalize="none"
-          placeholder="Instagram handle"
-          onChangeText={instagram => this.setState({ instagram })}
-          value={this.state.instagram}
-          leftIcon={<Icon name='instagram' size={24} />}
-          errorMessage={
-            (this.state.instagram && this.state.instagram.length > MAX_INSTAGRAM_HANDLE_LENGTH) ?
-              `Instagram handles aren't more than ${MAX_INSTAGRAM_HANDLE_LENGTH} characters` : undefined
-          }
-        />
-        <Input
-          autoCapitalize="none"
-          placeholder="Twitter handle"
-          onChangeText={twitter => this.setState({ twitter })}
-          value={this.state.twitter}
-          leftIcon={<Icon name='twitter' size={24} />}
-          errorMessage={
-            (this.state.twitter && this.state.twitter.length > MAX_TWITTER_HANDLE_LENGTH) ?
-              `Twitter handles aren't more than ${MAX_TWITTER_HANDLE_LENGTH} characters` : undefined
-          }
-        />
-        <Input
-          autoCapitalize="none"
-          placeholder="Github handle"
-          onChangeText={github => this.setState({ github })}
-          value={this.state.github}
-          leftIcon={<Icon name='github' size={24} />}
-          errorMessage={
-            (this.state.github && this.state.github.length > MAX_GITHUB_HANDLE_LENGTH) ?
-              `Github usernames aren't more than ${MAX_GITHUB_HANDLE_LENGTH} characters` : undefined
-          }
-        />
-        <Input
-          autoCapitalize="none"
-          placeholder="Snapchat handle"
-          onChangeText={snapchat => this.setState({ snapchat })}
-          value={this.state.snapchat}
-          leftIcon={<Icon name='snapchat' size={24} />}
-          errorMessage={
-            (this.state.snapchat && this.state.snapchat.length > MAX_SNAPCHAT_HANDLE_LENGTH) ?
-              `Snapchat usernames aren't more than ${MAX_SNAPCHAT_HANDLE_LENGTH} characters` : undefined
-          }
-        />
+          <ErrorMessageText message={this.state.phoneInputError} />
 
-        {!this.state.updatingSocials ? (
-          <Button title="Update" onPress={this.updateSocials} />
-        ) : (
+          <PhoneInput
+            ref={ref => this.phoneInput = ref}
+            layout="first"
+            defaultCode={this.state.initialPhoneCountry}
+            placeholder="5550122345"
+            value={this.state.phonenumberInput}
+            onChangeText={text => this.setState({ phonenumberInput: text })}
+            onChangeFormattedText={text => this.setState({ fullPhoneNumberInput: text })}
+            containerStyle={{ height: 40, borderRadius: 8, width: "100%" }}
+            textContainerStyle={{ backgroundColor: "#E6E6E6", borderRadius: 8, width: "100%", margin: 0, paddingVertical: 0 }}
+            //So when the initial data is retrieved, initialPhoneCountry will change and 
+            //component be remounted, allowiing new defualt code to kick in
+            key={this.state.initialPhoneCountry}
+          />
+
+          {!this.state.changingDisplayName ? (
+            <Button
+              title="Update"
+              onPress={this.updatePhoneNumber}
+              buttonStyle={{ alignSelf: "center" }}
+              containerStyle={{ marginVertical: 16 }} />
+          ) : (
             <SmallLoadingComponent />
           )}
+        </View>
 
       </ScrollView>
     )
   }
 
-  getSnippet = async () => {
+  getInitialData = async () => {
     try {
       this.setState({ hasTimedOut: false })
       const uid = auth().currentUser.uid;
       const snippetRef = database().ref(`/userSnippets/${uid}`);
       const extraInfoRef = database().ref(`/userSnippetExtras/${uid}`);
+      const userMetadataRef = firestore().collection('userMetadata').doc(auth().currentUser.uid)
       let snippetSnap = null;
-      let extrasSnap = null
+      let extrasSnap = null;
+      let metadataSnap = null;
+
       await Promise.all([
+        timedPromise(userMetadataRef.get(), MEDIUM_TIMEOUT).then(snap => metadataSnap = snap),
         timedPromise(snippetRef.once('value'), MEDIUM_TIMEOUT).then(snap => snippetSnap = snap),
         timedPromise(extraInfoRef.once('value'), MEDIUM_TIMEOUT).then(snap => extrasSnap = snap)
       ])
 
       if (!snippetSnap.exists() || !this._isMounted) return;
 
+      let newStateVars = { displayName: snippetSnap.val().displayName }
+      if (extrasSnap.exists()) newStateVars = { ...extrasSnap.val(), ...newStateVars }
+
+      if (metadataSnap.exists && metadataSnap.data().phoneNumberInfo) {
+        const parsedPhoneNumber = parsePhoneNumber(metadataSnap.data().phoneNumberInfo.phoneNumberInternational, "US")
+        newStateVars = {
+          ...newStateVars,
+          initialPhoneCountry: parsedPhoneNumber.country,
+          phonenumberInput: parsedPhoneNumber.nationalNumber,
+          fullPhoneNumberInput: parsedPhoneNumber.formatInternational()
+        }
+      }
+
       this.setState({
-        displayName: snippetSnap.val().displayName,
-        ...(extrasSnap.val() || {}),
-        hasSnippets: true
+        ...newStateVars,
+        hasInitialData: true
       })
+
     } catch (err) {
       if (err.name != "timeout") logError(err)
       else this.setState({ hasTimedOut: true })
@@ -232,44 +219,27 @@ export default class EditProfileScreen extends React.Component {
     this.setState({ changingDisplayName: false })
   }
 
-  formatSocial = (input) => {
-    if (!input) return null
-    const formattedInput = input.trim()
-    if (formattedInput) return formattedInput
-    return null
-  }
-
-  updateSocials = async () => {
-    if (
-      (this.state.facebook && this.state.facebook.length > MAX_FACEBOOK_HANDLE_LENGTH) ||
-      (this.state.instagram && this.state.instagram.length > MAX_INSTAGRAM_HANDLE_LENGTH) ||
-      (this.state.twitter && this.state.twitter.length > MAX_TWITTER_HANDLE_LENGTH) ||
-      (this.state.github && this.state.github.length > MAX_GITHUB_HANDLE_LENGTH) ||
-      (this.state.snapchat && this.state.snapchat.length > MAX_SNAPCHAT_HANDLE_LENGTH)
-    ) return
-
-    this.setState({ updatingSocials: true, socialsError: null })
-    try {
-      const facebook = this.formatSocial(this.state.facebook)
-      const twitter = this.formatSocial(this.state.twitter)
-      const instagram = this.formatSocial(this.state.instagram)
-      const snapchat = this.formatSocial(this.state.snapchat)
-      const github = this.formatSocial(this.state.github)
-      const updatedSocials = { facebook, twitter, instagram, snapchat, github }
-
-      await timedPromise(
-        database().ref(`/userSnippetExtras/${auth().currentUser.uid}`).update(updatedSocials),
-        MEDIUM_TIMEOUT
-      )
-      Snackbar.show({ text: 'Social update change successful', duration: Snackbar.LENGTH_SHORT });
-    } catch (err) {
-      if (err.name == "timeout") {
-        this.setState({ socialsError: "Timeout! Try again" })
-      } else {
-        this.setState({ socialsError: "Something went wrong." })
-        logError(err)
-      }
+  updatePhoneNumber = async () => {
+    if (!this.phoneInput.isValidNumber(this.state.fullPhoneNumberInput)) {
+      this.setState({ phoneInputError: "Invalid phone number!" })
+      return;
     }
-    this.setState({ updatingSocials: false })
+
+    try {
+      this.setState({ changingPhoneNumber: true, phoneInputError: "" })
+      const cloudFunc = functions().httpsCallable('updatePhoneNumber')
+      const response = await timedPromise(cloudFunc(this.state.fullPhoneNumberInput), LONG_TIMEOUT);
+      if (response.data.status != cloudFunctionStatuses.OK) {
+        this.setState({ errorMessage: response.data.message })
+      } else {
+        Snackbar.show({ text: 'Phone number change successful', duration: Snackbar.LENGTH_SHORT });
+      }
+    } catch (err) {
+      if (err.name != 'timeout') logError(err)
+      this.setState({ phoneInputError: err.message })
+    } finally {
+      this.setState({ changingPhoneNumber: false })
+    }
+
   }
 }
