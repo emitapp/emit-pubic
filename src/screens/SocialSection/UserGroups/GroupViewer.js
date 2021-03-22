@@ -17,6 +17,7 @@ import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
 import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, groupRanks, MAX_GROUP_NAME_LENGTH } from 'utils/serverValues';
+import FriendReqModal from '../FriendReqModal';
 
 export default class GroupScreen extends React.Component {
 
@@ -111,6 +112,9 @@ export default class GroupScreen extends React.Component {
           <View style={S.styles.containerFlexStart}>
 
             <DefaultLoadingModal isVisible={isModalVisible} />
+
+            <FriendReqModal
+              ref={modal => this.modal = modal} />
 
             <ErrorMessageText message={this.state.errorMessage} />
 
@@ -302,7 +306,6 @@ export default class GroupScreen extends React.Component {
               dbref={database().ref(`/userGroups/${this.groupSnippet.uid}/memberSnippets`)}
             />
 
-
             {!inEditMode ? (
               <View style={{ flexDirection: "row" }}>
                 <BannerButton
@@ -481,7 +484,7 @@ export default class GroupScreen extends React.Component {
     if (inEditMode && usersToBeRemoved[item.uid]) return null; //Stop rendering this user if he's queued for deletion
     return (
       <View style={{ width: "100%", flexDirection: "row", alignItems: "center" }}>
-        <UserSnippetListElement snippet={item} style={{ flex: 1 }} />
+        <UserSnippetListElement snippet={item} style={{ flex: 1 }} onPress={() => this.modal.open(item)} />
         {(item.rank === groupRanks.ADMIN || this.state.usersToBePromoted[item.uid]) && !this.state.usersToBeDemoted[item.uid] &&
           <FontAwesomeIcon name="star" size={24} color="grey" style={{ marginHorizontal: 8 }} />
         }
