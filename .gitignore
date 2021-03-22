@@ -73,4 +73,7 @@ ios/Firebase/GoogleService-Info.dev.plist
 # react-native-ultimate-config
 #
 rnuc.*
-.env
+
+.env/*
+!.env/.env.example
+!.env/README.md

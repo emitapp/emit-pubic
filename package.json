@@ -19,7 +19,11 @@
 
     "startServer": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "updateLicenses": "sh src/utils/updateLicenses.sh",
+    "env": "yarn rnuc .env/.env",
+    "postinstall": "patch-package",
+    "copyenv": "sh bash_scripts/copy-env-files.sh"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.12.1",
