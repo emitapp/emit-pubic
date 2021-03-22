@@ -8,21 +8,15 @@
     "androidAssembleDevRelease": "android/gradlew assembleDevRelease",
     "androidAssembleProdRelease": "android/gradlew assembleProdRelease",
     "androidClean": "android/gradlew clean && yarn run env",
-
     "iosDevDebug": "sh bash_scripts/iosRunDevDebug.sh",
     "iosProdDebug": "sh bash_scripts/iosRunProdDebug.sh",
     "podInstall": "ios/pod install &&  yarn run env",
-
-    "updateLicenses": "sh bash_scripts/updateLicenses.sh",
-    "env": "yarn rnuc .env",
-    "postinstall": "sh bash_scripts/yarn-postinstall.sh",
-
     "startServer": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "updateLicenses": "sh src/utils/updateLicenses.sh",
+    "postinstall": "sh bash_scripts/yarn-postinstall.sh",
+    "updateLicenses": "sh bash_scripts/updateLicenses.sh",
     "env": "yarn rnuc .env/.env",
-    "postinstall": "patch-package",
     "copyenv": "sh bash_scripts/copy-env-files.sh"
   },
   "dependencies": {
@@ -32,7 +26,6 @@
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-community/netinfo": "^5.9.9",
     "@react-native-community/push-notification-ios": "^1.8.0",
-    "@react-native-firebase/analytics": "^10.4.0",
     "@react-native-firebase/app": "^10.4.0",
     "@react-native-firebase/auth": "^10.4.0",
     "@react-native-firebase/crashlytics": "^10.4.0",

@@ -1,4 +1,4 @@
-import analytics from '@react-native-firebase/analytics';
+//import analytics from '@react-native-firebase/analytics';
 import auth from "@react-native-firebase/auth";
 import database from '@react-native-firebase/database';
 import { friendActionOptions } from 'screens/SocialSection/FriendReqModal';
@@ -23,87 +23,87 @@ import { logError } from './helpers';
 //https://firebase.google.com/docs/analytics/debugview
 
 export const analyticsSigningUp = (method) => {
-    analytics().logSignUp({ method }).catch(err => logError(err))
+    //analytics().logSignUp({ method }).catch(err => logError(err))
 }
 
 export const analyticsLoggingIn = (method) => {
-    analytics().logLogin({ method }).catch(err => logError(err))
+    //analytics().logLogin({ method }).catch(err => logError(err))
 }
 
 export const analyticsLoggingOut = () => {
-    analytics().logEvent("log_out").catch(err => logError(err))
+    //analytics().logEvent("log_out").catch(err => logError(err))
 }
 
 export const analyticsLogSearch = (search_term) => {
-    analytics().logSearch({ search_term }).catch(err => logError(err))
+    //analytics().logSearch({ search_term }).catch(err => logError(err))
 }
 
 export const setAnalyticsID = () => {
-    if (auth().currentUser.uid) analytics().setUserId(auth().currentUser.uid).catch(err => logError(err))
+    // (auth().currentUser.uid) analytics().setUserId(auth().currentUser.uid).catch(err => logError(err))
 }
 
 export const analyticsScreenVisit = (screenName) => {
-    analytics().logScreenView({ screen_class: screenName, screen_name: screenName })
-        .catch(err => logError(err))
+    // analytics().logScreenView({ screen_class: screenName, screen_name: screenName })
+    //     .catch(err => logError(err))
 }
 
 //Action should be from friendActionOptions
 export const analyticsFriendAction = (action, args) => {
-    if (typeof action != 'string' || !Object.values(friendActionOptions).includes(action)) {
-        logError("invalid friend action for analytics: " + action, false)
-    }
-    const formattedAction = action.trim().toLowerCase().replace(/\s+/g, '_')
-    analytics().logEvent(formattedAction, args).catch(err => logError(err))
+    // if (typeof action != 'string' || !Object.values(friendActionOptions).includes(action)) {
+    //     logError("invalid friend action for analytics: " + action, false)
+    // }
+    // const formattedAction = action.trim().toLowerCase().replace(/\s+/g, '_')
+    // analytics().logEvent(formattedAction, args).catch(err => logError(err))
 }
 
 export const analyticsUserInvitedSMS = () => {
-    analytics().logShare({ content_type: "app_invite", method: "sms", item_id: "sms" })
-        .catch(err => logError(err))
+    // analytics().logShare({ content_type: "app_invite", method: "sms", item_id: "sms" })
+    //     .catch(err => logError(err))
 }
 
 export const analyticsUserJoinedGroup = (groupUid) => {
-    analytics().logJoinGroup({ group_id: groupUid }).catch(err => logError(err))
+    //analytics().logJoinGroup({ group_id: groupUid }).catch(err => logError(err))
 }
 
 export const analyticsAppOpen = () => {
-    analytics().logAppOpen().catch(err => logError(err))
+    //analytics().logAppOpen().catch(err => logError(err))
 
 }
 
 
 export const analyticsUserSharedFlare = (flareUid) => {
-    analytics().logShare({ content_type: "flare_share", method: "link", item_id: flareUid })
-        .catch(err => logError(err))
+    // analytics().logShare({ content_type: "flare_share", method: "link", item_id: flareUid })
+    //     .catch(err => logError(err))
 }
 
 export const analyticsLogFlareCreation = async (flareUid, flareOwnerUid) => {
-    try {
-        const snap = await getFlareAnalyticsData(flareUid, flareOwnerUid)
-        if (!snap.exists()) {
-            logError(new Error("Couldn't get flare analytics data"))
-        } else {
-            analytics().logEvent("flare_created", snap.val())
-        }
-    } catch (err) {
-        logError(err)
-    }
+    // try {
+    //     const snap = await getFlareAnalyticsData(flareUid, flareOwnerUid)
+    //     if (!snap.exists()) {
+    //         logError(new Error("Couldn't get flare analytics data"))
+    //     } else {
+    //         analytics().logEvent("flare_created", snap.val())
+    //     }
+    // } catch (err) {
+    //     logError(err)
+    // }
 }
 
 export const analyticsVideoChatUsed = async (flareUid, flareOwnerUid) => {
-    try {
-        const snap = await getFlareAnalyticsData(flareUid, flareOwnerUid)
-        if (!snap.exists()) {
-            logError("Couldn't get flare analytics data")
-        } else {
-            analytics().logEvent("flare_video_chat_used", snap.val())
-        }
-    } catch (err) {
-        logError(err)
-    }
+    // try {
+    //     const snap = await getFlareAnalyticsData(flareUid, flareOwnerUid)
+    //     if (!snap.exists()) {
+    //         logError("Couldn't get flare analytics data")
+    //     } else {
+    //         analytics().logEvent("flare_video_chat_used", snap.val())
+    //     }
+    // } catch (err) {
+    //     logError(err)
+    // }
 }
 
 const getFlareAnalyticsData = async (flareUid, flareOwnerUid) => {
-    const snap = await database().ref(`/activeBroadcasts/${flareOwnerUid}/private/${flareUid}/ga_analytics`).once("value")
-    console.log(snap.val())
-    return snap
+    // const snap = await database().ref(`/activeBroadcasts/${flareOwnerUid}/private/${flareUid}/ga_analytics`).once("value")
+    // console.log(snap.val())
+    // return snap
 }
