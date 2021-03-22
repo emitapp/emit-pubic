@@ -86,6 +86,8 @@ static void InitializeFlipper(UIApplication *application) {
   [RNCPushNotificationIOS didReceiveRemoteNotification:userInfo
                                 fetchCompletionHandler:^void (UIBackgroundFetchResult result){}];
 
+  [[FIRMessaging messaging] appDidReceiveMessage:userInfo]; //https://github.com/emitapp/emit/issues/87
+
   // allow showing foreground notifications
   completionHandler(UNNotificationPresentationOptionSound | UNNotificationPresentationOptionAlert | UNNotificationPresentationOptionBadge);
   // or if you wish to hide all notification while in foreground replace it with 
@@ -93,26 +95,35 @@ static void InitializeFlipper(UIApplication *application) {
 }
 
 // Required for the register event.
+// The second line is actually for https://github.com/emitapp/emit/issues/87
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
  [RNCPushNotificationIOS didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+ [FIRMessaging messaging].APNSToken = deviceToken; //https://github.com/emitapp/emit/issues/87
 }
+
 // Required for the notification event. You must call the completion handler after handling the remote notification.
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
+  [[FIRMessaging messaging] appDidReceiveMessage:userInfo]; //https://github.com/emitapp/emit/issues/87
   [RNCPushNotificationIOS didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
 }
+
 // Required for the registrationError event.
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
  [RNCPushNotificationIOS didFailToRegisterForRemoteNotificationsWithError:error];
 }
+
 // Required for localNotification event
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
 didReceiveNotificationResponse:(UNNotificationResponse *)response
          withCompletionHandler:(void (^)(void))completionHandler
 {
+  //Next two lines for https://github.com/emitapp/emit/issues/87
+  NSDictionary *userInfo = response.notification.request.content.userInfo;
+  [[FIRMessaging messaging] appDidReceiveMessage:userInfo]; 
   [RNCPushNotificationIOS didReceiveNotificationResponse:response];
 }
 
