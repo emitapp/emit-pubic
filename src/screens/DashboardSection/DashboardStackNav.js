@@ -15,6 +15,7 @@ import ResponsesScreen from './ResponsesViewer';
 import SavedLocations from './SavedLocations'
 import ChatScreen from '../Chat/ChatScreen'
 import BroadcastViewer from '../FeedSection/BroadcastViewer';
+import SearchHub from 'reusables/SearchHub'
 
 //For the Profile Section...
 import UserFriendSearch from '../SocialSection/UserFriendSearch';
@@ -50,7 +51,8 @@ const Navigator = createStackNavigator(
     GroupSearch,
     GroupViewer,
     InviteContacts,
-    JitsiComponent
+    JitsiComponent,
+    SearchHub
   },
   {
     initialRouteName: 'ActiveBroadcasts',

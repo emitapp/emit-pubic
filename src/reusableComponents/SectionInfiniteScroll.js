@@ -19,8 +19,7 @@ import { logError } from 'utils/helpers'
  */
 
 // Required props:
-// dbref: an array of database refs to use in the format {title: "title", ref: ref}
-// orderBy: the array of queryTypes to order each section by
+// dbref: an array of database refs to use in the format [{title: "title", ref: ref, orderBy:["queryType"]},...]
 // renderItem: same as FLatlist RenderItem
 
 //Optinal props
@@ -58,14 +57,13 @@ export default class SectionInfiniteScroll extends React.Component {
         //FIXME: Pagination comment block
         //this.lastItemProperty = null;
         //this.stopSearching = false; //Once it gets a null snapshot, it'll stop
-
-
         this.sections = []; // A list of lists, to allow for section list support
         this.isLoading = true; //For when it's loading for the first time
         this.timedOut = false;
         this.errorMessage = "";
         this.processedRefs = []
         this.refreshing = false;
+        this.sortedSections = [];
     }
 
     componentDidMount = () => {
@@ -125,9 +123,16 @@ export default class SectionInfiniteScroll extends React.Component {
                     title: title, 
                     data: listData, 
                     customText: customData.text, 
-                    customCallback: customData.func 
-                });
-            }
+                    customCallback: customData.func
+                }); 
+
+                if (this.props.sectionSorter) {
+                    this.sortedSections = [...this.sections]
+                    this.sortedSections = this.sortedSections.filter((x) => x != "uninitialized")
+                    this.sortedSections.sort(this.props.sectionSorter)
+                }
+    
+            } 
 
             this.props.onSectionData && this.props.onSectionData(title, listData)
             this.isLoading = false
@@ -136,18 +141,21 @@ export default class SectionInfiniteScroll extends React.Component {
         } catch (error) {
             this.onError(error)
         }
-
     }
 
     setListeners = () => {
         try {
             const {startingPoint, endingPoint} = this.props
             for (let i = 0; i < this.props.dbref.length; i++) {
-                var ref = this.props.dbref[i].ref.orderByChild(this.props.orderBy[i].value);
-                if (startingPoint && startingPoint[i]) ref = ref.startAt(startingPoint[i])
-                if (endingPoint && endingPoint[i]) ref = ref.endAt(endingPoint[i])
-                ref.on("value", (snap) => this.refListenerCallback(snap, i), this.onError)
-                this.processedRefs.push(ref)
+                for (let j = 0; j < this.props.dbref[i].orderBy.length; j++) {
+                    var currentDbRef = this.props.dbref[i]
+                    var currentOrderBy = currentDbRef.orderBy[j]
+                    var ref = currentDbRef.ref.orderByChild(currentOrderBy);
+                    if (startingPoint && startingPoint[i]) ref = ref.startAt(startingPoint[i])
+                    if (endingPoint && endingPoint[i]) ref = ref.endAt(endingPoint[i])
+                    ref.on("value", (snap) => this.refListenerCallback(snap, i), this.onError)
+                    this.processedRefs.push(ref)
+                }
             }
         }
         catch (error) {
@@ -176,15 +184,14 @@ export default class SectionInfiniteScroll extends React.Component {
         }
     }
 
-
     renderSectionHeader=({ section: { title, customText, customCallback} }) => {
         return (
             <View>
-                <Text style={{ marginTop: 4, color: "blue", fontSize: 12 }}>{title}</Text>
+                <Text style={{ marginTop: 14, color: "blue", fontSize: 14 }}>{title}</Text>
                 {customText &&
                     <View>
                         <TouchableOpacity onPress={customCallback}>
-                            <Text style={{ fontSize: 18, marginTop: 8, marginBottom: 8 }}>{customText}</Text>
+                            <Text style={{ fontSize: 16, marginTop: 8, marginBottom: 8, fontWeight: 'bold' }}>{customText}</Text>
                         </TouchableOpacity>
                         <Divider />
                     </View> }
@@ -273,7 +280,7 @@ export default class SectionInfiniteScroll extends React.Component {
                         stickySectionHeadersEnabled={false}
                         showsVerticalScrollIndicator={false}
                         style={{ flex: 0 }}
-                        sections={this.sections.filter((x) => x != "uninitialized")}
+                        sections={this.props.sectionSorter ? this.sortedSections : this.sections.filter((x) => x != "uninitialized")}
                         keyExtractor={item => item.uid}
                         //FIXME: Pagination comment block
                         // ListFooterComponent={this.renderFooter}

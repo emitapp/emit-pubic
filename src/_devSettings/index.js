@@ -18,7 +18,7 @@ export const _codepushEnabled = () => {
  * For local Cloud function dev
  */
 export const _shouldUseCloudFunctionEmulators = () => {
-    return (__DEV__) && true
+    return (__DEV__) && false
 }
 
 //If you are running on a physical device, replace http://localhost 

@@ -7,8 +7,9 @@ import NavigationService from 'utils/NavigationService';
 import auth from "@react-native-firebase/auth"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { subscribeToEvent, unsubscribeToEvent, events } from 'utils/subcriptionEvents'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-class HeaderProfilePic extends React.PureComponent {
+class HeaderProfilePicAndSearch extends React.PureComponent {
 
     componentDidMount() {
         subscribeToEvent(events.PROFILE_PIC_CHNAGE, this, () => this.pictureComponet.refresh())
@@ -20,7 +21,13 @@ class HeaderProfilePic extends React.PureComponent {
 
     render() {
         return (
-            <View style={{ position: "absolute", top: 0, right: 0 }}>
+            <View style={{ position: "absolute", top: 0, right: 0, flexDirection: "row"}}>
+                <Icon.Button
+                    iconStyle={{marginRight: 0}} // overriding default
+                    name="search"
+                    backgroundColor="#FA6C13"
+                    onPress={() => NavigationService.navigate("SearchHub")}>
+                </Icon.Button>
                 <TouchableOpacity onPress={() => NavigationService.navigate("SocialButtonHub")}>
                     <ProfilePicDisplayer
                         diameter={36}
@@ -44,7 +51,7 @@ export default function StandardHeader(title) {
             return (
                 <View style={{ flexDirection: "row", alignItems: "flex-end", marginHorizontal: 10 }}>
                     <Text style={{ ...textStyle, flex: 1 }}> {title} </Text>
-                    <HeaderProfilePic />
+                    <HeaderProfilePicAndSearch />
                 </View>
             )
         },
@@ -96,7 +103,7 @@ export function ScrollingHeader(title) {
                         textStyle={{ ...textStyle, minWidth: "100%" }}>
                         {title}
                     </ScrollingText>
-                    <HeaderProfilePic />
+                    <HeaderProfilePicAndSearch />
                 </View>
             )
         },

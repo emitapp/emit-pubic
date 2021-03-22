@@ -54,24 +54,35 @@ export default class SearchableInfiniteScroll extends React.Component {
     }
   }
 
+  
+
   render() {
     const { type, queryTypes, queryValidator, dbref, style,
       parentEmptyStateComponent, searchbarPlaceholder, onSectionData, additionalData, ...otherProps } = this.props
+    const searchBarComponent = () =>
+      <SearchBar
+
+        autoCapitalize="none"
+        placeholder={searchbarPlaceholder}
+        onChangeText={searchBarValue => this.setState({ searchBarValue })}
+        value={this.state.searchBarValue}
+        onSubmitEditing={this.search}
+      />
     return (
       <ThemeConsumer>
         {({ theme }) => (
           <View style={{ ...S.styles.containerFlexStart, width: "100%", ...style }}>
 
             {this.props.children}
-
-            <SearchBar
-              autoCapitalize="none"
-              placeholder={searchbarPlaceholder}
-              onChangeText={searchBarValue => this.setState({ searchBarValue })}
-              value={this.state.searchBarValue}
-              onSubmitEditing={this.search}
-            />
-
+            {this.props.searchBarBuddy ? 
+              <View style={{flexDirection: "row", marginLeft: -12}}>
+                {this.props.searchBarBuddy}
+                <View style={{width: "85%", marginLeft: 8, justifyContent: "center"}}>
+                {searchBarComponent()}
+                </View>
+              </View> :
+              searchBarComponent()
+            }
             {(this.state.query == null) ? (
               this.renderEmptyState()
             ) : (
@@ -88,7 +99,6 @@ export default class SearchableInfiniteScroll extends React.Component {
                   <SectionInfiniteScroll
                     generation={this.state.searchGeneration}
                     dbref={this.props.dbref}
-                    orderBy={this.props.queryTypes}
                     startingPoint={new Array(this.props.dbref.length).fill(this.state.query)}
                     endingPoint={new Array(this.props.dbref.length).fill(`${this.state.query}\uf8ff`)}
                     onSectionData={onSectionData}
@@ -119,7 +129,9 @@ export default class SearchableInfiniteScroll extends React.Component {
         searchGeneration: this.state.searchGeneration + 1
       })
     } else {
-      Alert.alert("Invalid Query!")
+      this.setState({
+        query: null,
+      })
     }
   }
 
@@ -150,13 +162,15 @@ export default class SearchableInfiniteScroll extends React.Component {
   }
 
   renderEmptyState = () => {
-    if (this.props.parentEmptyStateComponent) return this.props.parentEmptyStateComponent
+    if (this.props.parentEmptyStateComponent) {
+      return this.props.parentEmptyStateComponent
+    } 
     return (
       <EmptyState
         image={<FontAwesomeIcon name="search" size={50} color={theme.colors.grey1} />}
         title="Search for something"
         message="We'll do our best to find it!"
-      />
+      /> 
     )
   }
 

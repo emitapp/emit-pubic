@@ -20,8 +20,8 @@ export default class NewBroadcastFormRecepients extends React.Component {
 
     let navigationParams = props.navigation.state.params
     let userUid = auth().currentUser.uid
-    this.dbRef = [{ title: "GROUPS", ref: database().ref(`/userGroupMemberships/${userUid}`) },
-    { title: "FRIENDS", ref: database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`) }]
+    this.dbRef = [{ title: "GROUPS", ref: database().ref(`/userGroupMemberships/${userUid}`), orderBy: ["nameQuery"] },
+    { title: "FRIENDS", ref: database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`), orderBy: ["displayNameQuery", "usernameQuery"] }]
     this.footerButtons = [{ text: "+ New Group", func: () => { this.props.navigation.navigate('GroupMemberAdder') } },
     { text: "+ Add Friends", func: () => { this.props.navigation.navigate('UserFriendSearch') } }]
     this.rendererType = RecipientListElement
@@ -54,7 +54,6 @@ export default class NewBroadcastFormRecepients extends React.Component {
                 </View>
 
               </View>
-
               <SearchableInfiniteScroll
                 type="section"
                 queryValidator={(query) => true}
@@ -134,7 +133,6 @@ export default class NewBroadcastFormRecepients extends React.Component {
       })
     }
     this.setState({ selectedFriends: copiedObj, allFriends: !this.state.allFriends });
-
   }
 
   toggleSelection = (snippet, isGroupSnippet) => {

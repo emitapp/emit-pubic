@@ -20,6 +20,7 @@ export default class ActiveBroadcasts extends React.Component {
     this.firstSectionTitle = "EMITTED"
     this.secondSectionTitle = "JOINED"
     this.generation = 0;
+    this.orderBy = ["deathTimestamp", "status" ]
     this.state = {
       rerender: 0,
       errorMessage: null,
@@ -36,10 +37,9 @@ export default class ActiveBroadcasts extends React.Component {
           renderItem={this.itemRenderer}
           generation={this.state.rerender}
           dbref={[
-            { ref: database().ref(`/activeBroadcasts/${auth().currentUser.uid}/public`), title: this.firstSectionTitle },
-            { ref: database().ref(`/feeds/${auth().currentUser.uid}`), title: this.secondSectionTitle }
+            { ref: database().ref(`/activeBroadcasts/${auth().currentUser.uid}/public`), title: this.firstSectionTitle, orderBy: this.orderBy},
+            { ref: database().ref(`/feeds/${auth().currentUser.uid}`), title: this.secondSectionTitle, orderBy: this.orderBy }
           ]}
-          orderBy={[{ value: "deathTimestamp" }, { value: "status" }]}
           startingPoint={[null, "confirmed"]}
           endingPoint={[null, "confirmed"]}
           emptyStateComponent={

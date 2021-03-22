@@ -121,7 +121,7 @@ export default class GroupSearch extends React.Component {
 }
 
 //Give it a  groupSnippet and it will not show the invite code UX
-class GroupJoinDialogue extends React.PureComponent {
+export class GroupJoinDialogue extends React.PureComponent {
 
   constructor(props){
     super (props)

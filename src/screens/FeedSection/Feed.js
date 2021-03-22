@@ -9,6 +9,7 @@ import ErrorMessageText from 'reusables/ErrorMessageText';
 import S from 'styling';
 import { responderStatuses } from 'utils/serverValues';
 import FeedElement from "./FeedElement";
+
 export default class Feed extends React.Component {
 
   state = {

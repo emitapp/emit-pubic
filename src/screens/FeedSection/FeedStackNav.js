@@ -3,6 +3,8 @@ import { createStackNavigator } from 'react-navigation-stack';
 import Feed from './Feed';
 import Header from 'reusables/Header'
 import BroadcastViewer from './BroadcastViewer';
+import SearchHub from 'reusables/SearchHub'
+
 
 //For the Profile section...
 import UserFriendSearch from '../SocialSection/UserFriendSearch';
@@ -28,7 +30,8 @@ const Navigator = createStackNavigator(
     GroupSearch,
     GroupViewer,
     InviteContacts,
-    JitsiComponent
+    JitsiComponent,
+    SearchHub
   },
   {
     initialRouteName: 'Feed',
