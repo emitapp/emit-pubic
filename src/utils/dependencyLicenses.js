@@ -37,6 +37,12 @@ export default
         "licenseUrl": "https://github.com/react-native-community/push-notification-ios/raw/master/LICENSE",
         "parents": "emit"
     },
+    "@react-native-firebase/analytics@10.8.1": {
+        "licenses": "Apache-2.0",
+        "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/analytics",
+        "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/analytics/raw/master/LICENSE",
+        "parents": "emit"
+    },
     "@react-native-firebase/app@10.8.1": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/invertase/react-native-firebase/tree/master/packages/app",
