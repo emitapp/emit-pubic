@@ -70,6 +70,7 @@ android/app/src/qa/google-services.json
 ios/GoogleService-Info.plist
 ios/Firebase/GoogleService-Info.prod.plist
 ios/Firebase/GoogleService-Info.dev.plist
+ios/Firebase/GoogleService-Info.qa.plist
 
 # react-native-ultimate-config
 #
