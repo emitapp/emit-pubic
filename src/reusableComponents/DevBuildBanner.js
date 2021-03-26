@@ -10,18 +10,22 @@ export default class DevBuildBanner extends PureComponent {
     this.state = {
       isVisible: true,
     };
+    this.isQA = DeviceInfo.getBundleId().endsWith(".qa")
+    this.isDev = DeviceInfo.getBundleId().endsWith(".dev")
   }
 
   componentDidMount(){
     //Only show on dev builds
-    if (!DeviceInfo.getBundleId().endsWith(".dev")) this.setState({isVisible: false})
+    if (!(this.isDev || this.isQA)) this.setState({isVisible: false})
   }
 
   render() {
+    const backgroundColor =  this.isDev ? "lightblue" : "greenyellow"
+    const text =  this.isDev ? "Dev" : "QA"
     if (this.state.isVisible) {
       return (
-      <TouchableOpacity style={styles.networkBanner} onPress = {() => this.setState({isVisible: false})}>
-        <Text style={{fontSize: 12, color: "black"}}>Dev</Text>
+      <TouchableOpacity style={{...styles.networkBanner, backgroundColor }} onPress = {() => this.setState({isVisible: false})}>
+        <Text style={{fontSize: 12, color: "black"}}>{text}</Text>
       </TouchableOpacity>
       );
     }else{
@@ -39,8 +43,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    backgroundColor: 'white',
-    paddingHorizontal: 16,
-    backgroundColor: "lightblue",
+    paddingHorizontal: 40,
   },
 });

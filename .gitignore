@@ -65,6 +65,7 @@ buck-out/
 android/app/google-services.json
 android/app/src/prod/google-services.json
 android/app/src/dev/google-services.json
+android/app/src/qa/google-services.json
 
 ios/GoogleService-Info.plist
 ios/Firebase/GoogleService-Info.prod.plist

@@ -187,6 +187,9 @@ android {
         dev {
             applicationIdSuffix '.dev'
         }
+        qa {
+            applicationIdSuffix '.qa'
+        }
         prod {
     
         }

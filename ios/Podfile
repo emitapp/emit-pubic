@@ -5,6 +5,8 @@ platform :ios, '12.0'
 project 'emit',
         'Dev.Debug' => :debug,
         'Dev.Release' => :release, 
+        'QA.Debug' => :debug,
+        'QA.Release' => :release, 
         'Prod.Debug' => :debug,
         'Prod.Release' => :release
 
