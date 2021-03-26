@@ -20,19 +20,23 @@ export default class NewBroadcastFormRecepients extends React.Component {
 
     let navigationParams = props.navigation.state.params
     let userUid = auth().currentUser.uid
-    this.dbRef = [{ title: "GROUPS", ref: database().ref(`/userGroupMemberships/${userUid}`), orderBy: ["nameQuery"] },
-    { title: "FRIENDS", ref: database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`), orderBy: ["displayNameQuery", "usernameQuery"] }]
-    this.footerButtons = [{ text: "+ New Group", func: () => { this.props.navigation.navigate('GroupMemberAdder') } },
-    { text: "+ Add Friends", func: () => { this.props.navigation.navigate('UserFriendSearch') } }]
+    this.dbRef = [
+      { title: "GROUPS", ref: database().ref(`/userGroupMemberships/${userUid}`), orderBy: ["nameQuery"] },
+      { title: "FRIENDS", ref: database().ref(`/userFriendGroupings/${userUid}/_masterSnippets`), orderBy: ["displayNameQuery", "usernameQuery"] }
+    ]
+    this.footerButtons = [
+      [{ text: "+ New Group", func: () => {this.props.navigation.navigate('GroupMemberAdder')} }],
+      [{ text: "+ Add Friends", func: () => {this.props.navigation.navigate('UserFriendSearch')} }]
+    ]
     this.rendererType = RecipientListElement
 
     // List of UIDs to send back after obtaining from db
     this.allFriendSnippets = []
 
-    this.state = { 
+    this.state = {
       selectedFriends: JSON.parse(JSON.stringify(navigationParams.data.recepientFriends)),
       selectedGroups: JSON.parse(JSON.stringify(navigationParams.data.recepientGroups)),
-     }
+    }
     this.queryTypes = [{ name: "Name", value: "nameQuery" }, { name: "Display Name", value: "displayNameQuery" }, { name: "Username", value: "usernameQuery" }]
     this.state.allFriends = navigationParams.data.allFriends
   }
@@ -60,7 +64,8 @@ export default class NewBroadcastFormRecepients extends React.Component {
                 queryTypes={this.queryTypes}
                 renderItem={this.itemRenderer}
                 dbref={this.dbRef}
-                onSectionData = {(title, data) => {
+                sectionSorter={(a, b) => a.data.length > b.data.length ? -1 : 1}
+                onSectionData={(title, data) => {
                   if (title == "FRIENDS") this.allFriendSnippets = data
                 }}
                 additionalData={this.footerButtons}
@@ -79,7 +84,7 @@ export default class NewBroadcastFormRecepients extends React.Component {
                 <View style={{ maxWidth: "80%" }}>
                   <ProfilePicList
                     uids={Object.keys(this.state.selectedFriends)}
-                    groupUids = {Object.keys(this.state.selectedGroups)}
+                    groupUids={Object.keys(this.state.selectedGroups)}
                     diameter={36}
                     style={{ marginLeft: 0, marginRight: 2 }}
                   /></View>
@@ -136,7 +141,7 @@ export default class NewBroadcastFormRecepients extends React.Component {
   }
 
   toggleSelection = (snippet, isGroupSnippet) => {
-    const copiedObj = isGroupSnippet ? { ...this.state.selectedGroups } :  { ...this.state.selectedFriends }
+    const copiedObj = isGroupSnippet ? { ...this.state.selectedGroups } : { ...this.state.selectedFriends }
     if (copiedObj[snippet.uid]) {
       //Then remove the snippet
       delete copiedObj[snippet.uid]

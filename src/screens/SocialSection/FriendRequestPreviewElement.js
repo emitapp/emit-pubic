@@ -38,19 +38,19 @@ class FriendRequestPreviewer extends React.Component {
         }
 
         return (
-            <View style={{ ...this.props.style, alignItems: "center", justifyContent: "center", }}>
+            <View style={{ ...this.props.style, alignItems: "center", justifyContent: "center"}}>
                 <ErrorMessageText message={this.state.errorText} />
                 <View
-                    style={{ width: "100%", flexDirection: "row" }}
+                    style={{ width: "100%", flexDirection: "row", alignItems: "center" }}
                     key={item.uid}>
                     <UserSnippetListElement
                         snippet={item}
                         style={{ flex: 1 }}
-                        imageDiameter={40} />
+                        imageDiameter={32} />
                     <Button
                         icon={<Icon name="check" size={15} color="white" />}
                         buttonStyle={{ backgroundColor: this.props.theme.colors.bannerButtonGreen, width: 30 }}
-                        onPress={() => this.performAction(true)} />
+                        onPress={() => this.performAction(true)}/>
                     <Button
                         icon={<Icon name="close" size={15} color="white" />}
                         buttonStyle={{ backgroundColor: this.props.theme.colors.bannerButtonRed, width: 30 }}

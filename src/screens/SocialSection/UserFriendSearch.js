@@ -1,3 +1,4 @@
+//TODO: remove this screen once Search hub gets filtering
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';

@@ -2,7 +2,7 @@ import React from 'react';
 import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button, Overlay, Text, ThemeConsumer } from 'react-native-elements';
 import AntIcon from 'react-native-vector-icons/AntDesign';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
+import FriendRequestPreviewer from 'screens/SocialSection/FriendRequestPreviewer'
 import OctIcon from 'react-native-vector-icons/Octicons';
 import StandardHeader from 'reusables/Header';
 import { MinorActionButton } from 'reusables/ReusableButtons';
@@ -66,19 +66,13 @@ export default class SocialButtonHub extends React.Component {
                             type="clear"
                         />
 
-                        <View style={styles.rowStyle}>
-                            <SocialSectionButton color={theme.colors.secondary}
-                                onPress={() => this.props.navigation.navigate('UserFriendSearch')}
-                                icon={<FontAwesomeIcon name="search" size={32} />}
-                                text={<Text>Users & Friends</Text>}
-                            />
-
-                            <SocialSectionButton color={theme.colors.secondary}
-                                onPress={() => this.props.navigation.navigate('GroupSearch')}
-                                icon={<FontAwesomeIcon name="user-friends" size={32} />}
-                                text={<Text>Groups</Text>}
-                            />
-                        </View>
+                        <FriendRequestPreviewer
+                            ref={ref => this.friendReqPreviewer = ref}
+                            style={{
+                                borderColor: "lightgrey", borderWidth: 1,
+                                borderRadius: 10, paddingHorizontal: 8, marginBottom: 8,
+                                marginHorizontal: 8
+                            }} />
 
                         <Button
                             title="Scan someone's Emitcode"
@@ -90,7 +84,6 @@ export default class SocialButtonHub extends React.Component {
                             buttonStyle={{ backgroundColor: "skyblue" }}
                             onPress={() => this.props.navigation.navigate("ContactSupportPage")}
                         />
-                        <Text>{`We'd love to hear from you!\nWe'll try to reply individually.`}</Text>
                     </ScrollView>
                 )}
             </ThemeConsumer>

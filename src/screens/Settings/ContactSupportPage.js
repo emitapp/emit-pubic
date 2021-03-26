@@ -43,6 +43,7 @@ export default class ContactSupportPage extends React.Component {
           </Text>
           or use the button below.
         </Text>
+        
         <ErrorMessage message={this.state.mailError} />
         <Button
           title="Email Us"
@@ -57,8 +58,14 @@ export default class ContactSupportPage extends React.Component {
           Like Emit? Thanks! It was made out of lots of passion.
           If you'd like to learn more about the project, have a look at our website at
           <Text style={{ fontWeight: "bold" }}>
-            {" " + config.PROJECT_WEBSITE}
-          </Text>.
+            {" " + config.PROJECT_WEBSITE} 
+          </Text>
+           or join our discord at 
+          <Text style={{ fontWeight: "bold" }}>
+          {" " + config.DISCORD_LINK} 
+          </Text> 
+          .
+
           {"\n"}(P.S: We have merchandise, if that's your kind of thing.)
         </Text>
         <Button

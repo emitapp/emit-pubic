@@ -47,7 +47,7 @@ export default class SectionInfiniteScroll extends React.Component {
         style: { flex: 1, width: "100%" },
         contentContainerStyle: { flexGrow: 1, marginHorizontal: 8 },
         ItemSeparatorComponent: (() => <Divider />),
-        
+
         // chunkSize: 10
     }
 
@@ -100,7 +100,7 @@ export default class SectionInfiniteScroll extends React.Component {
     refListenerCallback = async (snapshot, refIndex) => {
         try {
             var title = this.props.dbref[refIndex].title;
-            var customData = { text: null, func: null }
+            var customData = []
             if (this.props.additionalData && this.props.additionalData.length > refIndex) {
                 customData = this.props.additionalData[refIndex];
             }
@@ -118,21 +118,29 @@ export default class SectionInfiniteScroll extends React.Component {
             //FIXME: Pagination comment block
             //this.lastItemProperty = listData[listData.length - 1][this.props.orderBy];
             // Do not render sectionlist unless there is neither a custom button nor any list data
-            if (listData.length > 0 || customData.text != null) {
-                this.sections[refIndex] = ({ 
-                    title: title, 
-                    data: listData, 
-                    customText: customData.text, 
-                    customCallback: customData.func
-                }); 
+            if (listData.length > 0 || customData.length > 0) {
+
+                const buttons = customData.map(d => {
+                    return (
+                        <TouchableOpacity onPress={d.func} key={d.title} style = {{flex: 1}}>
+                            <Text style={{ fontSize: 16, marginTop: 8, marginBottom: 8, fontWeight: 'bold' }}>{d.text}</Text>
+                        </TouchableOpacity>)
+                })
+
+
+                this.sections[refIndex] = ({
+                    title: title,
+                    data: listData,
+                    customButtonData: buttons
+                });
 
                 if (this.props.sectionSorter) {
                     this.sortedSections = [...this.sections]
                     this.sortedSections = this.sortedSections.filter((x) => x != "uninitialized")
                     this.sortedSections.sort(this.props.sectionSorter)
                 }
-    
-            } 
+
+            }
 
             this.props.onSectionData && this.props.onSectionData(title, listData)
             this.isLoading = false
@@ -145,7 +153,7 @@ export default class SectionInfiniteScroll extends React.Component {
 
     setListeners = () => {
         try {
-            const {startingPoint, endingPoint} = this.props
+            const { startingPoint, endingPoint } = this.props
             for (let i = 0; i < this.props.dbref.length; i++) {
                 for (let j = 0; j < this.props.dbref[i].orderBy.length; j++) {
                     var currentDbRef = this.props.dbref[i]
@@ -184,18 +192,16 @@ export default class SectionInfiniteScroll extends React.Component {
         }
     }
 
-    renderSectionHeader=({ section: { title, customText, customCallback} }) => {
+    renderSectionHeader = ({ section: { title, customButtonData } }) => {
         return (
             <View>
                 <Text style={{ marginTop: 14, color: "blue", fontSize: 14 }}>{title}</Text>
-                {customText &&
-                    <View>
-                        <TouchableOpacity onPress={customCallback}>
-                            <Text style={{ fontSize: 16, marginTop: 8, marginBottom: 8, fontWeight: 'bold' }}>{customText}</Text>
-                        </TouchableOpacity>
-                        <Divider />
-                    </View> }
-            </View> )
+                <View style={{ flexDirection: "row" }}>
+                    {customButtonData}
+                </View>
+                <Divider />
+            </View >
+        )
     }
 
     //FIXME: Pagination comment block
@@ -272,7 +278,7 @@ export default class SectionInfiniteScroll extends React.Component {
             }
         } else {
             const { style, ...otherProps } = this.props
-            
+
             return (
                 <View style={style}>
                     <ErrorMessageText message={this.errorMessage} />

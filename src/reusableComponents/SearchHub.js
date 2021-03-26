@@ -2,7 +2,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
 import { StyleSheet, View, SafeAreaView } from 'react-native';
-import { Overlay, Button } from 'react-native-elements';
+import { Overlay } from 'react-native-elements';
 import { RecipientListElement } from 'reusables/ListElements';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import FriendReqModal from 'screens/SocialSection/FriendReqModal';
@@ -21,14 +21,21 @@ export default class SearchHub extends React.Component {
     super(props)
 
     this.userUid = auth().currentUser.uid
-    this.dbRef = [{ title: "YOUR GROUPS", ref: database().ref(`/userGroupMemberships/${this.userUid}`), orderBy: ["nameQuery"] },
-    { title: "YOUR FRIENDS", ref: database().ref(`/userFriendGroupings/${this.userUid}/_masterSnippets`), orderBy: ["displayNameQuery", "usernameQuery"] },
-    { title: "USERS", ref: database().ref("/userSnippets"), orderBy: ["displayNameQuery", "usernameQuery"] },
-    { title: "PUBLIC GROUPS", ref: database().ref("/publicGroupSnippets"), orderBy: ["nameQuery"] }]
+    this.dbRef = [
+      { title: "YOUR GROUPS", ref: database().ref(`/userGroupMemberships/${this.userUid}`), orderBy: ["nameQuery"] },
+      { title: "YOUR FRIENDS", ref: database().ref(`/userFriendGroupings/${this.userUid}/_masterSnippets`), orderBy: ["displayNameQuery", "usernameQuery"] },
+      { title: "USERS", ref: database().ref("/userSnippets"), orderBy: ["displayNameQuery", "usernameQuery"] },
+      { title: "PUBLIC GROUPS", ref: database().ref("/publicGroupSnippets"), orderBy: ["nameQuery"] }
+    ]
 
-    this.footerButtons = [{ text: "+ New Group", func: () => { this.props.navigation.navigate('GroupMemberAdder') } },
-    { text: "+ Invite Contacts", func: () => { this.props.navigation.navigate('InviteContacts') } }]
-    this.rendererType = RecipientListElement
+    this.footerButtons = [
+      [
+        { text: "+ New Group", func: () => { this.props.navigation.navigate('GroupMemberAdder') } },
+        { text: "+ Join Group via Code", func: () => this.setState({ isGroupModalVisible: true, selectedPublicGroup: null }) }
+      ],
+      [{ text: "+ Invite Contacts", func: () => { this.props.navigation.navigate('InviteContacts') } }]
+    ]
+
     this.dbRefShortened = this.dbRef.slice(0, 2)
   }
 
@@ -37,7 +44,7 @@ export default class SearchHub extends React.Component {
   }
 
   state = {
-    isModalVisible: false,
+    isGroupModalVisible: false,
     selectedPublicGroup: null
   }
 
@@ -45,22 +52,23 @@ export default class SearchHub extends React.Component {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: mainTheme.colors.primary, width: "100%" }}>
         <View style={{ flex: 1, backgroundColor: "white", width: "100%" }}>
-          <Overlay isVisible={this.state.isModalVisible}>
+
+          <Overlay isVisible={this.state.isGroupModalVisible}>
             <View>
               <GroupJoinDialogue
                 groupSnippet={this.state.selectedPublicGroup}
                 joinSuccessFunction={() => {
                   this.showDelayedSnackbar("Join Successful!")
-                  this.setState({ isModalVisible: false })
+                  this.setState({ isGroupModalVisible: false })
                 }} />
               <MinorActionButton
                 title="Close"
-                onPress={() => this.setState({ isModalVisible: false })} />
+                onPress={() => this.setState({ isGroupModalVisible: false })} />
             </View>
           </Overlay>
 
           <FriendReqModal
-            ref={modal => this.modal = modal} />
+            ref={modal => this.friendRequestModal = modal} />
 
           <SearchableInfiniteScroll
             type="section"
@@ -88,13 +96,6 @@ export default class SearchHub extends React.Component {
                 dbref={this.dbRefShortened}
                 onSectionData={null}
                 additionalData={this.footerButtons}
-                ListHeaderComponent={
-                  <View>
-                    <FriendRequestPreviewer
-                      ref={ref => this.friendReqPreviewer = ref}
-                      style={{ borderColor: "lightgrey", borderWidth: 1, borderRadius: 10, paddingHorizontal: 8, marginBottom: 8 }} />
-                  </View>
-                }
               />
             }
           />
@@ -121,14 +122,12 @@ export default class SearchHub extends React.Component {
   }
 
   navigateSearchElement = (item) => {
-    // if user
-    if (item.displayName) {
-      this.modal.open(item)
-      // if private group
-    } else if (!item.isPublic) {
+    if (item.displayName) {   // if user
+      this.friendRequestModal.open(item)
+    } else if (!item.isPublic) { // if a group the user is a part of
       this.props.navigation.navigate('GroupViewer', { group: item })
-    } else {
-      this.setState({ isModalVisible: true, selectedPublicGroup: item })
+    } else { //Then its a public group
+      this.setState({ isGroupModalVisible: true, selectedPublicGroup: item })
     }
   }
 
