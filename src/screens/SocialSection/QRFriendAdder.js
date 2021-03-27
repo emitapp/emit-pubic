@@ -29,7 +29,7 @@ export default class ScanScreen extends Component {
                 {this.state.QRData == "" &&
                 <>
                     <Text style={styles.centerText}>
-                        Scan a Emitcode to send a friend request!
+                        Scan someone's Emitcode to easily send a friend request!
                     </Text>
                     <View style = {{width: "100%", flex: 1}}>
                         <QRCodeScanner

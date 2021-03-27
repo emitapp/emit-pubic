@@ -42,9 +42,13 @@ export default class SocialButtonHub extends React.Component {
                             isVisible={this.state.QRVisible}
                             onBackdropPress={() => this.setState({ QRVisible: false })}
                             onRequestClose={() => this.setState({ QRVisible: false })}>
-                            <View>
+                            <View style = {{alignItems: "center"}}>
                                 <Text style={{ textAlign: "center", marginVertical: 8, fontWeight: "bold" }}>
                                     Your Emitcode
+                                </Text>
+                                {/* Width of 180 chosen to match width of UserEmitcode components*/}
+                                <Text style={{ textAlign: "center", marginVertical: 8, width: 180}}>
+                                    People can use Emit's scanner to scan Emitcodes and send friend requests.
                                 </Text>
                                 <UserEmitcode color={theme.colors.primary} />
                                 <MinorActionButton
