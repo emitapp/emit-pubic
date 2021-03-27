@@ -15,17 +15,17 @@ import FeedElement from '../FeedSection/FeedElement';
 
 export default class ActiveBroadcasts extends React.Component {
 
-  constructor(props){
+  constructor(props) {
     super(props)
     this.firstSectionTitle = "EMITTED"
     this.secondSectionTitle = "JOINED"
     this.generation = 0;
-    this.orderBy = ["deathTimestamp", "status" ]
+    this.orderBy = ["deathTimestamp", "status"]
     this.state = {
       rerender: 0,
       errorMessage: null,
     }
-}
+  }
 
   render() {
     return (
@@ -37,7 +37,7 @@ export default class ActiveBroadcasts extends React.Component {
           renderItem={this.itemRenderer}
           generation={this.state.rerender}
           dbref={[
-            { ref: database().ref(`/activeBroadcasts/${auth().currentUser.uid}/public`), title: this.firstSectionTitle, orderBy: this.orderBy},
+            { ref: database().ref(`/activeBroadcasts/${auth().currentUser.uid}/public`), title: this.firstSectionTitle, orderBy: this.orderBy },
             { ref: database().ref(`/feeds/${auth().currentUser.uid}`), title: this.secondSectionTitle, orderBy: this.orderBy }
           ]}
           startingPoint={[null, "confirmed"]}
@@ -77,12 +77,15 @@ export default class ActiveBroadcasts extends React.Component {
                 <Text style={{ fontSize: 50, marginHorizontal: 8 }}>{item.emoji}</Text>
                 <View style={{ justifyContent: "center" }}>
                   <Text style={{ fontSize: 20 }}>{item.activity}</Text>
-                  <Text style={{ fontSize: 18 }}>{item.totalConfirmations} people are in</Text>
+                  {item.totalConfirmations != 0 ?
+                    <Text style={{ fontSize: 18 }}>{item.totalConfirmations} people are in</Text> :
+                    <Text style={{ fontSize: 18 }}>No responders yet</Text>
+                  }
                 </View>
               </View>
 
               <View>
-                <FlareTimeStatus item = {item} />
+                <FlareTimeStatus item={item} />
                 <Pressable onPress={() => this.props.navigation.navigate("ChatScreen", { broadcast: item })}>
                   <Ionicon name="md-chatbubbles" color="grey" size={40} style={{ marginHorizontal: 8 }} />
                 </Pressable>
@@ -102,7 +105,7 @@ export default class ActiveBroadcasts extends React.Component {
           item={item}
           // Triggers a rerender by incrementing generation
           // TODO: Switch this to redux eventually
-          rerenderCallback={() => this.setState({rerender: this.state.rerender + 1})} />
+          rerenderCallback={() => this.setState({ rerender: this.state.rerender + 1 })} />
       )
     }
   }
