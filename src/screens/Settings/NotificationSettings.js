@@ -44,6 +44,9 @@ export default class NotificationSettings extends React.Component {
       onAddedToGroup: true,
       onChat: true,
     }
+
+    this.firstCollapsableView = null;
+    this.secondCollapsableView = null;
   }
 
   componentDidMount(){
@@ -73,11 +76,14 @@ export default class NotificationSettings extends React.Component {
           <DefaultLoadingModal isVisible={this.state.isModalVisible} />
           <ErrorMessageText message = {this.state.errorMessage} />
           <Text style = {{marginHorizontal: 8, marginBottom: 8}}>
-            These settings are synced accross all deviced that are logged into your account.
+            These settings are synced across all devices that are logged into your account.
           </Text>
+
           <CollapsibleView 
             style = {{ marginHorizontal: 8}}
-            title = "Get push notifications when...">
+            title = "Get push notifications when..."
+            ref = {r => this.firstCollapsableView = r}
+            onOpen = {() => this.secondCollapsableView.close()}>
             <CheckBox
               title='You get a new friend request'
               fontFamily = "NunitoSans-Regular"
@@ -125,7 +131,9 @@ export default class NotificationSettings extends React.Component {
           <CollapsibleView 
             style = {{ marginHorizontal: 8}}
             title = "Get push notifications if you get flares from..."
-            flexOnExpand>
+            flexOnExpand
+            ref = {r => this.secondCollapsableView = r}
+            onOpen = {() => this.firstCollapsableView.close()}>
 
             <Text style = {{marginHorizontal: 8, textAlign: "center"}}>
               ({this.state.onBroadcastFrom.length} sources selected)
@@ -221,7 +229,7 @@ export default class NotificationSettings extends React.Component {
           style = {{flex: 1}}
           snippet={item} 
           onPress={() => this.toggleSelection(item.uid)}
-          imageDiameter = {45}
+          imageDiameter = {30}
         />
         {this.state.onBroadcastFrom.includes(item.uid) && <CheckBox checked = {true} /> }
       </View>

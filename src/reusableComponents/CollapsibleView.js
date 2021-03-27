@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 //title (what's the tile of this section)
 //flexOnExpand (should this take flex:1 on expansion?)
 //titleStyle (style of the title)
+//onOpen (func, no args)
 export default class CollapsibleView extends React.PureComponent {
 
   constructor(props) {
@@ -45,7 +46,13 @@ export default class CollapsibleView extends React.PureComponent {
     } else {
       this.rotateIcon(1)
       this.setState({ expanded: true })
+      if (this.props.onOpen) this.props.onOpen()
     }
+  }
+
+  //can be called by parents
+  close = () => {
+    if (this.state.expanded) this.toggleExpansion()
   }
 
   rotateIcon = (destinationValue) => {
