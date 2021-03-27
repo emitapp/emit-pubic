@@ -17,6 +17,7 @@ import S from "styling";
 import { analyticsVideoChatUsed } from 'utils/analyticsFunctions';
 import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, shareFlare, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, responderStatuses } from 'utils/serverValues';
+import FriendReqModal from 'screens/SocialSection/FriendReqModal';
 
 /**
  * Class for viewing info about a broadcast.
@@ -68,6 +69,9 @@ export default class BroadcastViewer extends React.Component {
         {!broadcastData &&
           <TimeoutLoadingComponent hasTimedOut={false} retryFunction={() => null} />
         }
+
+        <FriendReqModal
+          ref={modal => this.friendRequestModal = modal} />
 
         {broadcastData &&
           <View style={{ width: "100%" }}>
@@ -134,7 +138,8 @@ export default class BroadcastViewer extends React.Component {
                 <ProfilePicList
                   uids={this.state.attendees}
                   diameter={36}
-                  style={{ marginLeft: 0, marginRight: 2 }} />}
+                  style={{ marginLeft: 0, marginRight: 2 }}
+                  onPress = {this.friendRequestModal ? this.friendRequestModal.openUsingUid : null} />}
             </View>
           </View>
         }

@@ -15,6 +15,7 @@ import ProfilePicDisplayer, { ProfilePicList } from 'reusables/ProfilePicCompone
 import S from "styling";
 import { shareFlare } from 'utils/helpers';
 import { analyticsVideoChatUsed } from 'utils/analyticsFunctions';
+import FriendReqModal from 'screens/SocialSection/FriendReqModal';
 
 
 
@@ -60,6 +61,9 @@ export default class ResponsesViewer extends React.Component {
 
         <DefaultLoadingModal isVisible={this.state.isModalVisible} />
         <ErrorMessageText message={this.state.errorMessage} />
+
+        <FriendReqModal
+          ref={modal => this.friendRequestModal = modal} />
 
         <View style={{ width: "100%" }}>
 
@@ -122,7 +126,8 @@ export default class ResponsesViewer extends React.Component {
                 <ProfilePicList
                   uids={this.state.attendees}
                   diameter={36}
-                  style={{ marginLeft: 0, marginRight: 2 }} />}
+                  style={{ marginLeft: 0, marginRight: 2 }} 
+                  onPress = {this.friendRequestModal ? this.friendRequestModal.openUsingUid : null} />}
             </View>
           </View>
         }

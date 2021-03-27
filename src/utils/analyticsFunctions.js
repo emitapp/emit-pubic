@@ -103,6 +103,5 @@ export const analyticsVideoChatUsed = async (flareUid, flareOwnerUid) => {
 
 const getFlareAnalyticsData = async (flareUid, flareOwnerUid) => {
     const snap = await database().ref(`/activeBroadcasts/${flareOwnerUid}/private/${flareUid}/ga_analytics`).once("value")
-    console.log(snap.val())
     return snap
 }

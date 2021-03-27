@@ -1,16 +1,17 @@
 import storage from '@react-native-firebase/storage';
 import React from 'react';
-import { Image, Text, View } from 'react-native';
+import { Image, Pressable, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { FlatList } from 'react-native-gesture-handler';
 import { logError } from 'utils/helpers';
+
 /**
  * This is a reusable component that displays profile pictues
  * Required props: `uid` (uid of the user/group to display) and `diameter`
  * Be sure that it is given a proper uid by the time it enters the DOM
  * Optional prop: groupPic (boolean)
  */
-export default class ProfilePicCircle extends React.Component {
+export default class ProfilePicCircle extends React.PureComponent {
 
     render() {
         const { uid, diameter, style, ...otherProps } = this.props
@@ -33,18 +34,20 @@ export default class ProfilePicCircle extends React.Component {
  * Required props: `diameter`, and spacing
  * Optional props: `uids` (list of user uids), `groupUids` (uids of groups)
  */
-export class ProfilePicList extends React.Component {
+export class ProfilePicList extends React.PureComponent {
     itemRenderer = (uid) => {
-        const { diameter, spacing, style, uids, ...otherProps } = this.props
+        const { diameter, spacing, style, uids, onPress, ...otherProps } = this.props
         return (
             <View style={{ ...style }} >
                 <View style={{ justifyContent: "center", alignItems: "center", width: diameter + 2, height: diameter + 2, borderRadius: (diameter + 2) / 2, borderColor: "white", borderWidth: 2, padding: 1 }}>
-                    <ProfilePicRaw
-                        style={{ width: diameter, height: diameter, borderRadius: diameter / 2 }}
-                        uid={uid.item}
-                        ref={ref => this.picComponent = ref}
-                        groupPic = {uids ? !uids.includes(uid.item) : false}
-                        {...otherProps} />
+                    <Pressable onPress = {onPress ? () => onPress(uid.item) : null}>
+                        <ProfilePicRaw
+                            style={{ width: diameter, height: diameter, borderRadius: diameter / 2 }}
+                            uid={uid.item}
+                            ref={ref => this.picComponent = ref}
+                            groupPic={uids ? !uids.includes(uid.item) : false}
+                            {...otherProps} />
+                    </Pressable>
                 </View>
             </View>
         )
@@ -62,6 +65,7 @@ export class ProfilePicList extends React.Component {
                     keyExtractor={(item) => item}
                     renderItem={this.itemRenderer}
                     showsHorizontalScrollIndicator={false}
+                    {...otherProps}
                 />
             </View>
         )

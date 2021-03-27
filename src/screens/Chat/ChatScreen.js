@@ -12,6 +12,9 @@ import { logError } from 'utils/helpers';
 import Day from "./Day";
 import Name from './Name';
 import { isSameTime } from './utils';
+import FriendReqModal from 'screens/SocialSection/FriendReqModal';
+import { Pressable } from 'react-native';
+
 
 //The main entry point into the gifted-chat app
 export default class ChatScreen extends React.Component {
@@ -29,6 +32,7 @@ export default class ChatScreen extends React.Component {
       loadedUsername: null,
       messages: [],
       lastRetrievedMessageId: 0,
+      friendRequestModal: null
     }
 
     //Manually redefining to allow better fine-tuned time chunking of messages
@@ -53,26 +57,32 @@ export default class ChatScreen extends React.Component {
     if (!this.state.loadedUsername) return (<SmallLoadingComponent />)
 
     return (
-      <GiftedChat
-        user={{
-          _id: auth().currentUser.uid,
-          name: this.state.loadedUsername
-        }}
-        renderMessage={this.renderMessage}
-        messages={this.state.messages}
-        onSend={messages => this.sendNewMessages(messages)}
-        renderBubble={this.renderBubble}
-        renderTime={() => null} //We'll handle the time ourselves...
-        renderAvatar={this.renderAvatar}
-        infiniteScroll
-        loadEarlier
-        onLoadEarlier={this.onLoadEarlier}
-        renderChatEmpty={this.renderEmptyState}
-        renderLoadEarlier={() => null}   //to hide the load earlier button
-        renderDay={this.renderDay}
-        bottomOffset={50}
-        keyboardShouldPersistTaps = "handled"
-      />
+      <View style={{ flex: 1 }}>
+
+        <FriendReqModal
+          ref={modal => this.friendRequestModal = modal} />
+
+        <GiftedChat
+          user={{
+            _id: auth().currentUser.uid,
+            name: this.state.loadedUsername
+          }}
+          renderMessage={this.renderMessage}
+          messages={this.state.messages}
+          onSend={messages => this.sendNewMessages(messages)}
+          renderBubble={this.renderBubble}
+          renderTime={() => null} //We'll handle the time ourselves...
+          renderAvatar={(props) => this.renderAvatar(props, this)}
+          infiniteScroll
+          loadEarlier
+          onLoadEarlier={this.onLoadEarlier}
+          renderChatEmpty={this.renderEmptyState}
+          renderLoadEarlier={() => null}   //to hide the load earlier button
+          renderDay={this.renderDay}
+          //bottomOffset={50}
+          keyboardShouldPersistTaps="handled"
+        />
+      </View>
     )
   }
 
@@ -163,7 +173,7 @@ export default class ChatScreen extends React.Component {
           messages: GiftedChat.append(newMessages, previousState.messages),
         }))
       }
-    }catch(err){
+    } catch (err) {
       logError(err)
     }
   }
@@ -176,13 +186,17 @@ export default class ChatScreen extends React.Component {
     }
   }
 
-  renderAvatar(props) {
+  renderAvatar(props, parentContext) {
+    console.log(parentContext.state)
     return (
-      <ProfilePicDisplayer
-        diameter={35}
-        uid={props.currentMessage.user._id}
-        style={{ marginTop: -3 }}
-      />
+      <Pressable onPress={() => parentContext.friendRequestModal.openUsingUid(props.currentMessage.user._id)}>
+        <ProfilePicDisplayer
+          diameter={35}
+          uid={props.currentMessage.user._id}
+          style={{ marginTop: -3 }}
+        />
+      </Pressable>
+
     )
   }
 
