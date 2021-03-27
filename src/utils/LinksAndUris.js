@@ -1,0 +1,7 @@
+export const PRIVACY_POLICY = "https://getemit.com/privacy-policy/"
+export const TERM_OF_SERVICE = "https://getemit.com/terms-of-service/"
+export const PROJECT_WEBSITE = "http://getemit.com/"
+export const PROJECT_DISCORD = "https://discord.gg/6GM28jNSrp"
+export const PROJECT_DOWNLOAD_LINK = "http://download.getemit.com/"
+export const PROJECT_CONTACT_EMAIL = "hello@getemit.com"
+export const PROJECT_FLARE_VIEWER = "http://flares.getemit.com/"

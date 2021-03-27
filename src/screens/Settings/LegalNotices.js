@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { View, FlatList, StyleSheet, Linking } from 'react-native';
+import { FlatList, Linking, View } from 'react-native';
+import { Button, Divider, Text } from 'react-native-elements';
 import LicensesListItem from 'reusables/LicensesListElement';
-import LicenseData from 'utils/dependencyLicenses'
-import CustomLicenseData from 'utils/depencencyLicensesCustom'
 import S from 'styling';
-import {Text, Divider, Button} from 'react-native-elements'
-import config from "react-native-ultimate-config"
+import CustomLicenseData from 'utils/depencencyLicensesCustom';
+import LicenseData from 'utils/dependencyLicenses';
+import * as links from "utils/LinksAndUris";
 
 export default class LegalNotices extends Component {
 
@@ -26,11 +26,11 @@ export default class LegalNotices extends Component {
 
           <Button
             title = "Terms of Service"
-            onPress={() => Linking.openURL(config.PROJECT_TOS) }
+            onPress={() => Linking.openURL(links.TERM_OF_SERVICE) }
           />
           <Button
             title = "Privacy Policy"
-            onPress={() => Linking.openURL(config.PROJECT_PRIVACY_POLICY) }
+            onPress={() => Linking.openURL(links.PRIVACY_POLICY) }
           />
 
         <Divider />

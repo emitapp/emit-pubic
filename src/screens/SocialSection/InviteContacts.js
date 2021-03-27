@@ -23,6 +23,8 @@ import { cloudFunctionStatuses } from 'utils/serverValues';
 import ContactAvatar from './ContactAvatar';
 import ContactElement from './ContactElement';
 import FriendReqModal from './FriendReqModal';
+import * as links from "utils/LinksAndUris";
+
 
 export default class InviteContacts extends React.Component {
 
@@ -126,7 +128,7 @@ export default class InviteContacts extends React.Component {
     currInvited[contact.recordID] = true
     this.setState({ invited: currInvited });
     const phoneNumber = contact.phoneNumbers[0].number
-    let body = "Hey, join me on Emit so we can hang! \n Download the app on https://getemit.com/"
+    let body = "Hey, join me on Emit so we can hang! \n Download the app on " + links.PROJECT_DOWNLOAD_LINK
     if (this.state.username) body += `\n My username is ${this.state.username}`
     const separator = Platform.OS === 'ios' ? '&' : '?'
     if (Platform.OS == 'android') body = encodeURIComponent(body)

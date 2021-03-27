@@ -2,7 +2,6 @@ import auth from '@react-native-firebase/auth';
 import React from 'react';
 import { ImageBackground, Linking, StatusBar, View } from 'react-native';
 import { Button, Input, Text, ThemeConsumer } from 'react-native-elements';
-import config from "react-native-ultimate-config";
 import ErrorMessageText from 'reusables/ErrorMessageText';
 import { KeyboardAvoidingAndDismissingView } from 'reusables/KeyboardComponents';
 import { DefaultLoadingModal } from 'reusables/LoadingComponents';
@@ -10,6 +9,8 @@ import { MinorActionButton } from 'reusables/ReusableButtons';
 import S from "styling";
 import { analyticsSigningUp } from 'utils/analyticsFunctions';
 import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
+import * as links from "utils/LinksAndUris";
+
 
 
 export default class SignUp extends React.Component {
@@ -76,11 +77,11 @@ export default class SignUp extends React.Component {
 
                 <Text style={{ fontWeight: "bold", textAlign: 'center' }}>
                   By creating an account you agree to our
-            <Text style={{ textDecorationLine: "underline" }} onPress={() => Linking.openURL(config.PROJECT_TOS)}>
+            <Text style={{ textDecorationLine: "underline" }} onPress={() => Linking.openURL(links.TERM_OF_SERVICE)}>
                     {" Terms of Service "}
                   </Text>
             and
-            <Text style={{ textDecorationLine: "underline" }} onPress={() => Linking.openURL(config.PROJECT_PRIVACY_POLICY)}>
+            <Text style={{ textDecorationLine: "underline" }} onPress={() => Linking.openURL(links.PRIVACY_POLICY)}>
                     {" Privacy Policy"}
                   </Text>
             .

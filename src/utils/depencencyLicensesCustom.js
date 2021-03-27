@@ -62,5 +62,15 @@ export default
         creatorUrl: "https://lottiefiles.com/user265314",
         imageSrc: "https://assets5.lottiefiles.com/avatars/300_5e8fea424ef6a.jpg",
         custom: true
+    },
+    {
+        title: "hi-mango",
+        version: "-",
+        sourceUrl: "https://lottiefiles.com/10482-hi-mango",
+        licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+        licenses: "CC BY 4.0",
+        creatorUrl: "https://lottiefiles.com/user/128592",
+        imageSrc: "https://assets2.lottiefiles.com/avatars/300_5da61de49ab3e.jpg",
+        custom: true
     }
 ]

@@ -1,16 +1,13 @@
 
 import auth from '@react-native-firebase/auth'
 import React from 'react'
-import { Linking, ScrollView } from 'react-native'
-import { Button, Divider, Text } from 'react-native-elements'
-import config from "react-native-ultimate-config"
+import { Image, Linking, ScrollView, View } from 'react-native'
+import { Button, Text } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { getFullHardwareInfo, getFullVersionInfo, logError } from 'utils/helpers'
+import MaterialIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import ErrorMessage from 'reusables/ErrorMessageText'
-
-//For the commented out support section
-import Snackbar from 'react-native-snackbar'
-import { Clipboard, View } from 'react-native'
+import { getFullHardwareInfo, getFullVersionInfo, logError } from 'utils/helpers'
+import * as links from "utils/LinksAndUris"
 
 export default class ContactSupportPage extends React.Component {
 
@@ -29,81 +26,57 @@ export default class ContactSupportPage extends React.Component {
         contentContainerStyle={{
           justifyContent: 'flex-start',
           alignItems: 'center',
-          marginHorizontal: 4,
+          marginHorizontal: 8,
           paddingBottom: 16
         }}>
 
-        <Divider style={{ marginVertical: 12 }} />
-        <Text h4>Contact Us</Text>
-        <Text style={{ marginHorizontal: 8, marginBottom: 8 }}>
+        <View style={{ flexDirection: "row" }}>
+          <View style={{ height: 150, width: 150 }}  >
+            {/* //TODO: FOr android: https://stackoverflow.com/questions/35594783/how-do-i-display-an-animated-gif-in-react-native */}
+            <Image
+              source={require('media/animations/hi-mango.gif')} 
+              style={{ height: "100%", width: "100%" }} 
+              cont
+              />
+          </View>
+          <View style={{ alignItems: "center", justifyContent: "center" }}>
+            <Text h4 style={{ fontWeight: "bold" }}>Come say hi!</Text>
+            <Text>We don't bite :)</Text>
+          </View>
+        </View>
+
+        <Text style={{ marginHorizontal: 8, marginBottom: 8, textAlign: "center" }}>
           Do you have a question to ask, or feedback to give?{"\n"}
-          We'd love to hear from you! You can contact us at
-          <Text style={{ fontWeight: "bold" }}>
-            {" " + config.PROJECT_CONTACT_EMAIL + " "}
-          </Text>
-          or use the button below.
+          We'd love to hear from you!
         </Text>
-        
+
         <ErrorMessage message={this.state.mailError} />
+
+        <Button
+          title="Our Discord"
+          onPress={() => Linking.openURL(links.PROJECT_DISCORD)}
+          icon={<MaterialIcons name="discord" color="white" size={24} style={{ marginRight: 8 }} />}
+          buttonStyle = {{backgroundColor: "#7289DA"}}
+        />
+        <Text style={{ marginBottom: 16, color: "grey" }}>{links.PROJECT_DISCORD}</Text>
+
         <Button
           title="Email Us"
           onPress={this.composeMail}
           icon={<Icon name="envelope-open-text" color="white" size={24} style={{ marginRight: 8 }} />}
         />
+        <Text style={{ marginBottom: 16, color: "grey" }}>{links.PROJECT_CONTACT_EMAIL}</Text>
 
-
-        <Divider style={{ marginVertical: 12 }} />
-        <Text h4>Learn More</Text>
-        <Text style={{ marginHorizontal: 8, marginBottom: 8 }}>
-          Like Emit? Thanks! It was made out of lots of passion.
-          If you'd like to learn more about the project, have a look at our website at
-          <Text style={{ fontWeight: "bold" }}>
-            {" " + config.PROJECT_WEBSITE} 
-          </Text>
-           or join our discord at 
-          <Text style={{ fontWeight: "bold" }}>
-          {" " + config.DISCORD_LINK} 
-          </Text> 
-          .
-
-          {"\n"}(P.S: We have merchandise, if that's your kind of thing.)
-        </Text>
         <Button
-          title="Visit Website"
-          onPress={() => Linking.openURL(config.PROJECT_WEBSITE)}
+          title="Our Website"
+          onPress={() => Linking.openURL(links.PROJECT_WEBSITE)}
           icon={<Icon name="globe-africa" color="white" size={24} style={{ marginRight: 8 }} />}
         />
+        <Text style={{ marginBottom: 16, color: "grey" }}>{links.PROJECT_WEBSITE}</Text>
 
-        {
-          // <Divider style = {{marginVertical: 12}}/>
-          // <Text h4>Support Us</Text>
-          // <Text style = {{marginHorizontal: 8, marginBottom: 8}}>
-          //   Emit may be free to use, but it certainly costs money to keep up. 
-          //   We use a lot of web services, many of which are paid. Supporting us helps keep 
-          //   Emit running and encourages further development.
-          //   {"\n"}Any and all support is appreciated!
-          // </Text>
-          // <View style = {{flexDirection: "row", alignSelf: "stretch", justifyContent: "space-around"}}>
-          //   <Button
-          //     title = "PayPal"
-          //     onPress = {() => {
-          //       Clipboard.setString(config.PROJECT_PAYPAL);
-          //       Snackbar.show({text: 'PayPal link copied to clipboard', duration: Snackbar.LENGTH_SHORT})
-          //     }}
-          //     buttonStyle = {{backgroundColor: "#003087"}}
-          //     icon = {<Icon name = "paypal" color = "white" size={24} style = {{marginRight: 8}}/>}
-          //   />
-          //   <Button
-          //     title = "Patreon"
-          //     buttonStyle = {{backgroundColor: "#f96854"}}
-          //     onPress = {() => {
-          //       Clipboard.setString(config.PROJECT_PATREON);
-          //       Snackbar.show({text: 'Patreon link copied to clipboard', duration: Snackbar.LENGTH_SHORT})
-          //     }}
-          //     icon = {<Icon name = "patreon" color = "white" size={24} style = {{marginRight: 8}}/>}
-          //   />
-          // </View>          
-        }
+        <Text>
+          {"\n"}(P.S: We have merchandise, if that's your kind of thing.)
+        </Text>
 
       </ScrollView>
     )
@@ -116,7 +89,7 @@ export default class ContactSupportPage extends React.Component {
       body += "-----------\n"
       body += `User ID: ${auth().currentUser.uid}\n`
       body += `${await getFullVersionInfo()}\n\n${await getFullHardwareInfo()}`
-      Linking.openURL(`mailto:${config.PROJECT_CONTACT_EMAIL}?body=${body}`)
+      Linking.openURL(`mailto:${links.PROJECT_CONTACT_EMAIL}?body=${body}`)
     } catch (err) {
       this.setState({ mailError: err.message })
       logError(err)

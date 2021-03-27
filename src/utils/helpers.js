@@ -141,6 +141,8 @@ export const ShowNotSupportedAlert = (customMessage = null) => {
 import { Share } from 'react-native';
 import database from '@react-native-firebase/database';
 import { analyticsUserSharedFlare } from './analyticsFunctions'
+import * as links from "utils/LinksAndUris";
+
 /**
  * Allows users to share a flare using native UI
  */
@@ -154,7 +156,7 @@ export const shareFlare = async (flare) => {
     if (!slugSnap.exists()) return
  
     const slug = Object.keys(slugSnap.val())[0]
-    const message = `Check out this flare and join me! https://flares.getemit.com/${slug}`
+    const message = `Check out this flare and join me! ${links.PROJECT_FLARE_VIEWER}${slug}`
     Share.share({ message });
     analyticsUserSharedFlare(flare.uid)
   } catch (err) {
