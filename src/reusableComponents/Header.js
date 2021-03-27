@@ -21,9 +21,9 @@ class HeaderProfilePicAndSearch extends React.PureComponent {
 
     render() {
         return (
-            <View style={{ position: "absolute", top: 0, right: 0, flexDirection: "row"}}>
+            <View style={{ position: "absolute", top: 0, right: 0, flexDirection: "row" }}>
                 <Icon.Button
-                    iconStyle={{marginRight: 0}} // overriding default
+                    iconStyle={{ marginRight: 0 }} // overriding default
                     name="search"
                     backgroundColor="#FA6C13"
                     onPress={() => NavigationService.navigate("SearchHub")}>
@@ -70,6 +70,9 @@ export default function StandardHeader(title) {
             fontFamily: "NunitoSans-Regular",
             color: "white",
             fontSize: 20
+        },
+        headerTitleContainerStyle: {
+            right: 0
         }
     }
 };
@@ -109,6 +112,13 @@ export function ScrollingHeader(title) {
         },
         headerStyle: {
             backgroundColor: MainTheme.colors.primary,
+            ...Platform.select({
+                ios: {
+                    height: 58
+                },
+                default: {
+                }
+            })
         },
         headerBackTitle: null,
         headerTintColor: '#fff',
@@ -116,6 +126,9 @@ export function ScrollingHeader(title) {
             fontFamily: "NunitoSans-Regular",
             color: "white",
             fontSize: 20
+        },
+        headerTitleContainerStyle: {
+            right: 0
         }
     }
 };
