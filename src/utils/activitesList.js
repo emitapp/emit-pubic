@@ -4,6 +4,8 @@ export const getAllActivities = () => [
         data: [
             { emoji: "🧪", name: "COVID Test" },
             { emoji: "🥳", name: "Online Party" },
+            { emoji: "🟡", name: "Spikeball"},
+            { emoji: "🥏", name: "Frisbee"}
         ]
     },
     {
