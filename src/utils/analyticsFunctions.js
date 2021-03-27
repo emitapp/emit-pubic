@@ -75,6 +75,11 @@ export const analyticsUserSharedFlare = (flareUid) => {
         .catch(err => logError(err))
 }
 
+export const analyticsCustomActivity = (emoji, text) => {
+    analytics().logEvent("custom_activity", {emoji, text})
+        .catch(err => logError(err))
+}
+
 export const analyticsLogFlareCreation = async (flareUid, flareOwnerUid) => {
     try {
         const snap = await getFlareAnalyticsData(flareUid, flareOwnerUid)
