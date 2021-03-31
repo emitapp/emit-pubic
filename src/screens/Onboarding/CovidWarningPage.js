@@ -7,7 +7,7 @@ export default class CovidWarningPage extends React.Component {
 
     state = { errorMessage: null }  
 
-    finishOnboarding = () => {
+    finishCovidWarning = () => {
         this.props.navigation.navigate('MainTabNav');
     }
     render() {
@@ -22,7 +22,7 @@ export default class CovidWarningPage extends React.Component {
                         title = "I will!"
                         buttonStyle = {{marginTop: 64, height: 50, width: 160, backgroundColor:theme.colors.bannerButtonBlue}}
                         titleStyle = {{fontSize: 18}}
-                        onPress = {this.finishOnboarding}
+                        onPress = {this.finishCovidWarning}
                     />
                 </View>
             </MainLinearGradient> )}

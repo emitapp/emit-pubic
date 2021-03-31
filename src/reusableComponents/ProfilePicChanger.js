@@ -24,7 +24,7 @@ const imagePickerOptions = {
  * This is a component that is used to change the pic associated with either an
  * individual profile or a group. It manages everything itself, from permissions
  * to image selection to uploading.
- * Optinal Props: groupPic, onSuccessfulUpload, groupUid
+ * Optinal Props: groupPic, onSuccessfulUpload, groupUid, hideNote
  */
 export default class ProfilePicChanger extends Component {
 
@@ -68,9 +68,9 @@ export default class ProfilePicChanger extends Component {
 
         <ErrorMessageText message={this.state.errorMessage} />
 
-        <Text style={{ textAlign: "center", marginBottom: 16 }}>
+        {!this.props.hideNote && <Text style={{ textAlign: "center", marginBottom: 16 }}>
           Note that your updated {this.props.groupPic ? "group" : "profile"} pic might take a few seconds to appear everywhere in the app
-        </Text>
+        </Text>}
 
         {(!this.state.hasSuccessfullyPicked && !this.state.pickingImage) ? (
           <ProfilePicCircle
