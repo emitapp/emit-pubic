@@ -19,7 +19,8 @@ import { logError } from 'utils/helpers'
  */
 
 // Required props:
-// dbref: an array of database refs to use in the format [{title: "title", ref: ref, orderBy:["queryType"]},...]
+// dbref: an array of database refs to use in the format 
+//[{title: "title", ref: ref, orderBy:["queryType"]}, filer (optional)...]
 // renderItem: same as FLatlist RenderItem
 
 //Optinal props
@@ -115,6 +116,10 @@ export default class SectionInfiniteScroll extends React.Component {
 
             });
 
+            if (this.props.dbref[refIndex].filter) {
+                listData = listData.filter(this.props.dbref[refIndex].filter)
+            }
+
             //FIXME: Pagination comment block
             //this.lastItemProperty = listData[listData.length - 1][this.props.orderBy];
             // Do not render sectionlist unless there is neither a custom button nor any list data
@@ -122,7 +127,7 @@ export default class SectionInfiniteScroll extends React.Component {
 
                 const buttons = customData.map(d => {
                     return (
-                        <TouchableOpacity onPress={d.func} key={d.title} style = {{flex: 1}}>
+                        <TouchableOpacity onPress={d.func} key={d.title} style = {{flex: 1}} key = {d.title}>
                             <Text style={{ fontSize: 16, marginTop: 8, marginBottom: 8, fontWeight: 'bold' }}>{d.text}</Text>
                         </TouchableOpacity>)
                 })

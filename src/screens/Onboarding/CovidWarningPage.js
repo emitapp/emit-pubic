@@ -8,7 +8,7 @@ export default class CovidWarningPage extends React.Component {
     state = { errorMessage: null }  
 
     finishCovidWarning = () => {
-        this.props.navigation.navigate('MainTabNav');
+        this.props.navigation.navigate('ExploreStackNav');
     }
     render() {
         return (

@@ -6,13 +6,10 @@ import { Overlay } from 'react-native-elements';
 import { RecipientListElement } from 'reusables/ListElements';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import FriendReqModal from 'screens/SocialSection/FriendReqModal';
-import SectionInfiniteScroll from './SectionInfiniteScroll';
-import FriendRequestPreviewer from 'screens/SocialSection/FriendRequestPreviewer'
+import SectionInfiniteScroll from '../../reusableComponents/SectionInfiniteScroll';
 import { GroupJoinDialogue } from 'screens/SocialSection/UserGroups/GroupSearch'
 import Snackbar from 'react-native-snackbar';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { MinorActionButton } from 'reusables/ReusableButtons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import mainTheme from 'styling/mainTheme'
 
 export default class SearchHub extends React.Component {
@@ -39,13 +36,14 @@ export default class SearchHub extends React.Component {
     this.dbRefShortened = this.dbRef.slice(0, 2)
   }
 
-  static navigationOptions = {
-    headerShown: false,
-  }
 
   state = {
     isGroupModalVisible: false,
     selectedPublicGroup: null
+  }
+
+  static navigationOptions= {
+    headerShown: false,
   }
 
   render() {
@@ -79,17 +77,6 @@ export default class SearchHub extends React.Component {
             additionalData={this.footerButtons}
             searchbarPlaceholder="Search"
             sectionSorter={(a, b) => a.data.length > b.data.length ? -1 : 1}
-            searchBarBuddy={
-              <TouchableOpacity
-                style={{ position: "relative", left: 8, top: 8 }}
-                onPress={() => this.props.navigation.goBack()}
-                activeOpacity={1}>
-                <Icon
-                  name="arrow-left"
-                  size={30}
-                  color={mainTheme.Input.selectionColor} />
-              </TouchableOpacity>
-            }
             parentEmptyStateComponent={
               <SectionInfiniteScroll
                 renderItem={this.itemRenderer}

@@ -7,6 +7,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FlareTimeStatus from 'reusables/FlareTimeStatus';
 import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
 import { responderStatuses } from 'utils/serverValues';
+import NavigationService from 'utils/NavigationService';
+
 
 
 /**
@@ -45,15 +47,15 @@ export default class FeedElement extends React.Component {
     return (
       <TouchableOpacity
         style={{ marginVertical: 8, marginLeft: 8 }}
-        onPress={() => this.props.navigation.navigate('BroadcastViewer', { broadcast: item, rerenderCallback: rerenderCallback })}>
+        onPress={() => NavigationService.navigate("BroadcastViewer", { broadcast: item })}>
 
         <View style={{ flexDirection: "row" }}>
 
           {/* Emoji, profile pic, activity name */}
           <View style={{ flexDirection: "row", flex: 1 }}>
-            <Text style={{ fontSize: 40, marginHorizontal: 8 }}>{item.emoji}</Text>
+            <Text style={{ fontSize: 36, marginHorizontal: 8 }}>{item.emoji}</Text>
             <View style={{ justifyContent: "center" }}>
-              <Text style={{ fontSize: 20 }}>{item.activity}</Text>
+              <Text style={{ fontSize: 18 }}>{item.activity}</Text>
               <View style={{ flexDirection: 'row' }}>
                 <ProfilePicDisplayer diameter={22} uid={this.props.item.owner.uid} style={{ marginRight: 10 }} />
                 <Text style={{ fontSize: 14, fontFamily: "NunitoSans-Semibold" }}>{this.props.item.owner.displayName}</Text>

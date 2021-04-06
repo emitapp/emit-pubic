@@ -16,7 +16,7 @@ import { handleFCMDeletion, handleFCMMessage } from 'utils/fcmNotificationHandle
 import { ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import NavigationService from 'utils/NavigationService';
 import { cloudFunctionStatuses } from 'utils/serverValues';
-import DashboardStackNav from "./DashboardSection/DashboardStackNav";
+import ExploreStackNav from "./ExploreSection/ExploreStackNav";
 import FeedStackNav from './FeedSection/FeedStackNav';
 import SettingsStackNav from "./Settings/SettingsStackNav";
 
@@ -63,7 +63,7 @@ const renderTab = (props, targetRouteName, iconName) => {
 const Tab = createBottomTabNavigator(
   {
     FeedStackNav,
-    DashboardStackNav,
+    ExploreStackNav,
     SettingsStackNav,
   },
   {
@@ -236,9 +236,9 @@ class TabBarComponent extends React.PureComponent {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        {renderTab(otherProps, "FeedStackNav", "home")}
+        {renderTab(otherProps, "FeedStackNav", "fire")}
         <FlareCreationButton />
-        {renderTab(otherProps, "DashboardStackNav", "fire")}
+        {renderTab(otherProps, "ExploreStackNav", "globe-americas")}
       </View>)
   }
 }
