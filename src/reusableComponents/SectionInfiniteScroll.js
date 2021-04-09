@@ -7,6 +7,7 @@ import EmptyState from 'reusables/EmptyState'
 import { Divider } from "react-native-elements"
 import ErrorMessageText from 'reusables/ErrorMessageText';
 import { logError } from 'utils/helpers'
+import SectionHeaderText from './SectionHeaderText';
 
 
 /**
@@ -46,7 +47,7 @@ export default class SectionInfiniteScroll extends React.Component {
 
     static defaultProps = {
         style: { flex: 1, width: "100%" },
-        contentContainerStyle: { flexGrow: 1, marginHorizontal: 8 },
+        contentContainerStyle: { marginHorizontal: 8 },
         ItemSeparatorComponent: (() => <Divider />),
 
         // chunkSize: 10
@@ -127,7 +128,7 @@ export default class SectionInfiniteScroll extends React.Component {
 
                 const buttons = customData.map(d => {
                     return (
-                        <TouchableOpacity onPress={d.func} key={d.title} style = {{flex: 1}} key = {d.title}>
+                        <TouchableOpacity onPress={d.func} key={d.text} style={{ flex: 1 }}>
                             <Text style={{ fontSize: 16, marginTop: 8, marginBottom: 8, fontWeight: 'bold' }}>{d.text}</Text>
                         </TouchableOpacity>)
                 })
@@ -200,7 +201,9 @@ export default class SectionInfiniteScroll extends React.Component {
     renderSectionHeader = ({ section: { title, customButtonData } }) => {
         return (
             <View>
-                <Text style={{ marginTop: 14, color: "blue", fontSize: 14 }}>{title}</Text>
+                <SectionHeaderText>
+                    {title}
+                </SectionHeaderText>
                 <View style={{ flexDirection: "row" }}>
                     {customButtonData}
                 </View>
@@ -282,7 +285,16 @@ export default class SectionInfiniteScroll extends React.Component {
                 )
             }
         } else {
-            const { style, ...otherProps } = this.props
+            let { style, ...otherProps } = this.props
+            const trueSections = this.sections.filter((x) => x != "uninitialized")
+
+            //The content container can't have a flexgrow of 1 when there's content
+            //because it messes with pagination, but it should have it
+            //when rendering the empty state so that the empty state occupies all the available space
+            if (trueSections.length == 0) otherProps = {
+                ...otherProps,
+                contentContainerStyle: { ...otherProps.contentContainerStyle, flexGrow: 1 }
+            }
 
             return (
                 <View style={style}>
@@ -290,8 +302,7 @@ export default class SectionInfiniteScroll extends React.Component {
                     <SectionList
                         stickySectionHeadersEnabled={false}
                         showsVerticalScrollIndicator={false}
-                        style={{ flex: 0 }}
-                        sections={this.props.sectionSorter ? this.sortedSections : this.sections.filter((x) => x != "uninitialized")}
+                        sections={this.props.sectionSorter ? this.sortedSections : trueSections}
                         keyExtractor={item => item.uid}
                         //FIXME: Pagination comment block
                         // ListFooterComponent={this.renderFooter}

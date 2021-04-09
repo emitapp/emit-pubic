@@ -289,6 +289,12 @@ export default
         "licenseUrl": "https://github.com/kmagiera/react-native-screens/raw/master/LICENSE",
         "parents": "emit"
     },
+    "react-native-skeleton-placeholder@3.0.4": {
+        "licenses": "ISC",
+        "repository": "https://github.com/chramos/react-native-skeleton-placeholder",
+        "licenseUrl": "https://github.com/chramos/react-native-skeleton-placeholder",
+        "parents": "emit"
+    },
     "react-native-snackbar@2.2.0": {
         "licenses": "MIT",
         "repository": "https://github.com/cooperka/react-native-snackbar",

@@ -38,7 +38,15 @@ export const isOnlyWhitespace = (str) => {
   return str.replace(/\s/g, '').length == 0
 }
 
-
+/**
+ * Truncates a string that surpasses a cetain max length and adds ellipses
+ */
+ export function truncate(inputString, maxLength) : string {
+  if (inputString.length > maxLength)
+     return inputString.substring(0,maxLength) + '...';
+  else
+     return inputString;
+}
 
 /**
  * Converts epoch timestamps to date strings

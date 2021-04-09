@@ -61,7 +61,7 @@ export default class SearchableInfiniteScroll extends React.Component {
       parentEmptyStateComponent, searchbarPlaceholder, onSectionData, additionalData, ...otherProps } = this.props
     const searchBarComponent = () =>
       <SearchBar
-
+        onClear = {() => this.setState({query: null})}
         autoCapitalize="none"
         placeholder={searchbarPlaceholder}
         onChangeText={searchBarValue => this.setState({ searchBarValue })}

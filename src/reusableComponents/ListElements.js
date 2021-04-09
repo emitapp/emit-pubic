@@ -4,17 +4,24 @@ import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
 import S from 'styling';
 import { Text, ThemeConsumer } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import database from '@react-native-firebase/database';
+import { logError, MEDIUM_TIMEOUT, timedPromise, truncate } from 'utils/helpers';
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+
 /**
  * Standard ListView element component for viewing user snippets.
  * Required props: snippet (the snippet to display) and onPress 
  * Optional props: extraComponents, style, imageDiameter
  */
 export class UserSnippetListElement extends React.PureComponent {
+
   static defaultProps = {
     imageDiameter: 55
   }
+
   render() {
     const snippet = this.props.snippet
+
     return (
       <ThemeConsumer>
         {({ theme }) => (
@@ -34,30 +41,80 @@ export class UserSnippetListElement extends React.PureComponent {
   }
 }
 
+
 /**
  * Vertical ListView element component for viewing user snippets.
- * Required props: snippet (the snippet to display) and onPress 
+ * Required props: snippet (the snippet to display) (or uid) and onPress 
+ * Gives the snipper to the onPress
  * Optional props: extraComponents, style, imageDiameter
  */
 export class UserSnippetListElementVertical extends React.PureComponent {
   static defaultProps = {
     imageDiameter: 55
   }
+
+  constructor(props) {
+    super(props)
+    this.state = { snippet: props.snippet }
+    if (!this.state.snippet) this.getData()
+  }
+
   render() {
-    const snippet = this.props.snippet
+    const snippet = this.state.snippet
+    if (!snippet) {
+      return (
+        <SkeletonPlaceholder>
+          <View
+          style={{
+            ...S.styles.listElement,
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            ...this.props.style
+          }}>
+          <View style={{
+            width: this.props.imageDiameter,
+            height: this.props.imageDiameter,
+            borderRadius: this.props.imageDiameter / 2,
+            margin: 8,
+            justifyContent: "center"
+          }} />
+          <View style={{ width: 50, height: 20, borderRadius: 4 }} />
+          </View>
+        </SkeletonPlaceholder>
+      )
+    }
+
     return (
       <ThemeConsumer>
         {({ theme }) => (
           <TouchableOpacity
-            style={{ ...S.styles.listElement, flexDirection: "column", ...this.props.style }}
-            onPress={this.props.onPress}>
+            style={{
+              ...S.styles.listElement,
+              flexDirection: "column",
+              marginHorizontal: 4,
+              ...this.props.style
+            }}
+            onPress={() => this.props.onPress(this.state.snippet)}>
             <ProfilePicDisplayer diameter={this.props.imageDiameter} uid={snippet.uid} style={{ marginLeft: 8, marginRight: 8 }} />
-              <Text style={{ fontSize: 18 }}>{snippet.displayName}</Text>
-              <Text style={{ color: theme.colors.grey2, fontSize: 18, marginLeft: 6 }}>@{snippet.username}</Text>
+            <Text style={{ fontSize: 16 }}>{truncate(snippet.displayName, 10)}</Text>
+            <Text style={{ color: theme.colors.grey2, fontSize: 16 }}>@{truncate(snippet.username, 10)}</Text>
           </TouchableOpacity>
         )}
       </ThemeConsumer>
     )
+  }
+
+  getData = async () => {
+    try {
+      const snippetRef = database().ref(`/userSnippets/${this.props.uid}`);
+      const snippetSnapshot = await timedPromise(snippetRef.once('value'), MEDIUM_TIMEOUT)
+      if (snippetSnapshot.exists()) {
+        this.setState({ snippet: {...snippetSnapshot.val(), uid: snippetSnapshot.key }})
+      }
+    } catch (e) {
+      if (err.name != "timeout") logError(err)
+    }
   }
 }
 
@@ -129,27 +186,27 @@ export class RecipientListElement extends React.PureComponent {
     imageDiameter: 55
   }
   render() {
-    const {snippet} = this.props;
+    const { snippet } = this.props;
     return (
       <ThemeConsumer>
-      {({ theme }) => (
-        <TouchableOpacity 
-        style = {{...S.styles.listElement, ...this.props.style}}
-        onPress={this.props.onPress}>
-          <View style = {{flexDirection: "row", justifyContent: "space-between", width: "100%"}}>
-            <View style = {{flexDirection: "row", alignItems: "center"}}>
-               <ProfilePicDisplayer 
-                diameter = {this.props.imageDiameter} 
-                uid = {snippet.uid}
-                style = {{marginLeft: 8, marginRight: 8}} 
-                groupPic = {snippet.displayName? false : true}/>
-              <Text style = {{fontSize: 18, marginRight: 8}}>{snippet.displayName ? snippet.displayName : snippet.name}</Text>
-              {snippet.username && <Text style={{color: theme.colors.grey2}}>@{snippet.username}</Text>}
+        {({ theme }) => (
+          <TouchableOpacity
+            style={{ ...S.styles.listElement, ...this.props.style }}
+            onPress={this.props.onPress}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <ProfilePicDisplayer
+                  diameter={this.props.imageDiameter}
+                  uid={snippet.uid}
+                  style={{ marginLeft: 8, marginRight: 8 }}
+                  groupPic={snippet.displayName ? false : true} />
+                <Text style={{ fontSize: 18, marginRight: 8 }}>{snippet.displayName ? snippet.displayName : snippet.name}</Text>
+                {snippet.username && <Text style={{ color: theme.colors.grey2 }}>@{snippet.username}</Text>}
+              </View>
+              {this.props.children}
             </View>
-            {this.props.children}
-          </View>
-        </TouchableOpacity>
-      )}
+          </TouchableOpacity>
+        )}
       </ThemeConsumer>
     )
   }
@@ -161,15 +218,15 @@ export class RecipientListElement extends React.PureComponent {
  */
 export class ActivityListElement extends React.PureComponent {
   render() {
-    const {emoji, activityName, onPress} = this.props
+    const { emoji, activityName, onPress } = this.props
     return (
-      <TouchableOpacity 
-        style = {{...S.styles.listElement, ...this.props.style}}
-        onPress = {onPress}>
-          <View style = {{marginLeft: 8, flexDirection: "row", alignItems: 'center'}}>
-            <Text style={{fontSize: 16}}>{emoji}</Text>
-            <Text style = {{marginLeft: 6, fontSize: 18}} >{activityName}</Text>
-          </View>
+      <TouchableOpacity
+        style={{ ...S.styles.listElement, ...this.props.style }}
+        onPress={onPress}>
+        <View style={{ marginLeft: 8, flexDirection: "row", alignItems: 'center' }}>
+          <Text style={{ fontSize: 16 }}>{emoji}</Text>
+          <Text style={{ marginLeft: 6, fontSize: 18 }} >{activityName}</Text>
+        </View>
       </TouchableOpacity>
     )
   }

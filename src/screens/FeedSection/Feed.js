@@ -10,8 +10,6 @@ import S from 'styling';
 import { responderStatuses } from 'utils/serverValues';
 import EmittedFlareElement from './EmittedFlareElement';
 import FeedElement from './FeedElement';
-
-
 export default class ActiveBroadcasts extends React.Component {
 
   constructor(props) {

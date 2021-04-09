@@ -2,7 +2,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
 import { StyleSheet, View, SafeAreaView } from 'react-native';
-import { Overlay } from 'react-native-elements';
+import { Overlay, Text } from 'react-native-elements';
 import { RecipientListElement } from 'reusables/ListElements';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import FriendReqModal from 'screens/SocialSection/FriendReqModal';
@@ -11,7 +11,8 @@ import { GroupJoinDialogue } from 'screens/SocialSection/UserGroups/GroupSearch'
 import Snackbar from 'react-native-snackbar';
 import { MinorActionButton } from 'reusables/ReusableButtons';
 import mainTheme from 'styling/mainTheme'
-
+import ContactsRecommendations from 'reusables/ContactsRecommendationsList'
+import MutualFriendsList from 'reusables/MutualFriendsList'
 export default class SearchHub extends React.Component {
 
   constructor(props) {
@@ -42,7 +43,7 @@ export default class SearchHub extends React.Component {
     selectedPublicGroup: null
   }
 
-  static navigationOptions= {
+  static navigationOptions = {
     headerShown: false,
   }
 
@@ -83,6 +84,7 @@ export default class SearchHub extends React.Component {
                 dbref={this.dbRefShortened}
                 onSectionData={null}
                 additionalData={this.footerButtons}
+                ListHeaderComponent={this.renderFriendRecommendations}
               />
             }
           />
@@ -127,6 +129,15 @@ export default class SearchHub extends React.Component {
         });
       },
       150
+    )
+  }
+
+  renderFriendRecommendations = () => {
+    return (
+      <View>
+        <MutualFriendsList />
+        <ContactsRecommendations />
+      </View>
     )
   }
 }

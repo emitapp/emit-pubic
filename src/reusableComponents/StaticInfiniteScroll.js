@@ -44,7 +44,7 @@ export default class StaticInfiniteScroll extends React.Component {
 
     static defaultProps = {
         style: { flex: 1, width: "100%"},
-        contentContainerStyle: {flexGrow: 1, marginHorizontal: 8},
+        contentContainerStyle: { marginHorizontal: 8},
         ItemSeparatorComponent: (() => <Divider />),
         chunkSize: 10
     }
@@ -281,6 +281,15 @@ export default class StaticInfiniteScroll extends React.Component {
             }
         } else {
             const {style, ...otherProps} = this.props
+
+
+            //The content container can't have a flexgrow of 1 when there's content
+            //because it messes with pagination, but it should have it
+            //when rendering the empty state so that the empty state occupies all the available space
+            if (this.listData.length == 0) otherProps = {
+                ...otherProps,
+                contentContainerStyle: { ...otherProps.contentContainerStyle, flexGrow: 1 }
+            }
               
             return (
                 <View style = {style}>

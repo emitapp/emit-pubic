@@ -12,6 +12,8 @@ import GroupSearch from '../SocialSection/UserGroups/GroupSearch';
 import GroupViewer from '../SocialSection/UserGroups/GroupViewer';
 import SocialButtonHub from '../SocialSection/SocialButtonHub';
 import InviteContacts from '../SocialSection/InviteContacts'
+import Header from 'reusables/Header'
+
 
 const Navigator = createStackNavigator(
   {
@@ -27,6 +29,8 @@ const Navigator = createStackNavigator(
   },
   {
     initialRouteName: 'SearchHub',
+    defaultNavigationOptions: Header("Explore")
+
   });
 
 export default class ExploreStackNav extends React.Component {

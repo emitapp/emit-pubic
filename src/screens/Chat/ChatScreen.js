@@ -187,7 +187,6 @@ export default class ChatScreen extends React.Component {
   }
 
   renderAvatar(props, parentContext) {
-    console.log(parentContext.state)
     return (
       <Pressable onPress={() => parentContext.friendRequestModal.openUsingUid(props.currentMessage.user._id)}>
         <ProfilePicDisplayer

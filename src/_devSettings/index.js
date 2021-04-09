@@ -24,3 +24,11 @@ export const _shouldUseCloudFunctionEmulators = () => {
 //If you are running on a physical device, replace http://localhost 
 //with the local ip of your PC. (http://192.168.x.x)
 export const _EMULATOR_IP = "http://localhost:5000"
+
+
+
+import { LogBox } from 'react-native'
+//TODO: investigate these warnings eventually
+LogBox.ignoreLogs([
+  'Require cycle:'
+])
