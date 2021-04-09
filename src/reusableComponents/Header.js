@@ -62,10 +62,12 @@ export default function StandardHeader(title) {
         headerTitleStyle: {
             fontFamily: "NunitoSans-Regular",
             color: "white",
-            fontSize: 20
+            fontSize: 20,
         },
         headerTitleContainerStyle: {
-            right: 0
+            left: 0,
+            right: 0,
+            width: "100%",
         }
     }
 };
@@ -121,6 +123,7 @@ export function ScrollingHeader(title) {
             fontSize: 20
         },
         headerTitleContainerStyle: {
+            left: 0,
             right: 0
         }
     }
