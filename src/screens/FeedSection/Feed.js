@@ -34,11 +34,11 @@ export default class ActiveBroadcasts extends React.Component {
           generation={this.state.rerender}
           dbref={[
             { ref: database().ref(`/activeBroadcasts/${auth().currentUser.uid}/public`), title: this.emittedTitle, orderBy: this.orderBy },
-            { ref: database().ref(`/feeds/${auth().currentUser.uid}`), title: this.upcomingTitle, orderBy: this.orderBy, filter: item => item.status != responderStatuses.CONFIRMED },
-            { ref: database().ref(`/feeds/${auth().currentUser.uid}`), title: this.joinedTitle, orderBy: this.orderBy },
+            { ref: database().ref(`/feeds/${auth().currentUser.uid}`), title: this.upcomingTitle, orderBy: this.orderBy, filter: (item) => item.status != responderStatuses.CONFIRMED},
+            { ref: database().ref(`/feeds/${auth().currentUser.uid}`), title: this.joinedTitle, orderBy: this.orderBy, filter: (item) => item.status == responderStatuses.CONFIRMED },
           ]}
-          startingPoint={[null, "confirmed", null]}
-          endingPoint={[null, "confirmed", null]}
+          startingPoint={[null, null, "confirmed"]}
+          endingPoint={[null, null, "confirmed"]}
           emptyStateComponent={this.renderEmptyState()}
         />
       </View>

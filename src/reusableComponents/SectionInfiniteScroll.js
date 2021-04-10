@@ -8,6 +8,7 @@ import { Divider } from "react-native-elements"
 import ErrorMessageText from 'reusables/ErrorMessageText';
 import { logError } from 'utils/helpers'
 import SectionHeaderText from './SectionHeaderText';
+import { responderStatuses } from 'utils/serverValues';
 
 
 /**
@@ -118,6 +119,7 @@ export default class SectionInfiniteScroll extends React.Component {
             });
 
             if (this.props.dbref[refIndex].filter) {
+               
                 listData = listData.filter(this.props.dbref[refIndex].filter)
             }
 
