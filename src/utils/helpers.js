@@ -85,7 +85,7 @@ export const ASYNC_TOKEN_KEY = "stored_FCM_token";
 export const ASYNC_SETUP_KEY = "accountSetUp";
 
 //Used to check if the user has been asked for their contacts permissions before
-export const ASKED_CONTACTS_PERMISSIONS = "accountSetUp";
+export const ASKED_CONTACTS_PERMISSIONS = "askedForContacts";
 
 
 import DeviceInfo from 'react-native-device-info';
