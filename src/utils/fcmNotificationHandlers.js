@@ -8,16 +8,89 @@ import auth from '@react-native-firebase/auth';
 import { checkNotifications, RESULTS } from 'react-native-permissions';
 
 export const handleFCMMessage = async (remoteMessage) => {
-    if (!auth().currentUser) return
-    const response = await checkNotifications();
-    if (response.status != RESULTS.GRANTED) return;
-    //Meh just do nothing for now
+  if (!auth().currentUser) return
+  const response = await checkNotifications();
+  if (response.status != RESULTS.GRANTED) return;
+  //Meh just do nothing for now
 }
 
 
 export const handleFCMDeletion = async () => {
-    if (!auth().currentUser) return
-    const response = await checkNotifications();
-    if (response.status != RESULTS.GRANTED) return;
-    //Meh just do nothing for now
+  if (!auth().currentUser) return
+  const response = await checkNotifications();
+  if (response.status != RESULTS.GRANTED) return;
+  //Meh just do nothing for now
+}
+
+
+import NavigationService from 'utils/NavigationService';
+import database from '@react-native-firebase/database';
+/**
+ * Sends the user to the appropriate screen when opening up a notification
+ * @param {The remoteMessage object} message 
+ */
+export const handleNotificationOpened = (message) => {
+  const reason = message.data.reason;
+  switch (reason) {
+    case "newBroadcast":
+      var ref = database().ref(`/feeds/${auth().currentUser.uid}/${message.data.associatedFlareId}`)
+      ref.once('value', function (snapshot) {
+        if (!snapshot.exists()) return
+        let broadcast = snapshot.val();
+        broadcast.uid = message.data.associatedFlareId;
+        NavigationService.reset("FeedStackNav", 1,
+          [{ routeName: 'Feed' },
+          { routeName: 'BroadcastViewer', params: { broadcast: broadcast } },
+          ])
+      }, function (e) {
+        console.log("Read failed: " + e.code);
+      })
+      break;
+
+    case "broadcastResponse":
+      var ref = database().ref(`/activeBroadcasts/${message.data.broadcasterUid}/public/${message.data.associatedFlareId}`)
+      ref.once('value', function (snapshot) {
+        if (!snapshot.exists()) return
+        let broadcast = snapshot.val();
+        broadcast.uid = message.data.associatedFlareId;
+        NavigationService.reset("FeedStackNav", 1,
+          [{ routeName: 'Feed' },
+          { routeName: 'ResponsesScreen', params: { broadcast: broadcast } }
+          ])
+      }, function (e) {
+        console.log("Read failed: " + e.code);
+      })
+      break;
+
+    case "newFriend":
+      NavigationService.reset("ExploreStackNav", 0, [{ routeName: 'ExploreStackNav' }])
+      break;
+
+    case "friendRequest":
+      NavigationService.reset("FeedStackNav", 1,
+        [{ routeName: 'Feed' }, { routeName: 'SocialButtonHub' }])
+      break;
+
+    case "newGroup":
+      NavigationService.reset("ExploreStackNav", 0, [{ routeName: 'ExploreStackNav' }])
+      break;
+
+    case "chatMessage":
+      var ref = database().ref(`/activeBroadcasts/${message.data.broadcasterUid}/public/${message.data.associatedFlareId}`)
+      ref.once('value', function (snapshot) {
+        if (!snapshot.exists()) return
+        let broadcast = snapshot.val();
+        broadcast.uid = message.data.associatedFlareId;
+        NavigationService.reset("FeedStackNav", 2,
+          [{ routeName: 'Feed' },
+          { routeName: 'ResponsesScreen', params: { broadcast: broadcast } },
+          { routeName: 'ChatScreen', params: { broadcast: broadcast } }
+          ])
+      }, function (e) {
+        console.log("Read failed: " + e.code);
+      })
+      break;
+    default:
+      break;
+  }
 }

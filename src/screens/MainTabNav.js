@@ -12,13 +12,14 @@ import { StackActions } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import CircularView from 'reusables/CircularView';
 import MainTheme from 'styling/mainTheme';
-import { handleFCMDeletion, handleFCMMessage } from 'utils/fcmNotificationHandlers';
+import { handleFCMDeletion, handleFCMMessage, handleNotificationOpened } from 'utils/fcmNotificationHandlers';
 import { ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import NavigationService from 'utils/NavigationService';
 import { cloudFunctionStatuses } from 'utils/serverValues';
 import ExploreStackNav from "./ExploreSection/ExploreStackNav";
 import FeedStackNav from './FeedSection/FeedStackNav';
 import SettingsStackNav from "./Settings/SettingsStackNav";
+
 
 const renderTab = (props, targetRouteName, iconName) => {
   const focused = props.navigation.state.routes[props.navigation.state.index].routeName == targetRouteName
@@ -93,6 +94,8 @@ export default class Main extends React.Component {
     this.unsubscribeFromTokenRefresh = null;
     this.unsubscribeFromOnMessage = null;
     this.unsubscribeFromOnMessageDelete = null;
+    this.unsubscribeFromGetInitialNotification = null;
+    this.unsubscribeFromOnNotificationOpenedApp = null;
   }
 
   componentDidMount = () => {
@@ -103,6 +106,8 @@ export default class Main extends React.Component {
     if (this.unsubscribeFromTokenRefresh) this.unsubscribeFromTokenRefresh()
     if (this.unsubscribeFromOnMessage) this.unsubscribeFromOnMessage()
     if (this.unsubscribeFromOnMessageDelete) this.unsubscribeFromOnMessageDelete()
+    if (this.unsubscribeFromOnNotificationOpenedApp) this.unsubscribeFromOnNotificationOpenedApp()
+    if (this.unsubscribeFromGetInitialNotification) this.unsubscribeFromGetInitialNotification()
   }
 
   render() {
@@ -168,7 +173,18 @@ export default class Main extends React.Component {
     this.unsubscribeFromTokenRefresh = messaging().onTokenRefresh(token => {
       this.syncToken() //Asyncronous
     });
+
+    this.unsubscribeFromOnNotificationOpenedApp = messaging().onNotificationOpenedApp((remoteMessage) => {
+      handleNotificationOpened(remoteMessage);
+    });
+
+    this.unsubscribeFromGetInitialNotification = messaging().onNotificationOpenedApp((remoteMessage) => {
+      if (remoteMessage) {
+        handleNotificationOpened(remoteMessage);
+      }
+    });
   }
+
 
   /**
    * Gets the app instance's current FCM token and syncs it with the server
