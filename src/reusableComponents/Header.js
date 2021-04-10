@@ -65,9 +65,8 @@ export default function StandardHeader(title) {
             fontSize: 20,
         },
         headerTitleContainerStyle: {
-            left: 0,
+            ...Platform.select({ ios: { left: 0 }, default: {} }),
             right: 0,
-            width: "100%",
         }
     }
 };
@@ -123,7 +122,7 @@ export function ScrollingHeader(title) {
             fontSize: 20
         },
         headerTitleContainerStyle: {
-            left: 0,
+            ...Platform.select({ ios: { left: 0 }, default: {} }),
             right: 0
         }
     }

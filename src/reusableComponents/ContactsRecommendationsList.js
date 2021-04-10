@@ -1,22 +1,20 @@
 import functions from '@react-native-firebase/functions';
 import React from 'react';
 import {
-  Alert,
   FlatList,
   View
 } from "react-native";
 import Contacts from 'react-native-contacts';
 import { Button, Text } from 'react-native-elements';
 import { PERMISSIONS } from 'react-native-permissions';
-import Snackbar from 'react-native-snackbar';
 import { UserSnippetListElementVertical } from 'reusables/ListElements';
 import S from 'styling';
-import { checkAndGetPermissions, onlyCheckPermissions } from 'utils/AppPermissions';
-import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
+import { checkAndGetPermissions } from 'utils/AppPermissions';
+import { logError, LONG_TIMEOUT, timedPromise, ASKED_CONTACTS_PERMISSIONS } from 'utils/helpers';
 import { cloudFunctionStatuses } from 'utils/serverValues';
 import FriendReqModal from '../screens/SocialSection/FriendReqModal';
 import SectionHeaderText from './SectionHeaderText';
-
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class ContactsRecommendations extends React.Component {
 
@@ -28,7 +26,7 @@ export default class ContactsRecommendations extends React.Component {
       suggestedContactFriends: [],
       errorMessage: "",
       hasPermissions: false,
-    };
+    }
 
     this.contacts = []
     this.allContactEmails = []
@@ -36,16 +34,11 @@ export default class ContactsRecommendations extends React.Component {
   }
 
   componentDidMount() {
-    onlyCheckPermissions(
-      { required: [PERMISSIONS.ANDROID.READ_CONTACTS] }, { required: [PERMISSIONS.IOS.CONTACTS] }
-    ).then(hasPermissions => {
-      if (hasPermissions) {
-        this.setState({ hasPermissions }, this.loadContacts)
-      }
-    }).catch(err => {
-      logError(err)
-    })
-
+    //To prevent the user from getting a permission dialogue without interacting with UI...
+    AsyncStorage.getItem(ASKED_CONTACTS_PERMISSIONS)
+      .then(wasAskedBefore => {
+        if (wasAskedBefore) this.getPermissionsAndContacts()
+      })
   }
 
   loadContacts() {
@@ -103,7 +96,7 @@ export default class ContactsRecommendations extends React.Component {
 
         <SectionHeaderText>CONTACTS ALREADY ON EMIT</SectionHeaderText>
 
-        {!this.state.hasPermissions && <Button title="Check contacts" onPress={this.getPermissions} />}
+        {!this.state.hasPermissions && <Button title="Check contacts" onPress={this.getPermissionsAndContacts} />}
 
         <FriendReqModal
           ref={modal => this.modal = modal} />
@@ -129,18 +122,17 @@ export default class ContactsRecommendations extends React.Component {
     )
   }
 
-  getPermissions = () => {
-    checkAndGetPermissions({ required: [PERMISSIONS.ANDROID.READ_CONTACTS] }, { required: [PERMISSIONS.IOS.CONTACTS] })
-      .then(permissionsGranted => {
-        if (permissionsGranted) {
-          this.setState({ hasPermissions: permissionsGranted }, this.loadContacts)
-        } else {
-          this.setState({ errorMessage: "Not enough permissions for contacts" })
-        }
-      })
-      .catch(err => {
-        logError(err)
-        this.setState({ errorMessage: "Couldn't get contacts" })
-      })
+  getPermissionsAndContacts = async () => {
+    try {
+      const enoughPermissions = await checkAndGetPermissions(
+        { required: [PERMISSIONS.ANDROID.READ_CONTACTS] }, { required: [PERMISSIONS.IOS.CONTACTS] }
+      )
+      if (enoughPermissions) this.setState({ hasPermissions: enoughPermissions }, this.loadContacts)
+      else this.setState({ errorMessage: "Not enough permissions for contacts" })
+      await AsyncStorage.setItem(ASKED_CONTACTS_PERMISSIONS, "true")
+    } catch (err) {
+      logError(err)
+      this.setState({ errorMessage: "Couldn't get contacts" })
+    }
   }
 }

@@ -41,7 +41,7 @@ export const isOnlyWhitespace = (str) => {
 /**
  * Truncates a string that surpasses a cetain max length and adds ellipses
  */
- export function truncate(inputString, maxLength) : string {
+ export function truncate(inputString, maxLength) {
   if (inputString.length > maxLength)
      return inputString.substring(0,maxLength) + '...';
   else
@@ -83,6 +83,9 @@ export const ASYNC_TOKEN_KEY = "stored_FCM_token";
 
 //This is the key that's used to cache whether or not the user has properly set up their account
 export const ASYNC_SETUP_KEY = "accountSetUp";
+
+//Used to check if the user has been asked for their contacts permissions before
+export const ASKED_CONTACTS_PERMISSIONS = "accountSetUp";
 
 
 import DeviceInfo from 'react-native-device-info';

@@ -16,11 +16,12 @@ import Header from 'reusables/Header';
 import { SmallLoadingComponent } from 'reusables/LoadingComponents';
 import { analyticsUserInvitedSMS } from 'utils/analyticsFunctions';
 import { checkAndGetPermissions } from 'utils/AppPermissions';
-import { logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
+import { logError, MEDIUM_TIMEOUT, timedPromise, ASKED_CONTACTS_PERMISSIONS } from 'utils/helpers';
 import * as links from "utils/LinksAndUris";
 import ContactAvatar from './ContactAvatar';
 import ContactElement from './ContactElement';
 import FriendReqModal from './FriendReqModal';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 export default class InviteContacts extends React.Component {
@@ -42,18 +43,21 @@ export default class InviteContacts extends React.Component {
 
   componentDidMount() {
     this.getSnippet(); //Since most of this module works without internet, there are failsafes in case this fails
-    checkAndGetPermissions({ required: [PERMISSIONS.ANDROID.READ_CONTACTS] }, { required: [PERMISSIONS.IOS.CONTACTS] })
-      .then(permissionsGranted => {
-        if (permissionsGranted) {
-          this.loadContacts();
-        } else {
-          Alert.alert("Couldn't get contacts", "Emit probably hasn't been granted the permissions")
-        }
-      })
-      .catch(err => {
-        logError(err)
-        Alert.alert("Couldn't get contacts", "Something went wrong!")
-      })
+    this.getData()
+  }
+
+  getData = async () => {
+    try {
+      const enoughPermissions = await checkAndGetPermissions(
+        { required: [PERMISSIONS.ANDROID.READ_CONTACTS] }, { required: [PERMISSIONS.IOS.CONTACTS] }
+      )
+      await AsyncStorage.setItem(ASKED_CONTACTS_PERMISSIONS, "true")
+      if (enoughPermissions) this.loadContacts();
+      else Alert.alert("Couldn't get contacts", "Emit probably hasn't been granted the permissions")
+    } catch (err) {
+      logError(err)
+      Alert.alert("Couldn't get contacts", "Something went wrong!")
+    }
   }
 
   loadContacts() {
