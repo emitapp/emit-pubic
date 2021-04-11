@@ -45,7 +45,7 @@ export default class SwiperOnboarding extends React.Component {
         </View>
         <View style={[styles.slide, { backgroundColor: 'white', width: "100%", alignItems: "center" }]}>
           <View style={{ alignItems: "center" }} style={{ marginBottom: 8 }} level={8}><Text style={styles.smallBlackText}>Add groups and friends to send flares to!</Text></View>
-          <View style={{ justifyContent: "center", alignItems: "center" }}><Image source={require("media/groups.png")} style={{ width: 250, height: 500, borderColor: "black", borderWidth: 1 }} /></View>
+          <View style={{ justifyContent: "center", alignItems: "center" }}><Image source={require("media/DiscoverPage.png")} style={{ width: 250, height: 500, borderColor: "black", borderWidth: 1 }} /></View>
         </View>
       </AppIntro>
     );
