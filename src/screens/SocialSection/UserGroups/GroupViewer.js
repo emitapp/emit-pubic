@@ -228,12 +228,15 @@ export default class GroupScreen extends React.Component {
                   title="Leave Group"
                   onPress={this.leaveGroup}
                 />
-                <Button
-                  titleStyle={{ color: theme.colors.error }}
-                  type="clear"
-                  title="Delete Group"
-                  onPress={this.deleteGroup}
-                />
+                {this.state.fetchedUserRank == groupRanks.ADMIN &&
+                  <Button
+                    titleStyle={{ color: theme.colors.error }}
+                    type="clear"
+                    title="Delete Group"
+                    onPress={this.deleteGroup}
+                  />
+                }
+
                 <MinorActionButton
                   title="Cancel"
                   onPress={() => this.closeEditingModal()}
@@ -316,23 +319,23 @@ export default class GroupScreen extends React.Component {
                 />
               </View>
             ) : (
-                <View style={{ flexDirection: "row" }}>
-                  <BannerButton
-                    extraStyles={{ flex: 1 }}
-                    color={theme.colors.bannerButtonRed}
-                    onPress={() => this.setState({ inEditMode: false })}
-                    iconName={S.strings.cancel}
-                    title="CANCEL"
-                  />
-                  <BannerButton
-                    extraStyles={{ flex: 1 }}
-                    color={theme.colors.bannerButtonGreen}
-                    onPress={this.applyEdits}
-                    iconName={S.strings.confirm}
-                    title="SAVE CHANGES"
-                  />
-                </View>
-              )}
+              <View style={{ flexDirection: "row" }}>
+                <BannerButton
+                  extraStyles={{ flex: 1 }}
+                  color={theme.colors.bannerButtonRed}
+                  onPress={() => this.setState({ inEditMode: false })}
+                  iconName={S.strings.cancel}
+                  title="CANCEL"
+                />
+                <BannerButton
+                  extraStyles={{ flex: 1 }}
+                  color={theme.colors.bannerButtonGreen}
+                  onPress={this.applyEdits}
+                  iconName={S.strings.confirm}
+                  title="SAVE CHANGES"
+                />
+              </View>
+            )}
 
           </View>
         )}

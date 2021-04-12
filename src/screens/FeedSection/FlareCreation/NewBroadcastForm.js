@@ -36,13 +36,13 @@ class NewBroadcastForm extends React.Component {
       recepientMasks: {},
       recepientGroups: {},
       duration: null,
-      durationText: "1 hour"
+      durationText: "1 hour",
+      note: ""
     }
     this.broadcastInfoPrototype = { ...this.passableBroadcastInfo }
     this.state = {
       showingMore: false,
       passableBroadcastInfo: this.passableBroadcastInfo,
-      note: "",
       customMaxResponders: false,
       maxResponders: "",
       isModalVisible: false,
@@ -138,9 +138,11 @@ class NewBroadcastForm extends React.Component {
                   numberOfLines={4}
                   inputContainerStyle={{ backgroundColor: "white" }}
                   placeholder="Enter any extra information you want in here"
-                  value={this.state.note}
-                  onChangeText={(note) => this.setState({ note })}
-                  errorMessage={this.state.note.length > MAX_BROADCAST_NOTE_LENGTH ? "Too long" : undefined}
+                  value={this.state.passableBroadcastInfo.note}
+                  onChangeText={(note) => {
+                    this.setState({ passableBroadcastInfo: {...this.state.passableBroadcastInfo, note} })
+                  }}
+                  errorMessage={this.state.passableBroadcastInfo.note.length > MAX_BROADCAST_NOTE_LENGTH ? "Too long" : undefined}
                 />
 
                 {this.state.showingMore &&
@@ -276,7 +278,7 @@ class NewBroadcastForm extends React.Component {
         return
       }
 
-      if (this.state.note.length > MAX_BROADCAST_NOTE_LENGTH) {
+      if (this.state.passableBroadcastInfo.note.length > MAX_BROADCAST_NOTE_LENGTH) {
         this.setState({ errorMessage: "Broadcast note too long", isModalVisible: false })
         return
       }
@@ -329,8 +331,8 @@ class NewBroadcastForm extends React.Component {
 
       if (this.state.passableBroadcastInfo.geolocation)
         params.geolocation = this.state.passableBroadcastInfo.geolocation
-      if (this.state.note)
-        params.note = this.state.note
+      if (this.state.passableBroadcastInfo.note)
+        params.note = this.state.passableBroadcastInfo.note
 
       const response = await timedPromise(creationFunction(params), LONG_TIMEOUT);
       if (response.data.status === cloudFunctionStatuses.OK) {

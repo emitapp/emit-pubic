@@ -4,8 +4,8 @@ export const getAllActivities = () => [
         data: [
             { emoji: "🧪", name: "COVID Test" },
             { emoji: "🥳", name: "Online Party" },
-            { emoji: "🟡", name: "Spikeball"},
-            { emoji: "🥏", name: "Frisbee"}
+            { emoji: "🟡", name: "Spikeball" },
+            { emoji: "🥏", name: "Frisbee" }
         ]
     },
     {
@@ -22,16 +22,38 @@ export const getAllActivities = () => [
         data: [
             { emoji: "🎬", name: "Netflix" },
             { emoji: "🎮", name: "Gaming" },
-            { emoji: "🕵️", name: "Codenames"},
-            { emoji: "🏝️", name: "Catan"},
+            {
+                emoji: "🕵️", name: "Codenames",
+                info: "A hint-based word guessing game."
+            },
+            {
+                emoji: "🏝️", name: "Catan",
+                info: "A game based on gathering territory and recources to grow the most powerful empire."
+            },
+            {
+                emoji: "🦀", name: "Rocketcrab.com",
+                info: "A place to play phone party games with others."
+            },
             { emoji: "🔎", name: "Among Us" },
             { emoji: "🃏", name: "Poker" },
-            { emoji: "🏎️", name: "Rocket League" },
+            {
+                emoji: "🏎️", name: "Rocket League",
+                info: "A popular video game that combines rocket powered cars with soccer. Best for 2 to 8 people."
+            },
             { emoji: "♟", name: "Chess" },
             { emoji: "🥊", name: "Super Smash Bros." },
-            { emoji: "💀", name: "Secret Hitler"},
-            { emoji: "🦠", name: "Covidopoly"},
-            { emoji: "🖌️", name: "Skribbl.io" },
+            {
+                emoji: "💀", name: "Secret Hitler",
+                info: "Secret Hitler is a hidden identity social deduction party game."
+            },
+            {
+                emoji: "🦠", name: "Covidopoly",
+                info: "\"An online, multiplayer, monopoly-deal inspired game\""
+            },
+            {
+                emoji: "🖌️", name: "Skribbl.io",
+                info: "\"A free multiplayer drawing and guessing game\""
+            },
             { emoji: "⚔️", name: "League of Legends" },
             { emoji: "🔫", name: "Call of Duty" },
             { emoji: "⚽", name: "FIFA" },
@@ -47,7 +69,7 @@ export const getAllActivities = () => [
             { emoji: "🧋", name: "Bubble Tea" },
             { emoji: "🥤", name: "Smoothie" },
             { emoji: "🍳", name: "Cooking" },
-            { emoji: "🥧", name: "Baking"},
+            { emoji: "🥧", name: "Baking" },
         ]
     },
     {
@@ -55,7 +77,7 @@ export const getAllActivities = () => [
         data: [
             { emoji: "🏃‍♀️", name: "Running" },
             { emoji: "🚶", name: "Walk" },
-            { emoji: "🧗", name: "Rock Climbing"},
+            { emoji: "🧗", name: "Rock Climbing" },
             { emoji: "💪", name: "Workout" },
             { emoji: "⚽️", name: "Soccer" },
             { emoji: "🏀", name: "Basketball" },

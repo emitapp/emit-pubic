@@ -170,5 +170,9 @@ export default theme = {
             height: 1,
             width: "100%"
         }
+    },
+
+    Tooltip: {
+        backgroundColor: "lightgrey"
     }
 }

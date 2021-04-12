@@ -16,7 +16,6 @@ export default class EmittedFlareElement extends React.PureComponent {
         <View style={{ flexDirection: "column", flex: 1 }}>
 
           <View style={{ flexDirection: "row" }}>
-            
             <View style={{ flexDirection: "row", flex: 1, alignItems: "center" }}>
               <Text style={{ fontSize: 40, marginHorizontal: 8 }}>{item.emoji}</Text>
               <View style={{ justifyContent: "center" }}>
@@ -34,12 +33,21 @@ export default class EmittedFlareElement extends React.PureComponent {
                 <Ionicon name="md-chatbubbles" color="grey" size={35} style={{ marginHorizontal: 8 }} />
               </Pressable>
             </View>
+          </View>
 
+          <View style={{ marginHorizontal: 8 }}>
+            <Text style={{ fontSize: 16, marginBottom: 8 }}>{item.location}</Text>
+            {item.locked &&
+              <View style={{
+                flexDirection: "row", alignItems: "center", borderColor: "grey",
+                borderWidth: 1, alignSelf: "flex-start", padding: 6, borderRadius: 8
+              }}>
+                <Icon name="lock" color="grey" size={24} style={{ marginHorizontal: 8 }} />
+                <Text>Max responders reached</Text>
+              </View>
+            }
           </View>
         </View>
-
-        <Text style={{ fontSize: 18, fontWeight: "bold" }}>{item.location}</Text>
-        {item.locked && <Icon name="lock" color="grey" size={24} style={{ marginHorizontal: 8 }} />}
       </TouchableOpacity>
     )
   }

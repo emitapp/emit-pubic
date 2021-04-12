@@ -48,7 +48,7 @@ export default class NewBroadcastFormActivity extends React.Component {
                   </Text>
                   <Picker
                     native={true}
-                    onSelect={emoji => this.useCustomActivity(emoji)} />
+                    onSelect={emoji => this.useCustomActivity(emoji.native)} />
 
                   <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
                     <MinorActionButton
@@ -99,12 +99,13 @@ export default class NewBroadcastFormActivity extends React.Component {
     analyticsCustomActivity(emoji, activityText)
     this.setState(
       { gettingCustom: false },
-      () => this.saveActivity(emoji.native, activityText))
+      () => this.saveActivity(emoji, activityText))
   }
 
-  saveActivity = (emoji, activityName) => {
+  saveActivity = (emoji, activityName, extraInfo) => {
     this.props.navigation.state.params.emojiSelected = emoji;
     this.props.navigation.state.params.activitySelected = activityName;
+    if (extraInfo) this.props.navigation.state.params.note += extraInfo
     this.props.navigation.goBack();
   }
 
@@ -115,7 +116,8 @@ export default class NewBroadcastFormActivity extends React.Component {
           style={{ width: "100%" }}
           emoji={item.emoji}
           activityName={item.name}
-          onPress={() => { this.saveActivity(item.emoji, item.name) }}
+          info = {item.info}
+          onPress={() => { this.saveActivity(item.emoji, item.name, item.info) }}
         />
       </View>
     );
