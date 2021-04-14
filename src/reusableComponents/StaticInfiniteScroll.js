@@ -280,8 +280,7 @@ export default class StaticInfiniteScroll extends React.Component {
                 )
             }
         } else {
-            const {style, ...otherProps} = this.props
-
+            let {style, ...otherProps} = this.props
 
             //The content container can't have a flexgrow of 1 when there's content
             //because it messes with pagination, but it should have it

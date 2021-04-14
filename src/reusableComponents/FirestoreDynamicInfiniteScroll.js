@@ -210,7 +210,7 @@ export default class FirestoreDymanicInfiniteScroll extends React.Component {
                 )
             }
         } else {
-            const { style, HeaderForHorizontal, ...otherProps } = this.props
+            let { style, HeaderForHorizontal, ...otherProps } = this.props
             const data = this.props.filter ? this.listData.filter(this.props.filter) : this.listData
 
             //The content container can't have a flexgrow of 1 when there's content
