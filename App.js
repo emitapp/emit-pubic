@@ -21,12 +21,12 @@ import CovidWarningPage from 'screens/Onboarding/CovidWarningPage';
 import SwiperOnboarding from 'screens/Onboarding/SwiperOnboarding';
 import AddProfilePic from 'screens/Onboarding/AddProfilePic';
 import MainTheme from 'styling/mainTheme';
-import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise, colorLog } from 'utils/helpers';
+import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise, prettyLog } from 'utils/helpers';
 import NavigationService from 'utils/NavigationService';
 import codePush from "react-native-code-push";
 import { AppState } from "react-native";
 import { analyticsAppOpen, analyticsScreenVisit, setAnalyticsID } from 'utils/analyticsFunctions';
-import {_codepushEnabled, _shouldUseCloudFunctionEmulators, _EMULATOR_IP} from 'devsettings/index'
+import { _codepushEnabled, _shouldUseCloudFunctionEmulators, _EMULATOR_IP } from 'devsettings/index'
 
 export default class App extends React.Component {
 
@@ -40,12 +40,10 @@ export default class App extends React.Component {
   }
 
   componentDidMount = () => {
-
     if (_shouldUseCloudFunctionEmulators()) {
-      console.log(
-        '%c%s',
-        'color: black; background: orange; font-size: 18px;',
-        'Using Firebase Cloud Functions Emulator 👷🏾‍♂️')
+      prettyLog(
+        'Using Firebase Cloud Functions Emulator 👷🏾‍♂️',
+        { textColor: "black", backgroundColor: "orange", fontSize: 18 })
       functions().useFunctionsEmulator(_EMULATOR_IP);
     }
 
@@ -58,7 +56,7 @@ export default class App extends React.Component {
       codePush.sync({ installMode: codePush.InstallMode.IMMEDIATE })
         .catch(err => logError(err))
         .finally(() => this.removeSplashScreen())
-    }else{
+    } else {
       this.removeSplashScreen()
     }
 

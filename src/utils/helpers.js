@@ -41,11 +41,11 @@ export const isOnlyWhitespace = (str) => {
 /**
  * Truncates a string that surpasses a cetain max length and adds ellipses
  */
- export function truncate(inputString, maxLength) {
+export function truncate(inputString, maxLength) {
   if (inputString.length > maxLength)
-     return inputString.substring(0,maxLength) + '...';
+    return inputString.substring(0, maxLength) + '...';
   else
-     return inputString;
+    return inputString;
 }
 
 /**
@@ -70,8 +70,10 @@ import crashlytics from '@react-native-firebase/crashlytics';
  * @param {string} extraLoggingInfo Extra info that will be logged with the Crashlytics report(if enabled) and with console.log
  */
 export const logError = (error, includeCrashlytics = true, extraLoggingInfo) => {
-  if (extraLoggingInfo) console.log(extraLoggingInfo)
-  console.log(error)
+  if (extraLoggingInfo) prettyLog(extraLoggingInfo, { backgroundColor: "lightpink", textColor: "black" })
+  prettyLog(error, { backgroundColor: "lightpink", textColor: "black" })
+  //Just to get a clean stack to know what called logError (not useful in prod due to bundling and minimization)...
+  if (__DEV__) console.log((new Error()).stack)
   if (includeCrashlytics) {
     if (extraLoggingInfo) crashlytics().log(extraLoggingInfo)
     crashlytics().recordError(error)
@@ -108,8 +110,17 @@ export const getFullVersionInfo = async () => {
   }
 }
 
-export const colorLog = (msg, color) => {
-  console.log("%c" + msg, "color:" + color + ";font-weight:bold;");
+/**
+ * A way to console.log with some nice formatting options
+ * @param {*} msg The message
+ * @param {*} style {textColor, backgroundColor, fontSize}
+ */
+export const prettyLog = (msg, style = {}) => {
+  let styleString = ""
+  if (style.textColor) styleString += `color: ${style.textColor};`
+  if (style.backgroundColor) styleString += `background: ${style.backgroundColor};`
+  if (style.fontSize) styleString += `font-size: ${style.fontSize}px;`
+  console.log('%c%s', styleString, msg)
 }
 
 /**
@@ -165,7 +176,7 @@ export const shareFlare = async (flare) => {
       .once("value");
 
     if (!slugSnap.exists()) return
- 
+
     const slug = Object.keys(slugSnap.val())[0]
     const message = `Check out this flare and join me! ${links.PROJECT_FLARE_VIEWER}${slug}`
     Share.share({ message });

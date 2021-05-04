@@ -40,7 +40,7 @@ export default class MutualFriendsList extends React.Component {
           ItemSeparatorComponent={null}
           style={{ height: 130, alignSelf: "flex-start" }}
           showsHorizontalScrollIndicator={false}
-          emptyStateComponent = {() => null}
+          emptyStateComponent = {null}
           HeaderForHorizontal = {() => <SectionHeaderText>RECOMMENDED FRIENDS</SectionHeaderText>}
         />
       </View>

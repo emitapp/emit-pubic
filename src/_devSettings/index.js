@@ -28,7 +28,7 @@ export const _EMULATOR_IP = "http://localhost:5000"
 
 
 import { LogBox } from 'react-native'
-//TODO: investigate these warnings eventually
 LogBox.ignoreLogs([
-  'Require cycle:'
+  'Require cycle:', //TODO: investigate these warnings eventually
+  'Remote debugger is in a background tab' //Not needed if you use "Maintain Priority in debugger, but here anyway"
 ])
