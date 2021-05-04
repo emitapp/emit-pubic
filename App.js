@@ -3,13 +3,15 @@ import auth from '@react-native-firebase/auth';
 import crashlytics from '@react-native-firebase/crashlytics';
 import functions from '@react-native-firebase/functions';
 import messaging from '@react-native-firebase/messaging';
+import DevBuildBanner from 'dev/DevBuildBanner';
+import { _codepushEnabled } from 'dev/index';
 import React from 'react';
-import { StatusBar } from 'react-native';
+import { AppState, StatusBar } from 'react-native';
 import RNBootSplash from "react-native-bootsplash";
+import codePush from "react-native-code-push";
 import { ThemeProvider } from 'react-native-elements';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import ConnectionBanner from 'reusables/ConnectionStatusBanner';
-import DevBuildBanner from 'reusables/DevBuildBanner';
 import AccountSetUp from 'screens/Authentication/AccountSetUp';
 import AuthDecisionPage from 'screens/Authentication/AuthDecisionPage';
 import LandingPage from 'screens/Authentication/LandingPage';
@@ -17,16 +19,13 @@ import Login from 'screens/Authentication/Login';
 import PasswordReset from 'screens/Authentication/PasswordReset';
 import SignUp from 'screens/Authentication/SignUp';
 import MainTabNav from 'screens/MainTabNav';
+import AddProfilePic from 'screens/Onboarding/AddProfilePic';
 import CovidWarningPage from 'screens/Onboarding/CovidWarningPage';
 import SwiperOnboarding from 'screens/Onboarding/SwiperOnboarding';
-import AddProfilePic from 'screens/Onboarding/AddProfilePic';
 import MainTheme from 'styling/mainTheme';
-import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise, prettyLog } from 'utils/helpers';
-import NavigationService from 'utils/NavigationService';
-import codePush from "react-native-code-push";
-import { AppState } from "react-native";
 import { analyticsAppOpen, analyticsScreenVisit, setAnalyticsID } from 'utils/analyticsFunctions';
-import { _codepushEnabled, _shouldUseCloudFunctionEmulators, _EMULATOR_IP } from 'devsettings/index'
+import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
+import NavigationService from 'utils/NavigationService';
 
 export default class App extends React.Component {
 
@@ -40,13 +39,6 @@ export default class App extends React.Component {
   }
 
   componentDidMount = () => {
-    if (_shouldUseCloudFunctionEmulators()) {
-      prettyLog(
-        'Using Firebase Cloud Functions Emulator 👷🏾‍♂️',
-        { textColor: "black", backgroundColor: "orange", fontSize: 18 })
-      functions().useFunctionsEmulator(_EMULATOR_IP);
-    }
-
     //Don't unsubscribe, so that if the user is signed out 
     //(manually or automatically by Firebase), he is still rerouted
     auth().onAuthStateChanged(this.handleAuthChange)

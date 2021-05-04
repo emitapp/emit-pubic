@@ -9,7 +9,7 @@
             "styling/*": ["src/styling/*"],
             "utils/*": ["src/utils/*"],
             "media/*": ["src/media/*"],
-            "devsettings/*": ["src/_devSettings/*"]
+            "dev/*": ["src/_dev/*"]
         }
     },
     
