@@ -15,6 +15,8 @@ import ProfilePicCircle from 'reusables/ProfilePicComponents';
 import ErrorMessageText from 'reusables/ErrorMessageText';
 import { MinorActionButton } from 'reusables/ReusableButtons';
 import { checkAndGetPermissions } from 'utils/AppPermissions'
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import MainTheme from 'styling/mainTheme';
 
 const imagePickerOptions = {
   mediaType: 'photo'
@@ -72,41 +74,57 @@ export default class ProfilePicChanger extends Component {
           Note that your updated {this.props.groupPic ? "group" : "profile"} pic might take a few seconds to appear everywhere in the app
         </Text>}
 
-        {(!this.state.hasSuccessfullyPicked && !this.state.pickingImage) ? (
-          <ProfilePicCircle
-            diameter={styles.image.width}
-            uid={this.props.groupPic ? this.props.groupUid : auth().currentUser.uid}
-            groupPic={this.props.groupPic} />
-        ) : null}
+        <View style={{ alignItems: "center", justifyContent: "center" }}>
+          {(!this.state.hasSuccessfullyPicked && !this.state.pickingImage) ? (
+            <ProfilePicCircle
+              diameter={styles.image.width}
+              uid={this.props.groupPic ? this.props.groupUid : auth().currentUser.uid}
+              groupPic={this.props.groupPic} />
+          ) : null}
 
-        {this.state.pickingImage && (
-          <View style={{ ...styles.image, alignItems: "center", justifyContent: "center" }}>
-            <SmallLoadingComponent />
-          </View>
-        )}
-
-        {this.state.imageUri ? (
-          <Image
-            source={{ uri: this.state.imageUri }}
-            style={styles.image} />
-        ) : null}
-
-        <View style={styles.progressBarParent}>
-          <View style={{ ...styles.progressBar, width: `${this.state.uploadProgress}%` }} />
-        </View>
-
-        <View style={{ flexDirection: "row", justifyContent: "center", width: "100%", marginTop: 16 }}>
-          <Button
-            title="Change image"
-            onPress={() => this.setState({ modalVisible: true })}
-            disabled={this.state.uploading} />
+          {this.state.pickingImage && (
+            <View style={{ ...styles.image, alignItems: "center", justifyContent: "center" }}>
+              <SmallLoadingComponent />
+            </View>
+          )}
 
           {this.state.imageUri ? (
-            <Button
-              title={(this.state.uploading) ? "Uploading ..." : "Upload image"}
-              onPress={this.uploadImage}
-              disabled={this.state.uploading} />
+            <Image
+              source={{ uri: this.state.imageUri }}
+              style={styles.image} />
           ) : null}
+
+          <AnimatedCircularProgress
+            size={styles.image.width + 40}
+            width={15}
+            fill={this.state.uploadProgress}
+            tintColor="orange"
+            style={{ position: 'absolute', alignSelf: "center" }}
+            lineCap="round" />
+        </View>
+
+        <View style={{ justifyContent: "center", marginTop: 16 }}>
+
+
+          {this.state.imageUri ? (
+            <>
+              <Button
+                title={(this.state.uploading) ? "Uploading ..." : "Save"}
+                onPress={this.uploadImage}
+                disabled={this.state.uploading}
+                buttonStyle = {{backgroundColor: MainTheme.colors.bannerButtonGreen}} />
+
+              <MinorActionButton
+                title="Choose another image"
+                onPress={() => this.setState({ modalVisible: true })}
+                disabled={this.state.uploading} />
+            </>
+          ) : (
+            <Button
+              title="Change image"
+              onPress={() => this.setState({ modalVisible: true })}
+              disabled={this.state.uploading} />
+          )}
         </View>
 
       </View>
@@ -116,11 +134,11 @@ export default class ProfilePicChanger extends Component {
   //When choosing the image from the gallery
   pickImageFromGallery = async () => {
     try {
-      if (! await this.checkPermissions()){
+      if (! await this.checkPermissions()) {
         Alert.alert("Can't do that!", `We don't have enough permissions`);
         return
       }
-      
+
       this.setState({ pickingImage: true })
       launchImageLibrary(imagePickerOptions, response => {
         if (response.errorCode) {
@@ -239,17 +257,5 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     borderRadius: 100
-  },
-  progressBar: {
-    backgroundColor: 'deepskyblue',
-    height: 3,
-    borderRadius: 3,
-    marginHorizontal: 16,
-    marginTop: 8
-  },
-  progressBarParent: {
-    width: "100%",
-    paddingHorizontal: 16,
-    alignItems: "center"
   }
 });

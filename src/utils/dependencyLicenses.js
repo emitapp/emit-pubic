@@ -163,6 +163,12 @@ export default
         "licenseUrl": "https://github.com/react-native-community/react-native-camera/raw/master/LICENSE",
         "parents": "emit"
     },
+    "react-native-circular-progress@1.3.7": {
+        "licenses": "MIT",
+        "repository": "https://github.com/bgryszko/react-native-circular-progress",
+        "licenseUrl": "https://github.com/bgryszko/react-native-circular-progress/raw/master/LICENSE",
+        "parents": "emit"
+    },
     "react-native-code-push@6.4.1": {
         "licenses": "MIT",
         "repository": "https://github.com/microsoft/react-native-code-push",
