@@ -32,7 +32,6 @@ export default class ContactSupportPage extends React.Component {
 
         <View style={{ flexDirection: "row" }}>
           <View style={{ height: 150, width: 150 }}  >
-            {/* //TODO: FOr android: https://stackoverflow.com/questions/35594783/how-do-i-display-an-animated-gif-in-react-native */}
             <Image
               source={require('media/animations/hi-mango.gif')} 
               style={{ height: "100%", width: "100%" }} 
