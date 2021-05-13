@@ -112,7 +112,7 @@ export default class SearchHub extends React.Component {
 
   navigateSearchElement = (item) => {
     if (item.displayName) {   // if user
-      this.friendRequestModal.open(item)
+      this.friendRequestModal.openUsingSnippet(item)
     } else if (!item.isPublic) { // if a group the user is a part of
       this.props.navigation.navigate('GroupViewer', { group: item })
     } else { //Then its a public group

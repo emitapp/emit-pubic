@@ -73,7 +73,7 @@ export default class FriendReqBoxes extends React.Component {
     return (
       <UserSnippetListElement 
       snippet={item} 
-      onPress={() => this.modal.open(item)}
+      onPress={() => this.modal.openUsingSnippet(item)}
       extraComponents={<Text>Date sent: {epochToDateString(item.timestamp)}</Text>} />
     );
   }

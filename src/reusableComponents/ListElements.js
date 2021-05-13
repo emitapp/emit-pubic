@@ -49,7 +49,7 @@ export class UserSnippetListElement extends React.PureComponent {
  * Vertical ListView element component for viewing user snippets.
  * Required props: snippet (the snippet to display) (or uid) and onPress 
  * Gives the snipper to the onPress
- * Optional props: style, imageDiameter
+ * Optional props: style, imageDiameter, children
  */
 export class UserSnippetListElementVertical extends React.PureComponent {
   static defaultProps = {
@@ -102,6 +102,7 @@ export class UserSnippetListElementVertical extends React.PureComponent {
             <ProfilePicDisplayer diameter={this.props.imageDiameter} uid={snippet.uid} style={{ marginLeft: 8, marginRight: 8 }} />
             <Text style={{ fontSize: 16 }}>{truncate(snippet.displayName, 10)}</Text>
             <Text style={{ color: theme.colors.grey2, fontSize: 16 }}>@{truncate(snippet.username, 10)}</Text>
+            {this.props.children}
           </TouchableOpacity>
         )}
       </ThemeConsumer>

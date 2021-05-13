@@ -1,4 +1,4 @@
-//This file contains all the values that this client app uses that mirror
+//This file contains all the values and functions that this client app uses that mirror
 //values used on the server in either Cloud Functions or Security Rules
 
 export const cloudFunctionStatuses = {
@@ -21,7 +21,7 @@ import { isOnlyWhitespace } from 'utils/helpers'
 export const validUsername = (username, considerLength = true) => {
     const regexTest = RegExp(/^[a-z0-9_-]+$/) //This also takes care of strings that are just whitespace
     const normalizedUsername = username.normalize("NFKC").toLowerCase()
-    if (considerLength){
+    if (considerLength) {
         if (normalizedUsername.length > MAX_USERNAME_LENGTH) return false
     }
     return regexTest.test(normalizedUsername)
@@ -54,9 +54,16 @@ export const NotificationTypes = {
     NEW_FLARE: "newBroadcast",
     FLARE_RESPONSE: "broadcastResponse",
     NEW_FRIEND: "newFriend",
-    FRIEND_REQUEST:  "friendRequest",
+    FRIEND_REQUEST: "friendRequest",
     MANDATORY: "mandatory",
     NEW_GROUP: "newGroup",
     UNKOWN: "unset",
     CHAT: "chatMessage"
+}
+
+
+export const recommentationDocName = (user1Uid, user2Uid) => {
+    const first = user1Uid > user2Uid ? user1Uid : user2Uid
+    const second = first == user1Uid ? user2Uid : user1Uid
+    return first + "&&" + second
 }

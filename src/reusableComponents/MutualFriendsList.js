@@ -2,13 +2,12 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import React from 'react';
 import { View } from 'react-native';
-import { Text } from 'react-native-elements';
+import { Text, ThemeConsumer } from 'react-native-elements';
 import FirestoreDymanicInfiniteScroll from 'reusables/FirestoreDynamicInfiniteScroll';
 import S from 'styling';
 import FriendReqModal from '../screens/SocialSection/FriendReqModal';
 import { UserSnippetListElementVertical } from './ListElements';
 import SectionHeaderText from './SectionHeaderText';
-
 
 export default class MutualFriendsList extends React.Component {
 
@@ -38,10 +37,10 @@ export default class MutualFriendsList extends React.Component {
           chunkSize={10}
           horizontal={true}
           ItemSeparatorComponent={null}
-          style={{ height: 130, alignSelf: "flex-start" }}
+          style={{ height: 150, alignSelf: "flex-start" }}
           showsHorizontalScrollIndicator={false}
-          emptyStateComponent = {null}
-          HeaderForHorizontal = {() => <SectionHeaderText>RECOMMENDED FRIENDS</SectionHeaderText>}
+          emptyStateComponent={null}
+          HeaderForHorizontal={this.headerRenderer}
         />
       </View>
     )
@@ -50,11 +49,23 @@ export default class MutualFriendsList extends React.Component {
   itemRenderer = ({ item }) => {
     const uid = item.uids.filter(x => x != auth().currentUser.uid)[0]
     return (
-      <UserSnippetListElementVertical
-        uid={uid}
-        onPress = {(snippet) => this.modal.open(snippet)}
-        imageDiameter = {40}
-      />
+      <ThemeConsumer>
+        {({ theme }) => (
+          <UserSnippetListElementVertical
+            uid={uid}
+            onPress={(snippet) => this.modal.openUsingSnippet(snippet, item.mutualFriends)}
+            imageDiameter={40}
+            style={{ marginRight: 8 }}>
+            <Text style={{ color: theme.colors.grey2 }} >{item.mutualFriends.length} mutual friends</Text>
+          </UserSnippetListElementVertical>
+        )}
+      </ThemeConsumer>
     );
+  }
+
+  headerRenderer = () => {
+    return (
+      <SectionHeaderText>RECOMMENDED FRIENDS</SectionHeaderText>
+    )
   }
 }

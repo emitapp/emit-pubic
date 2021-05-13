@@ -62,7 +62,7 @@ export default class ContactsRecommendations extends React.Component {
               return (
                 <UserSnippetListElementVertical
                   snippet={item}
-                  onPress={() => this.modal.open(item)}
+                  onPress={() => this.modal.openUsingSnippet(item)}
                   imageDiameter={40} />
               )
             }} />

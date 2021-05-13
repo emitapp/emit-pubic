@@ -487,7 +487,7 @@ export default class GroupScreen extends React.Component {
     if (inEditMode && usersToBeRemoved[item.uid]) return null; //Stop rendering this user if he's queued for deletion
     return (
       <View style={{ width: "100%", flexDirection: "row", alignItems: "center" }}>
-        <UserSnippetListElement snippet={item} style={{ flex: 1 }} onPress={() => this.modal.open(item)} />
+        <UserSnippetListElement snippet={item} style={{ flex: 1 }} onPress={() => this.modal.openUsingSnippet(item)} />
         {(item.rank === groupRanks.ADMIN || this.state.usersToBePromoted[item.uid]) && !this.state.usersToBeDemoted[item.uid] &&
           <FontAwesomeIcon name="star" size={24} color="grey" style={{ marginHorizontal: 8 }} />
         }

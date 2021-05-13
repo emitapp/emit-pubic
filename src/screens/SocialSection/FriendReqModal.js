@@ -4,17 +4,14 @@ import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
-import { Dimensions, StyleSheet, View, Switch } from 'react-native';
+import { Dimensions, StyleSheet, Switch, View } from 'react-native';
 import { Button, Overlay, Text, ThemeConsumer } from 'react-native-elements';
 import { TimeoutLoadingComponent } from 'reusables/LoadingComponents';
-import { ProfilePicRaw } from 'reusables/ProfilePicComponents';
+import { ProfilePicList, ProfilePicRaw } from 'reusables/ProfilePicComponents';
 import { MinorActionButton } from 'reusables/ReusableButtons';
-import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
-import { isValidDBPath, cloudFunctionStatuses } from 'utils/serverValues';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import { Clipboard } from "react-native";
-import Snackbar from 'react-native-snackbar'
 import { analyticsFriendAction } from 'utils/analyticsFunctions';
+import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
+import { cloudFunctionStatuses, isValidDBPath, recommentationDocName } from 'utils/serverValues';
 
 /**
  * This is the standard dialogue for viewing a user if you want the user to 
@@ -53,8 +50,9 @@ class FriendReqDialogue extends React.Component {
             userSocials: null,
             subscribedInFirestore: false, //Has our user subcribed to this other user's flares?
             localToggleValue: true, //What's the actual value of the toggle
-            toggleShouldUseFirestoreValue: false, 
+            toggleShouldUseFirestoreValue: false,
             //^ Should the toggle be set to sync with the firestore value or not? see getToggleValue()
+            mutualFriends: this.props.mutualFriends,
         }
     }
 
@@ -109,6 +107,13 @@ class FriendReqDialogue extends React.Component {
                             </View>
                         }
 
+                        {(this.state.mutualFriends && this.state.mutualFriends.length > 0) &&
+                            <View style = {{height: 35, width: "100%", marginVertical: 10}}>
+                                <Text>Mutual Friends</Text>
+                                <ProfilePicList diameter={30} uids={this.state.mutualFriends} />
+                            </View>
+                        }
+
                         {this.state.extraMessage &&
                             <Text style={{ marginVertical: 8 }}>
                                 {this.state.extraMessage}
@@ -135,7 +140,7 @@ class FriendReqDialogue extends React.Component {
                         {userSocials !== null &&
                             <>
                                 <Text style={{ alignSelf: "flex-start" }}>Bio:</Text>
-                                
+
                             </>
                         }
 
@@ -223,14 +228,14 @@ class FriendReqDialogue extends React.Component {
             case friendActionOptions.ACCEPTREQ:
             case friendActionOptions.REJECTREQ:
             case friendActionOptions.NONE:
-                this.setState({toggleShouldUseFirestoreValue: false})
+                this.setState({ toggleShouldUseFirestoreValue: false })
                 break;
 
             case friendActionOptions.CANCELREQ:
             case friendActionOptions.REMOVE:
-                this.setState({toggleShouldUseFirestoreValue: true})
+                this.setState({ toggleShouldUseFirestoreValue: true })
                 break;
-            
+
         }
     }
 
@@ -239,12 +244,12 @@ class FriendReqDialogue extends React.Component {
     }
 
     setToggleValue = (value) => {
-        if (this.state.toggleShouldUseFirestoreValue){
+        if (this.state.toggleShouldUseFirestoreValue) {
             //you're probably setting the value optimistically, 
             //expecting that a pending update tp firesotre will succeed
-            this.setState({subscribedInFirestore: value}) 
-        }else{
-            this.setState({localToggleValue: value}) 
+            this.setState({ subscribedInFirestore: value })
+        } else {
+            this.setState({ localToggleValue: value })
         }
     }
 
@@ -364,8 +369,9 @@ class FriendReqDialogue extends React.Component {
             const outboxSnapshot = await timedPromise(outboxRef.once('value'), MEDIUM_TIMEOUT);
             if (outboxSnapshot.exists()) {
                 this.setState(
-                        { gettingInitialData: false, option: friendActionOptions.CANCELREQ },
-                        () => this.chooseToggleSyncState(friendActionOptions.CANCELREQ))
+                    { gettingInitialData: false, option: friendActionOptions.CANCELREQ },
+                    () => this.chooseToggleSyncState(friendActionOptions.CANCELREQ))
+                this.getMutualFriends()
                 return;
             }
 
@@ -374,12 +380,14 @@ class FriendReqDialogue extends React.Component {
             const inboxSnapshot = await timedPromise(inboxRef.once('value'), MEDIUM_TIMEOUT);
             if (inboxSnapshot.exists()) {
                 this.setState(
-                        { gettingInitialData: false, option: friendActionOptions.ACCEPTREQ },
-                        () => this.chooseToggleSyncState(friendActionOptions.ACCEPTREQ)) //REJECTREQ also accessible via this
+                    { gettingInitialData: false, option: friendActionOptions.ACCEPTREQ },
+                    () => this.chooseToggleSyncState(friendActionOptions.ACCEPTREQ)) //REJECTREQ also accessible via this
+                this.getMutualFriends()
             } else {
                 this.setState(
-                        { gettingInitialData: false, option: friendActionOptions.SENDREQ },
-                        () => this.chooseToggleSyncState(friendActionOptions.SENDREQ))
+                    { gettingInitialData: false, option: friendActionOptions.SENDREQ },
+                    () => this.chooseToggleSyncState(friendActionOptions.SENDREQ))
+                this.getMutualFriends()
             }
 
 
@@ -400,8 +408,8 @@ class FriendReqDialogue extends React.Component {
     performAction = async (actionToDo) => {
         this.setState({ waitingForFuncResponse: true })
         var callableFunction;
-        let args = { 
-            from: auth().currentUser.uid, 
+        let args = {
+            from: auth().currentUser.uid,
             to: this.userUid,
             subscribeToFlares: this.getToggleValue() //Not needed for all cloud funcs, but doesn't hurt to keep it in
         }
@@ -472,6 +480,22 @@ class FriendReqDialogue extends React.Component {
         this.chooseToggleSyncState(newOption)
         this.setState({ option: newOption })
     }
+
+    getMutualFriends = async () => {
+        if (this.state.mutualFriends) return;
+        try {
+            const uid1 = auth().currentUser.uid
+            const uid2 = this.userUid
+            const ref = firestore()
+                .collection("friendRecommendations")
+                .doc(recommentationDocName(uid1, uid2))
+            const doc = await ref.get()
+            if (!doc.exists) return
+            this.setState({ mutualFriends: doc.data().mutualFriends })
+        } catch (err) {
+            logError(err) //Silently log the error for now...
+        }
+    }
 }
 
 //This component can also be given the onClosed prop if 
@@ -483,7 +507,8 @@ export default class FriendReqModal extends React.Component {
         this.state = {
             isModalVisible: false,
             selectedUser: null,
-            selectedUserUid: null
+            selectedUserUid: null,
+            mutualFriends: null
         }
         this.canBeClosed = true;
     }
@@ -500,6 +525,7 @@ export default class FriendReqModal extends React.Component {
                 <FriendReqDialogue
                     selectedUserData={this.state.selectedUser}
                     userUid={this.state.selectedUserUid}
+                    mutualFriends = {this.state.mutualFriends}
                     closeFunction={this.attemptClose}
                     disableClosing={() => this.canBeClosed = false}
                     enableClosing={() => this.canBeClosed = true}
@@ -515,12 +541,21 @@ export default class FriendReqModal extends React.Component {
         }
     }
 
-    open = (user) => {
-        this.setState({ isModalVisible: true, selectedUser: user })
+    /**
+     * Use this if you already know the snippet of the user
+     * @param {*} snippet The snippet of the user
+     * @param {Array<string>} mutualFriends (optional) the mutual friends this person has with the user
+     */
+    openUsingSnippet = (snippet, mutualFriends = null) => {
+        this.setState({ isModalVisible: true, selectedUser: snippet, mutualFriends })
     }
 
+    /**
+     * Use this if you only know the uid of the user
+     * @param {*} uid The uid
+     */
     openUsingUid = (uid) => {
-        this.setState({ isModalVisible: true, selectedUserUid: uid })
+        this.setState({ isModalVisible: true, selectedUserUid: uid, mutualFriends: null })
     }
 }
 
@@ -531,7 +566,7 @@ export const friendActionOptions = {
     /**
      * If you can send a request to this person
      */
-    SENDREQ: 'Send Friend Request', 
+    SENDREQ: 'Send Friend Request',
 
     /**
      * If you can accept a friend request from this person
