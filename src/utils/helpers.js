@@ -89,6 +89,9 @@ export const ASYNC_SETUP_KEY = "accountSetUp";
 //Used to check if the user has been asked for their contacts permissions before
 export const ASKED_CONTACTS_PERMISSIONS = "askedForContacts";
 
+//Used to contacts caching
+export const CONTACTS_CACHE = "cachedContacts"
+
 
 import DeviceInfo from 'react-native-device-info';
 import { Platform } from 'react-native'

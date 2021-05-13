@@ -103,6 +103,12 @@ export default
         "licenseUrl": "https://github.com/tunoltd/emoji-mart-native/raw/master/LICENSE",
         "parents": "emit"
     },
+    "js-sha1@0.6.0": {
+        "licenses": "MIT",
+        "repository": "https://github.com/emn178/js-sha1",
+        "licenseUrl": "https://github.com/emn178/js-sha1/raw/master/LICENSE.txt",
+        "parents": "emit"
+    },
     "libphonenumber-js@1.9.13": {
         "licenses": "MIT",
         "repository": "git+https://gitlab.com/catamphetamine/libphonenumber-js",
@@ -253,7 +259,7 @@ export default
         "licenseUrl": "https://github.com/garganurag893/react-native-phone-number-input/raw/master/LICENSE.md",
         "parents": "emit"
     },
-    "react-native-push-notification@7.2.1": {
+    "react-native-push-notification@7.3.1": {
         "licenses": "MIT",
         "repository": "https://github.com:zo0r/react-native-push-notification",
         "licenseUrl": "https://github.com:zo0r/react-native-push-notification/raw/master/LICENSE",

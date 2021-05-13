@@ -5678,6 +5678,11 @@ jquery-extend@~2.0.3:
   resolved "https://registry.yarnpkg.com/jquery-extend/-/jquery-extend-2.0.3.tgz#6815cdb01a866ddba30e6f4d0fc5fb6679272735"
   integrity sha1-aBXNsBqGbdujDm9ND8X7ZnknJzU=
 
+js-sha1@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/js-sha1/-/js-sha1-0.6.0.tgz#adbee10f0e8e18aa07cdea807cf08e9183dbc7f9"
+  integrity sha512-01gwBFreYydzmU9BmZxpVk6svJJHrVxEN3IOiGl6VO93bVKYETJ0sIth6DASI6mIFdt7NmfX9UiByRzsYHGU9w==
+
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
@@ -7821,9 +7826,9 @@ react-native-phone-number-input@^2.0.0:
     react-native-country-picker-modal "^2.0.0"
 
 react-native-push-notification@^7.2.1:
-  version "7.2.1"
-  resolved "https://registry.yarnpkg.com/react-native-push-notification/-/react-native-push-notification-7.2.1.tgz#f532afa281601d33ebb5784e7078bedb8cc43352"
-  integrity sha512-LeMTXkIyMwoAXre98wujOqjEKN8U803z5EEc12C+sI9MoM3DQPpJJOXSVewodv1uICUsFae4N+CLHwlFw68afg==
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/react-native-push-notification/-/react-native-push-notification-7.3.1.tgz#1495feacd25169b998446dcf7b448a197ae5dca0"
+  integrity sha512-5kSKPvDU23uZRmzgKTsGhbwGNvB2tidu1VnInBHP53ZD0VEPSBl5fbpuTfHH98ED+Gp1SCcT2/e6bJWkIspKvg==
 
 react-native-qrcode-scanner@^1.5.1:
   version "1.5.1"
