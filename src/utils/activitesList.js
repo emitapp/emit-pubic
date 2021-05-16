@@ -3,7 +3,7 @@ export const getAllActivities = () => [
         sectionName: "Featured",
         data: [
             { emoji: "🧪", name: "COVID Test" },
-            { emoji: "🥳", name: "Online Party" },
+            { emoji: "🥳", name: "Party" },
             { emoji: "🟡", name: "Spikeball" },
             { emoji: "🥏", name: "Frisbee" }
         ]
