@@ -96,6 +96,8 @@ export const CONTACTS_CACHE = "cachedContacts"
 import DeviceInfo from 'react-native-device-info';
 import { Platform } from 'react-native'
 import codePush from 'react-native-code-push'
+import { _codepushEnabled } from 'dev/'
+
 /**
  * Gets the full versioning info of the app
  */
@@ -103,9 +105,15 @@ export const getFullVersionInfo = async () => {
   try {
     let versionInfo = DeviceInfo.getApplicationName()
     versionInfo += ` ${DeviceInfo.getSystemName()} v${DeviceInfo.getVersion()} (Build No.${DeviceInfo.getBuildNumber()})`
-    const codePushPackageInfo = await codePush.getUpdateMetadata()
-    if (codePushPackageInfo) versionInfo += ` Codepush Package ${codePushPackageInfo.label}`
-    else versionInfo += ` Using Base Binary`
+    
+    if (_codepushEnabled()){
+      const codePushPackageInfo = await codePush.getUpdateMetadata()
+      if (codePushPackageInfo) versionInfo += ` Codepush Package ${codePushPackageInfo.label}`
+      else versionInfo += ` Using Base Binary`
+    }else{
+      versionInfo += " Codepush Disabled."
+    }
+
     return versionInfo
   } catch (err) {
     logError(err)
@@ -167,7 +175,6 @@ import { Share } from 'react-native';
 import database from '@react-native-firebase/database';
 import { analyticsUserSharedFlare } from './analyticsFunctions'
 import * as links from "utils/LinksAndUris";
-
 /**
  * Allows users to share a flare using native UI
  */
