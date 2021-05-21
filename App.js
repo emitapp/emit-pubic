@@ -45,8 +45,8 @@ export default class App extends React.Component {
 
     //Fresh launch, look for and install codepush updates before removing launch screen.
     if (_codepushEnabled()) {
-      codePush.sync({ installMode: codePush.InstallMode.IMMEDIATE })
-        .catch(err => logError(err))
+      this.syncCodepush(LONG_TIMEOUT)
+        .catch(err => { if (err.name != "timeout") logError(err) })
         .finally(() => this.removeSplashScreen())
     } else {
       this.removeSplashScreen()
@@ -138,8 +138,8 @@ export default class App extends React.Component {
       _codepushEnabled()) {
 
       RNBootSplash.show({ fade: false })
-        .then(_ => codePush.sync({ installMode: codePush.InstallMode.IMMEDIATE }))
-        .catch(err => logError(err))
+        .then(_ => this.syncCodepush(LONG_TIMEOUT))
+        .catch(err => { if (err.name != "timeout") logError(err) })
         .finally(() => this.removeSplashScreen())
     }
 
@@ -151,6 +151,14 @@ export default class App extends React.Component {
 
     this.appState = nextAppState;
   };
+
+  //Codepush has this problem where if the user is connected to network but not internet
+  //The syncing just hangs...
+  //This times out to fix that, but //TODO: this may make it such that there can be a sudden
+  //codepush-induces JS bundle reset when the user is using the app and internet comes back (?)
+  syncCodepush = (timeoutInMillis) => {
+    return timedPromise(codePush.sync({ installMode: codePush.InstallMode.IMMEDIATE }), timeoutInMillis)
+  }
 }
 
 //Using a switch navigator 
