@@ -10,7 +10,12 @@
  * Returns false for emulators
  */
 export const _codepushEnabled = () => {
-  return (!__DEV__) && true //Codepush is disabled for emulators by defualt
+  //The variable below is altered via a script via awk for a yarn script
+  //This "AWK" comment below is the trigger
+  //AWK_LINE_BELOW:1
+  const masterSwitch = true;
+  //Codepush is disabled for emulators by defualt
+  return (!__DEV__) && masterSwitch;
 }
 
 

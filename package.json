@@ -7,6 +7,7 @@
     "androidQADebug": "react-native run-android --variant=qaDebug --appIdSuffix=qa",
     "androidAssembleDevRelease": "cd android && ./gradlew assembleDevRelease && cd ..",
     "androidAssembleQARelease": "cd android && ./gradlew assembleQaRelease && cd ..",
+    "androidAssembleQANoCP": "sh bash_scripts/buildQANoCodepush.sh",
     "androidClean": "cd android && ./gradlew clean && cd .. && yarn run env",
     "iosDevDebug": "sh bash_scripts/iosRunDevDebug.sh",
     "iosQADebug": "sh bash_scripts/iosRunQADebug.sh",
