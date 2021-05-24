@@ -1,18 +1,18 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { StyleSheet, View, SafeAreaView } from 'react-native';
-import { Overlay, Text } from 'react-native-elements';
+import { SafeAreaView, View } from 'react-native';
+import { Overlay } from 'react-native-elements';
+import Snackbar from 'react-native-snackbar';
+import ContactsRecommendations from 'reusables/ContactsRecommendationsList';
 import { RecipientListElement } from 'reusables/ListElements';
+import MutualFriendsList from 'reusables/MutualFriendsList';
+import { MinorActionButton } from 'reusables/ReusableButtons';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import FriendReqModal from 'screens/SocialSection/FriendReqModal';
+import { GroupJoinDialogue } from 'screens/SocialSection/UserGroups/GroupSearch';
+import mainTheme from 'styling/mainTheme';
 import SectionInfiniteScroll from '../../reusableComponents/SectionInfiniteScroll';
-import { GroupJoinDialogue } from 'screens/SocialSection/UserGroups/GroupSearch'
-import Snackbar from 'react-native-snackbar';
-import { MinorActionButton } from 'reusables/ReusableButtons';
-import mainTheme from 'styling/mainTheme'
-import ContactsRecommendations from 'reusables/ContactsRecommendationsList'
-import MutualFriendsList from 'reusables/MutualFriendsList'
 export default class SearchHub extends React.Component {
 
   constructor(props) {
@@ -20,7 +20,7 @@ export default class SearchHub extends React.Component {
 
     this.userUid = auth().currentUser.uid
     this.dbRef = [
-      { title: "YOUR GROUPS", ref: database().ref(`/userGroupMemberships/${this.userUid}`), orderBy: ["nameQuery"] },
+      { title: "GROUPS YOU'RE IN", ref: database().ref(`/userGroupMemberships/${this.userUid}`), orderBy: ["nameQuery"] },
       { title: "YOUR FRIENDS", ref: database().ref(`/userFriendGroupings/${this.userUid}/_masterSnippets`), orderBy: ["displayNameQuery", "usernameQuery"] },
       { title: "USERS", ref: database().ref("/userSnippets"), orderBy: ["displayNameQuery", "usernameQuery"] },
       { title: "PUBLIC GROUPS", ref: database().ref("/publicGroupSnippets"), orderBy: ["nameQuery"] }
@@ -34,7 +34,8 @@ export default class SearchHub extends React.Component {
       [{ text: "+ Invite Contacts", func: () => { this.props.navigation.navigate('InviteContacts') } }]
     ]
 
-    this.dbRefShortened = this.dbRef.slice(0, 2)
+    this.dbRefShortened = [this.dbRef[0], this.dbRef[3]]
+    this.footerButtonsShortened = [this.footerButtons[0]]
   }
 
 
@@ -83,7 +84,7 @@ export default class SearchHub extends React.Component {
                 renderItem={this.itemRenderer}
                 dbref={this.dbRefShortened}
                 onSectionData={null}
-                additionalData={this.footerButtons}
+                additionalData={this.footerButtonsShortened}
                 ListHeaderComponent={this.renderFriendRecommendations}
               />
             }
@@ -141,17 +142,3 @@ export default class SearchHub extends React.Component {
     )
   }
 }
-
-const styles = StyleSheet.create({
-  bottomBanner: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    height: 64,
-    paddingTop: 6,
-    paddingHorizontal: 10,
-    width: "100%",
-    borderTopWidth: 1,
-    borderColor: "lightgrey"
-  },
-})

@@ -1,6 +1,6 @@
 import functions from '@react-native-firebase/functions';
 import React from 'react';
-import { FlatList, View } from "react-native";
+import { FlatList, View, TouchableOpacity } from "react-native";
 import Contacts from 'react-native-contacts';
 import { Button, Text } from 'react-native-elements';
 import { PERMISSIONS } from 'react-native-permissions';
@@ -13,6 +13,8 @@ import FriendReqModal from '../screens/SocialSection/FriendReqModal';
 import SectionHeaderText from './SectionHeaderText';
 import AsyncStorage from '@react-native-community/async-storage';
 import sha1 from "js-sha1"
+import NavigationService from 'utils/NavigationService';
+
 export default class ContactsRecommendations extends React.Component {
 
   constructor(props) {
@@ -68,6 +70,10 @@ export default class ContactsRecommendations extends React.Component {
             }} />
         )}
 
+        {this.state.hasPermissions &&
+          <TouchableOpacity onPress={() => NavigationService.navigate("InviteContacts")}>
+            <Text style={{ fontSize: 16, marginTop: 8, marginBottom: 8, fontWeight: 'bold' }}>+ Invite Contacts</Text>
+          </TouchableOpacity>}
       </View>
     )
   }
@@ -120,12 +126,12 @@ export default class ContactsRecommendations extends React.Component {
     //First checking if there's even been a change in the contacts since last time this was done...
     //If there hasn't been, then just use the previous server response
     //Caches are only good for a few days
-    const data = JSON.stringify({phones: this.allContactPhoneNumbers, emails: this.allContactEmails})
+    const data = JSON.stringify({ phones: this.allContactPhoneNumbers, emails: this.allContactEmails })
     const hash = sha1(data)
     let cache = await AsyncStorage.getItem(CONTACTS_CACHE)
-    if (cache){
+    if (cache) {
       cache = JSON.parse(cache)
-      if (hash === cache.hash && Date.now() - cache.timestamp  < this.TWO_DAYS_MILLIS){
+      if (hash === cache.hash && Date.now() - cache.timestamp < this.TWO_DAYS_MILLIS) {
         this.setState({ suggestedContactFriends: cache.values })
         return
       }
@@ -138,10 +144,10 @@ export default class ContactsRecommendations extends React.Component {
         LONG_TIMEOUT);
 
       if (response.data.status === cloudFunctionStatuses.OK) {
-        const suggested = Object.values(response.data.message) 
+        const suggested = Object.values(response.data.message)
         this.setState({ suggestedContactFriends: suggested })
         //Saving to cache
-        await AsyncStorage.setItem(CONTACTS_CACHE, JSON.stringify({hash, values: suggested, timestamp: Date.now()}))
+        await AsyncStorage.setItem(CONTACTS_CACHE, JSON.stringify({ hash, values: suggested, timestamp: Date.now() }))
       } else {
         this.setState({ errorMessage: "Couldn't get recommended contacts" })
         logError(new Error(`Problematic getUsersFromContacts function response: ${response.data.message}`))

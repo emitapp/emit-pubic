@@ -38,6 +38,7 @@ export default class MutualFriendsList extends React.Component {
           horizontal={true}
           ItemSeparatorComponent={null}
           style={{ height: 150, alignSelf: "flex-start" }}
+          styleWhenEmpty={{height: 0}}
           showsHorizontalScrollIndicator={false}
           emptyStateComponent={null}
           HeaderForHorizontal={this.headerRenderer}

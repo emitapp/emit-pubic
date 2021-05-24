@@ -116,7 +116,7 @@ export class UserSnippetListElementVertical extends React.PureComponent {
       if (snippetSnapshot.exists()) {
         this.setState({ snippet: { ...snippetSnapshot.val(), uid: snippetSnapshot.key } })
       }
-    } catch (e) {
+    } catch (err) {
       if (err.name != "timeout") logError(err)
     }
   }

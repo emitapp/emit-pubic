@@ -26,6 +26,7 @@ import { logError } from 'utils/helpers'
 // errorHandler: what the component should do upon facing SDK errors (not timeout erros tho, those are handled by the compenent)
 // filter: A function by which the list will be filtered
 // HeaderForHorizontal: If your list is horizontal, then ListHeaderComponent will also render horizontally. If you won't want that, use this. Doesnt render if list is empty
+// styleWhenEmpty: What the style of the component should be when it has no data to show...
 
 // Also note that this compenent doesn't store lots of the variables it uses
 // in the state because this.setState() wouldn't update them immediately
@@ -210,7 +211,7 @@ export default class FirestoreDymanicInfiniteScroll extends React.Component {
                 )
             }
         } else {
-            let { style, HeaderForHorizontal, ...otherProps } = this.props
+            let { style, HeaderForHorizontal, styleWhenEmpty, ...otherProps } = this.props
             const data = this.props.filter ? this.listData.filter(this.props.filter) : this.listData
 
             //The content container can't have a flexgrow of 1 when there's content
@@ -222,7 +223,7 @@ export default class FirestoreDymanicInfiniteScroll extends React.Component {
             }
             
             return (
-                <View style={style}>
+                <View style={data.length == 0 ? styleWhenEmpty : style}>
                     <ErrorMessageText message={this.errorMessage} />
                     {data.length != 0 && (HeaderForHorizontal ? HeaderForHorizontal() : null)}
                     <FlatList

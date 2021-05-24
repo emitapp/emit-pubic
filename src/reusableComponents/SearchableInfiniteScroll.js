@@ -122,10 +122,11 @@ export default class SearchableInfiniteScroll extends React.Component {
   }
 
   search = () => {
-    analyticsLogSearch(this.state.searchBarValue)
+    const cleanedQuery = this.state.searchBarValue.trim()
+    analyticsLogSearch(cleanedQuery)
     if (this.props.queryValidator(this.state.searchBarValue)) {
       this.setState({
-        query: this.state.searchBarValue.toLowerCase(),
+        query: cleanedQuery.toLowerCase(),
         searchGeneration: this.state.searchGeneration + 1
       })
     } else {
