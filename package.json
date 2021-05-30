@@ -38,6 +38,7 @@
     "@react-native-firebase/perf": "^10.4.0",
     "@react-native-firebase/storage": "^10.4.0",
     "emoji-mart-native": "^0.6.2-beta",
+    "geofire-common": "^5.2.0",
     "js-sha1": "^0.6.0",
     "libphonenumber-js": "^1.9.13",
     "lottie-ios": "3.1.3",

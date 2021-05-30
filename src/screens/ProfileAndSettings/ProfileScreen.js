@@ -66,7 +66,7 @@ export default class SocialButtonHub extends React.Component {
                         <Button
                             icon={<OctIcon name="gear" size={40} color={theme.colors.primary} />}
                             containerStyle={{ position: 'absolute', top: 16, right: 16 }}
-                            onPress={() => this.props.navigation.navigate("SettingsStackNav")}
+                            onPress={() => this.props.navigation.navigate("SettingsMain")}
                             type="clear"
                         />
 

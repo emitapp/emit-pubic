@@ -9,16 +9,15 @@ import { logError } from 'utils/helpers';
  * This is a reusable component that displays profile pictues
  * Required props: `uid` (uid of the user/group to display) and `diameter`
  * Be sure that it is given a proper uid by the time it enters the DOM
- * Optional prop: groupPic (boolean)
+ * Optional prop: groupPic (boolean), onUrlGotten, url (you can also give it a url to display)
  */
 export default class ProfilePicCircle extends React.PureComponent {
 
     render() {
-        const { uid, diameter, style, ...otherProps } = this.props
+        const { diameter, style, ...otherProps } = this.props
         return (
             <ProfilePicRaw
                 style={{ width: diameter, height: diameter, borderRadius: diameter / 2, ...style }}
-                uid={uid}
                 ref={ref => this.picComponent = ref}
                 {...otherProps}
             />
@@ -78,17 +77,20 @@ export class ProfilePicList extends React.PureComponent {
 export class ProfilePicRaw extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { downloadUrl: '' };
+        this.state = { downloadUrl: this.props.url || '' };
         this._isMounted = false; //Using this is an antipattern, but simple enough for now
     }
+    
     componentDidMount() {
-        if (!this.props.uid) return;
+        if (!this.props.uid && !this.props.url) return;
         this._isMounted = true;
-        this.getURL();
+        if (!this.props.url) this.getURL();
     }
+
     componentWillUnmount() {
         this._isMounted = false;
     }
+
     render() {
         const { style, ...otherProps } = this.props
         if (!this.state.downloadUrl) {
@@ -112,21 +114,22 @@ export class ProfilePicRaw extends React.Component {
                 />)
         }
     }
+
     getURL = async () => {
         try {
             const listResult = this.props.groupPic ?
                 await storage().ref(`groupPictures/${this.props.uid}/scaled/`).list() :
                 await storage().ref(`profilePictures/${this.props.uid}/scaled/`).list()
-
-
             if (this._isMounted && listResult._items[0]) {
                 const downloadUrl = await listResult._items[0].getDownloadURL()
                 if (this._isMounted) this.setState({ downloadUrl })
+                if (this.props.onUrlGotten) this.props.onUrlGotten(downloadUrl)
             }
         } catch (err) {
             logError(err)
         }
     }
+
     refresh = () => {
         this.setState({ downloadUrl: '' }, this.getURL)
     }

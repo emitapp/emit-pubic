@@ -8,7 +8,7 @@ import EmptyState from 'reusables/EmptyState';
 import {UserSnippetListElement} from 'reusables/ListElements';
 import S from 'styling';
 import { epochToDateString } from 'utils/helpers';
-import FriendReqModal from './FriendReqModal';
+import FriendReqModal from '../SocialSection/FriendReqModal';
 import ErrorMessageText from 'reusables/ErrorMessageText';
 
 

@@ -2,37 +2,6 @@ import React from "react"
 import ScrollingText from "reusables/HorizontalScrollingText"
 import { Text, View } from 'react-native'
 import MainTheme from 'styling/mainTheme'
-import ProfilePicDisplayer from 'reusables/ProfilePicComponents'
-import NavigationService from 'utils/NavigationService';
-import auth from "@react-native-firebase/auth"
-import { TouchableOpacity } from "react-native-gesture-handler"
-import { subscribeToEvent, unsubscribeToEvent, events } from 'utils/subcriptionEvents'
-
-class HeaderProfilePicAndSearch extends React.PureComponent {
-
-    componentDidMount() {
-        subscribeToEvent(events.PROFILE_PIC_CHNAGE, this, () => this.pictureComponet.refresh())
-    }
-
-    componentWillUnmount() {
-        unsubscribeToEvent(events.PROFILE_PIC_CHNAGE, this)
-    }
-
-    render() {
-        return (
-            <View style={{ position: "absolute", top: 0, right: 0, flexDirection: "row" }}>
-                <TouchableOpacity onPress={() => NavigationService.navigate("SocialButtonHub")}>
-                    <ProfilePicDisplayer
-                        diameter={36}
-                        uid={auth().currentUser.uid}
-                        style={{ marginLeft: 10 }}
-                        ref={ref => this.pictureComponet = ref}
-                    />
-                </TouchableOpacity>
-            </View>
-        )
-    }
-}
 
 export default function StandardHeader(title) {
     return {
@@ -44,19 +13,11 @@ export default function StandardHeader(title) {
             return (
                 <View style={{ flexDirection: "row", alignItems: "flex-end", marginHorizontal: 10 }}>
                     <Text style={{ ...textStyle, flex: 1 }}> {title} </Text>
-                    <HeaderProfilePicAndSearch />
                 </View>
             )
         },
         headerStyle: {
             backgroundColor: MainTheme.colors.primary,
-            ...Platform.select({
-                ios: {
-                    height: 58
-                },
-                default: {
-                }
-            })
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -100,19 +61,11 @@ export function ScrollingHeader(title) {
                         textStyle={{ ...textStyle, minWidth: "100%" }}>
                         {title}
                     </ScrollingText>
-                    <HeaderProfilePicAndSearch />
                 </View>
             )
         },
         headerStyle: {
             backgroundColor: MainTheme.colors.primary,
-            ...Platform.select({
-                ios: {
-                    height: 58
-                },
-                default: {
-                }
-            })
         },
         headerBackTitle: null,
         headerTintColor: '#fff',

@@ -2,7 +2,7 @@ import auth from '@react-native-firebase/auth';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
-import { Button, Input, Text, ThemeConsumer } from 'react-native-elements';
+import { Button, Input, Text, ThemeConsumer, CheckBox } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { withNavigation } from 'react-navigation';
@@ -47,6 +47,7 @@ class NewBroadcastForm extends React.Component {
       maxResponders: "",
       isModalVisible: false,
       errorMessage: null,
+      isPublicFlare: false,
     }
   }
 
@@ -71,6 +72,7 @@ class NewBroadcastForm extends React.Component {
   }
 
   render() {
+    const { passableBroadcastInfo: flareInfo } = this.state
     return (
       <ThemeConsumer>
         {({ theme }) => (
@@ -96,37 +98,63 @@ class NewBroadcastForm extends React.Component {
                 <FormInput
                   onPress={() => this.props.navigation.navigate("NewBroadcastFormActivity", this.passableBroadcastInfo)}
                   placeholder="Select an activity">
-                  <Text style={{ fontSize: 18 }}>{this.state.passableBroadcastInfo.emojiSelected}</Text>
-                  {this.state.passableBroadcastInfo.activitySelected && <Text> </Text>}
-                  <Text style={{ fontSize: 18 }} >{this.state.passableBroadcastInfo.activitySelected}</Text>
+                  <Text style={{ fontSize: 18 }}>{flareInfo.emojiSelected}</Text>
+                  {flareInfo.activitySelected && <Text> </Text>}
+                  <Text style={{ fontSize: 18 }} >{flareInfo.activitySelected}</Text>
                 </FormInput>
 
-                <FormSubtitle title="Who" />
+                <View style={{ marginLeft: 24, marginBottom: 8 }}>
+                  <CheckBox
+                    title='Public Flare'
+                    fontFamily="NunitoSans-Regular"
+                    textStyle={{ fontSize: 16, fontWeight: "bold", color: "white" }}
+                    checked={this.state.isPublicFlare}
+                    containerStyle={{ alignSelf: "flex-start", padding: 0, marginBottom: 0 }}
+                    onIconPress={() => this.setState({ isPublicFlare: !this.state.isPublicFlare })}
+                    checkedColor="white"
+                    uncheckedColor="white"
+                  />
 
-                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8, marginLeft: 10 }}>
-                  <View style={{ justifyContent: "center", maxWidth: "85%" }}>
-                    <ProfilePicList
-                      uids={Object.keys(this.state.passableBroadcastInfo.recepientFriends)}
-                      groupUids={Object.keys(this.state.passableBroadcastInfo.recepientGroups)}
-                      diameter={36}
-                      style={{ marginLeft: 0, marginRight: 2 }}
-                    />
-                  </View>
-                  <TouchableOpacity style={{ justifyContent: "center" }} onPress={() => {
-                    return this.props.navigation.navigate("NewBroadcastFormRecepients",
-                      { data: this.state.passableBroadcastInfo })
-                  }}>
-                    <Icon style={{ marginTop: -3 }} size={44} color="white" name="add-circle-outline"></Icon>
-                  </TouchableOpacity>
+                  <Text style={{ color: "white" }}>
+                    Public flares are visible to all nearby Emit users.
+                  </Text>
                 </View>
+
+
+                {!this.state.isPublicFlare &&
+                  <>
+                    <FormSubtitle title="Who" />
+
+                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8, marginLeft: 10 }}>
+                      <View style={{ justifyContent: "center", maxWidth: "85%" }}>
+                        <ProfilePicList
+                          uids={Object.keys(flareInfo.recepientFriends)}
+                          groupUids={Object.keys(flareInfo.recepientGroups)}
+                          diameter={36}
+                          style={{ marginLeft: 0, marginRight: 2 }}
+                        />
+                      </View>
+                      <TouchableOpacity style={{ justifyContent: "center" }} onPress={() => {
+                        return this.props.navigation.navigate("NewBroadcastFormRecepients",
+                          { data: flareInfo })
+                      }}>
+                        <Icon style={{ marginTop: -3 }} size={44} color="white" name="add-circle-outline"></Icon>
+                      </TouchableOpacity>
+                    </View>
+                  </>
+                }
+
+
+                {this.state.isPublicFlare &&
+                  this.displayLocationOption(flareInfo)}
 
 
                 <FormSubtitle title="When" />
 
                 <FormInput
                   onPress={() => this.props.navigation.navigate("NewBroadcastFormTime", this.passableBroadcastInfo)}
-                  value={this.state.passableBroadcastInfo.startingTimeText}
-                  errorMessage={this.state.passableBroadcastInfo.duration ? "" : "By default your flares will last 1 hour after they're sent."}
+                  value={flareInfo.startingTimeText}
+                  errorMessage={flareInfo.duration ? "" : "By default your flares will last 1 hour after they're sent."}
                   errorStyle={{ color: "white" }}
                 />
 
@@ -138,11 +166,11 @@ class NewBroadcastForm extends React.Component {
                   numberOfLines={4}
                   inputContainerStyle={{ backgroundColor: "white" }}
                   placeholder="Enter any extra information you want in here"
-                  value={this.state.passableBroadcastInfo.note}
+                  value={flareInfo.note}
                   onChangeText={(note) => {
-                    this.setState({ passableBroadcastInfo: {...this.state.passableBroadcastInfo, note} })
+                    this.setState({ passableBroadcastInfo: { ...flareInfo, note } })
                   }}
-                  errorMessage={this.state.passableBroadcastInfo.note.length > MAX_BROADCAST_NOTE_LENGTH ? "Too long" : undefined}
+                  errorMessage={flareInfo.note.length > MAX_BROADCAST_NOTE_LENGTH ? "Too long" : undefined}
                 />
 
                 {this.state.showingMore &&
@@ -152,19 +180,11 @@ class NewBroadcastForm extends React.Component {
 
                     <FormInput
                       onPress={() => this.props.navigation.navigate("NewBroadcastFormDuration", this.passableBroadcastInfo)}
-                      value={this.state.passableBroadcastInfo.durationText}
+                      value={flareInfo.durationText}
                     />
 
-                    <FormSubtitle title="Place" />
-
-                    <FormInput
-                      onPress={() => this.props.navigation.navigate("NewBroadcastFormLocation", this.passableBroadcastInfo)}
-                      placeholder="Where are you going?"
-                      value={this.state.passableBroadcastInfo.location}
-                      icon={this.state.passableBroadcastInfo.geolocation ?
-                        <Icon name="location-on" size={20} color="white" />
-                        : null}
-                    />
+                    {!this.state.isPublicFlare &&
+                      this.displayLocationOption(flareInfo)}
 
                     <FormSubtitle title="Max Responders" />
 
@@ -245,19 +265,34 @@ class NewBroadcastForm extends React.Component {
 
             <BannerButton
               color="white"
-              onPress={this.sendBroadcast}
+              onPress={this.sendFlare}
               contentColor={theme.colors.primary}
               iconName={S.strings.sendBroadcast}
-              title="SEND"
-            />
+              title="SEND" />
+
           </MainLinearGradient>
         )}
       </ThemeConsumer>
     )
   }
 
-  sendBroadcast = () => {
-    this.createBroadcast()
+  displayLocationOption = (flareInfo) => {
+    return (
+      <>
+        <FormSubtitle title="Place" />
+        <FormInput
+          onPress={() => this.props.navigation.navigate("NewBroadcastFormLocation", {
+            bundle: this.passableBroadcastInfo,
+            isPublicFlare: this.state.isPublicFlare
+          })}
+          placeholder="Where are you going?"
+          value={flareInfo.location}
+          icon={flareInfo.geolocation ?
+            <Icon name="location-on" size={20} color="white" />
+            : null}
+        />
+      </>
+    )
   }
 
   setPredefinedMaxResponders = (max) => {
@@ -267,76 +302,66 @@ class NewBroadcastForm extends React.Component {
     })
   }
 
-  createBroadcast = async () => {
+
+  sendFlare = () => {
+    if (!this.checkForBasicFlareValidity()) return
+    this.createFlare()
+  }
+
+  checkForBasicFlareValidity = () => {
+    const { passableBroadcastInfo: flareInfo } = this.state
+
+    if (isOnlyWhitespace(flareInfo.activitySelected) || isOnlyWhitespace(flareInfo.emojiSelected)) {
+      this.setState({ errorMessage: "Invalid activity" })
+      return false
+    }
+
+    if (flareInfo.note.length > MAX_BROADCAST_NOTE_LENGTH) {
+      this.setState({ errorMessage: "Broadcast note too long" })
+      return false
+    }
+
+    if (this.state.customMaxResponders && !/^\d+$/.test(this.state.maxResponders)) {
+      this.setState({ errorMessage: "Invalid max responder limit" })
+      return false
+    }
+
+    if (this.state.isPublicFlare && !flareInfo.geolocation){
+      this.setState({ errorMessage: "Public flares need geolocation!" })
+      return false
+    }
+
+    return true
+  }
+
+  //Assumes checkForBasicFlareValidity has been run
+  createFlare = async () => {
     try {
       this.setState({ isModalVisible: true, errorMessage: null })
       const uid = auth().currentUser.uid
+      const { isPublicFlare, passableBroadcastInfo: flareInfo } = this.state
 
-      if (isOnlyWhitespace(this.state.passableBroadcastInfo.activitySelected) ||
-        isOnlyWhitespace(this.state.passableBroadcastInfo.emojiSelected)) {
-        this.setState({ errorMessage: "Invalid activity", isModalVisible: false })
-        return
-      }
-
-      if (this.state.passableBroadcastInfo.note.length > MAX_BROADCAST_NOTE_LENGTH) {
-        this.setState({ errorMessage: "Broadcast note too long", isModalVisible: false })
-        return
-      }
-
-      if (this.state.customMaxResponders && !/^\d+$/.test(this.state.maxResponders)) {
-        this.setState({ errorMessage: "Invalid max responder limit", isModalVisible: false })
-        return
-      }
-
-      //Getting the uid's of all my recepients
-      const friendRecepients = {}
-      const maskRecepients = {}
-      const groupRecepients = {}
-
-      for (const key in this.state.passableBroadcastInfo.recepientFriends) {
-        friendRecepients[key] = true
-      }
-      for (const key in this.state.passableBroadcastInfo.recepientMasks) {
-        maskRecepients[key] = true
-      }
-      for (const key in this.state.passableBroadcastInfo.recepientGroups) {
-        groupRecepients[key] = true
-      }
-
-      if (!this.state.passableBroadcastInfo.allFriends
-        && Object.keys(friendRecepients).length == 0
-        && Object.keys(maskRecepients).length == 0
-        && Object.keys(groupRecepients).length == 0) {
-        this.setState({
-          errorMessage: "This broadcast has no receivers it can be sent to",
-          isModalVisible: false
-        })
-        return
-      }
-
-      const creationFunction = functions().httpsCallable('createActiveBroadcast');
       let params = {
         ownerUid: uid,
-        activity: this.state.passableBroadcastInfo.activitySelected,
-        emoji: this.state.passableBroadcastInfo.emojiSelected,
-        location: this.state.passableBroadcastInfo.location,
-        startingTime: this.state.passableBroadcastInfo.startingTime,
-        startingTimeRelative: this.state.passableBroadcastInfo.startingTimeRelative,
-        duration: this.state.passableBroadcastInfo.duration || 1000 * 60 * 60,
+        activity: flareInfo.activitySelected,
+        emoji: flareInfo.emojiSelected,
+        location: flareInfo.location,
+        startingTime: flareInfo.startingTime,
+        startingTimeRelative: flareInfo.startingTimeRelative,
+        duration: flareInfo.duration || 1000 * 60 * 60,
         maxResponders: this.state.maxResponders ? parseInt(this.state.maxResponders) : null,
-        allFriends: this.state.passableBroadcastInfo.allFriends,
-        friendRecepients,
-        groupRecepients,
       }
 
-      if (this.state.passableBroadcastInfo.geolocation)
-        params.geolocation = this.state.passableBroadcastInfo.geolocation
-      if (this.state.passableBroadcastInfo.note)
-        params.note = this.state.passableBroadcastInfo.note
+      if (!isPublicFlare && !this.addRecepientInformation(params)) return;
+      if (flareInfo.geolocation) params.geolocation = flareInfo.geolocation
+      if (flareInfo.note) params.note = flareInfo.note
 
+      const creationFunction = functions().httpsCallable(isPublicFlare ? "createPublicFlare" : 'createActiveBroadcast');
       const response = await timedPromise(creationFunction(params), LONG_TIMEOUT);
+
       if (response.data.status === cloudFunctionStatuses.OK) {
-        if (response.data.message) analyticsLogFlareCreation(response.data.message.flareUid, auth().currentUser.uid)
+        //For now this is just for private flares...
+        if (response.data.message && !isPublicFlare) analyticsLogFlareCreation(response.data.message.flareUid, auth().currentUser.uid)
         this.props.navigation.state.params.needUserConfirmation = false;
         this.props.navigation.goBack()
       } else {
@@ -352,6 +377,41 @@ class NewBroadcastForm extends React.Component {
       }
     }
     this.setState({ isModalVisible: false })
+  }
+
+  /**
+   * Adds recepient information to the flare args
+   * @param {*} params The object containing the args for the cloud function
+   * @returns Returns false if there was an error in doing this...
+   */
+  addRecepientInformation = (params) => {
+    const { passableBroadcastInfo: flareInfo } = this.state
+
+    //Getting the uid's of all my recepients
+    const friendRecepients = {}
+    const groupRecepients = {}
+    //const maskRecepients = {}
+
+    for (const key in flareInfo.recepientFriends) friendRecepients[key] = true
+    for (const key in flareInfo.recepientGroups) groupRecepients[key] = true
+    // for (const key in flareInfo.recepientMasks) maskRecepients[key] = true
+
+    if (!flareInfo.allFriends
+      && Object.keys(friendRecepients).length == 0
+      //&& Object.keys(maskRecepients).length == 0
+      && Object.keys(groupRecepients).length == 0) {
+      this.setState({
+        errorMessage: "This broadcast has no receivers it can be sent to",
+        isModalVisible: false
+      })
+      return false
+    }
+
+    params.allFriends = this.state.allFriends
+    params.friendRecepients = friendRecepients
+    params.groupRecepients = groupRecepients
+
+    return true
   }
 }
 
@@ -389,7 +449,7 @@ class FormSubtitle extends React.PureComponent {
       <Text style={{
         fontFamily: "NunitoSans-Bold",
         marginBottom: 4,
-        marginTop: 8,
+        marginTop: 4,
         marginLeft: 10,
         fontSize: 22,
         color: "white",

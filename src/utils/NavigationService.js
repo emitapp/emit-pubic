@@ -17,6 +17,15 @@ function navigate(routeName, params) {
   );
 }
 
+function push(routeName, params) {
+  _navigator.dispatch(
+    StackActions.push({
+      routeName,
+      params
+    })
+  );
+}
+
 /**
  * 
  * First navigates to a specified StackNavigator routeName, and replaces the navigation state with a
@@ -50,5 +59,6 @@ export default {
   navigate,
   setTopLevelNavigator,
   dispatch,
-  reset
+  reset,
+  push
 };

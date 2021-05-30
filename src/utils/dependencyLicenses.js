@@ -103,6 +103,12 @@ export default
         "licenseUrl": "https://github.com/tunoltd/emoji-mart-native/raw/master/LICENSE",
         "parents": "emit"
     },
+    "geofire-common@5.2.0": {
+        "licenses": "MIT",
+        "repository": "https://github.com/firebase/geofire-js",
+        "licenseUrl": "https://github.com/firebase/geofire-js",
+        "parents": "emit"
+    },
     "js-sha1@0.6.0": {
         "licenses": "MIT",
         "repository": "https://github.com/emn178/js-sha1",

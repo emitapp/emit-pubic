@@ -9,11 +9,12 @@ import { RecipientListElement } from 'reusables/ListElements';
 import MutualFriendsList from 'reusables/MutualFriendsList';
 import { MinorActionButton } from 'reusables/ReusableButtons';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
+import SectionInfiniteScroll from 'reusables/SectionInfiniteScroll'
 import FriendReqModal from 'screens/SocialSection/FriendReqModal';
-import { GroupJoinDialogue } from 'screens/SocialSection/UserGroups/GroupSearch';
 import mainTheme from 'styling/mainTheme';
-import SectionInfiniteScroll from '../../reusableComponents/SectionInfiniteScroll';
-export default class SearchHub extends React.Component {
+import GroupJoinDialogue from 'screens/SocialSection/UserGroups/GroupJoinDialogue'
+
+export default class ExplorePage extends React.Component {
 
   constructor(props) {
     super(props)
@@ -77,7 +78,7 @@ export default class SearchHub extends React.Component {
             renderItem={this.itemRenderer}
             dbref={this.dbRef}
             additionalData={this.footerButtons}
-            searchbarPlaceholder="Search"
+            searchbarPlaceholder="Search for Users, Friends and Groups"
             sectionSorter={(a, b) => a.data.length > b.data.length ? -1 : 1}
             parentEmptyStateComponent={
               <SectionInfiniteScroll

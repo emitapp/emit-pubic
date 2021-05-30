@@ -2,6 +2,7 @@
 // This is also the screen that enables FCM because it can only be accessed
 // if the user is signed in
 import AsyncStorage from '@react-native-community/async-storage';
+import auth from "@react-native-firebase/auth";
 import functions from '@react-native-firebase/functions';
 import messaging from '@react-native-firebase/messaging';
 import React from 'react';
@@ -11,14 +12,18 @@ import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import { StackActions } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import CircularView from 'reusables/CircularView';
+import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
 import MainTheme from 'styling/mainTheme';
 import { handleFCMDeletion, handleFCMMessage, handleNotificationOpened } from 'utils/fcmNotificationHandlers';
 import { ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import NavigationService from 'utils/NavigationService';
 import { cloudFunctionStatuses } from 'utils/serverValues';
-import ExploreStackNav from "./ExploreSection/ExploreStackNav";
+import { events, subscribeToEvent, unsubscribeToEvent } from 'utils/subcriptionEvents';
+
+import ExploreStackNav from "./SocialSection/SocialSectionStackNav";
 import FeedStackNav from './FeedSection/FeedStackNav';
-import SettingsStackNav from "./Settings/SettingsStackNav";
+import ProfileAndSettingsStackNav from "./ProfileAndSettings/ProfileAndSettingsStackNav";
+import FlareMap from './FlareMap/FlareMap'
 
 
 const renderTab = (props, targetRouteName, iconName) => {
@@ -39,7 +44,7 @@ const renderTab = (props, targetRouteName, iconName) => {
       }>
 
       <View style={{ alignItems: "center", justifyContent: "center", marginTop: 6 }}>
-        <AwesomeIcon name={iconName} size={30} color={tintColor} />
+        <AwesomeIcon name={iconName} size={25} color={tintColor} />
       </View>
       {focused && <View style={{
         position: "absolute", bottom: 0,
@@ -61,11 +66,53 @@ const renderTab = (props, targetRouteName, iconName) => {
   )
 }
 
+const renderProfileTab = (props, targetRouteName) => {
+  const focused = props.navigation.state.routes[props.navigation.state.index].routeName == targetRouteName
+  return (
+    <TouchableOpacity
+      style={{
+        height: "100%", width: "100%",
+        justifyContent: "flex-start", alignItems: "center", flex: 1,
+      }}
+      onPress={() => {
+        {
+          focused ? props.navigation.dispatch(StackActions.popToTop()) :
+            props.navigation.navigate(targetRouteName);
+        }
+      }
+      }>
+
+      <View style={{ marginTop: 4 }}>
+        <TabBarProfilePic focused={focused} color={props.activeTintColor} />
+      </View>
+
+      {focused && <View style={{
+        position: "absolute", bottom: 0,
+        height: 5,
+        backgroundColor: props.activeTintColor,
+        borderTopEndRadius: 8,
+        borderTopStartRadius: 8,
+        ...Platform.select({
+          ios: {
+            width: 80
+          },
+          default: {
+            width: 40
+          }
+        })
+
+      }} />}
+    </TouchableOpacity>
+  )
+}
+
+
 const Tab = createBottomTabNavigator(
   {
     FeedStackNav,
     ExploreStackNav,
-    SettingsStackNav,
+    ProfileAndSettingsStackNav,
+    FlareMap
   },
   {
     defaultNavigationOptions: ({ navigation }) =>
@@ -252,9 +299,12 @@ class TabBarComponent extends React.PureComponent {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
+        {renderTab(otherProps, "FlareMap", "map-marker-alt")}
         {renderTab(otherProps, "FeedStackNav", "fire")}
         <FlareCreationButton />
         {renderTab(otherProps, "ExploreStackNav", "globe-americas")}
+        {renderProfileTab(otherProps, "ProfileAndSettingsStackNav")}
+
       </View>)
   }
 }
@@ -286,6 +336,7 @@ class FlareCreationButton extends React.PureComponent {
       <Pressable
         style={{
           alignSelf: "flex-end",
+          marginHorizontal: 4,
           ...Platform.select({
             ios: {
               marginBottom: 20
@@ -300,19 +351,56 @@ class FlareCreationButton extends React.PureComponent {
         android_ripple={{ color: MainTheme.colors.primary, borderless: true }}
       >
         <CircularView
-          style={{ backgroundColor: pressedDown ? this.pressedColors.outerBorder : this.unpressedColors.outerBorder }} diameter={60} >
+          style={{ backgroundColor: pressedDown ? this.pressedColors.outerBorder : this.unpressedColors.outerBorder }} diameter={55} >
           {/** 
          * // TODO: Link back to MainTheme
          **/}
-          <CircularView style={{ backgroundColor: pressedDown ? this.pressedColors.innerBorder : this.unpressedColors.innerBorder }} diameter={55} >
-            <CircularView style={{ backgroundColor: pressedDown ? this.pressedColors.innerCircle : this.unpressedColors.innerCircle }} diameter={45} >
+          <CircularView style={{ backgroundColor: pressedDown ? this.pressedColors.innerBorder : this.unpressedColors.innerBorder }} diameter={50} >
+            <CircularView style={{ backgroundColor: pressedDown ? this.pressedColors.innerCircle : this.unpressedColors.innerCircle }} diameter={40} >
               <View style={{ alignItems: "center", justifyContent: "center" }}>
-                <AwesomeIcon name="plus" size={30} color={pressedDown ? this.pressedColors.iconColor : this.unpressedColors.iconColor} />
+                <AwesomeIcon name="plus" size={30} color={pressedDown ? this.pressedColors.iconColor : this.unpressedColors.iconColor} light />
               </View>
             </CircularView>
           </CircularView>
         </CircularView>
       </Pressable>
+    )
+  }
+}
+
+//This has been designed to only get the URL once, and 
+//subsequent instances won't redownload it.
+//This was done becuase tab bar elements are completely
+//killed and reinstantiated with every navigation, 
+//so the profile pic kept on flashing
+class TabBarProfilePic extends React.PureComponent {
+
+  static url = null
+
+  componentDidMount() {
+    subscribeToEvent(events.PROFILE_PIC_CHNAGE, this, () => {
+      TabBarProfilePic.url = null
+      this.pictureComponet.refresh()
+    })
+  }
+
+  componentWillUnmount() {
+    unsubscribeToEvent(events.PROFILE_PIC_CHNAGE, this)
+  }
+
+  render() {
+    return (
+      <CircularView diameter={33} style={{ borderColor: this.props.color, borderWidth: this.props.focused ? 2 : 0 }}>
+        <ProfilePicDisplayer
+          diameter={27}
+          uid={auth().currentUser.uid}
+          ref={ref => this.pictureComponet = ref}
+          onUrlGotten={(url) => TabBarProfilePic.url = url}
+          url={TabBarProfilePic.url}
+        />
+
+      </CircularView>
+
     )
   }
 }

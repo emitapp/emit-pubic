@@ -10,6 +10,7 @@ import { BannerButton } from 'reusables/ReusableButtons';
 import S from 'styling';
 import { checkAndGetPermissions } from 'utils/AppPermissions';
 import { logError } from 'utils/helpers';
+import {GetGeolocation} from 'utils/GeolocationFunctions'
 
 export default class LocationSelector extends React.Component {
 
@@ -17,11 +18,12 @@ export default class LocationSelector extends React.Component {
     super(props)
     //Will be {latitude: null, longitude: null} if the pin wasn't set previously
     let params = props.navigation.state.params
+    
     this.state = {
       region: null,
-      //If this is true, dont give the marker a defualt location of 0,0
-      markerPrevSet: params.latitude ? true : false,
-      markerLocation: params.latitude ? { ...params } : { latitude: 0, longitude: 0 }
+      //Give the marker a defualt location of 0,0 if there isnt a provided value
+      markerLocation: params.pin ? { ...params.pin } : { latitude: 0, longitude: 0 },
+      usingDefaultLocation: params.pin ? false : true
     }
   }
 
@@ -29,7 +31,7 @@ export default class LocationSelector extends React.Component {
   static navigationOptions = Header("Location Selector")
 
   componentDidMount() {
-    if (!this.state.markerPrevSet)
+    if (this.state.usingDefaultLocation)
       this.getCurrentLocation()
     else {
       this.setState({
@@ -71,8 +73,7 @@ export default class LocationSelector extends React.Component {
   }
 
   saveLocation = () => {
-    this.props.navigation.state.params.latitude = this.state.markerLocation.latitude
-    this.props.navigation.state.params.longitude = this.state.markerLocation.longitude
+    this.props.navigation.state.params.callback(this.state.markerLocation)
     this.props.navigation.goBack()
   }
 
@@ -86,11 +87,7 @@ export default class LocationSelector extends React.Component {
         });
         return
       }
-      Geolocation.getCurrentPosition(
-        this.updateMapRegion,
-        this.handleGeolocationError,
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-      );
+      GetGeolocation(this.updateMapRegion)
     } catch (err) {
       Snackbar.show({
         text: 'An error occurred when trying to get your location',
@@ -107,42 +104,12 @@ export default class LocationSelector extends React.Component {
         latitude: position.coords.latitude,
         longitudeDelta: 0.01,
         latitudeDelta: 0.01
-      }
+      },
+      markerLocation: {
+        longitude: position.coords.longitude,
+        latitude: position.coords.latitude,
+      },
+      usingDefaultLocation: false
     })
-    if (!this.state.markerPrevSet) {
-      this.setState({
-        markerLocation: {
-          longitude: position.coords.longitude,
-          latitude: position.coords.latitude,
-        }
-      })
-    }
-  }
-  handleGeolocationError = (error) => {
-    const code = error.code
-    let message = ""
-    switch (code) {
-      case 1:
-        message = "Location permission is not granted"
-        break
-      case 2:
-        message = "Location provider not available"
-        break
-      case 3:
-        message = "Location request timed out"
-        break
-      case 4:
-        message = "Google play service is not installed/too old"
-        break
-      case 5:
-        message = "Location service is not enabled or location mode is not appropriate. Check phone settings"
-        break
-      default:
-        message = "An error occurred when trying to get your location"
-    }
-    Snackbar.show({
-      text: message,
-      duration: Snackbar.LENGTH_SHORT
-    });
   }
 }

@@ -1,7 +1,9 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
+import firestore from '@react-native-firebase/firestore';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
+import { ScrollView } from 'react-native';
 import { Linking, Platform, View } from 'react-native';
 import { Button, Divider, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Entypo';
@@ -10,59 +12,90 @@ import AutolinkText from 'reusables/AutolinkText';
 import LockNotice from 'reusables/BroadcastLockNotice';
 import ErrorMessageText from 'reusables/ErrorMessageText';
 import FlareTimeStatus from 'reusables/FlareTimeStatus';
-import { UserSnippetListElement } from 'reusables/ListElements';
 import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/LoadingComponents';
 import ProfilePicDisplayer, { ProfilePicList } from 'reusables/ProfilePicComponents';
+import PublicFlareNotice from 'reusables/PublicFlareNotice';
+import FriendReqModal from 'screens/SocialSection/FriendReqModal';
 import S from "styling";
 import { analyticsVideoChatUsed } from 'utils/analyticsFunctions';
 import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, shareFlare, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, responderStatuses } from 'utils/serverValues';
-import FriendReqModal from 'screens/SocialSection/FriendReqModal';
 
 /**
  * Class for viewing info about a broadcast.
  * Only prop used is for navigation.
  */
-export default class BroadcastViewer extends React.Component {
+export default class FlareViewer extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.broadcastSnippet = this.props.navigation.getParam('broadcast', { uid: " ", owner: { uid: " " } })
+    this.isPublicFlare = this.props.navigation.getParam('isPublicFlare', false)
+    this.isFlareOwner = this.props.navigation.getParam("isOwner", false)
+
     this.state = {
       attendees: [],
       errorMessage: null,
-      broadcastData: null,
+      //If the viewer is the flare owner the expectation is that they're 
+      //coming from a screen that already had all the info about the flare
+      broadcastData: this.isFlareOwner ? this.broadcastSnippet : null,
       isModalVisible: false,
-      userSnippet: null,
+      jitsiUsername: null,
       showConfirmed: false
     }
-    this.broadcastSnippet = this.props.navigation.getParam('broadcast', { uid: " ", owner: { uid: " " } })
+
   }
 
   componentDidMount = () => {
-    database()
-      .ref(`activeBroadcasts/${this.broadcastSnippet.owner.uid}/public/${this.broadcastSnippet.uid}`)
-      .on('value', snap => this.setState({ broadcastData: snap.val() }))
 
-    database()
-      .ref(`/activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)
-      .on('value', snap => this.updateAttendees(snap.val()))
-    this.getUserSnippet()
+    if (this.isPublicFlare && !this.isFlareOwner) {
+      this.unsubscriber = firestore().collection("publicFlares").doc(this.broadcastSnippet.uid).onSnapshot({
+        error: (err) => {
+          this.setState({ errorMessage: err.message })
+          logError(err)
+        },
+        next: (snapshot) => {
+          const data = snapshot.data()
+          this.setState({ broadcastData: data, attendees: data.responders })
+        }
+      })
+    } else if (!this.isPublicFlare) {
+
+      if (!this.isFlareOwner) {
+        database()
+          .ref(`activeBroadcasts/${this.broadcastSnippet.owner.uid}/public/${this.broadcastSnippet.uid}`)
+          .on('value', snap => this.setState({ broadcastData: snap.val() }))
+      }
+
+      database()
+        .ref(`/activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)
+        .on('value', snap => this.updateAttendeesForPrivateFlare(snap.val()))
+    }
+
+    this.getUsernameForJitsi()
   }
 
   componentWillUnmount = () => {
-    database()
-      .ref(`activeBroadcasts/${this.broadcastSnippet.owner.uid}/public/${this.broadcastSnippet.uid}`)
-      .off()
+    if (this.isPublicFlare) {
+      if (this.unsubscriber) this.unsubscriber()
+    } else {
+      database()
+        .ref(`activeBroadcasts/${this.broadcastSnippet.owner.uid}/public/${this.broadcastSnippet.uid}`)
+        .off()
 
-    database()
-      .ref(`/activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)
-      .off()
+      database()
+        .ref(`/activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)
+        .off()
+    }
   }
 
   render() {
     const { broadcastData } = this.state
     return (
-      <View style={{ ...S.styles.containerFlexStart, alignItems: "flex-start", marginHorizontal: 16 }}>
+      <ScrollView
+        style={{ height: "100%" }}
+        contentContainerStyle={{ alignItems: "flex-start", marginHorizontal: 16 }}>
 
         <DefaultLoadingModal isVisible={this.state.isModalVisible} />
         <ErrorMessageText message={this.state.errorMessage} />
@@ -77,13 +110,16 @@ export default class BroadcastViewer extends React.Component {
           <View style={{ width: "100%" }}>
 
             <View style={{ alignItems: "center", marginBottom: 25, marginTop: 25 }}>
+
               <View style={{ flexDirection: "row" }}>
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: -16, marginBottom: 8, marginRight: 8 }}>
                   <Text style={{ fontSize: 36 }}>{broadcastData.emoji}</Text>
                   <Text style={{ fontSize: 24 }}>{broadcastData.activity}</Text>
                 </View>
-                <Text style={{ fontSize: 32, marginBottom: 8 }}>{broadcastData.location}</Text>
               </View>
+
+              {this.isPublicFlare && <PublicFlareNotice />}
+
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
                 <View style={{ justifyContent: "center" }}>
                   <ProfilePicDisplayer diameter={32} uid={this.broadcastSnippet.owner.uid} />
@@ -105,6 +141,7 @@ export default class BroadcastViewer extends React.Component {
                   {broadcastData.geolocation &&
                     <Button
                       icon={<Icon name="location-pin" size={20} color="white" />}
+                      title = " View on Map"
                       onPress={this.openLocationOnMap}
                       containerStyle={{ marginRight: 8, marginLeft: 0 }}
                     />}
@@ -139,7 +176,7 @@ export default class BroadcastViewer extends React.Component {
                   uids={this.state.attendees}
                   diameter={36}
                   style={{ marginLeft: 0, marginRight: 2 }}
-                  onPress = {this.friendRequestModal ? this.friendRequestModal.openUsingUid : null} />}
+                  onPress={this.friendRequestModal ? this.friendRequestModal.openUsingUid : null} />}
             </View>
           </View>
         }
@@ -153,7 +190,7 @@ export default class BroadcastViewer extends React.Component {
           type="clear"
         />
 
-      </View>
+      </ScrollView>
     )
   }
   /**
@@ -161,7 +198,7 @@ export default class BroadcastViewer extends React.Component {
    * whatever data comes from the database call
    * @param {*} data, a dictionary, the result of snapshot.val()
    */
-  updateAttendees = (data) => {
+  updateAttendeesForPrivateFlare = (data) => {
     var attendeesNew = []
     for (var id in data) {
       attendeesNew.push(id)
@@ -169,55 +206,64 @@ export default class BroadcastViewer extends React.Component {
     this.setState({ attendees: attendeesNew })
   }
 
-  getUserSnippet = async () => {
+  getUsernameForJitsi = async () => {
+    if (this.isFlareOwner) {
+      this.setState({ jitsiUsername: this.broadcastSnippet.owner.username })
+      return
+    }
     try {
       const uid = auth().currentUser.uid;
       const ref = database().ref(`/userSnippets/${uid}`);
       const snapshot = await timedPromise(ref.once('value'), MEDIUM_TIMEOUT);
-      if (snapshot.exists()) {
-        this.setState({ userSnippet: snapshot.val() })
-      }
+      if (snapshot.exists()) this.setState({ jitsiUsername: snapshot.val().username })
     } catch (err) {
-      this.setState({ userSnippet: { displayName: "-", username: "-" } })
+      this.setState({ jitsiUsername: "-" })
       if (err.name != "timeout") logError(err)
     }
   }
 
   displayBroadcastAction = () => {
-    if (!this.broadcastSnippet.status || this.broadcastSnippet.status == responderStatuses.CANCELLED) {
+    if (!this.isFlareOwner && !this.hasJoinedFlare()) {
       return (
-        <View style={{ alignSelf: "center", marginTop: 60 }}>
+        <View style={{ alignSelf: "center", marginTop: 40 }}>
           <Button
             title="I'm In"
-            onPress={() => this.sendConfirmOrCancelRequest(true)}
+            onPress={() => this.isPublicFlare ? this.respondToPublicFlare(true) : this.respondToPrivateFlare(true)}
             containerStyle={{ alignSelf: "center" }} />
         </View>
       )
     } else {
       return (
         <View style={{ flexDirection: "row", alignSelf: "center", marginTop: 60 }}>
-          <Button
-            title="I'm Out"
-            onPress={() => this.sendConfirmOrCancelRequest(false)}
-            containerStyle={{ alignSelf: "center" }} />
+
+          {(!this.isFlareOwner && this.hasJoinedFlare()) &&
+            <Button
+              title="I'm Out"
+              onPress={() => this.isPublicFlare ? this.respondToPublicFlare(false) : this.respondToPrivateFlare(false)}
+              containerStyle={{ alignSelf: "center" }} />
+          }
+
           <Button
             title="Chat"
             //TODO: Would a deep copy of this.broadcastSnippet be a good idea? Probably
             //Will think about later
-            onPress={() => this.props.navigation.navigate("ChatScreen", { broadcast: this.broadcastSnippet })}
+            onPress={() => this.props.navigation.navigate("ChatScreen", { broadcast: this.broadcastSnippet, isPublicFlare: this.isPublicFlare })}
             containerStyle={{ alignSelf: "center" }} />
 
           <Button
             title="Video Chat 📹"
             containerStyle={{ alignSelf: "center" }}
             onPress={() => {
-              Linking.openURL(encodeURI(`https://meet.jit.si/${this.broadcastSnippet.uid}#userInfo.displayName="${this.state.userSnippet.username}"&config.disableDeepLinking=true`))
-              analyticsVideoChatUsed(this.broadcastSnippet.uid, this.broadcastSnippet.owner.uid)
+              Linking.openURL(encodeURI(`https://meet.jit.si/${this.broadcastSnippet.uid}#userInfo.displayName="${this.state.jitsiUsername}"&config.disableDeepLinking=true`))
+              //TODO: allow for public flares too
+              if (!this.isPublicFlare) analyticsVideoChatUsed(this.broadcastSnippet.uid, this.broadcastSnippet.owner.uid)
             }} />
         </View>
       )
     }
   }
+
+
   /**
    * Calls cloud function that will either 
    * confirm a user for an event, or take a user off an event
@@ -225,7 +271,7 @@ export default class BroadcastViewer extends React.Component {
    * @param {*} confirm a boolean, if true will confirm a user
    * otherwise, it will take them off the broadcast
    */
-  sendConfirmOrCancelRequest = async (confirm) => {
+  respondToPrivateFlare = async (confirm) => {
     this.setState({ isModalVisible: true })
     try {
       const requestFunction = functions().httpsCallable('setBroadcastResponse');
@@ -253,19 +299,35 @@ export default class BroadcastViewer extends React.Component {
     // TODO: very hacky workaround for ref.on not updating properly. Fix this after investigating.
     database()
       .ref(`/activeBroadcasts/${this.broadcastSnippet.owner.uid}/responders/${this.broadcastSnippet.uid}`)
-      .once('value').then(snap => this.updateAttendees(snap.val()))
-
-    const rerender = this.props.navigation.getParam('rerenderCallback');
-    rerender && rerender();
+      .once('value').then(snap => this.updateAttendeesForPrivateFlare(snap.val()))
   }
 
-  itemRenderer = ({ item }) => {
-    return (
-      <UserSnippetListElement
-        snippet={item}
-        onPress={null} />
-    );
+
+  /**
+ * Makes the user respond to the public flare
+ * @param {*} confirm a boolean, if true the user will join, if false they will leave
+ */
+  respondToPublicFlare = async (isJoining) => {
+    this.setState({ isModalVisible: true })
+    try {
+      const requestFunction = functions().httpsCallable('respondToPublicFlare');
+
+      const response = await timedPromise(requestFunction({
+        flareUid: this.broadcastSnippet.uid,
+        isJoining
+      }), LONG_TIMEOUT);
+
+      if (response.data.status !== cloudFunctionStatuses.OK) {
+        this.setState({ errorMessage: response.data.message })
+        logError(new Error("Problematic setBroadcastResponse function response: " + response.data.message))
+      }
+    } catch (err) {
+      if (err.name != "timeout") logError(err)
+      this.setState({ errorMessage: err.message })
+    }
+    this.setState({ isModalVisible: false })
   }
+
 
   openLocationOnMap = () => {
     let geolocation = this.state.broadcastData.geolocation
@@ -278,5 +340,14 @@ export default class BroadcastViewer extends React.Component {
       url += `&q=${encodeURIComponent(pinTitle)}`
     }
     Linking.openURL(url)
+  }
+
+  hasJoinedFlare = () => {
+    if (this.isPublicFlare) {
+      if (!this.state.broadcastData) return false
+      return this.state.broadcastData.responders.includes(auth().currentUser.uid)
+    }
+    console.log(this.broadcastSnippet.status)
+    return (this.broadcastSnippet.status && this.broadcastSnippet.status != responderStatuses.CANCELLED)
   }
 }

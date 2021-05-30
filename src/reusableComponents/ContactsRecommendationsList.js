@@ -138,7 +138,6 @@ export default class ContactsRecommendations extends React.Component {
     }
 
     try {
-      console.log("trip")
       const response = await timedPromise(
         functions().httpsCallable('getUsersFromContacts')({ emails: this.allContactEmails, phoneNumbers: this.allContactPhoneNumbers }),
         LONG_TIMEOUT);

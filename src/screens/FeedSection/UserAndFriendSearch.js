@@ -7,8 +7,8 @@ import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import { UserSnippetListElement } from 'reusables/ListElements';
 import S from 'styling';
 import { Text, Button } from "react-native-elements"
-import FriendRequestPreviewer from './FriendRequestPreviewer'
-import FriendReqModal from './FriendReqModal';
+import FriendRequestPreviewer from '../SocialSection/FriendRequestPreviewer'
+import FriendReqModal from '../SocialSection/FriendReqModal';
 import ErrorMessageText from 'reusables/ErrorMessageText';
 import DymanicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import EmptyState from 'reusables/EmptyState';

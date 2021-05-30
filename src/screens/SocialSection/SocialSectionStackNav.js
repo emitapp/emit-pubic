@@ -1,34 +1,27 @@
-/**
- * THis class currently isn't in use as we needed to use a differnet method for 
- * Getting to the profile screen that was less confising.
- */
 import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
-import SocialButtonHub from './SocialButtonHub';
-import FriendRequests from './FriendReqBoxes';
-import UserFriendSearch from './UserFriendSearch';
-import QRScanner from './QRFriendAdder';
-import GroupMemberAdder from './UserGroups/GroupMemberAdder'
-import GroupSearch from './UserGroups/GroupSearch'
-import GroupViewer from './UserGroups/GroupViewer'
 import Header from 'reusables/Header'
+
+import ExplorePage from 'screens/SocialSection/ExplorePage'
+import GroupMemberAdder from './UserGroups/GroupMemberAdder';
+import GroupViewer from './UserGroups/GroupViewer';
+import InviteContacts from './InviteContacts'
+
 
 const Navigator = createStackNavigator(
   {
-    SocialButtonHub,
-    FriendRequests,
-    QRScanner,
-    UserFriendSearch,
     GroupMemberAdder,
-    GroupSearch,
-    GroupViewer
+    GroupViewer,
+    InviteContacts,
+    ExplorePage
   },
   {
-    initialRouteName: 'SocialButtonHub',
-    defaultNavigationOptions: Header("Community")
+    initialRouteName: 'ExplorePage',
+    defaultNavigationOptions: Header("Explore")
+
   });
 
-export default class SocailSectionStackNav extends React.Component {
+export default class ExploreStackNav extends React.Component {
 
   //https://reactnavigation.org/docs/en/common-mistakes.html
   static router = Navigator.router;

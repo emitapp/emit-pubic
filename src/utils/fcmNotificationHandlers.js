@@ -40,7 +40,7 @@ export const handleNotificationOpened = (message) => {
         broadcast.uid = message.data.associatedFlareId;
         NavigationService.reset("FeedStackNav", 1,
           [{ routeName: 'Feed' },
-          { routeName: 'BroadcastViewer', params: { broadcast: broadcast } },
+          { routeName: 'FlareViewer', params: { broadcast: broadcast } },
           ])
       }, function (e) {
         console.log("Read failed: " + e.code);
@@ -55,7 +55,7 @@ export const handleNotificationOpened = (message) => {
         broadcast.uid = message.data.associatedFlareId;
         NavigationService.reset("FeedStackNav", 1,
           [{ routeName: 'Feed' },
-          { routeName: 'ResponsesScreen', params: { broadcast: broadcast } }
+          { routeName: 'FlareViewer', params: { broadcast: broadcast, isOwner: true } }
           ])
       }, function (e) {
         console.log("Read failed: " + e.code);
@@ -67,8 +67,8 @@ export const handleNotificationOpened = (message) => {
       break;
 
     case "friendRequest":
-      NavigationService.reset("FeedStackNav", 1,
-        [{ routeName: 'Feed' }, { routeName: 'SocialButtonHub' }])
+      NavigationService.reset("ProfileAndSettingsStackNav", 0,
+        [{ routeName: 'FriendRequests' }])
       break;
 
     case "newGroup":
@@ -83,7 +83,7 @@ export const handleNotificationOpened = (message) => {
         broadcast.uid = message.data.associatedFlareId;
         NavigationService.reset("FeedStackNav", 2,
           [{ routeName: 'Feed' },
-          { routeName: 'ResponsesScreen', params: { broadcast: broadcast } },
+          { routeName: 'FlareViewer', params: { broadcast: broadcast, isOwner: true } },
           { routeName: 'ChatScreen', params: { broadcast: broadcast } }
           ])
       }, function (e) {

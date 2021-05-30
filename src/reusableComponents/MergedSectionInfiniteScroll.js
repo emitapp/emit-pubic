@@ -1,50 +1,51 @@
 import React from 'react';
-import { TouchableOpacity, SectionList, FlatList, View, Image, RefreshControl } from 'react-native';
-import { MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
-import { TimeoutLoadingComponent } from 'reusables/LoadingComponents'
-import { Text } from 'react-native-elements'
-import EmptyState from 'reusables/EmptyState'
-import { Divider } from "react-native-elements"
+import { Image, RefreshControl, SectionList, View } from 'react-native';
+import { Divider } from 'react-native-elements';
+import EmptyState from 'reusables/EmptyState';
+import { TimeoutLoadingComponent } from 'reusables/LoadingComponents';
 import ErrorMessageText from 'reusables/ErrorMessageText';
-import { logError } from 'utils/helpers'
+import { logError } from 'utils/helpers';
 import SectionHeaderText from './SectionHeaderText';
-import { responderStatuses } from 'utils/serverValues';
-
 
 /**
- * Use this class if you want to impliment an infinite scroll
- * for multiple refs
- * Currently it doesn't support pagination - since this was made 
- * from StaticInfiniteScroll's and DyanmicInfiniteScroll's code, we've commented out the parts of it
- * that relate to pagination
- * //TODO: add pagination
+ * This is an infinite scroll component that can handle both RTDB and Firestore references.
+ * It uses live references, and isn't compatible with pagination or search yet.
+ * Regardless, it has the most potential repalce all the other infinite scroll compnents if improved.
  */
 
+//TODO: add pagination, make compatible with search
+
 // Required props:
-// dbref: an array of database refs to use in the format 
-//[{title: "title", ref: ref, orderBy:["queryType"]}, filer (optional)...]
+// refs: an array of database refs to use in the format 
+//      General signature (order of importance)
+//      ref*
+//      title*: string
+//      orderBy*: string[] (only not need if whereConditionProvided is true)
+//      wherConditionProvided: boolean
+//      isFirestore: boolean [false]
+//      filter: (item) -> boolean
+//      limit: number (will no longer be infite if added, makes pagination a bit more interesting)
+//      startingPoint: string[]
+//      endingPoint: string[]
+//      tag: string (a tag that can be added to each datapoint to aid in conditional rendering)
 // renderItem: same as FLatlist RenderItem
 
-//Optinal props
-//additionalData: additional content to display at the bottom per section. of the form {text: <text>, func: <lambda>}
-//startingPoint: array of values to be used for .startat in the refs
-//endingPoint: array of values to be used for .endat in the refs
-//emptyStateComponent: Will be rendered when the list is empty 
+// Optinal props
+// emptyStateComponent: Will be rendered when the list is empty 
 // chunkSize: Size of chunks to get from firebase rtdb  (default 10) <--------- currently not used since there's no pagination
 // errorHandler: what the component should do upon facing SDK errors (not timeout erros tho, those are handled by the compenent)
-// onSectionData : callback called when data is gotten from ref. Gets ref's title and the data received
 
 // generation: used to indicate to the scrollview that it shoudl reset
-//Generation is used to prevent api calls that were called for previous
-//queries from affecting the list if they resolved too late
-//(like maybe the user started searching for something else) 
+// Generation is used to prevent api calls that were called for previous
+// queries from affecting the list if they resolved too late
+// (like maybe the user started searching for something else) 
 
-//Also note that this compenent doesn't store lots of the variables it uses
-//in the state because this.setState() wouldn't update them immediately
-//For data integrity, it is unsafe for the firebase api calls to be made and not having thier
-//resolved promises update the necessary variables immediately.
+// Also note that this compenent doesn't store lots of the variables it uses
+// in the state because this.setState() wouldn't update them immediately
+// For data integrity, it is unsafe for the firebase api calls to be made and not having thier
+// sresolved promises update the necessary variables immediately.
 
-export default class SectionInfiniteScroll extends React.Component {
+export default class MergedSectionInfiniteScroll extends React.Component {
 
     static defaultProps = {
         style: { flex: 1, width: "100%" },
@@ -64,9 +65,11 @@ export default class SectionInfiniteScroll extends React.Component {
         this.isLoading = true; //For when it's loading for the first time
         this.timedOut = false;
         this.errorMessage = "";
-        this.processedRefs = []
         this.refreshing = false;
-        this.sortedSections = [];
+        this.mergedSections = [];
+
+        this.processedRTDBRefs = []
+        this.unsubFuncs = []
     }
 
     componentDidMount = () => {
@@ -90,7 +93,7 @@ export default class SectionInfiniteScroll extends React.Component {
 
     initialize = () => {
         this.isLoading = true;
-        this.sections = new Array(this.props.dbref.length).fill("uninitialized");
+        this.sections = new Array(this.props.refs.length).fill("uninitialized");
         //FIXME: Pagination comment block
         //this.lastItemProperty = null;
         //this.stopSearching = false;
@@ -100,89 +103,92 @@ export default class SectionInfiniteScroll extends React.Component {
         this.setListeners()
     }
 
-    refListenerCallback = async (snapshot, refIndex) => {
-        try {
-            var title = this.props.dbref[refIndex].title;
-            var customData = []
-            if (this.props.additionalData && this.props.additionalData.length > refIndex) {
-                customData = this.props.additionalData[refIndex];
-            }
-
-            var listData = []
-            snapshot.forEach(childSnapshot => {
-                if (childSnapshot.exists())
-                    listData.push({
-                        uid: childSnapshot.key,
-                        ...childSnapshot.val()
-                    })
-
-            });
-
-            if (this.props.dbref[refIndex].filter) {
-
-                listData = listData.filter(this.props.dbref[refIndex].filter)
-            }
-
-            //FIXME: Pagination comment block
-            //this.lastItemProperty = listData[listData.length - 1][this.props.orderBy];
-            // Do not render sectionlist unless there is neither a custom button nor any list data
-            if (listData.length > 0 || customData.length > 0) {
-
-                const buttons = customData.map(d => {
-                    return (
-                        <TouchableOpacity onPress={d.func} key={d.text} style={{ flex: 1 }}>
-                            <Text style={{ fontSize: 16, marginTop: 8, marginBottom: 8, fontWeight: 'bold' }}>{d.text}</Text>
-                        </TouchableOpacity>)
-                })
-
-                this.sections[refIndex] = ({
-                    title: title,
-                    data: listData,
-                    customButtonData: buttons
-                });
-            } else {
-                this.sections[refIndex] = "uninitialized";
-            }
-
-            this.sortedSections = [...this.sections]
-            this.sortedSections = this.sortedSections.filter((x) => x != "uninitialized")
-            if (this.props.sectionSorter) {
-                this.sortedSections.sort(this.props.sectionSorter)
-            }
-
-            this.props.onSectionData && this.props.onSectionData(title, listData)
-            this.isLoading = false
-            this.requestRerender()
-
-        } catch (error) {
-            this.onError(error)
-        }
-    }
-
     setListeners = () => {
-        try {
-            const { startingPoint, endingPoint } = this.props
-            for (let i = 0; i < this.props.dbref.length; i++) {
-                for (let j = 0; j < this.props.dbref[i].orderBy.length; j++) {
-                    var currentDbRef = this.props.dbref[i]
-                    var currentOrderBy = currentDbRef.orderBy[j]
-                    var ref = currentDbRef.ref.orderByChild(currentOrderBy);
-                    if (startingPoint && startingPoint[i]) ref = ref.startAt(startingPoint[i])
-                    if (endingPoint && endingPoint[i]) ref = ref.endAt(endingPoint[i])
-                    ref.on("value", (snap) => this.refListenerCallback(snap, i), this.onError)
-                    this.processedRefs.push(ref)
+        for (let i = 0; i < this.props.refs.length; i++) {
+            let currRef = this.props.refs[i]
+            let isFirestore = currRef.isFirestore
+
+            //Ugly hack for whereConditionProvided is true
+            let orderByList = []
+            if (currRef.whereConditionProvided) orderByList = [false]
+            else orderByList = currRef.orderBy
+
+            for (let j = 0; j < orderByList.length; j++) {
+                let currentOrderBy = orderByList[j]
+                let ref = currRef.ref
+                if (currentOrderBy) ref = (isFirestore) ? ref.orderBy(currentOrderBy) : ref.orderByChild(currentOrderBy)
+                if (currRef.startingPoint) ref = ref.startAt(currRef.startingPoint)
+                if (currRef.endingPoint) ref = ref.endAt(currRef.endingPoint)
+                if (currRef.limit) ref = (isFirestore) ? ref.limit(currRef.limit) : ref.limitToFirst(currRef.limit)
+
+                if (isFirestore) {
+                    const unsub = ref.onSnapshot({
+                        next: (snap) => this.refListenerCallback(snap, i, isFirestore),
+                        error: this.onError
+                    })
+                    this.unsubFuncs.push(unsub)
+                } else {
+                    ref.on("value", (snap) => this.refListenerCallback(snap, i, isFirestore), this.onError)
+                    this.processedRTDBRefs.push(ref)
                 }
             }
-        }
-        catch (error) {
-            this.onError(error)
         }
     };
 
     removeListeners = () => {
-        this.processedRefs.forEach(ref => {
+        this.processedRTDBRefs.forEach(ref => {
             ref.off()
         });
+        this.unsubFuncs.forEach(func => func())
+    }
+
+    refListenerCallback = (snapshot, refIndex, isFirestore) => {
+        let refInfo = this.props.refs[refIndex]
+        let title = refInfo.title;
+        let listData = []
+        if (isFirestore) {
+            snapshot.docs.forEach(doc => {
+                listData.push({ uid: doc.id, ...doc.data(), tag: refInfo.tag })
+            });
+        } else {
+            snapshot.forEach(childSnapshot => {
+                if (!childSnapshot.exists()) return
+                listData.push({ uid: childSnapshot.key, ...childSnapshot.val(), tag: refInfo.tag })
+            });
+        }
+
+
+        if (refInfo.filter) {
+            listData = listData.filter(refInfo.filter)
+        }
+
+        //FIXME: Pagination comment block
+        //this.lastItemProperty = listData[listData.length - 1][this.props.orderBy];
+
+        // Do not render sectionlist unless there is neither a custom button nor any list data
+        if (listData.length > 0) {
+            this.sections[refIndex] = ({
+                title: title,
+                data: listData,
+            });
+        } else {
+            this.sections[refIndex] = "uninitialized";
+        }
+
+        let temp = [...this.sections]
+        temp = temp.filter((x) => x != "uninitialized")
+        this.mergedSections = {}
+        temp.forEach(sec => {
+            if (!this.mergedSections[sec.title]) this.mergedSections[sec.title] = sec.data
+            else this.mergedSections[sec.title] = this.mergedSections[sec.title].concat(sec.data)
+        })
+        this.mergedSections = Object.entries(this.mergedSections).map(x => {
+            return { title: x[0], data: x[1] }
+        })
+
+
+        this.isLoading = false
+        this.requestRerender()
     }
 
     onError = (error) => {
@@ -200,15 +206,12 @@ export default class SectionInfiniteScroll extends React.Component {
         }
     }
 
-    renderSectionHeader = ({ section: { title, customButtonData } }) => {
+    renderSectionHeader = ({ section: { title } }) => {
         return (
             <View>
                 <SectionHeaderText>
                     {title}
                 </SectionHeaderText>
-                <View style={{ flexDirection: "row" }}>
-                    {customButtonData}
-                </View>
                 <Divider />
             </View >
         )
@@ -288,7 +291,7 @@ export default class SectionInfiniteScroll extends React.Component {
             //The content container can't have a flexgrow of 1 when there's content
             //because it messes with pagination, but it should have it
             //when rendering the empty state so that the empty state occupies all the available space
-            if (this.sortedSections.length == 0) otherProps = {
+            if (this.mergedSections.length == 0) otherProps = {
                 ...otherProps,
                 contentContainerStyle: { ...otherProps.contentContainerStyle, flexGrow: 1 }
             }
@@ -299,7 +302,7 @@ export default class SectionInfiniteScroll extends React.Component {
                     <SectionList
                         stickySectionHeadersEnabled={false}
                         showsVerticalScrollIndicator={false}
-                        sections={this.sortedSections}
+                        sections={this.mergedSections}
                         keyExtractor={item => item.uid}
                         //FIXME: Pagination comment block
                         // ListFooterComponent={this.renderFooter}

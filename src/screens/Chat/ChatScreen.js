@@ -24,8 +24,13 @@ export default class ChatScreen extends React.Component {
   constructor(props) {
     super(props);
     this.broadcastData = this.props.navigation.getParam('broadcast', { uid: " ", owner: { uid: "xxx" } })
+    this.isPublicFlare = this.props.navigation.getParam('isPublicFlare', false)
     this.ownerID = this.broadcastData.owner.uid
-    this.chatrefPath = `/activeBroadcasts/${this.ownerID}/chats/${this.broadcastData.uid}`
+    this.chatrefPath =
+      this.isPublicFlare ?
+        `/publicFlareChats/${this.broadcastData.uid}` :
+        `/activeBroadcasts/${this.ownerID}/chats/${this.broadcastData.uid}`
+
 
     this.paginationSize = 20
     this.state = {

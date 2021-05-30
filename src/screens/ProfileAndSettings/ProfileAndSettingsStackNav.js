@@ -1,13 +1,20 @@
 import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
-import EditProfileScreen from './EditProfileScreen';
+import Header from 'reusables/Header'
+
+
+//Settings
 import SettingsMain from './SettingsMain';
+import EditProfileScreen from './EditProfileScreen';
 import AccountManagementScreen from './AccountManagementScreen'
 import ContactSupportPage from './ContactSupportPage'
 import NotificationSettings from './NotificationSettings'
 import LegalNotices from './LegalNotices'
-import Header from 'reusables/Header'
 
+//Profile
+import QRScanner from '../ProfileAndSettings/QRFriendAdder';
+import ProfileScreen from '../ProfileAndSettings/ProfileScreen';
+import FriendRequests from './FriendReqBoxes';
 
 const Navigator = createStackNavigator(
   {
@@ -16,11 +23,14 @@ const Navigator = createStackNavigator(
     AccountManagementScreen,
     ContactSupportPage,
     NotificationSettings,
-    LegalNotices
+    LegalNotices,
+    QRScanner,
+    ProfileScreen,
+    FriendRequests
   },
   {
-    initialRouteName: 'SettingsMain',
-    defaultNavigationOptions: Header("Settings")
+    initialRouteName: 'ProfileScreen',
+    defaultNavigationOptions: Header("Profile + Settings")
   });
 
 export default class FeedStackNav extends React.Component {

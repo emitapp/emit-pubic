@@ -9,7 +9,7 @@ import { checkAndGetPermissions } from 'utils/AppPermissions';
 import { PERMISSIONS } from 'react-native-permissions';
 import ErrorMessageText from 'reusables/ErrorMessageText';
 
-export default class JitsiComponent extends React.Component {
+export default class JitsiScreen extends React.Component {
 
   static navigationOptions = {
     headerShown: false,

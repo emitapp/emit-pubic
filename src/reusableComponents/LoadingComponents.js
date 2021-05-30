@@ -74,7 +74,7 @@ export class TimeoutLoadingComponent extends React.Component {
                     </View>
                     <View>
                         <Text style={{ color: 'red', fontWeight: "bold" }}>Timed Out!</Text>
-                        <Button title="Retry" onPress={this.props.retryFunction} />
+                        {this.props.retryFunction && <Button title="Retry" onPress={this.props.retryFunction} />}
                     </View>
                 </View>
             )

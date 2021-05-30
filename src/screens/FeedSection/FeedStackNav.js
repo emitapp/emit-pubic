@@ -5,9 +5,9 @@ import {Alert} from 'react-native'
 
 import Feed from './Feed';
 import Header from 'reusables/Header'
-import BroadcastViewer from './BroadcastViewer';
-import SearchHub from 'screens/ExploreSection/SearchHub'
-import ResponsesScreen from './ResponsesViewer';
+
+//Flare Management Screens
+import FlareViewer from './FlareViewer';
 import ChatScreen from '../Chat/ChatScreen'
 
 //Flare Creation Screens
@@ -19,18 +19,10 @@ import NewBroadcastFormRecepients from './FlareCreation/NewBroadcastFormRecepien
 import NewBroadcastFormTime from './FlareCreation/NewBroadcastFormTime';
 import SavedLocations from './FlareCreation/SavedLocations'
 import LocationSelector from './FlareCreation/LocationSelector';
+import UserFriendSearch from './UserAndFriendSearch';
 
-
-//For the Profile section...
-import UserFriendSearch from '../SocialSection/UserFriendSearch';
-import FriendRequests from '../SocialSection/FriendReqBoxes';
-import QRScanner from '../SocialSection/QRFriendAdder';
+//Duplication of a scren from the social section for better .goBack() flow...
 import GroupMemberAdder from '../SocialSection/UserGroups/GroupMemberAdder';
-import GroupSearch from '../SocialSection/UserGroups/GroupSearch';
-import GroupViewer from '../SocialSection/UserGroups/GroupViewer';
-import SocialButtonHub from '../SocialSection/SocialButtonHub';
-import InviteContacts from '../SocialSection/InviteContacts'
-
 
 const Navigator = createStackNavigator(
   {
@@ -43,18 +35,10 @@ const Navigator = createStackNavigator(
     NewBroadcastFormRecepients,
     SavedLocations,
     NewBroadcastFormDuration,
-    ResponsesScreen,
     ChatScreen,
-    BroadcastViewer,
-    SocialButtonHub,
-    FriendRequests,
-    QRScanner,
+    FlareViewer,
     UserFriendSearch,
     GroupMemberAdder,
-    GroupSearch,
-    GroupViewer,
-    InviteContacts,
-    SearchHub
   },
   {
     initialRouteName: 'Feed',
@@ -67,7 +51,7 @@ export default class FeedStackNav extends React.Component {
     static navigationOptions = ({ navigation }) => {
       const routeName = navigation.state ? navigation.state.routes[navigation.state.index].routeName : "default"
       var targetScreens = ["GroupMemberAdder", "NewBroadcastFormActivity", "NewBroadcastFormTime", "NewBroadcastForm", "LocationSelector",
-        "NewBroadcastFormLocation", "NewBroadcastFormRecepients", "SavedLocations", "NewBroadcastFormDuration"]
+        "NewBroadcastFormLocation", "NewBroadcastFormRecepients", "SavedLocations", "NewBroadcastFormDuration", "UserFriendSearch"]
       let showTabView = !targetScreens.includes(routeName)
       return {
         tabBarVisible: showTabView,

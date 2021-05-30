@@ -44,7 +44,7 @@
 	<key>NSContactsUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like access to contacts to invite others to the app</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to know your location make map functionality smoother</string>
+	<string>$(PRODUCT_NAME) would like to know your location make map functionality smoother and find nearby flares.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Emit would like access to your microphone for video conferencing.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
