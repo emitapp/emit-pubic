@@ -32,10 +32,15 @@ class BannerButtonComponent extends React.PureComponent {
         const { theme } = this.props;
         const backgroundColor = this.props.color ?? theme.colors.bannerButton
         return (
-
             <TouchableOpacity
-                containerStyle={{ width: "100%" }}
-                style={[styles.bannerButton, { backgroundColor }, { ...this.props.extraStyles }]}
+                containerStyle={{ height: 50, width: "100%" }}
+                style={[{
+                    height: "100%",
+                    width: "100%", 
+                    flexDirection: 'row',
+                    justifyContent: "center",
+                    alignItems: 'center', backgroundColor
+                }, { ...this.props.extraStyles }]}
                 onPress={this.props.onPress}>
                 <AwesomeIcon name={this.props.iconName} size={18} color={this.props.contentColor} style={{ marginRight: 18 }} />
                 <Text style={{ color: this.props.contentColor, fontWeight: "bold" }}>{this.props.title}</Text>

@@ -20,13 +20,6 @@ const defaultStyles = StyleSheet.create({
       borderWidth: 1,
       marginTop: 8
     },
-    bannerButton: {
-        justifyContent: "center",
-        alignItems: 'center',
-        width: "100%", 
-        height: 50,
-        flexDirection: 'row'
-    },
     pillButton: {
         justifyContent: "center",
         alignItems: 'center',
