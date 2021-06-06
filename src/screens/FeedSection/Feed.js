@@ -56,6 +56,7 @@ export default class ActiveBroadcasts extends React.Component {
         isFirestore: false
       },
       {
+        //FIXME: This isn't implimented yet. Currently part of this.finishSettingUpFeed()
         ref: database().ref('/joinedPublicFlares/'),
         title: this.joinedTitle,
         orderBy: ["startingTime"],
@@ -136,6 +137,13 @@ export default class ActiveBroadcasts extends React.Component {
   }
 
   finishSettingUpFeed = async () => {
+    //FIXME: //TODO: This is a bandaid for a strange bug where, on first app open,
+    //when the user is presented with the permissions dialogue and they grant location permissions,
+    //the feed stays on the loading state sometimes. This type of strange behaviour is consistent
+    //with some other strange behaviours related to permission asking.
+    //No idea why this happens, so this is a quick fix since it really disrupts UX in this case.
+    setTimeout(() => this.setState({gettingGeolocation: false}), 7000) 
+    
     try {
       const permissionsGranted = await checkAndGetPermissions({ required: [PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION] })
       if (!permissionsGranted) {
