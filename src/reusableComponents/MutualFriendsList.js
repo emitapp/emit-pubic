@@ -49,6 +49,9 @@ export default class MutualFriendsList extends React.Component {
 
   itemRenderer = ({ item }) => {
     const uid = item.uids.filter(x => x != auth().currentUser.uid)[0]
+    //Temporary fix for a proble with the code for friend recommendations (some docs aren't getting deleted and 
+    //mutualFriends is null)
+    if (!item.mutualFriends) return null; 
     return (
       <ThemeConsumer>
         {({ theme }) => (
