@@ -43,8 +43,7 @@ export const getAllActivities = () => [
             { emoji: "♟", name: "Chess" },
             { emoji: "🥊", name: "Super Smash Bros." },
             {
-                emoji: "💀", name: "Secret Hitler",
-                info: "Secret Hitler is a hidden identity social deduction party game."
+                emoji: "🤭", name: "Cards Against Humanity",
             },
             {
                 emoji: "🦠", name: "Covidopoly",
