@@ -89,6 +89,11 @@ export default class Login extends React.Component {
   }
 
   handleLogin = async () => {
+    if (!this.state.password || !this.state.email){
+      this.setState({ errorMessage: "Fill all the fields!" })
+      return
+    }
+
     try {
       this.setState({ modalVisible: true })
       //If this succeeds, then the onAuthStateChanged listener set in App.js will handle navigation
@@ -97,7 +102,8 @@ export default class Login extends React.Component {
       analyticsLoggingIn("email")
     } catch (err) {
       this.setState({ errorMessage: err.message, modalVisible: false })
-      if (err.name != "timeout") logError(error)
+      //if (err.name != "timeout") logError(error)
+      //FIXME: For now this doesn't log non-fatal errors since they're probably user caused
     }
   }
 }

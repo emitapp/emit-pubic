@@ -106,6 +106,16 @@ export default class SignUp extends React.Component {
   }
 
   handleSignUp = async () => {
+    if (!this.state.password || !this.state.email || !this.state.passwordConfrim){
+      this.setState({ errorMessage: "Fill all the fields!" })
+      return
+    }
+
+    if (this.state.password != this.state.passwordConfrim){
+      this.setState({ errorMessage: "Passwords don't match!" })
+      return
+    }
+
     try {
       this.setState({ modalVisible: true })
       //If this succeeds, then the onAuthStateChanged listener set in App.js will handle navigation
@@ -114,7 +124,8 @@ export default class SignUp extends React.Component {
       await timedPromise(signUpPromise, LONG_TIMEOUT)
     } catch (error) {
       this.setState({ errorMessage: error.message, modalVisible: false })
-      if (error.name != "timeout") logError(error)
+      //if (error.name != "timeout") logError(error) 
+      //FIXME: For now this doesn't log non-fatal errors since they're probably user caused
     }
   }
 
