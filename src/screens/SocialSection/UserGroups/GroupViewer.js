@@ -12,7 +12,7 @@ import { UserSnippetListElement } from 'reusables/ListElements';
 import { DefaultLoadingModal, SmallLoadingComponent } from 'reusables/LoadingComponents';
 import ProfilePicChanger from 'reusables/ProfilePicChanger';
 import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
-import { AdditionalOptionsButton, BannerButton, MinorActionButton } from 'reusables/ReusableButtons';
+import { AdditionalOptionsButton, BannerButton, LoadableButton, MinorActionButton } from 'reusables/ReusableButtons';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
 import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
@@ -26,6 +26,7 @@ export default class GroupScreen extends React.Component {
     this.groupSnippet = this.props.navigation.getParam('group', null)
     this.state = this.initializeScreenState(GroupScreen.refreshModes.FIRST_LOAD)
     this.profilePicComponent = null
+    this.userUid = auth().currentUser.uid
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -61,7 +62,7 @@ export default class GroupScreen extends React.Component {
       })
 
     database()
-      .ref(`/userGroups/${this.groupSnippet.uid}/memberUids/${auth().currentUser.uid}`)
+      .ref(`/userGroups/${this.groupSnippet.uid}/memberUids/${this.userUid}`)
       .on("value", snap => {
         if (!snap.exists()) {
           shouldGoBack = true
@@ -85,7 +86,7 @@ export default class GroupScreen extends React.Component {
   componentWillUnmount() {
     if (!this.groupSnippet) return;
     database().ref(`/userGroups/${this.groupSnippet.uid}/snippet`).off()
-    database().ref(`/userGroups/${this.groupSnippet.uid}/memberUids/${auth().currentUser.uid}`).off()
+    database().ref(`/userGroups/${this.groupSnippet.uid}/memberUids/${this.userUid}`).off()
   }
 
   render() {
@@ -165,14 +166,19 @@ export default class GroupScreen extends React.Component {
                     "Making the group public means members can join via invitation, ivite code or by searching for the group."}
                 </Text>
 
-                <Button
+                <LoadableButton
                   title="Proceed"
                   onPress={() => this.updateGroupVisibility()}
+                  isLoading={this.state.waitingForGroupVisibilityChange}
                 />
-                <MinorActionButton
+                {
+                  !this.state.waitingForGroupVisibilityChange &&              
+                  <MinorActionButton
                   title="Cancel"
                   onPress={() => this.closeVisibilityModal()}
                 />
+                }
+   
               </>
 
             </Overlay>
@@ -357,7 +363,8 @@ export default class GroupScreen extends React.Component {
       usersToBeDemoted: {},
       currentlySelectedUser: null,
       editingModalOpen: false,
-      showProfilePicChanger: false
+      showProfilePicChanger: false,
+      waitingForGroupVisibilityChange: false
     }
     if (mode == GroupScreen.refreshModes.FIRST_LOAD) {
       newState.fetchedUserRank = newData,
@@ -421,7 +428,7 @@ export default class GroupScreen extends React.Component {
   }
 
   leaveGroup = () => {
-    this.queueForRemoval({ uid: auth().currentUser.uid }, () => {
+    this.queueForRemoval({ uid: this.userUid }, () => {
       this.applyEdits(true)
     })
   }
@@ -471,7 +478,7 @@ export default class GroupScreen extends React.Component {
   }
 
   queueForRemoval = (snippet, callback = null) => {
-    if (this.state.fetchedUserRank !== groupRanks.ADMIN && snippet.uid !== auth().currentUser.uid) {
+    if (this.state.fetchedUserRank !== groupRanks.ADMIN && snippet.uid !== this.userUid) {
       this.displayPermissionsMessage()
       return;
     }
@@ -499,9 +506,9 @@ export default class GroupScreen extends React.Component {
   }
 
   updateGroupVisibility = async () => {
+    this.setState({waitingForGroupVisibilityChange: true})
     try {
       const cloudFunc = functions().httpsCallable('changeGroupVisibility')
-      console.log(this.groupSnippet)
       const response = await timedPromise(cloudFunc(this.groupSnippet.uid), LONG_TIMEOUT);
       if (response.data.status != cloudFunctionStatuses.OK) {
         const message = (response.data.status == cloudFunctionStatuses.LEASE_TAKEN)
@@ -518,6 +525,8 @@ export default class GroupScreen extends React.Component {
     } catch (err) {
       if (err.name != 'timeout') logError(err)
       this.setState({ errorMessage: err.message, isModalVisible: false })
+    }finally{
+      this.setState({waitingForGroupVisibilityChange: false})
     }
   }
 

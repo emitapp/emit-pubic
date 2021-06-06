@@ -7,10 +7,10 @@ import { View } from 'react-native';
 import { Button, SearchBar, Text } from 'react-native-elements';
 import ErrorMessageText from 'reusables/ErrorMessageText';
 import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
+import { LoadableButton } from 'reusables/ReusableButtons';
 import { analyticsLogSearch, analyticsUserJoinedGroup } from 'utils/analyticsFunctions';
 import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses } from 'utils/serverValues';
-
 
 
 //Give it a  groupSnippet and it will not show the invite code UX
@@ -24,8 +24,10 @@ export default class GroupJoinDialogue extends React.PureComponent {
         inviteCode: "",
         groupUid: props.groupSnippet ? props.groupSnippet.uid : null,
         groupName: props.groupSnippet ? props.groupSnippet.name : null,
-        groupMemberCount: props.groupSnippet ? props.groupSnippet.memberCount : null
+        groupMemberCount: props.groupSnippet ? props.groupSnippet.memberCount : null,
+        waitingForCloudFunc: false
       }
+
       if (props.groupSnippet) this.checkIfMember(props.groupSnippet.uid)
     }
   
@@ -60,11 +62,15 @@ export default class GroupJoinDialogue extends React.PureComponent {
               />
   
               <Text h4>{this.state.groupName}</Text>
-  
+              <Text>{this.state.groupMemberCount} members</Text>
+
               {this.state.groupsUserIsIn.includes(this.state.groupUid) ? (
                 <Text>You're already a member.</Text>
               ) : (
-                <Button title="Join" onPress={this.props.groupSnippet ? this.joinPublicGroup : this.joinGroupViaCode} />
+                <LoadableButton 
+                title="Join" 
+                onPress={this.props.groupSnippet ? this.joinPublicGroup : this.joinGroupViaCode} 
+                isLoading = {this.state.waitingForCloudFunc} />
               )}
             </>
           }
@@ -107,6 +113,7 @@ export default class GroupJoinDialogue extends React.PureComponent {
     //doesn't break anything
     joinGroupViaCode = async () => {
       try {
+        this.setState({waitingForCloudFunc: true})
         const joinFunc = functions().httpsCallable('joinGroupViaCode');
         const response = await timedPromise(joinFunc(this.state.inviteCode), LONG_TIMEOUT);
         if (response.data.status === cloudFunctionStatuses.OK) {
@@ -121,6 +128,8 @@ export default class GroupJoinDialogue extends React.PureComponent {
       } catch (error) {
         this.setState({ message: error.message })
         logError(error)
+      }finally{
+        this.setState({waitingForCloudFunc: false})
       }
     }
   
@@ -132,7 +141,7 @@ export default class GroupJoinDialogue extends React.PureComponent {
         this.setState({inviteCode: inviteCode.val()}, this.joinGroupViaCode)
   
       } catch (error) {
-        this.setState({ message: error.message })
+        this.setState({ message: error.message, waitingForCloudFunc: false })
         logError(error)
       }
     }

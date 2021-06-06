@@ -347,7 +347,6 @@ export default class FlareViewer extends React.Component {
       if (!this.state.broadcastData) return false
       return this.state.broadcastData.responders.includes(auth().currentUser.uid)
     }
-    console.log(this.broadcastSnippet.status)
     return (this.broadcastSnippet.status && this.broadcastSnippet.status != responderStatuses.CANCELLED)
   }
 }

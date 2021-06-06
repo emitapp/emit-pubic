@@ -3,6 +3,7 @@ import { Button, withTheme, Icon, Text } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import styles from 'styling/styles';
+import { SmallLoadingComponent } from 'reusables/LoadingComponents';
 
 function MinorActionButtonComponent(props) {
     const { theme } = props;
@@ -36,7 +37,7 @@ class BannerButtonComponent extends React.PureComponent {
                 containerStyle={{ height: 50, width: "100%" }}
                 style={[{
                     height: "100%",
-                    width: "100%", 
+                    width: "100%",
                     flexDirection: 'row',
                     justifyContent: "center",
                     alignItems: 'center', backgroundColor
@@ -63,8 +64,23 @@ class PillButtonComponent extends React.PureComponent {
     }
 }
 
+//props: isLoading
+class LoadableButton extends React.PureComponent {
+    render() {
+        if (this.props.isLoading) {
+            return (
+                <SmallLoadingComponent />
+            )
+        }
+        return (
+            <Button {...this.props} />
+        )
+    }
+}
+
+
 const MinorActionButton = withTheme(MinorActionButtonComponent)
 const AdditionalOptionsButton = withTheme(AdditionalOptionsButtonComponent)
 const BannerButton = withTheme(BannerButtonComponent)
 const PillButton = withTheme(PillButtonComponent)
-export { MinorActionButton, AdditionalOptionsButton, BannerButton, PillButton }
+export { MinorActionButton, AdditionalOptionsButton, BannerButton, PillButton, LoadableButton }
