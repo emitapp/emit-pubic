@@ -16,7 +16,7 @@ import { ProfilePicList } from 'reusables/ProfilePicComponents';
 import { BannerButton } from 'reusables/ReusableButtons';
 import S from 'styling';
 import { analyticsLogFlareCreation } from 'utils/analyticsFunctions';
-import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
+import { isOnlyWhitespace, logError, LONG_TIMEOUT, showDelayedSnackbar, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, MAX_BROADCAST_NOTE_LENGTH } from 'utils/serverValues';
 
 class NewBroadcastForm extends React.Component {
@@ -312,22 +312,22 @@ class NewBroadcastForm extends React.Component {
     const { passableBroadcastInfo: flareInfo } = this.state
 
     if (isOnlyWhitespace(flareInfo.activitySelected) || isOnlyWhitespace(flareInfo.emojiSelected)) {
-      this.setState({ errorMessage: "Invalid activity" })
+      this.provideErrorFeedback("Invalid activity")
       return false
     }
 
     if (flareInfo.note.length > MAX_BROADCAST_NOTE_LENGTH) {
-      this.setState({ errorMessage: "Broadcast note too long" })
+      this.provideErrorFeedback("Broadcast note too long")
       return false
     }
 
     if (this.state.customMaxResponders && !/^\d+$/.test(this.state.maxResponders)) {
-      this.setState({ errorMessage: "Invalid max responder limit" })
+      this.provideErrorFeedback("Invalid max responder limit")
       return false
     }
 
-    if (this.state.isPublicFlare && !flareInfo.geolocation){
-      this.setState({ errorMessage: "Public flares need geolocation!" })
+    if (this.state.isPublicFlare && !flareInfo.geolocation) {
+      this.provideErrorFeedback("Public flares need geolocation!")
       return false
     }
 
@@ -365,14 +365,14 @@ class NewBroadcastForm extends React.Component {
         this.props.navigation.state.params.needUserConfirmation = false;
         this.props.navigation.goBack()
       } else {
-        this.setState({ errorMessage: response.data.message })
+        this.provideErrorFeedback(response.data.message)
         logError(new Error("Problematic createActiveBroadcast function response: " + response.data.message))
       }
     } catch (err) {
       if (err.name == "timeout") {
-        this.setState({ errorMessage: "Timeout!" })
+        this.provideErrorFeedback("Timeout!")
       } else {
-        this.setState({ errorMessage: err.message })
+        this.provideErrorFeedback(err.message)
         logError(err)
       }
     }
@@ -400,10 +400,8 @@ class NewBroadcastForm extends React.Component {
       && Object.keys(friendRecepients).length == 0
       //&& Object.keys(maskRecepients).length == 0
       && Object.keys(groupRecepients).length == 0) {
-      this.setState({
-        errorMessage: "This broadcast has no receivers it can be sent to",
-        isModalVisible: false
-      })
+      this.provideErrorFeedback("This broadcast has no receivers it can be sent to")
+      this.setState({ isModalVisible: false })
       return false
     }
 
@@ -412,6 +410,11 @@ class NewBroadcastForm extends React.Component {
     params.groupRecepients = groupRecepients
 
     return true
+  }
+
+  provideErrorFeedback = (errorMessage) => {
+    this.setState({ errorMessage })
+    showDelayedSnackbar(errorMessage)
   }
 }
 

@@ -13,7 +13,7 @@ import SectionInfiniteScroll from 'reusables/SectionInfiniteScroll'
 import FriendReqModal from 'screens/SocialSection/FriendReqModal';
 import mainTheme from 'styling/mainTheme';
 import GroupJoinDialogue from 'screens/SocialSection/UserGroups/GroupJoinDialogue'
-
+import {showDelayedSnackbar} from 'utils/helpers'
 export default class ExplorePage extends React.Component {
 
   constructor(props) {
@@ -59,7 +59,7 @@ export default class ExplorePage extends React.Component {
               <GroupJoinDialogue
                 groupSnippet={this.state.selectedPublicGroup}
                 joinSuccessFunction={() => {
-                  this.showDelayedSnackbar("Join Successful!")
+                  showDelayedSnackbar("Join Successful!")
                   this.setState({ isGroupModalVisible: false })
                 }} />
               <MinorActionButton
@@ -120,18 +120,6 @@ export default class ExplorePage extends React.Component {
     } else { //Then its a public group
       this.setState({ isGroupModalVisible: true, selectedPublicGroup: item })
     }
-  }
-
-  showDelayedSnackbar = (message) => {
-    setTimeout(
-      () => {
-        Snackbar.show({
-          text: message,
-          duration: Snackbar.LENGTH_SHORT
-        });
-      },
-      150
-    )
   }
 
   renderFriendRecommendations = () => {

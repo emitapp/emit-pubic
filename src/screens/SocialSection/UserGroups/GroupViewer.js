@@ -15,7 +15,7 @@ import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
 import { AdditionalOptionsButton, BannerButton, LoadableButton, MinorActionButton } from 'reusables/ReusableButtons';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
-import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
+import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise, showDelayedSnackbar } from 'utils/helpers';
 import { cloudFunctionStatuses, groupRanks, MAX_GROUP_NAME_LENGTH } from 'utils/serverValues';
 import FriendReqModal from '../FriendReqModal';
 
@@ -566,25 +566,9 @@ export default class GroupScreen extends React.Component {
   }
 
   displayPermissionsMessage = () => {
-    this.showDelayedSnackbar('You have to be an admin to be able to do this')
+    showDelayedSnackbar('You have to be an admin to be able to do this')
   }
 
-  //There are modals being opened and closed on this screen, and if I close a modal
-  //and then show the snackbar, the snackbar might be attached to the modal that was jsut in 
-  //the process of being removed, meaning the snackbar will never be displayed. 
-  //So, I use a small timeout to give the snackbar a bit of a delay
-  //https://github.com/cooperka/react-native-snackbar/issues/67
-  showDelayedSnackbar = (message) => {
-    setTimeout(
-      () => {
-        Snackbar.show({
-          text: message,
-          duration: Snackbar.LENGTH_SHORT
-        });
-      },
-      150
-    )
-  }
 
   displayDiscoverablilityBadge = () => {
     let details = {

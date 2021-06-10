@@ -3,14 +3,13 @@ import database from '@react-native-firebase/database';
 import React from 'react';
 import { View } from 'react-native';
 import { Button, Overlay, Text } from 'react-native-elements';
-import Snackbar from 'react-native-snackbar';
 import DymanicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
 import { UserGroupListElement } from 'reusables/ListElements';
 import { BannerButton, MinorActionButton } from 'reusables/ReusableButtons';
 import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
 import S from 'styling';
 import GroupJoinDialogue from 'screens/SocialSection/UserGroups/GroupJoinDialogue'
-
+import {showDelayedSnackbar} from 'utils/helpers'
 export default class GroupSearch extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
@@ -35,7 +34,7 @@ export default class GroupSearch extends React.Component {
             <GroupJoinDialogue
               groupSnippet={this.state.selectedPublicGroup}
               joinSuccessFunction={() => {
-                this.showDelayedSnackbar("Join Successful!")
+                showDelayedSnackbar("Join Successful!")
                 this.setState({ isModalVisible: false })
               }} />
 
@@ -95,22 +94,5 @@ export default class GroupSearch extends React.Component {
         onPress={() => this.setState({ isModalVisible: true, selectedPublicGroup: item })}
       />
     );
-  }
-
-  //There are modals being opened and closed on this screen, and if I close a modal
-  //and then show the snackbar, the snackbar might be attached to the modal that was jsut in 
-  //the process of being removed, meaning the snackbar will never be displayed. 
-  //So, I use a small timeout to give the snackbar a bit of a delay
-  //https://github.com/cooperka/react-native-snackbar/issues/67
-  showDelayedSnackbar = (message) => {
-    setTimeout(
-      () => {
-        Snackbar.show({
-          text: message,
-          duration: Snackbar.LENGTH_SHORT
-        });
-      },
-      150
-    )
   }
 }

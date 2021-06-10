@@ -17,6 +17,7 @@ import * as recentLocFuncs from 'utils/RecentLocationsFunctions';
 import { MAX_LOCATION_NAME_LENGTH } from 'utils/serverValues'
 import { v4 as uuidv4 } from 'uuid';
 import BulgingButton from 'reusables/BulgingButton'
+import MatIcon from "react-native-vector-icons/MaterialIcons"
 export default class NewBroadcastFormLocation extends React.Component {
 
   constructor(props) {
@@ -76,8 +77,8 @@ export default class NewBroadcastFormLocation extends React.Component {
               {this.state.locationPin == null &&
                 <View style={{ alignItems: "center", justifyContent: "center" }}>
                   <BulgingButton
-                  height= {50}
-                  width = {170}
+                    height={50}
+                    width={170}
                     icon={<Icon name="location-pin" size={30} color="white" />}
                     title="Add a Map Pin"
                     onPress={() => this.props.navigation.navigate("LocationSelector",
@@ -115,7 +116,16 @@ export default class NewBroadcastFormLocation extends React.Component {
               }
 
               {!this.state.savingLocation ? (
-                <MinorActionButton title="Add to Saved Locations" onPress={this.saveLocation} />
+                <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 8 }}>
+                  <Button title="Save to Saved Locations"
+                    onPress={this.saveLocation}
+                    titleStyle={{ fontSize: 14 }}
+                    type="outline" />
+                  <Button title="See all Saved Locations"
+                    onPress={() => this.props.navigation.navigate("SavedLocations", this.props.navigation.state.params.bundle)}
+                    titleStyle={{ fontSize: 14 }}
+                    type="outline" />
+                </View>
               ) : (
                 <View style={{ alignSelf: "center" }}>
                   <SmallLoadingComponent />
@@ -125,10 +135,8 @@ export default class NewBroadcastFormLocation extends React.Component {
               <FlatList
                 data={this.state.recentLocations}
                 renderItem={({ item, index }) => this.renderRecentLocation(item, index)}
-                ListHeaderComponent={() => this.renderHeader(theme)}
-                ListFooterComponent={() => this.renderFooter()}
+                ListHeaderComponent={() => this.renderHeader(this.state.recentLocations, theme)}
                 style={{ marginHorizontal: 8 }}
-                ItemSeparatorComponent={() => <Divider />}
                 keyExtractor={item => item.uid}
               />
             </View>
@@ -144,7 +152,7 @@ export default class NewBroadcastFormLocation extends React.Component {
   }
 
   confirmLocation = (addToRecents = true) => {
-    if (!this.isValidLocation()){
+    if (!this.isValidLocation()) {
       Snackbar.show({ text: 'Enter location name or map pin, or both', duration: Snackbar.LENGTH_SHORT });
       return
     }
@@ -177,7 +185,7 @@ export default class NewBroadcastFormLocation extends React.Component {
   }
 
   saveLocation = async () => {
-    if (!this.isValidLocation()){
+    if (!this.isValidLocation()) {
       Snackbar.show({ text: 'Enter location name or map pin, or both', duration: Snackbar.LENGTH_SHORT });
       return
     }
@@ -210,25 +218,19 @@ export default class NewBroadcastFormLocation extends React.Component {
     this.setState({ savingLocation: false })
   }
 
-  renderHeader = (theme) => {
+  renderHeader = (recentLocations, theme) => {
+    if (recentLocations.length == 0) return null
     return (
-      <TouchableOpacity
-        style={{
-          ...S.styles.listElement,
-          marginVertical: 8,
-          width: "100%", backgroundColor: theme.colors.grey4,
-          borderRadius: 8
-        }}
-        onPress={() => this.props.navigation.navigate("SavedLocations", this.props.navigation.state.params.bundle)}
-      >
-        <View style={{ width: 40 }}>
-          <Icon name="star" size={20} style={{ marginHorizontal: 8 }} />
+      <>
+        <Divider style={{ marginTop: 16 }} />
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Text style={{ fontSize: 18, textAlign: "center", flex: 1 }}> Recent Locations </Text>
+          <Button
+            icon={<MatIcon name="cancel" size={20} color={theme.colors.grey3} />}
+            onPress={this.clearRecentLocations} 
+            type = "clear"/>
         </View>
-        <Text style={{ fontSize: 16, flex: 1 }}>
-          See Saved Locations
-                </Text>
-        <Icon name="chevron-right" size={20} style={{ marginHorizontal: 8 }} />
-      </TouchableOpacity>
+      </>
     )
   }
 
@@ -246,21 +248,13 @@ export default class NewBroadcastFormLocation extends React.Component {
     )
   }
 
-  renderFooter = () => {
-    if (this.state.recentLocations.length == 0) return null
-    return (
-      <MinorActionButton
-        title="Clear Recent List"
-        onPress={() => {
-          recentLocFuncs.clearRecentLocations()
-            .then(() => this.setState({ recentLocations: [] }))
-            .catch(err => {
-              logError(err)
-              this.setState({ errorMessage: "Couldn't clear recent locations" })
-            })
-        }}
-      />
-    )
+  clearRecentLocations = () => {
+    recentLocFuncs.clearRecentLocations()
+      .then(() => this.setState({ recentLocations: [] }))
+      .catch(err => {
+        logError(err)
+        this.setState({ errorMessage: "Couldn't clear recent locations" })
+      })
   }
 
   isValidLocation = () => {

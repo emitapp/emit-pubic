@@ -6,7 +6,7 @@ import { ScrollView, View, Alert } from 'react-native'
 import { Button, Divider, Input, Text } from 'react-native-elements'
 import ErrorMessageText from 'reusables/ErrorMessageText'
 import { DefaultLoadingModal, DataEmailSendingModal } from 'reusables/LoadingComponents'
-import { logError, LONG_TIMEOUT, ShowNotSupportedAlert, timedPromise } from 'utils/helpers'
+import { logError, LONG_TIMEOUT, ShowNotSupportedAlert, timedPromise, showDelayedSnackbar } from 'utils/helpers'
 import Snackbar from 'react-native-snackbar'
 
 export default class AccountManagementScreen extends React.Component {
@@ -193,7 +193,7 @@ export default class AccountManagementScreen extends React.Component {
         await timedPromise(user.updateEmail(this.state.newEmail), LONG_TIMEOUT)
         await timedPromise(user.reload(), LONG_TIMEOUT)
         this.setState({oldEmail1: "", oldPass1: "", newEmail: ""})
-        this.showDelayedSnackbar("Email change successful")
+        showDelayedSnackbar("Email change successful")
       }
     }catch(err){
       if (err.name !== 'timeout') logError(err)
@@ -216,7 +216,7 @@ export default class AccountManagementScreen extends React.Component {
         await timedPromise(user.updatePassword(this.state.newPass), LONG_TIMEOUT)
         await timedPromise(user.reload(), LONG_TIMEOUT)
         this.setState({oldEmail2: "", oldPass2: "", newPass: "", newPassConfirm: ""})
-        this.showDelayedSnackbar("Password change successful")
+        showDelayedSnackbar("Password change successful")
       }
     }catch(err){
       if (err.name !== 'timeout') logError(err)
@@ -267,22 +267,5 @@ export default class AccountManagementScreen extends React.Component {
       this.setState({deleteAccountError: err.message})
     }
     this.setState({isModalVisible: false})
-  }
-
-  //There are modals being opened and closed on this screen, and if I close a modal
-  //and then show the snackbar, the snackbar might be attached to the modal that was jsut in 
-  //the process of being removed, meaning the snackbar will never be displayed. 
-  //So, I use a small timeout to give the snackbar a bit of a delay
-  //https://github.com/cooperka/react-native-snackbar/issues/67
-  showDelayedSnackbar = (message) => {
-    setTimeout(
-      () => {
-        Snackbar.show({
-          text: message, 
-          duration: Snackbar.LENGTH_SHORT
-        });
-      },
-      200
-    )
   }
 }

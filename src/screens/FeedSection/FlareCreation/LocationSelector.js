@@ -48,7 +48,7 @@ export default class LocationSelector extends React.Component {
   render() {
     return (
       <View style={S.styles.containerFlexStart}>
-        <Text style={{ fontWeight: "bold", marginBottom: 8 }}>Pin the place you'll be eating at</Text>
+        <Text style={{ fontWeight: "bold", marginBottom: 8 }}>Hold and drag the pin to the location of the flare</Text>
         <MapView
           style={{ width: "100%", flex: 1 }}
           showsUserLocation={true}

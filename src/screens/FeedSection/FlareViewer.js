@@ -230,6 +230,7 @@ export default class FlareViewer extends React.Component {
             title="I'm In"
             onPress={() => this.isPublicFlare ? this.respondToPublicFlare(true) : this.respondToPrivateFlare(true)}
             containerStyle={{ alignSelf: "center" }} />
+            <Text>Joining gives you access to this flare's chat room.</Text>
         </View>
       )
     } else {

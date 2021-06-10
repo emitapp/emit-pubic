@@ -105,12 +105,12 @@ export const getFullVersionInfo = async () => {
   try {
     let versionInfo = DeviceInfo.getApplicationName()
     versionInfo += ` ${DeviceInfo.getSystemName()} v${DeviceInfo.getVersion()} (Build No.${DeviceInfo.getBuildNumber()})`
-    
-    if (_codepushEnabled()){
+
+    if (_codepushEnabled()) {
       const codePushPackageInfo = await codePush.getUpdateMetadata()
       if (codePushPackageInfo) versionInfo += ` Codepush Package ${codePushPackageInfo.label}`
       else versionInfo += ` Using Base Binary`
-    }else{
+    } else {
       versionInfo += " Codepush Disabled."
     }
 
@@ -194,5 +194,23 @@ export const shareFlare = async (flare) => {
   } catch (err) {
     if (err.name != "timeout") logError(err)
   }
-
 }
+
+  //For screens where modals being opened and closed, I close a modal
+  //and then show the snackbar, the snackbar might be attached to the modal that was jsut in 
+  //the process of being removed, meaning the snackbar will never be displayed. 
+  //So, I use a small timeout to give the snackbar a bit of a delay
+  //https://github.com/cooperka/react-native-snackbar/issues/67
+  import Snackbar from 'react-native-snackbar';
+
+  export const showDelayedSnackbar = (message) => {
+    setTimeout(
+      () => {
+        Snackbar.show({
+          text: message,
+          duration: Snackbar.LENGTH_SHORT
+        });
+      },
+      200
+    )
+  }
