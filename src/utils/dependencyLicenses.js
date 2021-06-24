@@ -1,6 +1,12 @@
 //Don't edit this file directly. This file pulls data from package.json - run 'yarn run updateLicenses'
 export default
 {
+    "@emitapp/multiavatar@1.1.0": {
+        "licenses": "SEE LICENSE IN LICENSE",
+        "repository": "https://github.com/emitapp/Multiavatar",
+        "licenseUrl": "https://github.com/emitapp/Multiavatar",
+        "parents": "emit"
+    },
     "@react-native-community/async-storage@1.12.1": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-community/react-native-async-storage",

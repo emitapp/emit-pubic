@@ -979,6 +979,11 @@
   dependencies:
     "@types/hammerjs" "^2.0.36"
 
+"@emitapp/multiavatar@^1.0.7":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@emitapp/multiavatar/-/multiavatar-1.1.0.tgz#2a0f0623caf68a9421cfe93e02dc78722f88e881"
+  integrity sha512-Mn9mW4X9hz6sePfQoK4J1GWUh538XAOdVM9FyT5FAZcNW0nXmOC85aVCPkfZGxN2TVAiFnCJlE9rYIwt2/yG4Q==
+
 "@expo/react-native-action-sheet@^3.6.0":
   version "3.8.0"
   resolved "https://registry.yarnpkg.com/@expo/react-native-action-sheet/-/react-native-action-sheet-3.8.0.tgz#0db8b70ea8550ceb2983abda8584efa3a61d7389"

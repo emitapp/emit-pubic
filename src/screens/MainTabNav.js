@@ -375,11 +375,11 @@ class FlareCreationButton extends React.PureComponent {
 //so the profile pic kept on flashing
 class TabBarProfilePic extends React.PureComponent {
 
-  static url = null
+  static imageData = null
 
   componentDidMount() {
     subscribeToEvent(events.PROFILE_PIC_CHNAGE, this, () => {
-      TabBarProfilePic.url = null
+      TabBarProfilePic.imageData = null
       this.pictureComponet.refresh()
     })
   }
@@ -395,8 +395,8 @@ class TabBarProfilePic extends React.PureComponent {
           diameter={27}
           uid={auth().currentUser.uid}
           ref={ref => this.pictureComponet = ref}
-          onUrlGotten={(url) => TabBarProfilePic.url = url}
-          url={TabBarProfilePic.url}
+          onImageDataGotten={(imageData) => TabBarProfilePic.imageData = imageData}
+          imageData={TabBarProfilePic.imageData}
         />
 
       </CircularView>

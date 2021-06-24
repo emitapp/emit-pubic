@@ -1,22 +1,27 @@
 //Design for this influenced by https://github.com/invertase/react-native-firebase/issues/2558
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
+import functions from '@react-native-firebase/functions';
+import { cloudFunctionStatuses } from 'utils/serverValues';
 import React, { Component } from 'react';
-import { Platform, StyleSheet, View, Image, Alert, Linking } from 'react-native';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
-import { logError } from 'utils/helpers';
-import { v4 as uuidv4 } from 'uuid';
-import { Text, Button, Overlay } from 'react-native-elements'
-import { SmallLoadingComponent } from 'reusables/LoadingComponents'
-import Snackbar from 'react-native-snackbar';
-var RNFS = require('react-native-fs');
-import ProfilePicCircle from 'reusables/ProfilePicComponents';
-import ErrorMessageText from 'reusables/ErrorMessageText';
-import { MinorActionButton } from 'reusables/ReusableButtons';
-import { checkAndGetPermissions } from 'utils/AppPermissions'
+import { Alert, Image, Platform, StyleSheet, View } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { Button, Overlay, Text } from 'react-native-elements';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { PERMISSIONS } from 'react-native-permissions';
+import Snackbar from 'react-native-snackbar';
+import ErrorMessageText from 'reusables/ErrorMessageText';
+import { SmallLoadingComponent } from 'reusables/LoadingComponents';
+import ProfilePicCircle from 'reusables/ProfilePicComponents';
+import { MinorActionButton } from 'reusables/ReusableButtons';
+import AvatarCreationModal from 'screens/SocialSection/AvatarCreation';
 import MainTheme from 'styling/mainTheme';
+import { checkAndGetPermissions } from 'utils/AppPermissions';
+import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
+import { v4 as uuidv4 } from 'uuid';
+import Avatar from './Avatar';
+var RNFS = require('react-native-fs');
+
 
 const imagePickerOptions = {
   mediaType: 'photo'
@@ -30,14 +35,22 @@ const imagePickerOptions = {
  */
 export default class ProfilePicChanger extends Component {
 
+  avatarModal = null
+
   state = {
+    //For conventional image upload
     imageUri: '',
-    uploading: false,
     pickingImage: false,
     uploadProgress: 0,
-    errorMessage: null,
+
+    //For avatar seeds
+    avatarSeed: "",
+
     //Stays true the moment the user successfully picked a pic at least once
     hasSuccessfullyPicked: false,
+    uploading: false,
+
+    errorMessage: null,
     modalVisible: false
   };
 
@@ -62,6 +75,12 @@ export default class ProfilePicChanger extends Component {
               title="Take image using camera"
               onPress={() => this.setState({ modalVisible: false }, this.pickImageFromCamera)}
               type='clear' />
+            {!this.props.groupPic &&
+              <Button
+                title="Create An Avatar"
+                onPress={() => this.setState({ modalVisible: false }, this.openAvatarModal)}
+                type='clear' />
+            }
             <MinorActionButton
               title="Close"
               onPress={() => this.setState({ modalVisible: false })} />
@@ -70,8 +89,11 @@ export default class ProfilePicChanger extends Component {
 
         <ErrorMessageText message={this.state.errorMessage} />
 
+        <AvatarCreationModal ref={r => this.avatarModal = r} onSubmit={this.pickAvatar} />
+
         {!this.props.hideNote && <Text style={{ textAlign: "center", marginBottom: 16 }}>
-          Note that your updated {this.props.groupPic ? "group" : "profile"} pic might take a few seconds to appear everywhere in the app
+          Note that your updated {this.props.groupPic ? "group" : "profile"} pic might take a few
+          seconds to appear everywhere in the app
         </Text>}
 
         <View style={{ alignItems: "center", justifyContent: "center" }}>
@@ -94,6 +116,12 @@ export default class ProfilePicChanger extends Component {
               style={styles.image} />
           ) : null}
 
+          {this.state.avatarSeed ? (
+            <Avatar
+              seed={this.state.avatarSeed}
+              style={styles.image} />
+          ) : null}
+
           <AnimatedCircularProgress
             size={styles.image.width + 40}
             width={15}
@@ -106,13 +134,13 @@ export default class ProfilePicChanger extends Component {
         <View style={{ justifyContent: "center", marginTop: 16 }}>
 
 
-          {this.state.imageUri ? (
+          {(this.state.imageUri || this.state.avatarSeed) ? (
             <>
               <Button
                 title={(this.state.uploading) ? "Uploading ..." : "Save"}
-                onPress={this.uploadImage}
+                onPress={this.uploadImageOrSeed}
                 disabled={this.state.uploading}
-                buttonStyle = {{backgroundColor: MainTheme.colors.bannerButtonGreen}} />
+                buttonStyle={{ backgroundColor: MainTheme.colors.bannerButtonGreen }} />
 
               <MinorActionButton
                 title="Choose another image"
@@ -144,7 +172,7 @@ export default class ProfilePicChanger extends Component {
         if (response.errorCode) {
           Alert.alert('Whoops!', `An error occured: ${response.errorMessage}`);
         } else if (!response.didCancel) {
-          this.setState({ imageUri: response.uri, hasSuccessfullyPicked: true });
+          this.setState({ imageUri: response.uri, hasSuccessfullyPicked: true, avatarSeed: "" });
         }
         this.setState({ pickingImage: false })
       });
@@ -163,7 +191,7 @@ export default class ProfilePicChanger extends Component {
         if (response.errorCode) {
           Alert.alert('Whoops!', `An error occured: ${response.errorMessage}`);
         } else if (!response.didCancel) {
-          this.setState({ imageUri: response.uri, hasSuccessfullyPicked: true });
+          this.setState({ imageUri: response.uri, hasSuccessfullyPicked: true, avatarSeed: "" });
         }
         this.setState({ pickingImage: false })
       });
@@ -173,8 +201,20 @@ export default class ProfilePicChanger extends Component {
     }
   };
 
+  openAvatarModal = () => {
+    this.avatarModal.open()
+  }
+
+  pickAvatar = (avatarSeed) => {
+    this.setState({ avatarSeed, hasSuccessfullyPicked: true, imageUri: "" })
+  }
+
+  uploadImageOrSeed = () => {
+    if (this.state.imageUri) this.uploadImage()
+    if (this.state.avatarSeed) this.uploadAvatar()
+  }
+
   uploadImage = async () => {
-    if (!this.state.imageUri) return;
     let filename = `${uuidv4()}` // Generate unique name
     this.setState({ uploading: true });
     let task = this.props.groupPic ?
@@ -206,11 +246,7 @@ export default class ProfilePicChanger extends Component {
               uploadProgress: 0,
               errorMessage: null,
             };
-            Snackbar.show({
-              text: `${this.props.groupPic ? "Group" : "Profile"} picture change successful`,
-              duration: Snackbar.LENGTH_SHORT
-            });
-            if (this.props.onSuccessfulUpload) this.props.onSuccessfulUpload()
+            this.onSuccessfulUpload()
           }
           this.setState(stateDeltas);
         },
@@ -226,6 +262,33 @@ export default class ProfilePicChanger extends Component {
     } catch (err) {
       logError(err)
     }
+  }
+
+  uploadAvatar = async () => {
+    try {
+      this.setState({ uploading: true })
+      const response = await timedPromise(
+        functions().httpsCallable('chooseAvatarSeed')(this.state.avatarSeed), LONG_TIMEOUT);
+      if (response.data.status === cloudFunctionStatuses.OK) {
+        this.onSuccessfulUpload()
+      } else {
+        this.setState({ errorMessage: "Couldn't get recommended contacts" })
+        logError(new Error(`Problematic chooseAvatarSeed function response: ${response.data.message}`))
+      }
+    } catch (err) {
+      if (err.name != "timeout") logError(err)
+      this.setState({ errorMessage: "Couldn't upload avatar!" })
+    } finally {
+      this.setState({ uploading: false })
+    }
+  }
+
+  onSuccessfulUpload = () => {
+    Snackbar.show({
+      text: `${this.props.groupPic ? "Group" : "Profile"} picture change successful`,
+      duration: Snackbar.LENGTH_SHORT
+    });
+    if (this.props.onSuccessfulUpload) this.props.onSuccessfulUpload()
   }
 
   //This promise rejects if there's not enough permissions
@@ -254,6 +317,11 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   image: {
+    width: 200,
+    height: 200,
+    borderRadius: 100
+  },
+  avatar: {
     width: 200,
     height: 200,
     borderRadius: 100

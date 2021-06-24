@@ -21,6 +21,7 @@
     "copyenv": "sh bash_scripts/copy-env-files.sh"
   },
   "dependencies": {
+    "@emitapp/multiavatar": "^1.0.7",
     "@react-native-community/async-storage": "^1.12.1",
     "@react-native-community/clipboard": "^1.5.1",
     "@react-native-community/datetimepicker": "^2.1.0",
