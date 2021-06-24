@@ -16,8 +16,7 @@ import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/LoadingC
 import ProfilePicDisplayer, { ProfilePicList } from 'reusables/ProfilePicComponents';
 import PublicFlareNotice from 'reusables/PublicFlareNotice';
 import FriendReqModal from 'screens/SocialSection/FriendReqModal';
-import S from "styling";
-import { analyticsVideoChatUsed } from 'utils/analyticsFunctions';
+import { analyticsFlareJoined, analyticsFlareLeft, analyticsVideoChatUsed } from 'utils/analyticsFunctions';
 import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, shareFlare, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, responderStatuses } from 'utils/serverValues';
 
@@ -118,17 +117,13 @@ export default class FlareViewer extends React.Component {
                 </View>
               </View>
 
-              {this.isPublicFlare && <PublicFlareNotice />}
-
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
-                <View style={{ justifyContent: "center" }}>
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginBottom: 8  }}>
                   <ProfilePicDisplayer diameter={32} uid={this.broadcastSnippet.owner.uid} />
-                </View>
-                <Text style={{ marginLeft: 4, marginBottom: 8, color: "#3F83F9" }}>{this.broadcastSnippet.owner.displayName}</Text>
+                  <Text style={{ color: "#3F83F9", marginLeft: 8}}>{this.broadcastSnippet.owner.displayName}</Text>
               </View>
 
-              <FlareTimeStatus item={broadcastData} />
-
+              <FlareTimeStatus item={broadcastData} style={{ textAlign: "center" }} fullInfo />
+              {this.isPublicFlare && <PublicFlareNotice style={{ marginTop: 8 }} />}
             </View>
 
             <Divider style={{ marginBottom: 8 }} />
@@ -141,7 +136,7 @@ export default class FlareViewer extends React.Component {
                   {broadcastData.geolocation &&
                     <Button
                       icon={<Icon name="location-pin" size={20} color="white" />}
-                      title = " View on Map"
+                      title=" View on Map"
                       onPress={this.openLocationOnMap}
                       containerStyle={{ marginRight: 8, marginLeft: 0 }}
                     />}
@@ -230,7 +225,7 @@ export default class FlareViewer extends React.Component {
             title="I'm In"
             onPress={() => this.isPublicFlare ? this.respondToPublicFlare(true) : this.respondToPrivateFlare(true)}
             containerStyle={{ alignSelf: "center" }} />
-            <Text>Joining gives you access to this flare's chat room.</Text>
+          <Text>Joining gives you access to this flare's chat room.</Text>
         </View>
       )
     } else {
@@ -269,10 +264,10 @@ export default class FlareViewer extends React.Component {
    * Calls cloud function that will either 
    * confirm a user for an event, or take a user off an event
    * depending on the confirm parameter
-   * @param {*} confirm a boolean, if true will confirm a user
+   * @param {*} isJoining a boolean, if true will confirm a user
    * otherwise, it will take them off the broadcast
    */
-  respondToPrivateFlare = async (confirm) => {
+  respondToPrivateFlare = async (isJoining) => {
     this.setState({ isModalVisible: true })
     try {
       const requestFunction = functions().httpsCallable('setBroadcastResponse');
@@ -280,10 +275,10 @@ export default class FlareViewer extends React.Component {
       const response = await timedPromise(requestFunction({
         broadcasterUid: this.broadcastSnippet.owner.uid,
         broadcastUid: this.broadcastSnippet.uid,
-        attendOrRemove: confirm
+        attendOrRemove: isJoining
       }), LONG_TIMEOUT);
 
-      if (confirm && response.data.status === cloudFunctionStatuses.OK) {
+      if (isJoining && response.data.status === cloudFunctionStatuses.OK) {
         this.broadcastSnippet.status = responderStatuses.CONFIRMED
       } else if (response.data.status === cloudFunctionStatuses.OK) {
         this.broadcastSnippet.status = responderStatuses.CANCELLED
@@ -291,6 +286,12 @@ export default class FlareViewer extends React.Component {
         this.setState({ errorMessage: response.data.message })
         logError(new Error("Problematic setBroadcastResponse function response: " + response.data.message))
       }
+
+      if (response.data.status === cloudFunctionStatuses.OK) {
+        if (isJoining) analyticsFlareJoined({ ...this.broadcastSnippet, isPublicFlare: false })
+        else analyticsFlareLeft({ ...this.broadcastSnippet, isPublicFlare: false })
+      }
+
     } catch (err) {
       if (err.name != "timeout") logError(err)
       this.setState({ errorMessage: err.message })
@@ -321,7 +322,11 @@ export default class FlareViewer extends React.Component {
       if (response.data.status !== cloudFunctionStatuses.OK) {
         this.setState({ errorMessage: response.data.message })
         logError(new Error("Problematic setBroadcastResponse function response: " + response.data.message))
+      } else {
+        if (isJoining) analyticsFlareJoined({ ...this.broadcastSnippet, isPublicFlare: true })
+        else analyticsFlareLeft({ ...this.broadcastSnippet, isPublicFlare: true })
       }
+
     } catch (err) {
       if (err.name != "timeout") logError(err)
       this.setState({ errorMessage: err.message })

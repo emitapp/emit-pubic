@@ -14,6 +14,7 @@ import Name from './Name';
 import { isSameTime } from './utils';
 import FriendReqModal from 'screens/SocialSection/FriendReqModal';
 import { Pressable } from 'react-native';
+import { analyticsChatMessageSent } from 'utils/analyticsFunctions';
 
 
 //The main entry point into the gifted-chat app
@@ -124,7 +125,9 @@ export default class ChatScreen extends React.Component {
   //Expects the output to be from messageToFire
   sendToFirebase = (message) => {
     const path = this.chatrefPath + "/" + message._id;
-    database().ref(path).set(message).catch(err => logError(err));
+    database().ref(path).set(message)
+    .then(() => analyticsChatMessageSent(auth().currentUser.uid, this.broadcastData))
+    .catch(err => logError(err));
   }
 
   //method to convert UI message to firebase object to be stored

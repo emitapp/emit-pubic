@@ -76,13 +76,13 @@ export const analyticsUserSharedFlare = (flareUid) => {
 }
 
 export const analyticsCustomActivity = (emoji, text) => {
-    analytics().logEvent("custom_activity", {emoji, text})
+    analytics().logEvent("custom_activity", { emoji, text })
         .catch(err => logError(err))
 }
 
 export const analyticsLogFlareCreation = async (flareUid, flareOwnerUid) => {
     try {
-        const snap = await getFlareAnalyticsData(flareUid, flareOwnerUid)
+        const snap = await _getFlareAnalyticsData(flareUid, flareOwnerUid)
         if (!snap.exists()) {
             logError(new Error("Couldn't get flare analytics data"))
         } else {
@@ -95,7 +95,7 @@ export const analyticsLogFlareCreation = async (flareUid, flareOwnerUid) => {
 
 export const analyticsVideoChatUsed = async (flareUid, flareOwnerUid) => {
     try {
-        const snap = await getFlareAnalyticsData(flareUid, flareOwnerUid)
+        const snap = await _getFlareAnalyticsData(flareUid, flareOwnerUid)
         if (!snap.exists()) {
             logError("Couldn't get flare analytics data")
         } else {
@@ -106,7 +106,34 @@ export const analyticsVideoChatUsed = async (flareUid, flareOwnerUid) => {
     }
 }
 
-const getFlareAnalyticsData = async (flareUid, flareOwnerUid) => {
+export const analyticsFlareJoined = (flareInfo) => {
+    _recordFlareResponse(true, flareInfo)
+}
+
+export const analyticsFlareLeft = (flareInfo) => {
+    _recordFlareResponse(false, flareInfo)
+}
+
+//TODO: Improve this tracking of chat to allow us to better understand when they're using it
+export const analyticsChatMessageSent = (userUid, flareInfo) => {
+    analytics().logEvent("chat_message_sent", { userUid, flareUid: flareInfo.uid })
+        .catch(err => logError(err))
+}
+
+
+const _recordFlareResponse = (joined, flareInfo) => {
+    const args = {
+        flareUid: flareInfo.uid,
+        flareOwnerUid: flareInfo.owner.uid,
+        flareActivity: flareInfo.activity,
+        flareEmoji: flareInfo.emoji,
+        isPublicFlare: flareInfo.isPublic
+    }
+    if (flareInfo.groupInfo) args.groupUid = flareInfo.groupInfo.uid
+    analytics().logEvent(joined ? "flare_joined" : "flare_left", args).catch(err => logError(err))
+}
+
+const _getFlareAnalyticsData = async (flareUid, flareOwnerUid) => {
     const snap = await database().ref(`/activeBroadcasts/${flareOwnerUid}/private/${flareUid}/ga_analytics`).once("value")
     return snap
 }

@@ -69,11 +69,14 @@ export default class FeedElement extends React.Component {
           {this.props.isPublicFlare && <PublicFlareService />}
         </View>
 
-        {this.state.attendeesInfo != "" && <Text>{this.state.attendeesInfo}</Text>}
+        <View style={{ marginLeft: 8 }}>
+          {this.props.item.note != undefined && this.props.item.note != "" &&
+            <Text style={{ fontStyle: "italic", color: "dimgrey", marginVertical: 4 }}>{this.props.item.note}</Text>
+          }
+          {this.state.attendeesInfo != "" && <Text>{this.state.attendeesInfo}</Text>}
 
-        {this.props.item.note != undefined && this.props.item.note != "" &&
-          <Text style={{ fontStyle: "italic", color: "dimgrey", marginLeft: 8, marginVertical: 8 }}>{this.props.item.note}</Text>
-        }
+        </View>
+
 
       </TouchableOpacity>
     )
@@ -92,11 +95,9 @@ export default class FeedElement extends React.Component {
 
     let string = ""
     if (attendeesList.length > 3) {
-      string = `${attendeesList.pop()}, ${attendeesList.pop()} and ${attendeesList.length} 
-            other people are in!`
+      string = `${attendeesList.pop()}, ${attendeesList.pop()} and ${attendeesList.length} other people are in!`
     } else if (attendeesList.length == 3) {
-      string = `${attendeesList.pop()}, ${attendeesList.pop()} and 1
-            other person are in!`
+      string = `${attendeesList.pop()}, ${attendeesList.pop()} and 1 other person are in!`
     } else if (attendeesList.length == 2) {
       string = `${attendeesList.pop()} and ${attendeesList.pop()} are in!`
     } else if (attendeesList.length == 1) {
