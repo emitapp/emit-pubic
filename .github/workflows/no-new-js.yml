@@ -1,0 +1,26 @@
+name: No new JS files
+on:  [pull_request]
+jobs:
+  check-diff-for-js:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch HEAD
+        uses: actions/checkout@v2
+
+      - name: Fetch base
+        run: git fetch --depth=1 origin ${{github.base_ref}}
+
+      - name: Check diff for new .js files
+        run: |
+          echo "JS_DIFF=$(git diff --name-only --diff-filter=ACX origin/${{github.base_ref}} HEAD | grep .js$)" >> $GITHUB_ENV
+
+      - name: Fail if new .js files exist
+        run: |
+          if [ -z "$JS_DIFF" ]
+          then
+              echo ✅ No new JS files!
+          else
+              echo 🛑 We detected some new js files! 
+              echo "$JS_DIFF"
+              exit 1
+          fi         

@@ -1,3 +1,6 @@
+//Leave as a JS file
+//https://reactnative.dev/docs/typescript#adding-typescript-to-an-existing-project
+
 import { AppRegistry } from 'react-native';
 import App from './App';
 import React from 'react'

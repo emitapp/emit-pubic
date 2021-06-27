@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "eamodio.gitlens",
-        "gruntfuggly.todo-tree"
+        "gruntfuggly.todo-tree",
+        "dbaeumer.vscode-eslint"
     ]
 }
