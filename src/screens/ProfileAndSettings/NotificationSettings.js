@@ -43,6 +43,7 @@ export default class NotificationSettings extends React.Component {
       onNewFriendRequest: true,
       onAddedToGroup: true,
       onChat: true,
+      onNearbyPublicFlare: true
     }
 
     this.firstCollapsableView = null;
@@ -124,6 +125,14 @@ export default class NotificationSettings extends React.Component {
               containerStyle = {{alignSelf: "flex-start", marginLeft: 24, padding: 0, marginBottom: 16}}
               onIconPress = {() => this.setState({onChat: !this.state.onChat})}
             />
+            <CheckBox
+              title={`Someone makes a public flare near you`}
+              fontFamily = "NunitoSans-Regular"
+              textStyle = {{fontSize: 16}}
+              checked = {this.state.onNearbyPublicFlare}
+              containerStyle = {{alignSelf: "flex-start", marginLeft: 24, padding: 0, marginBottom: 16}}
+              onIconPress = {() => this.setState({onNearbyPublicFlare: !this.state.onNearbyPublicFlare})}
+            />
           </CollapsibleView>
 
           <View><Divider style = {{marginBottom: 8}}/></View>
@@ -188,7 +197,8 @@ export default class NotificationSettings extends React.Component {
         onNewFriend: data.notificationPrefs.onNewFriend,
         onNewFriendRequest: data.notificationPrefs.onNewFriendRequest,
         onAddedToGroup: data.notificationPrefs.onAddedToGroup,
-        onChat: data.notificationPrefs.onChat     
+        onChat: data.notificationPrefs.onChat,     
+        onNearbyPublicFlare: data.notificationPrefs.onNearbyPublicFlare     
       })
     }
   }
@@ -203,12 +213,12 @@ export default class NotificationSettings extends React.Component {
     try{
       const {
         onBroadcastFrom, onNewBroadcastResponse, onNewFriend,
-        onNewFriendRequest, onAddedToGroup, onChat
+        onNewFriendRequest, onAddedToGroup, onChat, onNearbyPublicFlare
       } = this.state
       const saveFunction = functions().httpsCallable('updateNotificationPrefs');
       const response = await timedPromise(saveFunction({
         onBroadcastFrom, onNewFriend, onNewFriendRequest, onNewBroadcastResponse, onAddedToGroup,
-        onChat
+        onChat, onNearbyPublicFlare
       }), LONG_TIMEOUT);
 
       if (response.data.status !== cloudFunctionStatuses.OK){

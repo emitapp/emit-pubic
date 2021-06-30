@@ -1,9 +1,15 @@
 import { distanceBetween } from 'geofire-common';
 import Geolocation from 'react-native-geolocation-service';
 import Snackbar from 'react-native-snackbar';
+import { geohashForLocation } from 'geofire-common'
+import auth from '@react-native-firebase/auth'
+import database from '@react-native-firebase/database'
+import { logError } from './helpers';
+
 
 /**
- * Uses Snackbar for error reporting...
+ * Its recommended that you call this along with recordLocationToBackend
+ * Uses Snackbar for error reporting by default
  * @param {*} onSuccess 
  * @param {*} onError 
  */
@@ -51,4 +57,27 @@ export const isFalsePositiveNearbyFlare = (flare, center) => {
   const distanceInKm = distanceBetween([lat, lng], center);
   const distanceInM = distanceInKm * 1000;
   return (distanceInM > PUBLIC_FLARE_RADIUS_IN_M)
+}
+
+
+const DEFAULT_LOCATION_UPLOADING_PREFERENCE = true
+
+/**
+ * Updates the backend with the user's location, if they haven't disabled that
+ * @param {*} geolocation Should come from GetGeolocation function
+ */
+export const RecordLocationToBackend = async (geolocation) => {
+  try {
+    const { latitude, longitude } = geolocation
+    const geoHash = geohashForLocation([latitude, longitude])
+    const preferenceSnap = await database().ref(`userLocationUploadPreference/${auth().currentUser.uid}`).once("value")
+    const shouldUpload = DEFAULT_LOCATION_UPLOADING_PREFERENCE;
+    if (preferenceSnap.exists()) shouldUpload = preferenceSnap.val()
+    if (shouldUpload)
+      await database().ref(`userLocationGeoHashes/${auth().currentUser.uid}`).set(
+        { geoHash, geolocation: {latitude, longitude} }
+      )
+  } catch (err) {
+    logError(err, false)
+  }
 }

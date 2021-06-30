@@ -12,7 +12,7 @@ import { SmallLoadingComponent } from 'reusables/LoadingComponents';
 import MergedSectionInfiniteScroll from 'reusables/MergedSectionInfiniteScroll';
 import S from 'styling';
 import { checkAndGetPermissions } from 'utils/AppPermissions';
-import { GetGeolocation, PUBLIC_FLARE_RADIUS_IN_M, isFalsePositiveNearbyFlare } from 'utils/GeolocationFunctions';
+import { GetGeolocation, PUBLIC_FLARE_RADIUS_IN_M, isFalsePositiveNearbyFlare, RecordLocationToBackend } from 'utils/GeolocationFunctions';
 import { logError } from 'utils/helpers';
 import { responderStatuses } from 'utils/serverValues';
 import EmittedFlareElement from './EmittedFlareElement';
@@ -154,7 +154,11 @@ export default class ActiveBroadcasts extends React.Component {
         return
       }
 
-      GetGeolocation(this.addRefsForPublicFlares);
+      GetGeolocation(position => {
+        const coords = position.coords
+        this.addRefsForPublicFlares(coords)
+        RecordLocationToBackend(coords)
+      });
 
     } catch (err) {
       this.setState({
@@ -165,8 +169,8 @@ export default class ActiveBroadcasts extends React.Component {
     }
   }
 
-  addRefsForPublicFlares = (position) => {
-    const { longitude, latitude } = position.coords
+  addRefsForPublicFlares = (coords) => {
+    const { longitude, latitude } = coords
     const center = [latitude, longitude];
     this.geolocation = center
     const bounds = geohashQueryBounds(center, PUBLIC_FLARE_RADIUS_IN_M);
