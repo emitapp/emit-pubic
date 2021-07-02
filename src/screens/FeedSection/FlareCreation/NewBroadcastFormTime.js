@@ -195,6 +195,7 @@ export default class NewBroadcastFormTime extends React.Component {
         this.props.navigation.state.params.startingTimeText = timeText
         this.props.navigation.state.params.startingTime = millis
         this.props.navigation.state.params.startingTimeRelative = true
+        this.props.navigation.state.params.isStartingSameTime = false
         this.props.navigation.goBack()
     }
 
@@ -209,6 +210,7 @@ export default class NewBroadcastFormTime extends React.Component {
         this.props.navigation.state.params.startingTimeText = epochToDateString(this.state.date.getTime())
         this.props.navigation.state.params.startingTime = this.state.date.getTime()
         this.props.navigation.state.params.startingTimeRelative = false
+        this.props.navigation.state.params.isStartingSameTime = false
         this.props.navigation.goBack()
     }
 }

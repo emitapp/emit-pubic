@@ -1,7 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
 import { Text } from 'react-native-elements';
-import Geolocation from 'react-native-geolocation-service';
 import MapView, { Marker } from 'react-native-maps';
 import { PERMISSIONS } from 'react-native-permissions';
 import Snackbar from 'react-native-snackbar';

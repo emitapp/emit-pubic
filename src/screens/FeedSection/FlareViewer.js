@@ -4,8 +4,8 @@ import firestore from '@react-native-firebase/firestore';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
 import { ScrollView } from 'react-native';
-import { Linking, Platform, View } from 'react-native';
-import { Button, Divider, Text } from 'react-native-elements';
+import { Linking, Platform, View, Pressable } from 'react-native';
+import { Button, Divider, Text, Overlay } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Entypo';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import AutolinkText from 'reusables/AutolinkText';
@@ -19,6 +19,8 @@ import FriendReqModal from 'screens/SocialSection/FriendReqModal';
 import { analyticsFlareJoined, analyticsFlareLeft, analyticsVideoChatUsed } from 'utils/analyticsFunctions';
 import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, shareFlare, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, responderStatuses } from 'utils/serverValues';
+import { MinorActionButton } from 'reusables/ReusableButtons';
+import { Alert } from 'react-native';
 
 /**
  * Class for viewing info about a broadcast.
@@ -39,7 +41,10 @@ export default class FlareViewer extends React.Component {
       //If the viewer is the flare owner the expectation is that they're 
       //coming from a screen that already had all the info about the flare
       broadcastData: this.isFlareOwner ? this.broadcastSnippet : null,
+      // normal modal is the internie loading modal
       isModalVisible: false,
+      // context modal is the owner's flare editing functionality
+      isFlareOptionsModalVisible: false,
       jitsiUsername: null,
       showConfirmed: false
     }
@@ -47,7 +52,6 @@ export default class FlareViewer extends React.Component {
   }
 
   componentDidMount = () => {
-
     if (this.isPublicFlare && !this.isFlareOwner) {
       this.unsubscriber = firestore().collection("publicFlares").doc(this.broadcastSnippet.uid).onSnapshot({
         error: (err) => {
@@ -102,6 +106,30 @@ export default class FlareViewer extends React.Component {
           <TimeoutLoadingComponent hasTimedOut={false} retryFunction={() => null} />
         }
 
+        <Overlay
+          isVisible={this.state.isFlareOptionsModalVisible}
+          onRequestClose={() => this.setState({ isFlareOptionsModalVisible: false })}
+          onBackdropPress={() => this.setState({ isFlareOptionsModalVisible: false })}
+          overlayStyle={{ maxWidth: "70%" }}>
+          <>
+            <Button
+              title={"Edit flare"}
+              titleStyle={{ marginLeft: 10 }}
+              icon={<AwesomeIcon name="edit" size={22} color="#FA6C13" />}
+              onPress={this.editFlare}
+              type='clear' />
+            <Button
+              title="Delete flare"
+              titleStyle={{ marginLeft: 10 }}
+              icon={<AwesomeIcon name="trash-alt" size={22} color="#FA6C13" />}
+              onPress={this.deleteFlare}
+              type='clear' />
+            <MinorActionButton
+              title="Close"
+              onPress={() => this.setState({ isFlareOptionsModalVisible: false })} />
+          </>
+        </Overlay>
+
         <FriendReqModal
           ref={modal => this.friendRequestModal = modal} />
 
@@ -118,7 +146,12 @@ export default class FlareViewer extends React.Component {
               </View>
 
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginBottom: 8  }}>
-                  <ProfilePicDisplayer diameter={32} uid={this.broadcastSnippet.owner.uid} />
+                  <Pressable onPress={this.friendRequestModal ? () => this.friendRequestModal.openUsingUid(this.broadcastSnippet.owner.uid) : null}>
+                    <ProfilePicDisplayer
+                      diameter={32}
+                      uid={this.broadcastSnippet.owner.uid}
+                    />
+                  </Pressable>
                   <Text style={{ color: "#3F83F9", marginLeft: 8}}>{this.broadcastSnippet.owner.displayName}</Text>
               </View>
 
@@ -179,11 +212,19 @@ export default class FlareViewer extends React.Component {
         {broadcastData && this.displayBroadcastAction()}
 
         <Button
-          icon={<AwesomeIcon name="share-square" size={30} color="black" />}
+          icon={<AwesomeIcon name="share-square" size={30} color="grey" />}
           containerStyle={{ position: 'absolute', top: 8, left: 8 }}
           onPress={() => shareFlare(this.broadcastSnippet)}
           type="clear"
         />
+
+        {/* //TODO: Support editign and deletion for public flares */}
+        {(this.isFlareOwner && !this.isPublicFlare) && <Button
+          icon={<AwesomeIcon name="ellipsis-h" size={18} color="grey" />}
+          containerStyle={{ position: 'absolute', top: 8, right: 0 }}
+          onPress={() => this.setState({ isFlareOptionsModalVisible: true })}
+          type="clear"
+        />}
 
       </ScrollView>
     )
@@ -354,5 +395,50 @@ export default class FlareViewer extends React.Component {
       return this.state.broadcastData.responders.includes(auth().currentUser.uid)
     }
     return (this.broadcastSnippet.status && this.broadcastSnippet.status != responderStatuses.CANCELLED)
+  }
+
+  editFlare = () => {
+    this.setState({ isFlareOptionsModalVisible: false })
+    this.props.navigation.navigate('NewBroadcastForm', {
+      needUserConfirmation: false,
+      broadcastSnippet: this.broadcastSnippet,
+      isEditing: true
+    })
+  }
+
+  deleteFlare = () => {
+    Alert.alert("Delete Flare?", "Are you sure you want to cancel this flare?", [
+      {
+        text: 'Confirm',
+        onPress: async () => {
+          this.setState({ isFlareOptionsModalVisible: false, isModalVisible: true })
+          try {
+            let params = { ownerUid: this.broadcastSnippet.owner.uid, uid: this.broadcastSnippet.uid }
+            let broadcastFunction = functions().httpsCallable('deleteBroadcast');
+            const response = await timedPromise(broadcastFunction(params), LONG_TIMEOUT);
+            if (response.data.status === cloudFunctionStatuses.OK) {
+              this.props.navigation.navigate('Feed')
+            } else {
+              this.setState({ errorMessage: response.data.message })
+              logError(new Error("Problematic createActiveBroadcast function response: " + response.data.message))
+            }
+          } catch (err) {
+            if (err.name == "timeout") {
+              this.setState({ errorMessage: "Timeout!" })
+            } else {
+              this.setState({ errorMessage: err.message })
+              logError(err)
+            }
+          }
+          this.setState({ isModalVisible: false })
+        },
+        style: "destructive",
+      },
+      {
+        text: 'Cancel',
+        onPress: () => { },
+        style: "cancel",
+      },
+    ]);
   }
 }

@@ -25,7 +25,6 @@ export default class ActiveBroadcasts extends React.Component {
     this.emittedTitle = "HOSTING"
     this.joinedTitle = "JOINED"
     this.upcomingTitle = "FEED"
-
     this.dbrefs = [
       //Flares you've emitted
       {

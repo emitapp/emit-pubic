@@ -214,3 +214,15 @@ export const shareFlare = async (flare) => {
       200
     )
   }
+
+
+/**
+ * Returns an set of keys that are in A but not in B
+ * @param objA Object A
+ * @param objB Object B
+ */
+export function objectDifference(objA, objB ) {
+  const setA = new Set(Object.keys(objA))
+  const setB = new Set(Object.keys(objB))
+  return new Set([...setA].filter(x => !setB.has(x)))
+}

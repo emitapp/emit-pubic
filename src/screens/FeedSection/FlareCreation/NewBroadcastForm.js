@@ -1,5 +1,6 @@
 import auth from '@react-native-firebase/auth';
 import functions from '@react-native-firebase/functions';
+import database from '@react-native-firebase/database';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
 import { Button, Input, Text, ThemeConsumer, CheckBox } from 'react-native-elements';
@@ -16,14 +17,21 @@ import { ProfilePicList } from 'reusables/ProfilePicComponents';
 import { BannerButton } from 'reusables/ReusableButtons';
 import S from 'styling';
 import { analyticsLogFlareCreation } from 'utils/analyticsFunctions';
-import { isOnlyWhitespace, logError, LONG_TIMEOUT, showDelayedSnackbar, timedPromise } from 'utils/helpers';
+import { epochToDateString, isOnlyWhitespace, logError, LONG_TIMEOUT, objectDifference, showDelayedSnackbar, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, MAX_BROADCAST_NOTE_LENGTH } from 'utils/serverValues';
+
 
 class NewBroadcastForm extends React.Component {
 
   constructor(props) {
     super(props)
-    this.passableBroadcastInfo = { //Information that's directly edited by other screens
+
+    //This.isEditing and this.broadcastSnippet come hand in hand
+    this.isEditing = this.props.navigation.getParam('isEditing');
+    this.broadcastSnippet = this.props.navigation.getParam('broadcastSnippet');
+
+
+    this.passableBroadcastInfo = { // All toggleable broadcast information
       emojiSelected: "",
       activitySelected: "",
       startingTimeText: "Now",
@@ -31,24 +39,31 @@ class NewBroadcastForm extends React.Component {
       startingTimeRelative: true,
       location: "",
       geolocation: null,
+      duration: null,
+      durationText: "1 hour",
+      note: "",
       allFriends: false,
       recepientFriends: {},
       recepientMasks: {},
       recepientGroups: {},
-      duration: null,
-      durationText: "1 hour",
-      note: ""
-    }
-    this.broadcastInfoPrototype = { ...this.passableBroadcastInfo }
-    this.state = {
-      showingMore: false,
-      passableBroadcastInfo: this.passableBroadcastInfo,
+
       customMaxResponders: false,
       maxResponders: "",
-      isModalVisible: false,
-      errorMessage: null,
-      isPublicFlare: false,
     }
+
+    this.broadcastInfoPrototype = { ...this.passableBroadcastInfo }
+
+    //Useful info for editing flares (gotten from the server when needed)...
+    this.recepientFriendsOriginal = {},
+      this.recepientGroupsOriginal = {},
+
+      this.state = {
+        showingMore: false,
+        passableBroadcastInfo: this.passableBroadcastInfo,
+        isModalVisible: false,
+        errorMessage: null,
+        isPublicFlare: false,
+      }
   }
 
   static navigationOptions = ClearHeader("New Flare");
@@ -58,6 +73,10 @@ class NewBroadcastForm extends React.Component {
     this.focusListener = navigation.addListener('didFocus', () => {
       this.setState({}) //Just call for a rerender
     });
+
+    if (this.isEditing && this.broadcastSnippet) {
+      this.getInitalBroadcastInformation()
+    }
   }
 
 
@@ -103,23 +122,24 @@ class NewBroadcastForm extends React.Component {
                   <Text style={{ fontSize: 18 }} >{flareInfo.activitySelected}</Text>
                 </FormInput>
 
-                <View style={{ marginLeft: 24, marginBottom: 8 }}>
-                  <CheckBox
-                    title='Public Flare'
-                    fontFamily="NunitoSans-Regular"
-                    textStyle={{ fontSize: 16, fontWeight: "bold", color: "white" }}
-                    checked={this.state.isPublicFlare}
-                    containerStyle={{ alignSelf: "flex-start", padding: 0, marginBottom: 0 }}
-                    onIconPress={() => this.setState({ isPublicFlare: !this.state.isPublicFlare })}
-                    checkedColor="white"
-                    uncheckedColor="white"
-                  />
+                {!this.isEditing &&
+                  <View style={{ marginLeft: 24, marginBottom: 8 }}>
+                    <CheckBox
+                      title='Public Flare'
+                      fontFamily="NunitoSans-Regular"
+                      textStyle={{ fontSize: 16, fontWeight: "bold", color: "white" }}
+                      checked={this.state.isPublicFlare}
+                      containerStyle={{ alignSelf: "flex-start", padding: 0, marginBottom: 0 }}
+                      onIconPress={() => this.setState({ isPublicFlare: !this.state.isPublicFlare })}
+                      checkedColor="white"
+                      uncheckedColor="white"
+                    />
 
-                  <Text style={{ color: "white" }}>
-                    Public flares are visible to all nearby Emit users.
-                  </Text>
-                </View>
-
+                    <Text style={{ color: "white" }}>
+                      Public flares are visible to all nearby Emit users.
+                    </Text>
+                  </View>
+                }
 
                 {!this.state.isPublicFlare &&
                   <>
@@ -150,6 +170,13 @@ class NewBroadcastForm extends React.Component {
 
 
                 <FormSubtitle title="When" />
+
+                {this.isEditing &&
+                  <Text style={{ color: "white", marginLeft: 8 }}>
+                    When editing, start times are relative to the present,
+                    not when the flare was created
+                  </Text>
+                }
 
                 <FormInput
                   onPress={() => this.props.navigation.navigate("NewBroadcastFormTime", this.passableBroadcastInfo)}
@@ -195,14 +222,14 @@ class NewBroadcastForm extends React.Component {
                       showsHorizontalScrollIndicator={false}>
                       <Chip
                         mainColor="white"
-                        selected={!this.state.customMaxResponders && this.state.maxResponders == ""}
+                        selected={!this.state.passableBroadcastInfo.customMaxResponders && this.state.passableBroadcastInfo.maxResponders == ""}
                         onPress={() => this.setPredefinedMaxResponders("")}
                         selectedTextColor="black"
                         style={{ paddingHorizontal: 16 }}>
                         <Text>N/A</Text>
                       </Chip>
                       <Chip
-                        selected={!this.state.customMaxResponders && this.state.maxResponders == "2"}
+                        selected={!this.state.passableBroadcastInfo.customMaxResponders && this.state.passableBroadcastInfo.maxResponders == "2"}
                         mainColor="white"
                         onPress={() => this.setPredefinedMaxResponders("2")}
                         selectedTextColor="black"
@@ -210,7 +237,7 @@ class NewBroadcastForm extends React.Component {
                         <Text>2</Text>
                       </Chip>
                       <Chip
-                        selected={!this.state.customMaxResponders && this.state.maxResponders == "5"}
+                        selected={!this.state.passableBroadcastInfo.customMaxResponders && this.state.passableBroadcastInfo.maxResponders == "5"}
                         mainColor="white"
                         onPress={() => this.setPredefinedMaxResponders("5")}
                         selectedTextColor="black"
@@ -218,7 +245,7 @@ class NewBroadcastForm extends React.Component {
                         <Text>5</Text>
                       </Chip>
                       <Chip
-                        selected={!this.state.customMaxResponders && this.state.maxResponders == "10"}
+                        selected={!this.state.passableBroadcastInfo.customMaxResponders && this.state.passableBroadcastInfo.maxResponders == "10"}
                         mainColor="white"
                         onPress={() => this.setPredefinedMaxResponders("10")}
                         selectedTextColor="black"
@@ -226,25 +253,25 @@ class NewBroadcastForm extends React.Component {
                         <Text>10</Text>
                       </Chip>
                       <Chip
-                        selected={this.state.customMaxResponders}
+                        selected={this.state.passableBroadcastInfo.customMaxResponders}
                         mainColor="white"
                         selectedTextColor="black"
-                        onPress={() => this.setState({ customMaxResponders: true })}
+                        onPress={() => this.setState({ passableBroadcastInfo: { ...this.state.passableBroadcastInfo, customMaxResponders: true } })}
                         style={{ paddingHorizontal: 16 }}>
                         <Text>Custom</Text>
                       </Chip>
 
                     </ScrollView>
 
-                    {this.state.customMaxResponders &&
+                    {this.state.passableBroadcastInfo.customMaxResponders &&
                       <Input
-                        value={this.state.maxResponders}
+                        value={this.state.passableBroadcastInfo.maxResponders}
                         containerStyle={{ marginTop: 8 }}
                         inputContainerStyle={{ backgroundColor: "white" }}
                         keyboardType="number-pad"
                         placeholder="Max number of allowed responders"
-                        onChangeText={(max) => this.setState({ maxResponders: max })}
-                        errorMessage={/^\d+$/.test(this.state.maxResponders) && parseInt(this.state.maxResponders) > 0 ?
+                        onChangeText={(max) => this.setState({ passableBroadcastInfo: { ...this.state.passableBroadcastInfo, maxResponders: max } })}
+                        errorMessage={/^\d+$/.test(this.state.passableBroadcastInfo.maxResponders) && parseInt(this.state.passableBroadcastInfo.maxResponders) > 0 ?
                           "" : "Only positive values are valid. If you won't want a max number of responders, choose N/A"
                         }
                         errorStyle={{ color: "white" }}
@@ -268,7 +295,7 @@ class NewBroadcastForm extends React.Component {
               onPress={this.sendFlare}
               contentColor={theme.colors.primary}
               iconName={S.strings.sendBroadcast}
-              title="SEND" />
+              title={this.isEditing ? "CONFIRM EDIT" : "SEND"} />
 
           </MainLinearGradient>
         )}
@@ -297,8 +324,11 @@ class NewBroadcastForm extends React.Component {
 
   setPredefinedMaxResponders = (max) => {
     this.setState({
-      maxResponders: max,
-      customMaxResponders: false
+      passableBroadcastInfo: {
+        ...this.state.passableBroadcastInfo,
+        maxResponders: max,
+        customMaxResponders: false
+      }
     })
   }
 
@@ -343,31 +373,40 @@ class NewBroadcastForm extends React.Component {
 
       let params = {
         ownerUid: uid,
-        activity: flareInfo.activitySelected,
         emoji: flareInfo.emojiSelected,
-        location: flareInfo.location,
+        activity: flareInfo.activitySelected,
         startingTime: flareInfo.startingTime,
         startingTimeRelative: flareInfo.startingTimeRelative,
+        location: flareInfo.location,
         duration: flareInfo.duration || 1000 * 60 * 60,
-        maxResponders: this.state.maxResponders ? parseInt(this.state.maxResponders) : null,
+        customMaxResponders: flareInfo.customMaxResponders,
+        maxResponders: flareInfo.maxResponders ? parseInt(flareInfo.maxResponders) : null,
       }
 
       if (!isPublicFlare && !this.addRecepientInformation(params)) return;
       if (flareInfo.geolocation) params.geolocation = flareInfo.geolocation
       if (flareInfo.note) params.note = flareInfo.note
+      if (this.isEditing) {
+        params.broadcastUid = this.broadcastSnippet.uid;
+        params.friendsToRemove = Array.from(objectDifference(this.recepientFriendsOriginal, flareInfo.recepientFriends))
+        params.groupsToRemove = Array.from(objectDifference(this.recepientGroupsOriginal, flareInfo.recepientGroups))
+      }
 
-      const creationFunction = functions().httpsCallable(isPublicFlare ? "createPublicFlare" : 'createActiveBroadcast');
-      const response = await timedPromise(creationFunction(params), LONG_TIMEOUT);
+      let methodName = ""
+      if (this.isEditing) methodName = "modifyActiveBroadcast"
+      else methodName = isPublicFlare ? "createPublicFlare" : 'createActiveBroadcast'
+      const response = await timedPromise(functions().httpsCallable(methodName)(params), LONG_TIMEOUT);
 
       if (response.data.status === cloudFunctionStatuses.OK) {
         //For now this is just for private flares...
         if (response.data.message && !isPublicFlare) analyticsLogFlareCreation(response.data.message.flareUid, auth().currentUser.uid)
         this.props.navigation.state.params.needUserConfirmation = false;
-        this.props.navigation.goBack()
+        this.props.navigation.navigate("Feed")
       } else {
         this.provideErrorFeedback(response.data.message)
-        logError(new Error("Problematic createActiveBroadcast function response: " + response.data.message))
+        logError(new Error(`Problematic ${methodName} function response: ` + response.data.message))
       }
+
     } catch (err) {
       if (err.name == "timeout") {
         this.provideErrorFeedback("Timeout!")
@@ -376,7 +415,52 @@ class NewBroadcastForm extends React.Component {
         logError(err)
       }
     }
+
     this.setState({ isModalVisible: false })
+  }
+
+  getInitalBroadcastInformation = async () => {
+    try {
+
+      this.passableBroadcastInfo = {
+        emojiSelected: this.broadcastSnippet.emoji,
+        activitySelected: this.broadcastSnippet.activity,
+        startingTime: this.broadcastSnippet.startingTime,
+        startingTimeText: epochToDateString(this.broadcastSnippet.startingTime),
+        location: this.broadcastSnippet.location ? this.broadcastSnippet.location : "",
+        geolocation: this.broadcastSnippet.geolocation,
+        duration: this.broadcastSnippet.duration,
+        durationText: this.getDurationText(this.broadcastSnippet.duration),
+        note: this.broadcastSnippet.note ? this.broadcastSnippet.note : ""
+      }
+
+      let ref = database().ref(`/activeBroadcasts/${auth().currentUser.uid}/additionalParams/${this.broadcastSnippet.uid}`)
+      const snapshot = await ref.once('value')
+      if (!snapshot.exists()) {
+        logError(new Error("Snapshot of flare parameters not found"))
+        return;
+      }
+
+      let broadcastAdditionalData = snapshot.val();
+      this.passableBroadcastInfo = {
+        ...this.passableBroadcastInfo,
+        startingTimeRelative: false,
+        allFriends: broadcastAdditionalData.allFriends,
+        recepientFriends: broadcastAdditionalData.friendRecepients ? broadcastAdditionalData.friendRecepients : {},
+        recepientGroups: broadcastAdditionalData.groupRecepients ? broadcastAdditionalData.groupRecepients : {},
+        customMaxResponders: broadcastAdditionalData.customMaxResponders,
+        maxResponders: broadcastAdditionalData.maxResponders ? broadcastAdditionalData.maxResponders : ""
+      }
+
+      this.recepientFriendsOriginal = this.passableBroadcastInfo.recepientFriends
+      this.recepientGroupsOriginal = this.passableBroadcastInfo.recepientGroups
+
+      this.broadcastInfoPrototype = { ...this.passableBroadcastInfo }
+      this.setState({ passableBroadcastInfo: this.passableBroadcastInfo })
+
+    } catch (e) {
+      logError(e)
+    }
   }
 
   /**
@@ -405,11 +489,23 @@ class NewBroadcastForm extends React.Component {
       return false
     }
 
-    params.allFriends = this.state.allFriends
+    params.allFriends = flareInfo.allFriends
     params.friendRecepients = friendRecepients
     params.groupRecepients = groupRecepients
 
     return true
+  }
+
+  getDurationText = (duration) => {
+    const MILLI_PER_MIN = 1000 * 60
+    const minutes = Math.round(duration / MILLI_PER_MIN)
+    let durationText = ""
+    if (minutes < 60) {
+      durationText = `${minutes} mins`
+    } else {
+      durationText = `${minutes / 60} hours`
+    }
+    return durationText
   }
 
   provideErrorFeedback = (errorMessage) => {
