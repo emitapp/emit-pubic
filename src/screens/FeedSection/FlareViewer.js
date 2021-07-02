@@ -155,7 +155,7 @@ export default class FlareViewer extends React.Component {
                   <Text style={{ color: "#3F83F9", marginLeft: 8}}>{this.broadcastSnippet.owner.displayName}</Text>
               </View>
 
-              <FlareTimeStatus item={broadcastData} style={{ textAlign: "center" }} fullInfo />
+              <FlareTimeStatus item={broadcastData} fullInfo center />
               {this.isPublicFlare && <PublicFlareNotice style={{ marginTop: 8 }} />}
             </View>
 
