@@ -371,6 +371,8 @@ class NewBroadcastForm extends React.Component {
       const uid = auth().currentUser.uid
       const { isPublicFlare, passableBroadcastInfo: flareInfo } = this.state
 
+      //Note that changing the strucutre of params has consequences for analyticsLogFlareCreation
+      //TODO: we should change this file to TS very soon!
       let params = {
         ownerUid: uid,
         emoji: flareInfo.emojiSelected,
@@ -398,8 +400,7 @@ class NewBroadcastForm extends React.Component {
       const response = await timedPromise(functions().httpsCallable(methodName)(params), LONG_TIMEOUT);
 
       if (response.data.status === cloudFunctionStatuses.OK) {
-        //For now this is just for private flares...
-        if (response.data.message && !isPublicFlare) analyticsLogFlareCreation(response.data.message.flareUid, auth().currentUser.uid)
+        if (response.data.message) analyticsLogFlareCreation({...params, flareUid: response.data.message.flareUid}, isPublicFlare)
         this.props.navigation.state.params.needUserConfirmation = false;
         this.props.navigation.navigate("Feed")
       } else {

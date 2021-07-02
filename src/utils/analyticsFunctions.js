@@ -80,27 +80,42 @@ export const analyticsCustomActivity = (emoji, text) => {
         .catch(err => logError(err))
 }
 
-export const analyticsLogFlareCreation = async (flareUid, flareOwnerUid) => {
+//TODO: Improve this for public flares
+export const analyticsLogFlareCreation = async (flareCreationParams, isPublicFlare) => {
     try {
-        const snap = await _getFlareAnalyticsData(flareUid, flareOwnerUid)
-        if (!snap.exists()) {
-            logError(new Error("Couldn't get flare analytics data"))
-        } else {
-            analytics().logEvent("flare_created", snap.val())
+        if (isPublicFlare){
+            analytics().logEvent("flare_created", {flareUid: flareCreationParams.flareUid, activity: flareCreationParams.activity})
+        }else{
+            const snap = await _getFlareAnalyticsData(flareCreationParams.flareUid, flareCreationParams.ownerUid)
+            if (!snap.exists()) logError(new Error("Couldn't get flare analytics data"))
+            else analytics().logEvent("flare_created", snap.val())
         }
     } catch (err) {
         logError(err)
     }
 }
 
-export const analyticsVideoChatUsed = async (flareUid, flareOwnerUid) => {
+//TODO: Improve this for public flares
+export const analyticsVideoChatUsed = async (flareInfo) => {
+    const args = {
+        flareUid: flareInfo.uid,
+        flareOwnerUid: flareInfo.owner.uid,
+        flareActivity: flareInfo.activity,
+        flareEmoji: flareInfo.emoji,
+        isPublicFlare: flareInfo.isPublic
+    }
     try {
-        const snap = await _getFlareAnalyticsData(flareUid, flareOwnerUid)
-        if (!snap.exists()) {
-            logError("Couldn't get flare analytics data")
-        } else {
-            analytics().logEvent("flare_video_chat_used", snap.val())
+        if (args.isPublicFlare){
+            analytics().logEvent("flare_video_chat_used", args)
+        }else{
+            const snap = await _getFlareAnalyticsData(flareUid, flareOwnerUid)
+            if (!snap.exists()) {
+                logError("Couldn't get flare analytics data")
+            } else {
+                analytics().logEvent("flare_video_chat_used", snap.val())
+            }
         }
+       
     } catch (err) {
         logError(err)
     }

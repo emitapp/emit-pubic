@@ -292,8 +292,7 @@ export default class FlareViewer extends React.Component {
             containerStyle={{ alignSelf: "center" }}
             onPress={() => {
               Linking.openURL(encodeURI(`https://meet.jit.si/${this.broadcastSnippet.uid}#userInfo.displayName="${this.state.jitsiUsername}"&config.disableDeepLinking=true`))
-              //TODO: allow for public flares too
-              if (!this.isPublicFlare) analyticsVideoChatUsed(this.broadcastSnippet.uid, this.broadcastSnippet.owner.uid)
+              analyticsVideoChatUsed({ ...this.broadcastSnippet, isPublicFlare: false })
             }} />
         </View>
       )
