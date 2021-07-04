@@ -63,6 +63,9 @@ class NewBroadcastForm extends React.Component {
         isModalVisible: false,
         errorMessage: null,
         isPublicFlare: false,
+
+        isRecurring: false,
+        recurringDays: [],
       }
   }
 
@@ -112,6 +115,12 @@ class NewBroadcastForm extends React.Component {
                 <ErrorMessageText
                   message={this.state.errorMessage}
                   style={{ color: '#2900BD', fontWeight: "bold" }} />
+
+                {(this.isEditing && this.state.recurringDays?.length > 0) &&
+                  <Text style = {{color: "white"}}>
+                    We noticed this is a recurring flare! Changes will only affect this occurence.
+                  </Text>
+                }
 
                 <FormSubtitle title="What" />
                 <FormInput
@@ -212,6 +221,95 @@ class NewBroadcastForm extends React.Component {
 
                     {!this.state.isPublicFlare &&
                       this.displayLocationOption(flareInfo)}
+
+                    {!this.isEditing &&
+
+
+
+                      <View style={{ marginTop: -20 }}>
+                        <CheckBox
+                          title='Recurring Flare'
+                          fontFamily="NunitoSans-Regular"
+                          textStyle={{ fontSize: 16, fontWeight: "bold", color: "white" }}
+                          checked={this.state.isRecurring}
+                          containerStyle={{ alignSelf: "flex-start", padding: 0, marginBottom: 0 }}
+                          onIconPress={() => this.setState({ isRecurring: !this.state.isRecurring })}
+                          checkedColor="white"
+                          uncheckedColor="white"
+                        />
+                        <Text style={{ color: "white", fontSize: 14 }}>
+                          Recurring flares will auto repeat at the same time on a custom frequency.
+                        </Text>
+
+                        {this.state.isRecurring &&
+                          <ScrollView
+                            containerStyle={{ flexDirection: "row" }}
+                            style={{ flex: 1, marginTop: 6 }}
+                            horizontal
+                            showsHorizontalScrollIndicator={false}>
+                            <Chip
+                              selected={this.state.isRecurring && this.state.recurringDays.includes("M")}
+                              mainColor="white"
+                              onPress={() => this.setRecurringFlareDays("M")}
+                              selectedTextColor="black"
+                              style={{ paddingHorizontal: 16 }}>
+                              <Text>M</Text>
+                            </Chip>
+                            <Chip
+                              selected={this.state.isRecurring && this.state.recurringDays.includes("T")}
+                              mainColor="white"
+                              onPress={() => this.setRecurringFlareDays("T")}
+                              selectedTextColor="black"
+                              style={{ paddingHorizontal: 16 }}>
+                              <Text>T</Text>
+                            </Chip>
+                            <Chip
+                              selected={this.state.isRecurring && this.state.recurringDays.includes("W")}
+                              mainColor="white"
+                              onPress={() => this.setRecurringFlareDays("W")}
+                              selectedTextColor="black"
+                              style={{ paddingHorizontal: 16 }}>
+                              <Text>W</Text>
+                            </Chip>
+                            <Chip
+                              selected={this.state.isRecurring && this.state.recurringDays.includes("Th")}
+                              mainColor="white"
+                              onPress={() => this.setRecurringFlareDays("Th")}
+                              selectedTextColor="black"
+                              style={{ paddingHorizontal: 16 }}>
+                              <Text>Th</Text>
+                            </Chip>
+                            <Chip
+                              selected={this.state.isRecurring && this.state.recurringDays.includes("F")}
+                              mainColor="white"
+                              onPress={() => this.setRecurringFlareDays("F")}
+                              selectedTextColor="black"
+                              style={{ paddingHorizontal: 16 }}>
+                              <Text>Fr</Text>
+                            </Chip>
+
+                            <Chip
+                              selected={this.state.isRecurring && this.state.recurringDays.includes("Sat")}
+                              mainColor="white"
+                              onPress={() => this.setRecurringFlareDays("Sat")}
+                              selectedTextColor="black"
+                              style={{ paddingHorizontal: 16 }}>
+                              <Text>Sat</Text>
+                            </Chip>
+
+                            <Chip
+                              selected={this.state.isRecurring && this.state.recurringDays.includes("S")}
+                              mainColor="white"
+                              onPress={() => this.setRecurringFlareDays("S")}
+                              selectedTextColor="black"
+                              style={{ paddingHorizontal: 16 }}>
+                              <Text>S</Text>
+                            </Chip>
+                          </ScrollView>
+                        }
+                      </View>
+                    }
+
 
                     <FormSubtitle title="Max Responders" />
 
@@ -383,6 +481,7 @@ class NewBroadcastForm extends React.Component {
         duration: flareInfo.duration || 1000 * 60 * 60,
         customMaxResponders: flareInfo.customMaxResponders,
         maxResponders: flareInfo.maxResponders ? parseInt(flareInfo.maxResponders) : null,
+        recurringDays: this.state.recurringDays,
       }
 
       if (!isPublicFlare && !this.addRecepientInformation(params)) return;
@@ -400,7 +499,7 @@ class NewBroadcastForm extends React.Component {
       const response = await timedPromise(functions().httpsCallable(methodName)(params), LONG_TIMEOUT);
 
       if (response.data.status === cloudFunctionStatuses.OK) {
-        if (response.data.message) analyticsLogFlareCreation({...params, flareUid: response.data.message.flareUid}, isPublicFlare)
+        if (response.data.message) analyticsLogFlareCreation({ ...params, flareUid: response.data.message.flareUid }, isPublicFlare)
         this.props.navigation.state.params.needUserConfirmation = false;
         this.props.navigation.navigate("Feed")
       } else {
@@ -456,6 +555,8 @@ class NewBroadcastForm extends React.Component {
       this.recepientFriendsOriginal = this.passableBroadcastInfo.recepientFriends
       this.recepientGroupsOriginal = this.passableBroadcastInfo.recepientGroups
 
+      this.state.recurringDays = this.broadcastSnippet.recurringDays;
+
       this.broadcastInfoPrototype = { ...this.passableBroadcastInfo }
       this.setState({ passableBroadcastInfo: this.passableBroadcastInfo })
 
@@ -507,6 +608,19 @@ class NewBroadcastForm extends React.Component {
       durationText = `${minutes / 60} hours`
     }
     return durationText
+  }
+
+  setRecurringFlareDays = (day) => {
+    const indexOfDayInArray = this.state.recurringDays.indexOf(day)
+    let updatedRecurringDaysArray = this.state.recurringDays
+    if (indexOfDayInArray > -1) {
+      this.state.recurringDays.splice(indexOfDayInArray, 1)
+    } else {
+      updatedRecurringDaysArray = [...this.state.recurringDays, day]
+    }
+    this.setState({
+      recurringDays: updatedRecurringDaysArray
+    })
   }
 
   provideErrorFeedback = (errorMessage) => {

@@ -5,9 +5,15 @@ import S from 'styling';
 import { Text, ThemeConsumer } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import database from '@react-native-firebase/database';
-import { logError, MEDIUM_TIMEOUT, timedPromise, truncate } from 'utils/helpers';
+import { logError, MEDIUM_TIMEOUT, LONG_TIMEOUT, timedPromise, truncate } from 'utils/helpers';
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import MoreInformationTooltip from 'reusables/MoreInformationTooltip'
+import functions from '@react-native-firebase/functions';
+import { LoadableButton } from 'reusables/ReusableButtons';
+import ErrorMessageText from 'reusables/ErrorMessageText';
+import { cloudFunctionStatuses } from 'utils/serverValues';
+
+
 
 /**
  * Standard ListView element component for viewing user snippets.
@@ -237,3 +243,73 @@ export class ActivityListElement extends React.PureComponent {
     )
   }
 }
+
+
+/**
+ * Standard ListView element component for recurring flares
+ * Required props: text
+ * Optional props: style
+ */
+ export class RecurringFlareElement extends React.PureComponent {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      waitingForCloudFunc: false,
+      message: null
+    }
+  }
+
+  cancelRecurringFlare = async (flareUid, ownerUid) => {
+    try {
+      this.setState({waitingForCloudFunc: true})
+      let params = {
+        flareUid: flareUid,
+        ownerUid: ownerUid
+      }
+      const deleteFunction = functions().httpsCallable('deleteRecurringFlare');
+      const response = await timedPromise(deleteFunction(params), LONG_TIMEOUT);
+      if (response.data.status != cloudFunctionStatuses.OK) {
+        // this.setState({ message: response.data.message })
+        logError(new Error("Problematic deleteRecurringFlare function response: " + response.data.message))
+      } 
+    } catch (error) {
+      this.setState({ message: error.message })
+      logError(error)
+    } finally {
+      this.setState({waitingForCloudFunc: false})
+    }
+  }
+  render() {
+    return (
+      <View
+        style={{ marginVertical: 8, marginLeft: 8 }}>
+        <ErrorMessageText message = {this.state.message} />
+        <View style={{ flexDirection: "row" }}>
+          <View style={{ flexDirection: "row", flex: 1 }}>
+            <Text style={{ fontSize: 36, marginHorizontal: 8 }}>{this.props.item.emoji}</Text>
+            <View style={{ justifyContent: "center" }}>
+              <Text style={{ fontSize: 18 }}>{this.props.item.activity}</Text>
+              <View style={{ flexDirection: 'row' }}>
+                <ProfilePicDisplayer diameter={22} uid={this.props.item.owner.uid} style={{ marginRight: 10 }} />
+                <Text style={{ fontSize: 14, fontFamily: "NunitoSans-Semibold" }}>{this.props.item.owner.displayName}</Text>
+              </View>
+              <Text style={{ fontSize: 18 }}>{this.props.item.frequency}</Text>
+            </View>
+          </View>
+          <LoadableButton  
+                title="Cancel" 
+                onPress={() => this.cancelRecurringFlare(this.props.item.originalFlareUid, this.props.item.owner.uid)} 
+                isLoading = {this.state.waitingForCloudFunc} />
+        </View>
+        <View style={{ marginHorizontal: 8, marginTop: 4 }}>
+          {this.props.item.groupInfo && <Text style={{ fontStyle: "italic" }}>Sent via {this.props.item.groupInfo.name} group</Text>}
+          {this.props.isPublicFlare && <PublicFlareService />}
+        </View>
+        {this.props.item.note != undefined && this.props.item.note != "" &&
+          <Text style={{ fontStyle: "italic", color: "dimgrey", marginLeft: 8, marginVertical: 8 }}>{this.props.item.note}</Text>
+        }
+      </View>
+    )
+  }
+} 

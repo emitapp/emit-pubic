@@ -12,7 +12,7 @@ export default class EmittedFlareElement extends React.PureComponent {
     const { item, isPublicFlare } = this.props
     return (
       <TouchableOpacity
-        style={{...S.styles.listElement, paddingVertical: 4}}
+        style={{ ...S.styles.listElement, paddingVertical: 4 }}
         onPress={() => NavigationService.push("FlareViewer", { broadcast: item, isOwner: true, isPublicFlare })}>
         <View style={{ flexDirection: "column", flex: 1 }}>
 
@@ -22,6 +22,9 @@ export default class EmittedFlareElement extends React.PureComponent {
               <View style={{ justifyContent: "center" }}>
                 <Text style={{ fontSize: 20 }}>{item.activity}</Text>
                 {isPublicFlare && <PublicFlareService />}
+                {item.recurringDays?.length > 0 &&
+                  <Text>Recurring: {item.recurringDays.join("/")} </Text>
+                }
 
                 {item.totalConfirmations != 0 ?
                   <Text style={{ fontSize: 14 }}>{item.totalConfirmations} people are in</Text> :

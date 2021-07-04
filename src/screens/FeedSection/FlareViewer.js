@@ -145,15 +145,20 @@ export default class FlareViewer extends React.Component {
                 </View>
               </View>
 
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginBottom: 8  }}>
-                  <Pressable onPress={this.friendRequestModal ? () => this.friendRequestModal.openUsingUid(this.broadcastSnippet.owner.uid) : null}>
-                    <ProfilePicDisplayer
-                      diameter={32}
-                      uid={this.broadcastSnippet.owner.uid}
-                    />
-                  </Pressable>
-                  <Text style={{ color: "#3F83F9", marginLeft: 8}}>{this.broadcastSnippet.owner.displayName}</Text>
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginBottom: 8 }}>
+                <Pressable onPress={this.friendRequestModal ? () => this.friendRequestModal.openUsingUid(this.broadcastSnippet.owner.uid) : null}>
+                  <ProfilePicDisplayer
+                    diameter={32}
+                    uid={this.broadcastSnippet.owner.uid}
+                  />
+                </Pressable>
+                <Text style={{ color: "#3F83F9", marginLeft: 8 }}>{this.broadcastSnippet.owner.displayName}</Text>
               </View>
+
+
+              {broadcastData.recurringDays?.length > 0 &&
+                <Text>Recurring: {broadcastData.recurringDays.join("/")} </Text>
+              }
 
               <FlareTimeStatus item={broadcastData} fullInfo center />
               {this.isPublicFlare && <PublicFlareNotice style={{ marginTop: 8 }} />}

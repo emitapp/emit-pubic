@@ -30,7 +30,7 @@ export default class SocialButtonHub extends React.Component {
             <ThemeConsumer>
                 {({ theme }) => (
                     <ScrollView
-                        style={{ flex: 1, marginTop: 8, width: "100%" }}
+                        style={{ flex: 1, width: "100%" }}
                         contentContainerStyle={{ height: "100%", alignItems: "center" }}
                         refreshControl={
                             <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
@@ -42,12 +42,12 @@ export default class SocialButtonHub extends React.Component {
                             isVisible={this.state.QRVisible}
                             onBackdropPress={() => this.setState({ QRVisible: false })}
                             onRequestClose={() => this.setState({ QRVisible: false })}>
-                            <View style = {{alignItems: "center"}}>
+                            <View style={{ alignItems: "center" }}>
                                 <Text style={{ textAlign: "center", marginVertical: 8, fontWeight: "bold" }}>
                                     Your Emitcode
                                 </Text>
                                 {/* Width of 180 chosen to match width of UserEmitcode components*/}
-                                <Text style={{ textAlign: "center", marginVertical: 8, width: 180}}>
+                                <Text style={{ textAlign: "center", marginVertical: 8, width: 180 }}>
                                     People can use Emit's scanner to scan Emitcodes and send friend requests.
                                 </Text>
                                 <UserEmitcode color={theme.colors.primary} />
@@ -77,6 +77,11 @@ export default class SocialButtonHub extends React.Component {
                                 borderRadius: 10, paddingHorizontal: 8, marginBottom: 8,
                                 marginHorizontal: 8
                             }} />
+
+                        <Button
+                            title="Your recurring flares"
+                            onPress={() => this.props.navigation.navigate('RecurringFlaresViewer')}
+                        />
 
                         <Button
                             title="Scan someone's Emitcode"

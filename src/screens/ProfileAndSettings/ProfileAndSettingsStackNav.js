@@ -16,6 +16,10 @@ import QRScanner from '../ProfileAndSettings/QRFriendAdder';
 import ProfileScreen from '../ProfileAndSettings/ProfileScreen';
 import FriendRequests from './FriendReqBoxes';
 
+//Flares
+import RecurringFlaresViewer from './RecurringFlaresViewer';
+
+
 const Navigator = createStackNavigator(
   {
     SettingsMain,
@@ -26,7 +30,8 @@ const Navigator = createStackNavigator(
     LegalNotices,
     QRScanner,
     ProfileScreen,
-    FriendRequests
+    FriendRequests,
+    RecurringFlaresViewer
   },
   {
     initialRouteName: 'ProfileScreen',

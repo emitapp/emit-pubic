@@ -5,6 +5,7 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import FlareTimeStatus from 'reusables/FlareTimeStatus';
 import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
 import PublicFlareService from 'reusables/PublicFlareNotice';
+import RecurringFlareNotice from 'reusables/RecurringFlareNotice';
 import NavigationService from 'utils/NavigationService';
 
 /**
@@ -58,7 +59,11 @@ export default class FeedElement extends React.Component {
             </View>
           </View>
 
-          <FlareTimeStatus item={item} />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            {item.recurringDays?.length > 0 && <RecurringFlareNotice days={item.recurringDays} />}
+            <FlareTimeStatus item={item} />
+          </View>
+
 
         </View>
 
