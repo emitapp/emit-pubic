@@ -1,3 +1,5 @@
+import { FullTheme } from "react-native-elements"
+
 const colors = {
     primary: "#FA6C13",
     secondary: "#FCA31B",
@@ -10,14 +12,15 @@ const colors = {
     statusBar: "#c43e00",
 
     gradientStart: "#FA6C13",
-    gradientEnd: "#FF9300"
+    gradientEnd: "#FF9300",
 }
 
-//Used by react-native-elements
-export default theme = {
+//Used by react-native-elements in App.js
+//If adding new keys (like new colors), extend src/styling/react-native-elements.d.ts
+const theme : Partial<FullTheme> = {
 
     colors:{
-       ...colors
+       ...colors,
     },
 
     Button:{
@@ -25,11 +28,11 @@ export default theme = {
             margin: 4,
         },
         buttonStyle:{
-            borderRadius: 8
+            borderRadius: 8,
         },
         titleStyle:{
-            fontFamily: "NunitoSans-Bold"
-        }
+            fontFamily: "NunitoSans-Bold",
+        },
     },
 
     ButtonGroup: {
@@ -38,17 +41,17 @@ export default theme = {
             marginRight: 0,
             marginLeft: 0,
             marginTop: 0,
-            borderRadius: 0
+            borderRadius: 0,
         },
         containerBorderRadius: 0,
         selectedButtonStyle: {
-            backgroundColor: "#FCA31B"
+            backgroundColor: "#FCA31B",
         },
     },
 
     Input:{
         containerStyle: {
-            marginBottom: 8 
+            marginBottom: 8, 
         },
         inputContainerStyle: {
             width: "100%", 
@@ -65,51 +68,50 @@ export default theme = {
             fontFamily: "NunitoSans-Bold",
             fontSize: 14,
             color: "black",
-            marginBottom: 4
+            marginBottom: 4,
         },
         errorStyle:{
             fontFamily: "NunitoSans-Semibold",
             fontSize: 14,
         },
-        selectionColor: colors.primary
+        selectionColor: colors.primary,
     },
 
     Text:{
         style: {
             fontFamily: "NunitoSans-Regular",
-            fontSize: 15
+            fontSize: 15,
         },
         h1Style: {
             fontFamily: "NunitoSans-Bold",
             fontWeight: "normal",
-            textAlign: "center"
+            textAlign: "center",
         },
         h2Style: {
             fontFamily: "NunitoSans-Bold",
             fontWeight: "normal",
-            textAlign: "center"
+            textAlign: "center",
         },
         h3Style: {
             fontFamily: "NunitoSans-Bold",
             fontWeight: "normal",
-            textAlign: "center"
+            textAlign: "center",
         },
         h4Style: {
             fontFamily: "NunitoSans-Semibold",
             fontWeight: "normal",
-            textAlign: "center"
+            textAlign: "center",
         },
         selectable: true,
-        selectionColor: colors.primary
+        selectionColor: colors.primary,
     },
 
     Overlay: {
         overlayStyle: {
-            windowBackgroundColor: "rgba(0, 0, 0, .5)",
             width: "auto",
             height: "auto",
-            borderRadius: 16
-        }
+            borderRadius: 16,
+        },
     },
 
     SearchBar:{
@@ -120,38 +122,38 @@ export default theme = {
             borderTopWidth: 0, 
             borderBottomWidth: 0, 
             paddingBottom: 0, 
-            paddingTop: 0
+            paddingTop: 0,
         },
         inputContainerStyle: {
             marginTop: 0, 
             marginBottom: 0, 
-            backgroundColor: "lightgrey"
+            backgroundColor: "lightgrey",
         },
         inputStyle:{
             fontFamily: "NunitoSans-Regular",
-        }
+        },
     },
 
     Badge: {
         textStyle: {
-            fontSize: 16
+            fontSize: 16,
         },
         badgeStyle: {
             padding: 8,
             height: 30,
-        }
+        },
     },
 
     CheckBox: {
         containerStyle: {
             backgroundColor: "transparent", 
-            borderWidth: 0
+            borderWidth: 0,
         },
         textStyle: {
             fontSize: 18,
             color: "black",
             fontWeight: "normal",
-            flexShrink: 1
+            flexShrink: 1,
         },
         fontFamily: "NunitoSans-SemiBold",
     },
@@ -160,7 +162,7 @@ export default theme = {
         style:{
             marginRight: 0,
             marginLeft: 0,
-            backgroundColor: "grey"
+            backgroundColor: "grey",
         },
         iconSize: 20,
     },
@@ -168,11 +170,13 @@ export default theme = {
     Divider: {
         style:{
             height: 1,
-            width: "100%"
-        }
+            width: "100%",
+        },
     },
 
     Tooltip: {
-        backgroundColor: "lightgrey"
-    }
+        backgroundColor: "lightgrey",
+    },
 }
+
+export default theme

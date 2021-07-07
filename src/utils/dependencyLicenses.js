@@ -265,6 +265,12 @@ export default
         "licenseUrl": "https://github.com/react-native-community/react-native-maps/raw/master/LICENSE",
         "parents": "emit"
     },
+    "react-native-markdown-display@7.0.0-alpha.2": {
+        "licenses": "MIT",
+        "repository": "https://github.com/iamacup/react-native-markdown-display",
+        "licenseUrl": "https://github.com/iamacup/react-native-markdown-display/raw/master/LICENSE",
+        "parents": "emit"
+    },
     "react-native-permissions@3.0.0": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-community/react-native-permissions",

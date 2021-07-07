@@ -2,6 +2,7 @@
     "recommendations": [
         "eamodio.gitlens",
         "gruntfuggly.todo-tree",
-        "dbaeumer.vscode-eslint"
+        "dbaeumer.vscode-eslint",
+        "streetsidesoftware.code-spell-checker"
     ]
 }

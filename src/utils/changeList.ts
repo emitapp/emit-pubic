@@ -1,0 +1,34 @@
+type changeList = Array<{
+    timestamp: number,
+    change: string
+}>
+
+// This supports markdown!
+// Ideally, the timestamps should be Dates, but Dates are very inconsistent and 
+// since Android uses an incomplete JS core, not all of their functionality 
+// is supported.
+// https://stackoverflow.com/questions/56943813/using-intl-properly-in-android-react-native-app
+// https://stackoverflow.com/questions/48798794/running-variable-is-nan-but-debugging-variable-isnt-nan-why/48799918
+// https://stackoverflow.com/questions/3367415/get-epoch-for-a-specific-date-using-javascript
+// https://moment.github.io/luxon/#/
+// We'll fix this eventually.
+
+/**
+ * Arranged such that the most recent change comes first in the array. 
+ */
+const changes : changeList = [
+    {
+        timestamp: 1625443200000,
+        change: "We added **user avatars**! Now, users can set their profile pictures to fun Emit avatars. 🎭",
+    },
+    {
+        timestamp: 1625443200000,
+        change: "You asked for it, we added it! **Recurring flares** are now possible! Thanks to everyone for the feedback. ⏲️",
+    },
+    {
+        timestamp: 1625443200000,
+        change: "You can now **edit and delete flares**! This is supported for normal flares, support for public flares is upcoming! ✏️",
+    },
+].sort((a, b) => b.timestamp - a.timestamp) 
+
+export default changes

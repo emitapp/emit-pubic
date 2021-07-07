@@ -5,13 +5,13 @@
  * @param {Number} ms The timeout in ms
  */
 //https://italonascimento.github.io/applying-a-timeout-to-your-promises/
-export const timedPromise = (promise, ms) => {
+export const timedPromise = (promise : Promise<unknown>, ms: number) : Promise<unknown> => {
 
   // Create a promise that rejects in <ms> milliseconds
-  let timeout = new Promise((resolve, reject) => {
+  const timeout = new Promise((_, reject) => {
     setTimeout(() => reject({
       name: "timeout",
-      message: `Your Promise timed out after ${ms} milliseconds`
+      message: `Your Promise timed out after ${ms} milliseconds`,
     }),
       ms)
   })
@@ -19,7 +19,7 @@ export const timedPromise = (promise, ms) => {
   // Returns a race between our timeout and the passed in promise
   return Promise.race([
     promise,
-    timeout
+    timeout,
   ])
 }
 
@@ -31,31 +31,32 @@ export const LONG_TIMEOUT = 15000
 
 /**
  * Determines is a string is only whitespace
- * @param {string} str The stirng
+ * @param {string} str The string
  */
 //https://stackoverflow.com/questions/10261986/how-to-detect-string-which-contains-only-spaces/50971250
-export const isOnlyWhitespace = (str) => {
-  return str.replace(/\s/g, '').length == 0
+export const isOnlyWhitespace = (str: string) : boolean => {
+  return str.replace(/\s/g, '').length === 0
 }
 
 /**
- * Truncates a string that surpasses a cetain max length and adds ellipses
+ * Truncates a string that surpasses a certain max length and adds ellipses
  */
-export function truncate(inputString, maxLength) {
+export function truncate(inputString : string, maxLength : number) : string {
   if (inputString.length > maxLength)
-    return inputString.substring(0, maxLength) + '...';
+    {return inputString.substring(0, maxLength) + '...';}
   else
-    return inputString;
+    {return inputString;}
 }
 
 /**
  * Converts epoch timestamps to date strings
  * @param {Number} epochMillis The epoch timestamp
  */
-export const epochToDateString = (epochMillis) => {
-  let options = {
+export const epochToDateString = (epochMillis : number) : string => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const options : any = {
     hour: "2-digit", minute: "2-digit", timeZoneName: "short",
-    day: "2-digit", month: "short", year: "numeric"
+    day: "2-digit", month: "short", year: "numeric",
   }
   return new Date(epochMillis).toLocaleString(undefined, options)
 }
@@ -69,13 +70,14 @@ import crashlytics from '@react-native-firebase/crashlytics';
  * @param {boolean} includeCrashlytics Whether or not to perform Crashlytics logging too. DEFAULT: true
  * @param {string} extraLoggingInfo Extra info that will be logged with the Crashlytics report(if enabled) and with console.log
  */
-export const logError = (error, includeCrashlytics = true, extraLoggingInfo) => {
-  if (extraLoggingInfo) prettyLog(extraLoggingInfo, { backgroundColor: "lightpink", textColor: "black" })
+export const logError = (error : Error, includeCrashlytics? : boolean, extraLoggingInfo?: string) : void => {
+  if (typeof includeCrashlytics !== "boolean") {includeCrashlytics = true}
+  if (extraLoggingInfo) {prettyLog(extraLoggingInfo, { backgroundColor: "lightpink", textColor: "black" })}
   prettyLog(error, { backgroundColor: "lightpink", textColor: "black" })
   //Just to get a clean stack to know what called logError (not useful in prod due to bundling and minimization)...
-  if (__DEV__) console.log((new Error()).stack)
+  if (__DEV__) {console.log((new Error()).stack)}
   if (includeCrashlytics) {
-    if (extraLoggingInfo) crashlytics().log(extraLoggingInfo)
+    if (extraLoggingInfo) {crashlytics().log(extraLoggingInfo)}
     crashlytics().recordError(error)
   }
 }
@@ -92,24 +94,27 @@ export const ASKED_CONTACTS_PERMISSIONS = "askedForContacts";
 //Used to contacts caching
 export const CONTACTS_CACHE = "cachedContacts"
 
+//The last time the user logged on (in epoch milliseconds)
+export const ASYNC_LAST_LOG_ON_KEY = "lastlogontime"
+
 
 import DeviceInfo from 'react-native-device-info';
 import { Platform } from 'react-native'
 import codePush from 'react-native-code-push'
-import { _codepushEnabled } from 'dev/'
+import { _codepushEnabled } from 'dev/index'
 
 /**
  * Gets the full versioning info of the app
  */
-export const getFullVersionInfo = async () => {
+export const getFullVersionInfo = async () : Promise<string> => {
   try {
     let versionInfo = DeviceInfo.getApplicationName()
     versionInfo += ` ${DeviceInfo.getSystemName()} v${DeviceInfo.getVersion()} (Build No.${DeviceInfo.getBuildNumber()})`
 
     if (_codepushEnabled()) {
       const codePushPackageInfo = await codePush.getUpdateMetadata()
-      if (codePushPackageInfo) versionInfo += ` Codepush Package ${codePushPackageInfo.label}`
-      else versionInfo += ` Using Base Binary`
+      if (codePushPackageInfo) {versionInfo += ` Codepush Package ${codePushPackageInfo.label}`}
+      else {versionInfo += ` Using Base Binary`}
     } else {
       versionInfo += " Codepush Disabled."
     }
@@ -126,18 +131,23 @@ export const getFullVersionInfo = async () => {
  * @param {*} msg The message
  * @param {*} style {textColor, backgroundColor, fontSize}
  */
-export const prettyLog = (msg, style = {}) => {
+interface prettyLogArgs {
+  textColor?: string
+  backgroundColor?: string
+  fontSize?: number
+}
+export const prettyLog = (msg: string | Error, style: prettyLogArgs) : void => {
   let styleString = ""
-  if (style.textColor) styleString += `color: ${style.textColor};`
-  if (style.backgroundColor) styleString += `background: ${style.backgroundColor};`
-  if (style.fontSize) styleString += `font-size: ${style.fontSize}px;`
+  if (style.textColor) {styleString += `color: ${style.textColor};`}
+  if (style.backgroundColor) {styleString += `background: ${style.backgroundColor};`}
+  if (style.fontSize) {styleString += `font-size: ${style.fontSize}px;`}
   console.log('%c%s', styleString, msg)
 }
 
 /**
  * Gets the full hardware info of the device
  */
-export const getFullHardwareInfo = async () => {
+export const getFullHardwareInfo = async () : Promise<string> => {
   try {
     let hardwareInfo = ""
     hardwareInfo += `Manufacturer: ${await DeviceInfo.getManufacturer()}\n`
@@ -164,7 +174,7 @@ import { Alert } from 'react-native';
 /**
  * Standard alert to show when something's not ready for use yet (or is broken due ot new developments)
  */
-export const ShowNotSupportedAlert = (customMessage = null) => {
+export const ShowNotSupportedAlert = (customMessage = null) : void => {
   Alert.alert(
     "Not yet, young whippersnapper 👴🏾",
     customMessage || "Either this feature is broken, or might break something, or hasn't been tested enough. Maybe try again when its ready.")
@@ -178,37 +188,37 @@ import * as links from "utils/LinksAndUris";
 /**
  * Allows users to share a flare using native UI
  */
-export const shareFlare = async (flare) => {
+export const shareFlare = async (flare: {uid: string}) : Promise<void> => {
   try {
     const slugSnap = await database().ref("flareSlugs")
       .orderByChild("flareUid")
       .equalTo(flare.uid)
       .once("value");
 
-    if (!slugSnap.exists()) return
+    if (!slugSnap.exists()) {return}
 
     const slug = Object.keys(slugSnap.val())[0]
     const message = `Check out this flare and join me! ${links.PROJECT_FLARE_VIEWER}${slug}`
     Share.share({ message });
     analyticsUserSharedFlare(flare.uid)
   } catch (err) {
-    if (err.name != "timeout") logError(err)
+    if (err.name !== "timeout") {logError(err)}
   }
 }
 
   //For screens where modals being opened and closed, I close a modal
-  //and then show the snackbar, the snackbar might be attached to the modal that was jsut in 
+  //and then show the snackbar, the snackbar might be attached to the modal that was just in 
   //the process of being removed, meaning the snackbar will never be displayed. 
   //So, I use a small timeout to give the snackbar a bit of a delay
   //https://github.com/cooperka/react-native-snackbar/issues/67
   import Snackbar from 'react-native-snackbar';
 
-  export const showDelayedSnackbar = (message) => {
+  export const showDelayedSnackbar = (message: string) : void => {
     setTimeout(
       () => {
         Snackbar.show({
           text: message,
-          duration: Snackbar.LENGTH_SHORT
+          duration: Snackbar.LENGTH_SHORT,
         });
       },
       200
@@ -221,7 +231,7 @@ export const shareFlare = async (flare) => {
  * @param objA Object A
  * @param objB Object B
  */
-export function objectDifference(objA, objB ) {
+export function objectDifference(objA : Record<string, unknown>, objB : Record<string, unknown>) : Set<string> {
   const setA = new Set(Object.keys(objA))
   const setB = new Set(Object.keys(objB))
   return new Set([...setA].filter(x => !setB.has(x)))
