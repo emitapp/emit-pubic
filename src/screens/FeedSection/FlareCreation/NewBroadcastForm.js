@@ -555,7 +555,7 @@ class NewBroadcastForm extends React.Component {
       this.recepientFriendsOriginal = this.passableBroadcastInfo.recepientFriends
       this.recepientGroupsOriginal = this.passableBroadcastInfo.recepientGroups
 
-      this.state.recurringDays = this.broadcastSnippet.recurringDays;
+      this.state.recurringDays = this.broadcastSnippet.recurringDays || [];
 
       this.broadcastInfoPrototype = { ...this.passableBroadcastInfo }
       this.setState({ passableBroadcastInfo: this.passableBroadcastInfo })
