@@ -100,9 +100,11 @@ export class ChangesModal extends React.PureComponent<ChangesModalProps & ThemeP
     }
 
     getInitialLogOnTime = async (): Promise<void> => {
+        const MONTH_IN_MILLISECONDS = 2629800000
         const storedTime = (await AsyncStorage.getItem(ASYNC_LAST_LOG_ON_KEY)) || "0"
         let time = parseInt(storedTime, 10)
         if (isNaN(time)) { time = 0 }
+        if (time === 0) {time = Date.now() - MONTH_IN_MILLISECONDS;} //So they don't get flooded with updates...
         await AsyncStorage.setItem(ASYNC_LAST_LOG_ON_KEY, Date.now().toString())
         const mostRecentTime = changes[0].timestamp
         if (mostRecentTime > time) { this.setState({ isVisible: true, lastLogOnTime: time }) }

@@ -68,7 +68,8 @@ export const restartJSApp = () : void => {
 import { LogBox } from 'react-native'
 LogBox.ignoreLogs([
   'Require cycle:', //TODO: investigate these warnings eventually
-  'Remote debugger is in a background tab', //Not needed if you use "Maintain Priority in debugger, but here anyway"
+  'Remote debugger is in a background tab', //Not needed if you use "Maintain Priority in debugger, but here anyway",
+  'Usage of "messaging().registerDeviceForRemoteMessages()" is not required', //Am afraid of iOS so better dafe than sorry to use the extra call haha
 ])
 
 
@@ -76,8 +77,9 @@ LogBox.ignoreLogs([
 
 import AsyncStorage from '@react-native-community/async-storage';
 import { ASYNC_LAST_LOG_ON_KEY } from 'utils/helpers'
+
 export const clearLastLogInTime = () : void => {
-  AsyncStorage.setItem(ASYNC_LAST_LOG_ON_KEY, "-1")
+  AsyncStorage.removeItem(ASYNC_LAST_LOG_ON_KEY)
 }
 
 

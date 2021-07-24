@@ -18,11 +18,11 @@ export default class SocialButtonHub extends React.Component {
 
 
     componentDidMount() {
-        subscribeToEvent(events.PROFILE_PIC_CHNAGE, this, () => this.summaryComponent.refresh())
+        subscribeToEvent(events.PROFILE_PIC_CHANGE, this, () => this.summaryComponent.refresh())
     }
 
     componentWillUnmount() {
-        unsubscribeToEvent(events.PROFILE_PIC_CHNAGE, this)
+        unsubscribeToEvent(events.PROFILE_PIC_CHANGE, this)
     }
 
     render() {

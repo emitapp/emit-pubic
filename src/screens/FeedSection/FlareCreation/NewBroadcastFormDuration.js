@@ -33,12 +33,9 @@ export default class NewBroadcastFormDuration extends React.Component {
           <MainLinearGradient theme={theme}>
             <View style={{ flex: 1, backgroundColor: "white", width: "100%", borderTopEndRadius: 50, borderTopStartRadius: 50 }}>
               <Text h4 h4Style={{ marginTop: 8, fontWeight: "bold" }}>
-                How long?
-                </Text>
+                How long will this flare last?
+              </Text>
               <View style={{ flex: 1, marginHorizontal: 16, alignItems: "center" }}>
-                <Text style={{ fontSize: 18, fontWeight: "bold", alignSelf: "flex-start" }}>
-                  for...
-                </Text>
                 <View style={styles.rowStyle}>
                   {this.generateTimeButton(10, "black")}
                   {this.generateTimeButton(20, "black")}
@@ -95,34 +92,36 @@ export default class NewBroadcastFormDuration extends React.Component {
 class TimeButton extends React.Component {
 
   state = {
-      pressedDown: false
+    pressedDown: false
   }
 
   unpressedColors = {
-      outerBorder: "lightgrey",
-      innerBorder: "white",
-      iconColor: "white"
+    outerBorder: "lightgrey",
+    innerBorder: "white",
+    iconColor: "white"
   }
 
   pressedColors = {
-      outerBorder: "lightgrey",
-      innerBorder: "lightgrey",
-      iconColor: "lightgrey"
+    outerBorder: "lightgrey",
+    innerBorder: "lightgrey",
+    iconColor: "lightgrey"
   }
 
   render() {
     const { text, color, onPress } = this.props
     return (
-        <View style={{ ...styles.timeButton, borderColor: this.props.color,
-            backgroundColor: this.state.pressedDown ? this.pressedColors.iconColor : this.unpressedColors.iconColor}}>
-            <Pressable
-                style={{ height: "100%", width: "100%", alignItems: "center", justifyContent: "center" }}
-                onPressIn={() => this.setState({ pressedDown: true })}
-                onPressOut={() => this.setState({ pressedDown: false })}
-                onPress={onPress}>
-                <Text style={{ color, fontWeight: "bold", fontSize: 20, textAlign: "center" }}>{text}</Text>
-            </Pressable>
-        </View>
+      <View style={{
+        ...styles.timeButton, borderColor: this.props.color,
+        backgroundColor: this.state.pressedDown ? this.pressedColors.iconColor : this.unpressedColors.iconColor
+      }}>
+        <Pressable
+          style={{ height: "100%", width: "100%", alignItems: "center", justifyContent: "center" }}
+          onPressIn={() => this.setState({ pressedDown: true })}
+          onPressOut={() => this.setState({ pressedDown: false })}
+          onPress={onPress}>
+          <Text style={{ color, fontWeight: "bold", fontSize: 20, textAlign: "center" }}>{text}</Text>
+        </Pressable>
+      </View>
     )
   }
 }

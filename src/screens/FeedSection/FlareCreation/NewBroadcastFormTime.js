@@ -23,7 +23,7 @@ export default class NewBroadcastFormTime extends React.Component {
         let startingDate = new Date()
         startingDate.setMilliseconds(0)
         startingDate.setSeconds(0)
-        startingDate.setTime(startingDate.getTime() +  3 * 60 * 1000)
+        startingDate.setTime(startingDate.getTime() + 3 * 60 * 1000)
 
         this.state = {
             showingCustom: false,
@@ -38,7 +38,7 @@ export default class NewBroadcastFormTime extends React.Component {
             innerBorder: "white",
             innerCircle: MainTheme.colors.primary,
             iconColor: "white"
-          }
+        }
     }
 
     static navigationOptions = ClearHeader("New Flare")
@@ -50,13 +50,13 @@ export default class NewBroadcastFormTime extends React.Component {
                     <MainLinearGradient theme={theme}>
                         <View style={{ flex: 1, backgroundColor: "white", width: "100%", borderTopEndRadius: 50, borderTopStartRadius: 50 }}>
                             <Text h4 h4Style={{ marginTop: 8, fontWeight: "bold" }}>
-                                What time?
-                </Text>
+                                What time will your flare start?
+                            </Text>
                             <View style={{ flexDirection: "row", flex: 1 }}>
                                 <View style={{ flex: 1, marginHorizontal: 16, alignItems: "center" }}>
-                                    <Text style={{ fontSize: 18, fontWeight: "bold", alignSelf: "flex-start" }}>
+                                    <Text style={{ fontSize: 20, fontWeight: "bold", marginTop: 8 }}>
                                         in...
-                    </Text>
+                                    </Text>
                                     <View style={styles.rowStyle}>
                                         {this.generateTimeButton(0, "black")}
                                         {this.generateTimeButton(10, "black")}
@@ -75,7 +75,7 @@ export default class NewBroadcastFormTime extends React.Component {
 
                                     {!this.state.showingCustom &&
                                         <Button
-                                            title="  Custom  "
+                                            title="Custom Time"
                                             containerStyle={{ marginTop: 16 }}
                                             onPress={() => this.setState({ showingCustom: true })}
                                         />
@@ -83,11 +83,6 @@ export default class NewBroadcastFormTime extends React.Component {
 
                                     {this.state.showingCustom &&
                                         <>
-                                            <View style={{ flexDirection: 'row', marginVertical: 8 }}>
-                                                <Button onPress={() => this.showPicker('date')} title="Choose Date" />
-                                                <Button onPress={() => this.showPicker('time')} title="Choose Time" />
-                                            </View>
-
                                             <ErrorMessageText message={this.state.errorMessage} />
 
                                             <Text style={{ textAlign: "center" }}> Chosen date: </Text>
@@ -103,6 +98,10 @@ export default class NewBroadcastFormTime extends React.Component {
                                                     onChange={this.setDate}
                                                     minimumDate={new Date()} />
                                             }
+                                            <View style={{ flexDirection: 'row', marginVertical: 8 }}>
+                                                <Button onPress={() => this.showPicker('date')} title="Change Date" />
+                                                <Button onPress={() => this.showPicker('time')} title="Change Time" />
+                                            </View>
                                         </>
                                     }
 
@@ -126,7 +125,7 @@ export default class NewBroadcastFormTime extends React.Component {
         let MILLIPERMIN = 1000 * 60
         let buttonText = ""
         let timeText = ""
-        if (minutes == 0){
+        if (minutes == 0) {
             buttonText = `Now`
             timeText = `Now`
         } else if (minutes < 60) {
@@ -172,8 +171,7 @@ export default class NewBroadcastFormTime extends React.Component {
 
     showPicker = (pickerMode) => {
         this.setState({
-            //Allow the buttons to also act as visibility toggles for ios
-            showPicker: Platform.OS === 'ios' ? (pickerMode != this.state.pickerMode) : true,
+            showPicker: true,
             pickerMode,
         });
     }
@@ -226,8 +224,8 @@ class TimeButton extends React.Component {
         outerBorder: "lightgrey",
         innerBorder: "white",
         iconColor: "white"
-      }
-    
+    }
+
     pressedColors = {
         outerBorder: "lightgrey",
         innerBorder: "lightgrey",
@@ -237,8 +235,10 @@ class TimeButton extends React.Component {
     render() {
         const { text, color, onPress } = this.props
         return (
-            <View style={{ ...styles.timeButton, borderColor: this.props.color,
-                backgroundColor: this.state.pressedDown ? this.pressedColors.iconColor : this.unpressedColors.iconColor}}>
+            <View style={{
+                ...styles.timeButton, borderColor: this.props.color,
+                backgroundColor: this.state.pressedDown ? this.pressedColors.iconColor : this.unpressedColors.iconColor
+            }}>
                 <Pressable
                     style={{ height: "100%", width: "100%", alignItems: "center", justifyContent: "center" }}
                     onPressIn={() => this.setState({ pressedDown: true })}

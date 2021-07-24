@@ -26,7 +26,6 @@ import MainTheme from 'styling/mainTheme';
 import { analyticsAppOpen, analyticsScreenVisit, setAnalyticsID } from 'utils/analyticsFunctions';
 import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import NavigationService from 'utils/NavigationService';
-import ChangesModal from 'reusables/ChangesModal';
 
 export default class App extends React.Component {
 
@@ -75,7 +74,6 @@ export default class App extends React.Component {
             }
           }} />
         <ConnectionBanner />
-        <ChangesModal />
         <DevBuildBanner />
       </ThemeProvider>
     )

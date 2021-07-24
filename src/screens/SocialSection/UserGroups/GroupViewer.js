@@ -172,13 +172,13 @@ export default class GroupScreen extends React.Component {
                   isLoading={this.state.waitingForGroupVisibilityChange}
                 />
                 {
-                  !this.state.waitingForGroupVisibilityChange &&              
+                  !this.state.waitingForGroupVisibilityChange &&
                   <MinorActionButton
-                  title="Cancel"
-                  onPress={() => this.closeVisibilityModal()}
-                />
+                    title="Cancel"
+                    onPress={() => this.closeVisibilityModal()}
+                  />
                 }
-   
+
               </>
 
             </Overlay>
@@ -496,7 +496,10 @@ export default class GroupScreen extends React.Component {
       <View style={{ width: "100%", flexDirection: "row", alignItems: "center" }}>
         <UserSnippetListElement snippet={item} style={{ flex: 1 }} onPress={() => this.modal.openUsingSnippet(item)} />
         {(item.rank === groupRanks.ADMIN || this.state.usersToBePromoted[item.uid]) && !this.state.usersToBeDemoted[item.uid] &&
-          <FontAwesomeIcon name="star" size={24} color="grey" style={{ marginHorizontal: 8 }} />
+          <View style = {{alignItems: "center"}}>
+            <FontAwesomeIcon name="star" size={24} color="grey" style={{ marginHorizontal: 8 }} />
+            <Text style = {{textAlign: "center"}}>Admin</Text>
+          </View>
         }
         {inEditMode &&
           <AdditionalOptionsButton onPress={() => this.selectUser(item)} />
@@ -506,7 +509,7 @@ export default class GroupScreen extends React.Component {
   }
 
   updateGroupVisibility = async () => {
-    this.setState({waitingForGroupVisibilityChange: true})
+    this.setState({ waitingForGroupVisibilityChange: true })
     try {
       const cloudFunc = functions().httpsCallable('changeGroupVisibility')
       const response = await timedPromise(cloudFunc(this.groupSnippet.uid), LONG_TIMEOUT);
@@ -525,8 +528,8 @@ export default class GroupScreen extends React.Component {
     } catch (err) {
       if (err.name != 'timeout') logError(err)
       this.setState({ errorMessage: err.message, isModalVisible: false })
-    }finally{
-      this.setState({waitingForGroupVisibilityChange: false})
+    } finally {
+      this.setState({ waitingForGroupVisibilityChange: false })
     }
   }
 

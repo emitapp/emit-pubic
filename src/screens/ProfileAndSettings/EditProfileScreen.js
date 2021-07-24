@@ -73,7 +73,7 @@ export default class EditProfileScreen extends React.Component {
         <Text h4>Edit Profile Picture</Text>
 
         <ProfilePicChanger
-          onSuccessfulUpload={() => setTimeout(() => emitEvent(events.PROFILE_PIC_CHNAGE), 8000)}
+          onSuccessfulUpload={() => setTimeout(() => emitEvent(events.PROFILE_PIC_CHANGE), 8000)}
         />
 
         <Divider style={{ marginVertical: 16 }} />

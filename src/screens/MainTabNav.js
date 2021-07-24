@@ -19,14 +19,17 @@ import { ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/hel
 import NavigationService from 'utils/NavigationService';
 import { cloudFunctionStatuses } from 'utils/serverValues';
 import { events, subscribeToEvent, unsubscribeToEvent } from 'utils/subcriptionEvents';
+import { Text } from 'react-native-elements'
+import ChangesModal from 'reusables/ChangesModal';
 
 import ExploreStackNav from "./SocialSection/SocialSectionStackNav";
 import FeedStackNav from './FeedSection/FeedStackNav';
 import ProfileAndSettingsStackNav from "./ProfileAndSettings/ProfileAndSettingsStackNav";
 import FlareMap from './FlareMap/FlareMap'
 
+const TAB_ICON_HEIGHT = 24
 
-const renderTab = (props, targetRouteName, iconName) => {
+const renderTab = (props, targetRouteName, iconName, title) => {
   const focused = props.navigation.state.routes[props.navigation.state.index].routeName == targetRouteName
   const tintColor = focused ? props.activeTintColor : props.inactiveTintColor
   return (
@@ -43,25 +46,10 @@ const renderTab = (props, targetRouteName, iconName) => {
       }
       }>
 
-      <View style={{ alignItems: "center", justifyContent: "center", marginTop: 6 }}>
-        <AwesomeIcon name={iconName} size={25} color={tintColor} />
+      <View style={{ alignItems: "center", justifyContent: "center", marginTop: 4 }}>
+        <AwesomeIcon name={iconName} size={TAB_ICON_HEIGHT} color={tintColor} />
       </View>
-      {focused && <View style={{
-        position: "absolute", bottom: 0,
-        height: 5,
-        backgroundColor: props.activeTintColor,
-        borderTopEndRadius: 8,
-        borderTopStartRadius: 8,
-        ...Platform.select({
-          ios: {
-            width: 80
-          },
-          default: {
-            width: 40
-          }
-        })
-
-      }} />}
+      {renderTabLabel(props.activeTintColor, focused, title)}
     </TouchableOpacity>
   )
 }
@@ -85,24 +73,34 @@ const renderProfileTab = (props, targetRouteName) => {
       <View style={{ marginTop: 4 }}>
         <TabBarProfilePic focused={focused} color={props.activeTintColor} />
       </View>
-
-      {focused && <View style={{
-        position: "absolute", bottom: 0,
-        height: 5,
-        backgroundColor: props.activeTintColor,
-        borderTopEndRadius: 8,
-        borderTopStartRadius: 8,
-        ...Platform.select({
-          ios: {
-            width: 80
-          },
-          default: {
-            width: 40
-          }
-        })
-
-      }} />}
+      {renderTabLabel(props.activeTintColor, focused, "Profile")}
     </TouchableOpacity>
+  )
+}
+
+const renderTabLabel = (activeTintColor, focused, title) => {
+  return (
+    <View style={{
+      backgroundColor: focused ? activeTintColor : "transparent",
+
+      marginTop: 4,
+      ...Platform.select({
+        ios: {
+          width: 80,
+          borderRadius: 8
+        },
+        android: {
+          width: 50,
+          flex: 1,
+          borderTopEndRadius: 8,
+          borderTopStartRadius: 8,
+        }
+      }),
+      alignContent: "center",
+      justifyContent: "flex-start"
+    }}>
+      <Text style={{ fontSize: 12, textAlign: "center", color: focused ? "white" : "black" }}>{title}</Text>
+    </View>
   )
 }
 
@@ -159,7 +157,10 @@ export default class Main extends React.Component {
 
   render() {
     return (
-      <Tab navigation={this.props.navigation} />
+      <>
+        <ChangesModal />
+        <Tab navigation={this.props.navigation} />
+      </>
     )
   }
 
@@ -299,10 +300,10 @@ class TabBarComponent extends React.PureComponent {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        {renderTab(otherProps, "FlareMap", "map-marker-alt")}
-        {renderTab(otherProps, "FeedStackNav", "fire")}
+        {renderTab(otherProps, "FlareMap", "map-marker-alt", "Map")}
+        {renderTab(otherProps, "FeedStackNav", "fire", "Feed")}
         <FlareCreationButton />
-        {renderTab(otherProps, "ExploreStackNav", "globe-americas")}
+        {renderTab(otherProps, "ExploreStackNav", "globe-americas", "Explore")}
         {renderProfileTab(otherProps, "ProfileAndSettingsStackNav")}
 
       </View>)
@@ -378,27 +379,26 @@ class TabBarProfilePic extends React.PureComponent {
   static imageData = null
 
   componentDidMount() {
-    subscribeToEvent(events.PROFILE_PIC_CHNAGE, this, () => {
+    subscribeToEvent(events.PROFILE_PIC_CHANGE, this, () => {
       TabBarProfilePic.imageData = null
-      this.pictureComponet.refresh()
+      this.pictureComponent.refresh()
     })
   }
 
   componentWillUnmount() {
-    unsubscribeToEvent(events.PROFILE_PIC_CHNAGE, this)
+    unsubscribeToEvent(events.PROFILE_PIC_CHANGE, this)
   }
 
   render() {
     return (
-      <CircularView diameter={33} style={{ borderColor: this.props.color, borderWidth: this.props.focused ? 2 : 0 }}>
+      <CircularView diameter={TAB_ICON_HEIGHT} style={{ borderColor: this.props.color, borderWidth: this.props.focused ? 5 : 0 }}>
         <ProfilePicDisplayer
-          diameter={27}
+          diameter={TAB_ICON_HEIGHT - 2}
           uid={auth().currentUser.uid}
-          ref={ref => this.pictureComponet = ref}
+          ref={ref => this.pictureComponent = ref}
           onImageDataGotten={(imageData) => TabBarProfilePic.imageData = imageData}
           imageData={TabBarProfilePic.imageData}
         />
-
       </CircularView>
 
     )

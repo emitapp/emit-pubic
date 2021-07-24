@@ -6,7 +6,7 @@
 const subscribers = {}
 
 export const events = {
-    PROFILE_PIC_CHNAGE: "changedProfilePic"
+    PROFILE_PIC_CHANGE: "changedProfilePic"
 }
 
 export const subscribeToEvent = (eventName, subscriber, callback) => {
