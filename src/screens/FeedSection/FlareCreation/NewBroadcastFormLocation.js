@@ -1,16 +1,18 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
-import { FlatList, TouchableOpacity, View } from 'react-native';
+import { Pressable, TouchableOpacity, View } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler'; //This version handles nested flatlists better
 import { Button, Divider, Input, Text, ThemeConsumer } from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
 import Icon from 'react-native-vector-icons/Entypo';
 import ErrorMessageText from 'reusables/ErrorMessageText';
+import MapView, { Marker } from 'react-native-maps';
 import { ClearHeader } from 'reusables/Header';
 import { LocationListElement } from "reusables/ListElements";
 import { SmallLoadingComponent } from 'reusables/LoadingComponents';
 import MainLinearGradient from 'reusables/MainLinearGradient';
-import { BannerButton, MinorActionButton } from 'reusables/ReusableButtons';
+import { BannerButton, LoadableButton, MinorActionButton } from 'reusables/ReusableButtons';
 import S from 'styling';
 import { isOnlyWhitespace, logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import * as recentLocFuncs from 'utils/RecentLocationsFunctions';
@@ -18,6 +20,9 @@ import { MAX_LOCATION_NAME_LENGTH } from 'utils/serverValues'
 import { v4 as uuidv4 } from 'uuid';
 import BulgingButton from 'reusables/BulgingButton'
 import MatIcon from "react-native-vector-icons/MaterialIcons"
+import PlacesAutocompleteTextInput from 'reusables/PlacesAutocompleteTextInput'
+import { ScrollView } from 'react-native-gesture-handler';
+import DummyVirtualizedView from 'reusables/DummyVirtualizedView';
 export default class NewBroadcastFormLocation extends React.Component {
 
   constructor(props) {
@@ -60,86 +65,95 @@ export default class NewBroadcastFormLocation extends React.Component {
       <ThemeConsumer>
         {({ theme }) => (
           <MainLinearGradient theme={theme}>
-            <View style={{ flex: 1, backgroundColor: "white", width: "100%", borderTopEndRadius: 50, borderTopStartRadius: 50 }}>
+
+            <DummyVirtualizedView
+              style={{ flex: 1, backgroundColor: "white", width: "100%", borderTopEndRadius: 50, borderTopStartRadius: 50 }}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: 16 }}
+            >
+
               <Text h4 h4Style={{ marginVertical: 8, fontWeight: "bold" }}>
                 Where will you be?
               </Text>
+
+              <Button title="Choose a saved location"
+                onPress={() => this.props.navigation.navigate("SavedLocations", this.props.navigation.state.params.bundle)}
+                titleStyle={{ fontSize: 14 }}
+                type="outline" />
+
               <ErrorMessageText message={this.state.errorMessage} />
-              <Input
-                containerStyle={{ marginBottom: 0 }}
-                label="Location Name"
-                placeholder="That Super Awesome Place"
-                onChangeText={locationName => this.setState({ locationName })}
-                value={this.state.locationName}
+
+              <PlacesAutocompleteTextInput
+                onLocationChosen={(p) => this.setState({ locationPin: p.coords })}
+                searchBarPlaceholder="That Super Awesome Place"
+                onTextChange={locationName => this.setState({ locationName })}
                 errorMessage={this.state.locationName.length > MAX_LOCATION_NAME_LENGTH ? "Too long" : undefined}
+                clearOnChoice={false}
+                initialTextValue={this.state.locationName}
               />
 
-              {this.state.locationPin == null &&
-                <View style={{ alignItems: "center", justifyContent: "center" }}>
-                  <BulgingButton
-                    height={50}
-                    width={170}
-                    icon={<Icon name="location-pin" size={30} color="white" />}
-                    title="Add a Map Pin"
-                    onPress={() => this.props.navigation.navigate("LocationSelector",
-                      {
-                        callback: (geo) => this.setState({ locationPin: geo }),
-                        pin: this.state.locationPin
-                      })}
-                  />
-                </View>
+              <View style={{ width: "80%", height: 250, alignSelf: "center" }}>
+                <MapView
+                  region={this.state.locationPin != null ? {
+                    latitude: this.state.locationPin.latitude,
+                    longitude: this.state.locationPin.longitude,
+                    longitudeDelta: 0.005,
+                    latitudeDelta: 0.005
+                  } : null}
+                  onPress={() => this.props.navigation.navigate("LocationSelector",
+                    {
+                      callback: (geo) => this.setState({ locationPin: geo }),
+                      pin: this.state.locationPin
+                    })}
+                  zoomEnabled={false}
+                  scrollEnabled={false}
+                  rotateEnabled={false}
+                  showsMyLocationButton={false}
+                  pitchEnabled={false}
+                  toolbarEnabled={false}
+                  style={{ width: "100%", flex: 1 }}
+                  showsUserLocation={true}
+                  loadingEnabled={true}>
+                  {this.state.locationPin != null &&
+                    <Marker
+                      coordinate={this.state.locationPin}
+                    />
+                  }
+                </MapView>
 
-              }
-
-              {this.state.locationPin != null &&
                 <View style={{ flexDirection: "row", alignItems: "center", width: "100%" }}>
-                  <Icon name="location-pin" size={30} color="black" style={{ marginHorizontal: 8 }} />
-                  <Text style={{ flex: 1 }}>Map Pin Added</Text>
-                  <Button
-                    titleStyle={{ color: "black" }}
-                    type="clear"
-                    title="Edit"
-                    onPress={() => this.props.navigation.navigate("LocationSelector",
-                      {
-                        callback: (geo) => this.setState({ locationPin: geo }),
-                        pin: this.state.locationPin
+                  <Text style={{ flex: 1 }}>
+                    {this.state.locationPin != null ? "Map Pin Added" : "No Map Pin Added"}
+                  </Text>
+                  {this.state.locationPin != null &&
+                    <Button
+                      titleStyle={{ color: "red" }}
+                      type="clear"
+                      title="Clear"
+                      onPress={() => this.setState({ locationPin: null })}
+                    />
+                  }
+                </View>
 
-                      })}
-                  />
-                  <Button
-                    titleStyle={{ color: "red" }}
-                    type="clear"
-                    title="Clear"
-                    onPress={() => this.setState({ locationPin: null })}
-                  />
-                </View>
-              }
+                <LoadableButton title="Save current location"
+                  onPress={this.saveLocation}
+                  titleStyle={{ fontSize: 14 }}
+                  type="outline"
+                  isLoading={this.state.isLoading} />
 
-              {!this.state.savingLocation ? (
-                <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 8 }}>
-                  <Button title="Save to Saved Locations"
-                    onPress={this.saveLocation}
-                    titleStyle={{ fontSize: 14 }}
-                    type="outline" />
-                  <Button title="See all Saved Locations"
-                    onPress={() => this.props.navigation.navigate("SavedLocations", this.props.navigation.state.params.bundle)}
-                    titleStyle={{ fontSize: 14 }}
-                    type="outline" />
-                </View>
-              ) : (
-                <View style={{ alignSelf: "center" }}>
-                  <SmallLoadingComponent />
-                </View>
-              )}
+              </View>
+
 
               <FlatList
                 data={this.state.recentLocations}
                 renderItem={({ item, index }) => this.renderRecentLocation(item, index)}
                 ListHeaderComponent={() => this.renderHeader(this.state.recentLocations, theme)}
-                style={{ marginHorizontal: 8 }}
+                style={{ marginHorizontal: 8, maxHeight: 400 }}
                 keyExtractor={item => item.uid}
+                listKey="newBroadcastFormLocation"
               />
-            </View>
+
+            </DummyVirtualizedView>
             <BannerButton
               iconName={S.strings.confirm}
               onPress={this.confirmLocation}
@@ -227,8 +241,8 @@ export default class NewBroadcastFormLocation extends React.Component {
           <Text style={{ fontSize: 18, textAlign: "center", flex: 1 }}> Recent Locations </Text>
           <Button
             icon={<MatIcon name="cancel" size={20} color={theme.colors.grey3} />}
-            onPress={this.clearRecentLocations} 
-            type = "clear"/>
+            onPress={this.clearRecentLocations}
+            type="clear" />
         </View>
       </>
     )

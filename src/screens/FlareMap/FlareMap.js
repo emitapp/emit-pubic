@@ -11,7 +11,7 @@ import Snackbar from 'react-native-snackbar';
 import Header from 'reusables/Header';
 import S from 'styling';
 import { checkAndGetPermissions } from 'utils/AppPermissions';
-import { GetGeolocation, isFalsePositiveNearbyFlare, PUBLIC_FLARE_RADIUS_IN_M } from 'utils/GeolocationFunctions';
+import { GetGeolocation, isFalsePositiveNearbyFlare, PUBLIC_FLARE_RADIUS_IN_M } from 'utils/geo/GeolocationFunctions';
 import { logError } from 'utils/helpers';
 import FlareMarker from './FlareMapMarker';
 

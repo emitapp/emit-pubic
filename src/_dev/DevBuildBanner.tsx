@@ -2,14 +2,13 @@ import DevModal from 'dev/DevModal';
 import * as dev from 'dev/index';
 import React, { PureComponent } from 'react';
 import { Dimensions, Pressable, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
 const { width } = Dimensions.get("screen")
 
 export default class DevBuildBanner extends PureComponent {
 
 
-  isQA = DeviceInfo.getBundleId().endsWith(".qa")
-  isDev = DeviceInfo.getBundleId().endsWith(".dev")
+  isQA = dev.isQABuild()
+  isDev = dev.isDevBuild()
 
   state = {
     isVisible: (this.isDev || this.isQA),
@@ -27,7 +26,7 @@ export default class DevBuildBanner extends PureComponent {
       return (
         <>
           <DevModal
-            onEmulatorButtonPressed={() => this.setState({ usingEmulator: dev.usingEmulator() })}
+            onEmulatorButtonPressed={() => this.setState({ usingEmulator: dev.usingFunctionsEmulator() })}
             ref = {this.setBannerRef}
           />
           <TouchableOpacity style={{ ...styles.networkBanner, backgroundColor }} onPress={this.onBannerClicked}>

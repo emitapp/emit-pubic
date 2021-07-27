@@ -12,7 +12,7 @@ import { SmallLoadingComponent } from 'reusables/LoadingComponents';
 import MergedSectionInfiniteScroll from 'reusables/MergedSectionInfiniteScroll';
 import S from 'styling';
 import { checkAndGetPermissions } from 'utils/AppPermissions';
-import { GetGeolocation, PUBLIC_FLARE_RADIUS_IN_M, isFalsePositiveNearbyFlare, RecordLocationToBackend } from 'utils/GeolocationFunctions';
+import { GetGeolocation, PUBLIC_FLARE_RADIUS_IN_M, isFalsePositiveNearbyFlare, RecordLocationToBackend } from 'utils/geo/GeolocationFunctions';
 import { logError } from 'utils/helpers';
 import { responderStatuses } from 'utils/serverValues';
 import EmittedFlareElement from './EmittedFlareElement';

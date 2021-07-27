@@ -5,10 +5,11 @@
  * @param {Number} ms The timeout in ms
  */
 //https://italonascimento.github.io/applying-a-timeout-to-your-promises/
-export const timedPromise = (promise : Promise<unknown>, ms: number) : Promise<unknown> => {
+export const timedPromise = <T>(promise : Promise<T>, ms: number) : Promise<T> => {
 
   // Create a promise that rejects in <ms> milliseconds
-  const timeout = new Promise((_, reject) => {
+  //Its okay to say this resolves to T because it never really resolves
+  const timeout = new Promise<T>((_, reject) => {
     setTimeout(() => reject({
       name: "timeout",
       message: `Your Promise timed out after ${ms} milliseconds`,
@@ -17,10 +18,16 @@ export const timedPromise = (promise : Promise<unknown>, ms: number) : Promise<u
   })
 
   // Returns a race between our timeout and the passed in promise
-  return Promise.race([
+  return Promise.race<Promise<T>>([
     promise,
     timeout,
   ])
+}
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
+export const isTimedPromiseTimeoutError = (e: any) : boolean => {
+  if (e?.name === "timeout" && e?.message) {return true}
+  return false
 }
 
 export const SHORT_TIMEOUT = 7000

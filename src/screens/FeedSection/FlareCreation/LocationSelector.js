@@ -9,7 +9,7 @@ import { BannerButton } from 'reusables/ReusableButtons';
 import S from 'styling';
 import { checkAndGetPermissions } from 'utils/AppPermissions';
 import { logError } from 'utils/helpers';
-import {GetGeolocation} from 'utils/GeolocationFunctions'
+import {GetGeolocation} from 'utils/geo/GeolocationFunctions'
 
 export default class LocationSelector extends React.Component {
 

@@ -46,7 +46,7 @@ export const MAX_BROADCAST_WINDOW = 2879 //48 hours - 1 minute
 
 export const MAX_USERNAME_LENGTH = 30
 export const MAX_DISPLAY_NAME_LENGTH = 35
-export const MAX_LOCATION_NAME_LENGTH = 100
+export const MAX_LOCATION_NAME_LENGTH = 200
 export const MAX_BROADCAST_NOTE_LENGTH = 500
 export const MAX_GROUP_NAME_LENGTH = 40
 

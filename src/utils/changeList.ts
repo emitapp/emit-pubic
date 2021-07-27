@@ -1,10 +1,10 @@
 type changeList = Array<{
-    timestamp: number,
+    timestamp: number, //in millis
     change: string
 }>
 
 // This supports markdown!
-// Ideally, the timestamps should be Dates, but Dates are very inconsistent and 
+// Ideally, the timestamps should be Dates, but Dates are very inconsistent in 
 // since Android uses an incomplete JS core, not all of their functionality 
 // is supported.
 // https://stackoverflow.com/questions/56943813/using-intl-properly-in-android-react-native-app
@@ -17,6 +17,10 @@ type changeList = Array<{
  * Arranged such that the most recent change comes first in the array. 
  */
 const changes : changeList = [
+    {
+        timestamp: 1627248025084,
+        change: "Adding location tags to flares is now much easier with **location autocomplete** while you type! 🗺️"
+    },
     {
         timestamp: 1625443200000,
         change: "We added **user avatars**! Now, users can set their profile pictures to fun Emit avatars. 🎭",

@@ -103,6 +103,12 @@ export default
         "licenseUrl": "https://github.com/invertase/react-native-firebase/tree/master/packages/storage/raw/master/LICENSE",
         "parents": "emit"
     },
+    "axios@0.21.1": {
+        "licenses": "MIT",
+        "repository": "https://github.com/axios/axios",
+        "licenseUrl": "https://github.com/axios/axios/raw/master/LICENSE",
+        "parents": "emit"
+    },
     "emoji-mart-native@0.6.2-beta": {
         "licenses": "BSD-3-Clause",
         "repository": "https://github.com/tunoltd/emoji-mart-native",
@@ -155,6 +161,12 @@ export default
         "licenses": "MIT",
         "repository": "https://github.com/ds300/postinstall-postinstall",
         "licenseUrl": "https://github.com/ds300/postinstall-postinstall/raw/master/LICENSE",
+        "parents": "emit"
+    },
+    "promise.allsettled@1.0.4": {
+        "licenses": "MIT",
+        "repository": "https://github.com/es-shims/Promise.allSettled",
+        "licenseUrl": "https://github.com/es-shims/Promise.allSettled/raw/master/LICENSE",
         "parents": "emit"
     },
     "react-native-autolink@3.0.0": {
@@ -337,7 +349,7 @@ export default
         "licenseUrl": "https://github.com/react-native-community/react-native-svg/raw/master/LICENSE",
         "parents": "emit"
     },
-    "react-native-ultimate-config@3.1.1": {
+    "react-native-ultimate-config@3.3.4": {
         "licenses": "MIT",
         "repository": "https://github.com/maxkomarychev/react-native-ultimate-config",
         "licenseUrl": "https://github.com/maxkomarychev/react-native-ultimate-config/raw/master/LICENSE",

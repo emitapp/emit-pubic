@@ -1,11 +1,15 @@
 import { distanceBetween } from 'geofire-common';
-import Geolocation from 'react-native-geolocation-service';
+import Geolocation, { GeoCoordinates } from 'react-native-geolocation-service';
 import Snackbar from 'react-native-snackbar';
 import { geohashForLocation } from 'geofire-common'
 import auth from '@react-native-firebase/auth'
 import database from '@react-native-firebase/database'
-import { logError } from './helpers';
+import { logError } from '../helpers';
 
+export type Coordinates = {
+  longitude: number,
+  latitude: number
+}
 
 /**
  * Its recommended that you call this along with recordLocationToBackend
@@ -13,7 +17,7 @@ import { logError } from './helpers';
  * @param {*} onSuccess 
  * @param {*} onError 
  */
-export const GetGeolocation = (onSuccess, onError = handleGeolocationError) => {
+export const GetGeolocation = (onSuccess: Geolocation.SuccessCallback, onError = handleGeolocationError) : void => {
   Geolocation.getCurrentPosition(
     onSuccess,
     onError,
@@ -21,7 +25,8 @@ export const GetGeolocation = (onSuccess, onError = handleGeolocationError) => {
   );
 }
 
-export const handleGeolocationError = (error) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
+export const handleGeolocationError = (error: any) : void => {
   const code = error.code
   let message = ""
   switch (code) {
@@ -45,13 +50,13 @@ export const handleGeolocationError = (error) => {
   }
   Snackbar.show({
     text: message,
-    duration: Snackbar.LENGTH_SHORT
+    duration: Snackbar.LENGTH_SHORT,
   });
 }
 
 export const PUBLIC_FLARE_RADIUS_IN_M = 9656 //6 miles
 
-export const isFalsePositiveNearbyFlare = (flare, center) => {
+export const isFalsePositiveNearbyFlare = (flare: {geolocation: GeoCoordinates}, center: [number, number]) : boolean=> {
   const lat = flare.geolocation.latitude;
   const lng = flare.geolocation.longitude;
   const distanceInKm = distanceBetween([lat, lng], center);
@@ -66,18 +71,22 @@ const DEFAULT_LOCATION_UPLOADING_PREFERENCE = true
  * Updates the backend with the user's location, if they haven't disabled that
  * @param {*} geolocation Should come from GetGeolocation function
  */
-export const RecordLocationToBackend = async (geolocation) => {
+export const RecordLocationToBackend = async (geolocation : GeoCoordinates) : Promise<void> => {
   try {
     const { latitude, longitude } = geolocation
     const geoHash = geohashForLocation([latitude, longitude])
-    const preferenceSnap = await database().ref(`userLocationUploadPreference/${auth().currentUser.uid}`).once("value")
-    const shouldUpload = DEFAULT_LOCATION_UPLOADING_PREFERENCE;
-    if (preferenceSnap.exists()) shouldUpload = preferenceSnap.val()
+    const preferenceSnap = await database().ref(`userLocationUploadPreference/${auth().currentUser?.uid}`).once("value")
+    let shouldUpload = DEFAULT_LOCATION_UPLOADING_PREFERENCE;
+    if (preferenceSnap.exists()) {shouldUpload = preferenceSnap.val()}
     if (shouldUpload)
-      await database().ref(`userLocationGeoHashes/${auth().currentUser.uid}`).set(
+      {await database().ref(`userLocationGeoHashes/${auth().currentUser?.uid}`).set(
         { geoHash, geolocation: {latitude, longitude} }
-      )
+      )}
   } catch (err) {
     logError(err, false)
   }
+}
+
+export const metersToMiles = (distanceInMeters: number) : number => {
+  return distanceInMeters * 0.000621371
 }

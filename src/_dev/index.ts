@@ -2,6 +2,20 @@
 //Are useful to play around with during development.
 //Maybe this should be placed somewhere else eventually, but for now its here
 
+//It also has some pretty helpful helper functions
+
+//******************************  DEV / QA BUILDS  ************************************
+import DeviceInfo from 'react-native-device-info';
+
+export const isDevBuild = () : boolean => {
+  return DeviceInfo.getBundleId().endsWith(".dev")
+}
+
+export const isQABuild = () : boolean => {
+  return DeviceInfo.getBundleId().endsWith(".qa")
+}
+
+
 //******************************  CODEPUSH  ************************************
 
 /**
@@ -28,10 +42,10 @@ import { prettyLog } from 'utils/helpers'
 //with the local ip of your PC. (http://192.168.x.x)
 export const _EMULATOR_IP = "http://localhost:5000"
 
-let _usingEmulator = false;
+let _usingFunctionsEmulator = false;
 
-export const usingEmulator = (): boolean => {
-  return _usingEmulator
+export const usingFunctionsEmulator = (): boolean => {
+  return _usingFunctionsEmulator
 }
 
 export const switchToEmulatedFunctions = (ip: string): void => {
@@ -39,7 +53,7 @@ export const switchToEmulatedFunctions = (ip: string): void => {
     'Using Firebase Cloud Functions Emulator 👷🏾‍♂️',
     { textColor: "black", backgroundColor: "orange", fontSize: 18 })
   functions().useFunctionsEmulator(ip as string);
-  _usingEmulator = true;
+  _usingFunctionsEmulator = true;
 
 }
 
@@ -50,7 +64,7 @@ export const switchToLiveFunctions = (): void => {
   //That's a hack because i know the underlying implementation of this function will result in null turning off local functions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   functions().useFunctionsEmulator(null as any);
-  _usingEmulator = false
+  _usingFunctionsEmulator = false
 
 }
 

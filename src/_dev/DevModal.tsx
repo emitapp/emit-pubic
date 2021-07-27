@@ -24,9 +24,9 @@ export default class DevBanner extends React.PureComponent<DevBannerProps, DevBa
                 onBackdropPress={this.close}>
                 <View style={{ height: "100%" }}>
                     <Button
-                        title={(dev.usingEmulator()) ? "Use live functions" : "Use emulated functions"}
+                        title={(dev.usingFunctionsEmulator()) ? "Use live functions" : "Use emulated functions"}
                         onPress={() => {
-                            (dev.usingEmulator()) ? dev.switchToLiveFunctions() : dev.switchToEmulatedFunctions(dev._EMULATOR_IP)
+                            (dev.usingFunctionsEmulator()) ? dev.switchToLiveFunctions() : dev.switchToEmulatedFunctions(dev._EMULATOR_IP)
                             this.props.onEmulatorButtonPressed()
                         }}
                     />
