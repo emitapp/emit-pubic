@@ -95,6 +95,16 @@ const list : customAttributionsList =
         imageSrc: "https://assets3.lottiefiles.com/avatars/300_5f65e1fa73d09.jpg",
         custom: true,
     },
+    {
+        title: "Aladin community",
+        version: "-",
+        sourceUrl: "https://lottiefiles.com/36071-aladin-community",
+        licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+        licenses: "CC BY 4.0",
+        creatorUrl: "https://lottiefiles.com/user/212090",
+        imageSrc: "https://assets6.lottiefiles.com/avatars/300_5e4b5e84a02cd.jpg",
+        custom: true,
+    },
 ]
 
 export default list

@@ -29,11 +29,12 @@ class NewBroadcastForm extends React.Component {
     //This.isEditing and this.broadcastSnippet come hand in hand
     this.isEditing = this.props.navigation.getParam('isEditing');
     this.broadcastSnippet = this.props.navigation.getParam('broadcastSnippet');
+    let prechosenActivity = this.props.navigation.getParam('activity');
 
 
     this.passableBroadcastInfo = { // All toggleable broadcast information
-      emojiSelected: "",
-      activitySelected: "",
+      emojiSelected: prechosenActivity?.emoji || "",
+      activitySelected: prechosenActivity?.name || "",
       startingTimeText: "Now",
       startingTime: 0,
       startingTimeRelative: true,

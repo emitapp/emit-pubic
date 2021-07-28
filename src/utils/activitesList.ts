@@ -1,12 +1,23 @@
-export const getAllActivities = () => [
+export interface Activity {
+    name: string
+    emoji: string
+    info?: string
+}
+
+type ActivityList = Array<{
+    sectionName: string,
+    data: Activity[]
+}>
+
+export const getAllActivities = () : ActivityList => [
     {
         sectionName: "Featured",
         data: [
             { emoji: "🧪", name: "COVID Test" },
             { emoji: "🥳", name: "Party" },
             { emoji: "🟡", name: "Spikeball" },
-            { emoji: "🥏", name: "Frisbee" }
-        ]
+            { emoji: "🥏", name: "Frisbee" },
+        ],
     },
     {
         sectionName: "Study",
@@ -15,7 +26,7 @@ export const getAllActivities = () => [
             { emoji: "📋", name: "Exam Prep" },
             { emoji: "📚", name: "Studying" },
             { emoji: "📓", name: "Project" },
-        ]
+        ],
     },
     {
         sectionName: "Entertainment",
@@ -31,17 +42,17 @@ export const getAllActivities = () => [
             { emoji: "🐣", name: "Pokémon" },
             {
                 emoji: "🏝️", name: "Catan",
-                info: "A game based on gathering territory and recources to grow the most powerful empire."
+                info: "A game based on gathering territory and recources to grow the most powerful empire.",
             },
             { emoji: "🧝🏼‍♀️", name: "Magic: The Gathering" },
             {
                 emoji: "🦀", name: "Rocketcrab.com",
-                info: "A place to play phone party games with others."
+                info: "A place to play phone party games with others.",
             },
             { emoji: "🔎", name: "Among Us" },
             {
                 emoji: "🏎️", name: "Rocket League",
-                info: "A popular video game that combines rocket powered cars with soccer. Best for 2 to 8 people."
+                info: "A popular video game that combines rocket powered cars with soccer. Best for 2 to 8 people.",
             },
             { emoji: "♟", name: "Chess" },
             { emoji: "♠️", name: "Cards" },
@@ -50,17 +61,17 @@ export const getAllActivities = () => [
             },
             {
                 emoji: "🕵️", name: "Codenames",
-                info: "A hint-based word guessing game."
+                info: "A hint-based word guessing game.",
             },
             {
                 emoji: "🦠", name: "Covidopoly",
-                info: "\"An online, multiplayer, monopoly-deal inspired game\""
+                info: "\"An online, multiplayer, monopoly-deal inspired game\"",
             },
             {
                 emoji: "🖌️", name: "Skribbl.io",
-                info: "\"A free multiplayer drawing and guessing game\""
-            }
-        ]
+                info: "\"A free multiplayer drawing and guessing game\"",
+            },
+        ],
     },
     {
         sectionName: "Food",
@@ -73,7 +84,7 @@ export const getAllActivities = () => [
             { emoji: "🥤", name: "Smoothie" },
             { emoji: "🍳", name: "Cooking" },
             { emoji: "🥧", name: "Baking" },
-        ]
+        ],
     },
     {
         sectionName: "Exercise",
@@ -87,6 +98,6 @@ export const getAllActivities = () => [
             { emoji: "⚽️", name: "Soccer" },
             { emoji: "🏀", name: "Basketball" },
             { emoji: "🏈", name: "Football" },
-        ]
+        ],
     },
 ]

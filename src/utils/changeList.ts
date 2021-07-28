@@ -19,7 +19,7 @@ type changeList = Array<{
 const changes : changeList = [
     {
         timestamp: 1627248025084,
-        change: "Adding location tags to flares is now much easier with **location autocomplete** while you type! 🗺️"
+        change: "Adding location tags to flares is now much easier with **location autocomplete** while you type! 🗺️",
     },
     {
         timestamp: 1625443200000,

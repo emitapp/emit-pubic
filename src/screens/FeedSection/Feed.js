@@ -6,8 +6,8 @@ import React from 'react';
 import { Image, View } from 'react-native';
 import { Button } from 'react-native-elements';
 import { PERMISSIONS } from 'react-native-permissions';
-import EmptyState from 'reusables/EmptyState';
 import ErrorMessageText from 'reusables/ErrorMessageText';
+import FeedEmptyState from 'reusables/FeedEmptyState';
 import { SmallLoadingComponent } from 'reusables/LoadingComponents';
 import MergedSectionInfiniteScroll from 'reusables/MergedSectionInfiniteScroll';
 import S from 'styling';
@@ -117,21 +117,7 @@ export default class ActiveBroadcasts extends React.Component {
 
   renderEmptyState = () => {
     return (
-      <EmptyState
-        image={
-          <Image source={require('media/NoActiveBroadcasts.png')}
-            style={{ height: 100, marginBottom: 8 }}
-            resizeMode='contain' />
-        }
-        title="Pretty chill day, huh?"
-        message="Flares you make and flares visible to you and join will appear here"
-      >
-        <Button
-          title="Add friends"
-          onPress={() => this.props.navigation.navigate('UserFriendSearch')}
-          buttonStyle={{ borderWidth: 2, width: 150, height: 36, marginTop: 22 }}
-          titleStyle={{ fontSize: 13 }} />
-      </EmptyState>
+      <FeedEmptyState />
     )
   }
 
