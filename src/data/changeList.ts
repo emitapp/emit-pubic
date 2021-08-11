@@ -18,6 +18,10 @@ type changeList = Array<{
  */
 const changes : changeList = [
     {
+        timestamp: 1628695869300,
+        change: "Users can now verify their school email addresses to get **school badges**! This is a precursor to school-specific flares, coming soon! 🎓",
+    },
+    {
         timestamp: 1627248025084,
         change: "Adding location tags to flares is now much easier with **location autocomplete** while you type! 🗺️",
     },
