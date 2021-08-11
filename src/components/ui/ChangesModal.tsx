@@ -3,7 +3,7 @@ import LottieView from 'lottie-react-native';
 import React from 'react';
 import { Dimensions, ScrollView, TextStyle, View, ViewStyle } from 'react-native';
 import { FullTheme, Overlay, Text, ThemeProps, withTheme } from 'react-native-elements';
-import changes from 'utils/changeList';
+import changes from 'data/changeList';
 import { MinorActionButton } from './ReusableButtons';
 import AsyncStorage from '@react-native-community/async-storage';
 import { ASYNC_LAST_LOG_ON_KEY } from 'utils/helpers';

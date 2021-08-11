@@ -11,8 +11,8 @@ import { requestNotifications, RESULTS } from 'react-native-permissions';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import { StackActions } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
-import CircularView from 'reusables/CircularView';
-import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
+import CircularView from 'reusables/containers/CircularView';
+import ProfilePicDisplayer from 'reusables/profiles/ProfilePicComponents';
 import MainTheme from 'styling/mainTheme';
 import { handleFCMDeletion, handleFCMMessage, handleNotificationOpened } from 'utils/fcmNotificationHandlers';
 import { ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
@@ -20,7 +20,7 @@ import NavigationService from 'utils/NavigationService';
 import { cloudFunctionStatuses } from 'utils/serverValues';
 import { events, subscribeToEvent, unsubscribeToEvent } from 'utils/subcriptionEvents';
 import { Text } from 'react-native-elements'
-import ChangesModal from 'reusables/ChangesModal';
+import ChangesModal from 'reusables/ui/ChangesModal';
 
 import ExploreStackNav from "./SocialSection/SocialSectionStackNav";
 import FeedStackNav from './FeedSection/FeedStackNav';

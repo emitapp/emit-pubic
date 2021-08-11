@@ -1,11 +1,11 @@
 import React from 'react';
 import { Image, RefreshControl, SectionList, View } from 'react-native';
 import { Divider } from 'react-native-elements';
-import EmptyState from 'reusables/EmptyState';
-import { TimeoutLoadingComponent } from 'reusables/LoadingComponents';
-import ErrorMessageText from 'reusables/ErrorMessageText';
+import EmptyState from 'reusables/ui/EmptyState';
+import { TimeoutLoadingComponent } from 'reusables/ui/LoadingComponents';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
 import { logError } from 'utils/helpers';
-import SectionHeaderText from './SectionHeaderText';
+import SectionHeaderText from '../ui/SectionHeaderText';
 
 /**
  * This is an infinite scroll component that can handle both RTDB and Firestore references.

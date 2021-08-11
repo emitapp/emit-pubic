@@ -5,6 +5,7 @@
         "dbaeumer.vscode-eslint",
         "streetsidesoftware.code-spell-checker",
         "formulahendry.auto-rename-tag",
-        "aaron-bond.better-comments"
+        "aaron-bond.better-comments",
+        "naumovs.color-highlight"
     ]
 }

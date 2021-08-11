@@ -7,7 +7,7 @@ import CommMaterianIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Header from 'reusables/Header';
 import S from 'styling';
-import Avatar from 'reusables/Avatar'
+import Avatar from 'reusables/profiles/Avatar'
 class AvatarCreation extends React.PureComponent {
 
   static navigationOptions = Header("Avatar Creation")

@@ -6,18 +6,18 @@ import { Pressable, View } from 'react-native';
 import { Button, Divider, Input, Overlay, Text, ThemeConsumer, Tooltip } from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import ErrorMessageText from 'reusables/ErrorMessageText';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
 import { ScrollingHeader } from "reusables/Header";
 import { UserSnippetListElement } from 'reusables/ListElements';
-import { DefaultLoadingModal, SmallLoadingComponent } from 'reusables/LoadingComponents';
-import ProfilePicChanger from 'reusables/ProfilePicChanger';
-import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
-import { AdditionalOptionsButton, BannerButton, LoadableButton, MinorActionButton } from 'reusables/ReusableButtons';
-import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
+import { DefaultLoadingModal, SmallLoadingComponent } from 'reusables/ui/LoadingComponents';
+import ProfilePicChanger from 'reusables/profiles/ProfilePicChanger';
+import ProfilePicDisplayer from 'reusables/profiles/ProfilePicComponents';
+import { AdditionalOptionsButton, BannerButton, LoadableButton, MinorActionButton } from 'reusables/ui/ReusableButtons';
+import SearchableInfiniteScroll from 'reusables/lists/SearchableInfiniteScroll';
 import S from 'styling';
 import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise, showDelayedSnackbar } from 'utils/helpers';
 import { cloudFunctionStatuses, groupRanks, MAX_GROUP_NAME_LENGTH } from 'utils/serverValues';
-import FriendReqModal from '../FriendReqModal';
+import FriendReqModal from '../../../components/FriendReqModal';
 
 export default class GroupScreen extends React.Component {
 

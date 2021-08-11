@@ -3,11 +3,11 @@ import firestore from '@react-native-firebase/firestore';
 import React from 'react';
 import { View } from 'react-native';
 import { Text, ThemeConsumer } from 'react-native-elements';
-import FirestoreDymanicInfiniteScroll from 'reusables/FirestoreDynamicInfiniteScroll';
+import FirestoreDymanicInfiniteScroll from 'reusables/lists/FirestoreDynamicInfiniteScroll';
 import S from 'styling';
-import FriendReqModal from '../screens/SocialSection/FriendReqModal';
-import { UserSnippetListElementVertical } from './ListElements';
-import SectionHeaderText from './SectionHeaderText';
+import FriendReqModal from '../FriendReqModal';
+import { UserSnippetListElementVertical } from '../ListElements';
+import SectionHeaderText from '../ui/SectionHeaderText';
 
 export default class MutualFriendsList extends React.Component {
 

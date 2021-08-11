@@ -11,16 +11,16 @@ import Contacts from 'react-native-contacts';
 import { Button, SearchBar, Text } from 'react-native-elements';
 import { PERMISSIONS } from 'react-native-permissions';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import EmptyState from 'reusables/EmptyState';
+import EmptyState from 'reusables/ui/EmptyState';
 import Header from 'reusables/Header';
-import { SmallLoadingComponent } from 'reusables/LoadingComponents';
+import { SmallLoadingComponent } from 'reusables/ui/LoadingComponents';
 import { analyticsUserInvitedSMS } from 'utils/analyticsFunctions';
 import { checkAndGetPermissions } from 'utils/AppPermissions';
 import { logError, MEDIUM_TIMEOUT, timedPromise, ASKED_CONTACTS_PERMISSIONS } from 'utils/helpers';
-import * as links from "utils/LinksAndUris";
+import * as links from "data/LinksAndUris";
 import ContactAvatar from './ContactAvatar';
 import ContactElement from './ContactElement';
-import FriendReqModal from './FriendReqModal';
+import FriendReqModal from '../../components/FriendReqModal';
 import AsyncStorage from '@react-native-community/async-storage';
 
 

@@ -3,15 +3,15 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
 import { View } from 'react-native';
-import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
+import SearchableInfiniteScroll from 'reusables/lists/SearchableInfiniteScroll';
 import { UserSnippetListElement } from 'reusables/ListElements';
 import S from 'styling';
 import { Text, Button } from "react-native-elements"
 import FriendRequestPreviewer from '../SocialSection/FriendRequestPreviewer'
-import FriendReqModal from '../SocialSection/FriendReqModal';
-import ErrorMessageText from 'reusables/ErrorMessageText';
-import DymanicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
-import EmptyState from 'reusables/EmptyState';
+import FriendReqModal from '../../components/FriendReqModal';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
+import DymanicInfiniteScroll from 'reusables/lists/DynamicInfiniteScroll';
+import EmptyState from 'reusables/ui/EmptyState';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 

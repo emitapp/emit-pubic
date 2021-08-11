@@ -2,10 +2,10 @@ import React from 'react';
 import { Pressable, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicon from 'react-native-vector-icons/Ionicons';
-import FlareTimeStatus from 'reusables/FlareTimeStatus';
+import FlareTimeStatus from 'reusables/flares/FlareTimeStatus';
 import S from 'styling';
 import NavigationService from 'utils/NavigationService';
-import PublicFlareService from 'reusables/PublicFlareNotice';
+import PublicFlareService from 'reusables/flares/PublicFlareNotice';
 
 export default class EmittedFlareElement extends React.PureComponent {
   render() {

@@ -9,10 +9,10 @@ import { ScrollView, View } from 'react-native';
 import { Button, Divider, Input, Text } from 'react-native-elements';
 import PhoneInput from "react-native-phone-number-input";
 import Snackbar from 'react-native-snackbar';
-import ErrorMessageText from 'reusables/ErrorMessageText';
-import { SmallLoadingComponent, TimeoutLoadingComponent } from 'reusables/LoadingComponents';
-import MoreInformationTooltip from 'reusables/MoreInformationTooltip';
-import ProfilePicChanger from 'reusables/ProfilePicChanger';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
+import { SmallLoadingComponent, TimeoutLoadingComponent } from 'reusables/ui/LoadingComponents';
+import MoreInformationTooltip from 'reusables/ui/MoreInformationTooltip';
+import ProfilePicChanger from 'reusables/profiles/ProfilePicChanger';
 import { logError, MEDIUM_TIMEOUT, timedPromise, LONG_TIMEOUT } from 'utils/helpers';
 import {
   cloudFunctionStatuses,

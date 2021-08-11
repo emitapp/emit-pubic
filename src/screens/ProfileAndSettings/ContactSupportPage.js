@@ -5,9 +5,9 @@ import { Image, Linking, ScrollView, View } from 'react-native'
 import { Button, Text } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import MaterialIcons from "react-native-vector-icons/MaterialCommunityIcons"
-import ErrorMessage from 'reusables/ErrorMessageText'
+import ErrorMessage from 'reusables/ui/ErrorMessageText'
 import { getFullHardwareInfo, getFullVersionInfo, logError } from 'utils/helpers'
-import * as links from "utils/LinksAndUris"
+import * as links from "data/LinksAndUris"
 
 export default class ContactSupportPage extends React.Component {
 

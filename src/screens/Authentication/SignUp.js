@@ -2,14 +2,14 @@ import auth from '@react-native-firebase/auth';
 import React from 'react';
 import { ImageBackground, Linking, StatusBar, View } from 'react-native';
 import { Button, Input, Text, ThemeConsumer } from 'react-native-elements';
-import ErrorMessageText from 'reusables/ErrorMessageText';
-import { KeyboardAvoidingAndDismissingView } from 'reusables/KeyboardComponents';
-import { DefaultLoadingModal } from 'reusables/LoadingComponents';
-import { MinorActionButton } from 'reusables/ReusableButtons';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
+import { KeyboardAvoidingAndDismissingView } from 'reusables/containers/KeyboardComponents';
+import { DefaultLoadingModal } from 'reusables/ui/LoadingComponents';
+import { MinorActionButton } from 'reusables/ui/ReusableButtons';
 import S from "styling";
 import { analyticsSigningUp } from 'utils/analyticsFunctions';
 import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
-import * as links from "utils/LinksAndUris";
+import * as links from "data/LinksAndUris";
 
 
 

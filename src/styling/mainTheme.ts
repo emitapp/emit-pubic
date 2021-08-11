@@ -13,6 +13,8 @@ const colors = {
 
     gradientStart: "#FA6C13",
     gradientEnd: "#FF9300",
+
+    softRed: "#f97676"
 }
 
 //Used by react-native-elements in App.js

@@ -3,7 +3,7 @@ import { Button, withTheme, Icon, Text } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import styles from 'styling/styles';
-import { SmallLoadingComponent } from 'reusables/LoadingComponents';
+import { SmallLoadingComponent } from 'reusables/ui/LoadingComponents';
 
 function MinorActionButtonComponent(props) {
     const { theme } = props;

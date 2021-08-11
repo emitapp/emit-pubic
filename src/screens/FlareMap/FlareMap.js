@@ -9,6 +9,7 @@ import MapView from 'react-native-maps';
 import { PERMISSIONS } from 'react-native-permissions';
 import Snackbar from 'react-native-snackbar';
 import Header from 'reusables/Header';
+import EmailVerificationBanner from 'reusables/schoolEmail/EmailVerificationBanner';
 import S from 'styling';
 import { checkAndGetPermissions } from 'utils/AppPermissions';
 import { GetGeolocation, isFalsePositiveNearbyFlare, PUBLIC_FLARE_RADIUS_IN_M } from 'utils/geo/GeolocationFunctions';
@@ -68,6 +69,7 @@ export default class FlareMaps extends React.Component {
             Flares on your feed with location information will show up on this map!
             {" "}Radius: {Math.round(PUBLIC_FLARE_RADIUS_IN_M * this.metersToMiles)} miles
           </Text>
+          <EmailVerificationBanner />
           <MapView
             ref={r => this.mapRef = r}
             style={{ width: "100%", flex: 1 }}

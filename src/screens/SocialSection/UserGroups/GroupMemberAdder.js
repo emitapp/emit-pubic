@@ -3,16 +3,16 @@ import functions from '@react-native-firebase/functions';
 import auth from '@react-native-firebase/auth';
 import React from 'react';
 import { View, ScrollView } from 'react-native';
-import { BannerButton } from 'reusables/ReusableButtons';
+import { BannerButton } from 'reusables/ui/ReusableButtons';
 import { UserSnippetListElement } from 'reusables/ListElements';
-import { DefaultLoadingModal } from 'reusables/LoadingComponents';
-import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
+import { DefaultLoadingModal } from 'reusables/ui/LoadingComponents';
+import SearchableInfiniteScroll from 'reusables/lists/SearchableInfiniteScroll';
 import S from 'styling';
 import { isOnlyWhitespace, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import {Text, Input, CheckBox} from 'react-native-elements'
 import {ScrollingHeader} from "reusables/Header"
 import {cloudFunctionStatuses, MAX_GROUP_NAME_LENGTH} from 'utils/serverValues'
-import ErrorMessageText from 'reusables/ErrorMessageText';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
 import Snackbar from 'react-native-snackbar';
 
 

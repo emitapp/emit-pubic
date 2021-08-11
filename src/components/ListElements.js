@@ -1,16 +1,16 @@
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
-import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
+import ProfilePicDisplayer from 'reusables/profiles/ProfilePicComponents';
 import S from 'styling';
 import { Text, ThemeConsumer } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import database from '@react-native-firebase/database';
 import { logError, MEDIUM_TIMEOUT, LONG_TIMEOUT, timedPromise, truncate } from 'utils/helpers';
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
-import MoreInformationTooltip from 'reusables/MoreInformationTooltip'
+import MoreInformationTooltip from 'reusables/ui/MoreInformationTooltip'
 import functions from '@react-native-firebase/functions';
-import { LoadableButton } from 'reusables/ReusableButtons';
-import ErrorMessageText from 'reusables/ErrorMessageText';
+import { LoadableButton } from 'reusables/ui/ReusableButtons';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
 import { cloudFunctionStatuses } from 'utils/serverValues';
 
 

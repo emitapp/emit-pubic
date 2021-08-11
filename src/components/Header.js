@@ -1,5 +1,5 @@
 import React from "react"
-import ScrollingText from "reusables/HorizontalScrollingText"
+import ScrollingText from "reusables/ui/HorizontalScrollingText"
 import { Text, View } from 'react-native'
 import MainTheme from 'styling/mainTheme'
 

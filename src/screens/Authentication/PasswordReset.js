@@ -5,10 +5,10 @@ import S from "styling";
 import { MEDIUM_TIMEOUT, timedPromise, showDelayedSnackbar } from 'utils/helpers';
 import { ThemeConsumer } from 'react-native-elements';
 import { Text, Button, Input } from 'react-native-elements'
-import { MinorActionButton } from 'reusables/ReusableButtons'
-import { DefaultLoadingModal } from 'reusables/LoadingComponents'
-import ErrorMessageText from 'reusables/ErrorMessageText';
-import { KeyboardAvoidingAndDismissingView } from 'reusables/KeyboardComponents';
+import { MinorActionButton } from 'reusables/ui/ReusableButtons'
+import { DefaultLoadingModal } from 'reusables/ui/LoadingComponents'
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
+import { KeyboardAvoidingAndDismissingView } from 'reusables/containers/KeyboardComponents';
 
 
 export default class PasswordReset extends React.Component {

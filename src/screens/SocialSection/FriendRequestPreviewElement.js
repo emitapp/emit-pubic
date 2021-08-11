@@ -4,12 +4,12 @@ import React from 'react';
 import { View } from 'react-native';
 import { Button, withTheme } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import ErrorMessageText from 'reusables/ErrorMessageText';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
 import { UserSnippetListElement } from 'reusables/ListElements';
-import { SmallLoadingComponent, TimeoutLoadingComponent } from 'reusables/LoadingComponents';
+import { SmallLoadingComponent, TimeoutLoadingComponent } from 'reusables/ui/LoadingComponents';
 import { logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses } from 'utils/serverValues';
-import {friendActionOptions} from 'screens/SocialSection/FriendReqModal'
+import {friendActionOptions} from 'reusables/FriendReqModal'
 import { analyticsFriendAction } from 'utils/analyticsFunctions';
 
 //TODO: maybe move this to the file that contains the other list elements?

@@ -37,7 +37,7 @@
         //Path aliases
         "paths": {
             "reusables/*": [
-                "src/reusableComponents/*"
+                "src/components/*"
             ],
             "screens/*": [
                 "src/screens/*"
@@ -53,6 +53,9 @@
             ],
             "dev/*": [
                 "src/_dev/*"
+            ],
+            "data/*": [
+                "src/data/*"
             ]
         }
     },

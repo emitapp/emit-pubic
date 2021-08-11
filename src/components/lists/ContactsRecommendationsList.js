@@ -9,8 +9,8 @@ import S from 'styling';
 import { checkAndGetPermissions } from 'utils/AppPermissions';
 import { logError, LONG_TIMEOUT, timedPromise, ASKED_CONTACTS_PERMISSIONS, CONTACTS_CACHE } from 'utils/helpers';
 import { cloudFunctionStatuses } from 'utils/serverValues';
-import FriendReqModal from '../screens/SocialSection/FriendReqModal';
-import SectionHeaderText from './SectionHeaderText';
+import FriendReqModal from '../FriendReqModal';
+import SectionHeaderText from '../ui/SectionHeaderText';
 import AsyncStorage from '@react-native-community/async-storage';
 import sha1 from "js-sha1"
 import NavigationService from 'utils/NavigationService';

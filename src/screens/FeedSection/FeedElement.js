@@ -2,10 +2,10 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-import FlareTimeStatus from 'reusables/FlareTimeStatus';
-import ProfilePicDisplayer from 'reusables/ProfilePicComponents';
-import PublicFlareService from 'reusables/PublicFlareNotice';
-import RecurringFlareNotice from 'reusables/RecurringFlareNotice';
+import FlareTimeStatus from 'reusables/flares/FlareTimeStatus';
+import ProfilePicDisplayer from 'reusables/profiles/ProfilePicComponents';
+import PublicFlareService from 'reusables/flares/PublicFlareNotice';
+import RecurringFlareNotice from 'reusables/flares/RecurringFlareNotice';
 import NavigationService from 'utils/NavigationService';
 
 /**

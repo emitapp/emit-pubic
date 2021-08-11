@@ -3,9 +3,9 @@ import { FlatList, Linking, View } from 'react-native';
 import { Button, Divider, Text } from 'react-native-elements';
 import LicensesListItem from 'reusables/LicensesListElement';
 import S from 'styling';
-import CustomLicenseData from 'utils/depencencyLicensesCustom';
-import LicenseData from 'utils/dependencyLicenses';
-import * as links from "utils/LinksAndUris";
+import CustomLicenseData from 'data/depencencyLicensesCustom';
+import LicenseData from 'data/dependencyLicenses';
+import * as links from "data/LinksAndUris";
 
 export default class LegalNotices extends Component {
 

@@ -2,9 +2,9 @@ import LottieView from 'lottie-react-native';
 import React from 'react';
 import { Pressable, View } from 'react-native';
 import { Text } from 'react-native-elements';
-import CircularView from 'reusables/CircularView';
-import EmptyState from 'reusables/EmptyState';
-import { Activity, getAllActivities } from 'utils/activitesList';
+import CircularView from 'reusables/containers/CircularView';
+import EmptyState from 'reusables/ui/EmptyState';
+import { Activity, getAllActivities } from 'data/activitesList';
 import NavigationService from 'utils/NavigationService';
 
 export default class FeedEmptyState extends React.PureComponent {

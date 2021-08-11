@@ -6,9 +6,9 @@ import Icon from 'react-native-vector-icons/Entypo';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { ClearHeader } from 'reusables/Header';
 import { ActivityListElement } from 'reusables/ListElements';
-import MainLinearGradient from 'reusables/MainLinearGradient';
-import { MinorActionButton } from 'reusables/ReusableButtons';
-import { getAllActivities } from 'utils/activitesList';
+import MainLinearGradient from 'reusables/containers/MainLinearGradient';
+import { MinorActionButton } from 'reusables/ui/ReusableButtons';
+import { getAllActivities } from 'data/activitesList';
 import { analyticsLogSearch } from 'utils/analyticsFunctions';
 import {analyticsCustomActivity} from 'utils/analyticsFunctions'
 

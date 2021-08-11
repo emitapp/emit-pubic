@@ -17,7 +17,7 @@ import {
 import { OSMResult, reverseGeocodeToOSM } from 'utils/geo/OpenStreetMapsApi';
 import { isTimedPromiseTimeoutError, logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import { v4 as uuidv4 } from 'uuid';
-import ErrorMessageText from './ErrorMessageText';
+import ErrorMessageText from './ui/ErrorMessageText';
 
 interface PlacesAutocompleteTextInputProps {
   onLocationChosen: (s: OSMResult) => void

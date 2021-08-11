@@ -4,10 +4,10 @@ import { WebView } from 'react-native-webview';
 import { View, StyleSheet, SafeAreaView } from 'react-native'
 import { Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { SmallLoadingComponent } from 'reusables/LoadingComponents'
+import { SmallLoadingComponent } from 'reusables/ui/LoadingComponents'
 import { checkAndGetPermissions } from 'utils/AppPermissions';
 import { PERMISSIONS } from 'react-native-permissions';
-import ErrorMessageText from 'reusables/ErrorMessageText';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
 
 export default class JitsiScreen extends React.Component {
 

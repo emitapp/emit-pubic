@@ -1,7 +1,7 @@
 import analytics from '@react-native-firebase/analytics';
 import auth from "@react-native-firebase/auth";
 import database from '@react-native-firebase/database';
-import { friendActionOptions } from 'screens/SocialSection/FriendReqModal';
+import { friendActionOptions } from 'reusables/FriendReqModal';
 import { logError } from './helpers';
 
 //These are the reserved event names by firebase, don't use these

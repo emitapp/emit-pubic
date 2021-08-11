@@ -5,9 +5,9 @@ import AntIcon from 'react-native-vector-icons/AntDesign';
 import FriendRequestPreviewer from 'screens/SocialSection/FriendRequestPreviewer'
 import OctIcon from 'react-native-vector-icons/Octicons';
 import StandardHeader from 'reusables/Header';
-import { MinorActionButton } from 'reusables/ReusableButtons';
+import { MinorActionButton } from 'reusables/ui/ReusableButtons';
 import UserEmitcode from 'reusables/UserEmitcode';
-import UserProfileSummary from 'reusables/UserProfileSummary';
+import UserProfileSummary from 'reusables/profiles/UserProfileSummary';
 import { subscribeToEvent, unsubscribeToEvent, events } from 'utils/subcriptionEvents'
 
 export default class SocialButtonHub extends React.Component {

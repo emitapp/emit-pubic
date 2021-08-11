@@ -5,10 +5,10 @@ import S from "styling";
 import { logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import { ThemeConsumer } from 'react-native-elements';
 import { Text, Button, Input } from 'react-native-elements'
-import { MinorActionButton } from 'reusables/ReusableButtons'
-import { DefaultLoadingModal } from 'reusables/LoadingComponents'
-import ErrorMessageText from 'reusables/ErrorMessageText';
-import { KeyboardAvoidingAndDismissingView } from 'reusables/KeyboardComponents';
+import { MinorActionButton } from 'reusables/ui/ReusableButtons'
+import { DefaultLoadingModal } from 'reusables/ui/LoadingComponents'
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
+import { KeyboardAvoidingAndDismissingView } from 'reusables/containers/KeyboardComponents';
 import { analyticsLoggingIn } from 'utils/analyticsFunctions';
 
 export default class Login extends React.Component {

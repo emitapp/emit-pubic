@@ -26,6 +26,7 @@ import MainTheme from 'styling/mainTheme';
 import { analyticsAppOpen, analyticsScreenVisit, setAnalyticsID } from 'utils/analyticsFunctions';
 import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import NavigationService from 'utils/NavigationService';
+import { emitEvent, events } from 'utils/subcriptionEvents';
 
 export default class App extends React.Component {
 
@@ -121,6 +122,7 @@ export default class App extends React.Component {
       } else {
         setAnalyticsID()
         crashlytics().setUserId(user.uid).catch(err => logError(err))
+        this.refreshAuth()
       }
       NavigationService.navigate("AuthDecisionPage")
     } catch (err) {
@@ -130,6 +132,7 @@ export default class App extends React.Component {
 
   //Sync with codepush if you've been in the background long enough.
   //Also log for analytics purposes
+  //Also reloads auth if needed
   handleAppStateChange = (nextAppState) => {
     //Codepush
     if (this.appState.match(/inactive|background/) &&
@@ -149,6 +152,9 @@ export default class App extends React.Component {
     //Analytics
     if (this.appState == "background" && nextAppState == "active") analyticsAppOpen()
 
+    //Refreshing Auth
+    this.refreshAuth()
+
     this.appState = nextAppState;
   };
 
@@ -158,6 +164,20 @@ export default class App extends React.Component {
   //codepush-induces JS bundle reset when the user is using the app and internet comes back (?)
   syncCodepush = (timeoutInMillis) => {
     return timedPromise(codePush.sync({ installMode: codePush.InstallMode.IMMEDIATE }), timeoutInMillis)
+  }
+
+
+  refreshAuth = async () => {
+    const currentUser = auth().currentUser
+    if (!currentUser) return;
+    //When reloading we only (at the moment) care about changes to email settings
+    const lastEmail = currentUser.email
+    const lastVerified = currentUser.emailVerified
+    await auth().currentUser.reload()
+    const newCurrentUser = auth().currentUser
+    if (lastEmail != newCurrentUser?.email || !lastVerified != newCurrentUser?.emailVerified){
+      emitEvent(events.NEW_AUTH)
+    }
   }
 }
 

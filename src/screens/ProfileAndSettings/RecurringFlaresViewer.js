@@ -4,9 +4,9 @@ import database from '@react-native-firebase/database';
 import React from 'react';
 import { View } from 'react-native';
 import S from 'styling';
-import ErrorMessageText from 'reusables/ErrorMessageText';
-import DymanicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
-import EmptyState from 'reusables/EmptyState';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
+import DymanicInfiniteScroll from 'reusables/lists/DynamicInfiniteScroll';
+import EmptyState from 'reusables/ui/EmptyState';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { RecurringFlareElement } from 'reusables/ListElements';
 

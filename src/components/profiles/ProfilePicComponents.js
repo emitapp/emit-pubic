@@ -5,7 +5,7 @@ import { Image, Pressable, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { FlatList } from 'react-native-gesture-handler';
 import { logError } from 'utils/helpers';
-import Avatar from 'reusables/Avatar'
+import Avatar from 'reusables/profiles/Avatar'
 
 /**
  * This is a reusable component that displays profile pictues

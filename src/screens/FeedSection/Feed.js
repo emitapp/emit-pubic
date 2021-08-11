@@ -6,10 +6,10 @@ import React from 'react';
 import { Image, View } from 'react-native';
 import { Button } from 'react-native-elements';
 import { PERMISSIONS } from 'react-native-permissions';
-import ErrorMessageText from 'reusables/ErrorMessageText';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
 import FeedEmptyState from 'reusables/FeedEmptyState';
-import { SmallLoadingComponent } from 'reusables/LoadingComponents';
-import MergedSectionInfiniteScroll from 'reusables/MergedSectionInfiniteScroll';
+import { SmallLoadingComponent } from 'reusables/ui/LoadingComponents';
+import MergedSectionInfiniteScroll from 'reusables/lists/MergedSectionInfiniteScroll';
 import S from 'styling';
 import { checkAndGetPermissions } from 'utils/AppPermissions';
 import { GetGeolocation, PUBLIC_FLARE_RADIUS_IN_M, isFalsePositiveNearbyFlare, RecordLocationToBackend } from 'utils/geo/GeolocationFunctions';
@@ -17,6 +17,7 @@ import { logError } from 'utils/helpers';
 import { responderStatuses } from 'utils/serverValues';
 import EmittedFlareElement from './EmittedFlareElement';
 import FeedElement from './FeedElement';
+import EmailVerificationBanner from 'reusables/schoolEmail/EmailVerificationBanner';
 
 export default class ActiveBroadcasts extends React.Component {
 
@@ -95,6 +96,7 @@ export default class ActiveBroadcasts extends React.Component {
     if (this.state.gettingGeolocation) return (<SmallLoadingComponent />)
     return (
       <View style={S.styles.containerFlexStart}>
+        <EmailVerificationBanner />
         <ErrorMessageText message={this.state.errorMessage} />
         <MergedSectionInfiniteScroll
           refs={this.dbrefs}

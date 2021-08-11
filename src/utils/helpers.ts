@@ -191,7 +191,7 @@ export const ShowNotSupportedAlert = (customMessage = null) : void => {
 import { Share } from 'react-native';
 import database from '@react-native-firebase/database';
 import { analyticsUserSharedFlare } from './analyticsFunctions'
-import * as links from "utils/LinksAndUris";
+import * as links from "data/LinksAndUris";
 /**
  * Allows users to share a flare using native UI
  */

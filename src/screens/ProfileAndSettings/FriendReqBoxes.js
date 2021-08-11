@@ -3,13 +3,13 @@ import database from '@react-native-firebase/database';
 import React from 'react';
 import { View, Image } from 'react-native';
 import { ButtonGroup, Text } from 'react-native-elements';
-import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
-import EmptyState from 'reusables/EmptyState';
+import DynamicInfiniteScroll from 'reusables/lists/DynamicInfiniteScroll';
+import EmptyState from 'reusables/ui/EmptyState';
 import {UserSnippetListElement} from 'reusables/ListElements';
 import S from 'styling';
 import { epochToDateString } from 'utils/helpers';
-import FriendReqModal from '../SocialSection/FriendReqModal';
-import ErrorMessageText from 'reusables/ErrorMessageText';
+import FriendReqModal from '../../components/FriendReqModal';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
 
 
 export default class FriendReqBoxes extends React.Component {

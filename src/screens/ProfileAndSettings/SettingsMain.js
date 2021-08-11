@@ -1,21 +1,30 @@
 import auth from '@react-native-firebase/auth';
 import React from 'react';
-import { View, ScrollView, RefreshControl, StyleSheet } from 'react-native';
-import { Button, Text, ThemeConsumer } from 'react-native-elements'
-import { logError, getFullVersionInfo, ShowNotSupportedAlert } from 'utils/helpers';
-import UserProfileSummary from 'reusables/UserProfileSummary'
+import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { Button, Text, ThemeConsumer } from 'react-native-elements';
+import Snackbar from 'react-native-snackbar';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
-import FeatherIcon from 'react-native-vector-icons/Feather'
-import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import ErrorMessageText from 'reusables/ErrorMessageText';
-import { subscribeToEvent, unsubscribeToEvent, events } from 'utils/subcriptionEvents'
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import UserProfileSummary from 'reusables/profiles/UserProfileSummary';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
 import { analyticsLoggingOut } from 'utils/analyticsFunctions';
+import { getFullVersionInfo, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
+import { events, subscribeToEvent, unsubscribeToEvent } from 'utils/subcriptionEvents';
+import { cloudFunctionStatuses } from 'utils/serverValues';
+import { LoadableButton } from 'reusables/ui/ReusableButtons';
+import functions from '@react-native-firebase/functions';
 
 export default class SettingsMain extends React.Component {
 
   constructor(props) {
     super(props)
-    this.state = { refreshing: false, verificationEmailError: "", version: "calculating..." }
+    this.state = {
+      refreshing: false,
+      verificationEmailError: "",
+      isWaitingForEmailSend: false,
+      version: "calculating..."
+    }
     getFullVersionInfo().then(version => this.setState({ version }))
   }
 
@@ -52,14 +61,15 @@ export default class SettingsMain extends React.Component {
               </Text>
               <Text>
                 Your email is {currentUser.emailVerified ? "" : "not"} verified
-            </Text>
+              </Text>
               <ErrorMessageText message={this.state.verificationEmailError} />
               {!currentUser.emailVerified &&
-                <Button
+                <LoadableButton
                   title="Send Verification Email"
                   onPress={this.sendEmailVerification}
                   type="clear"
                   containerStyle={{ margin: 0 }}
+                  isLoading={this.state.isWaitingForEmailSend}
                 />
               }
             </View>
@@ -107,8 +117,8 @@ export default class SettingsMain extends React.Component {
             <Text style={{ textAlign: "center", fontSize: 12, marginBottom: 4 }}>
               {this.state.version}
               {"\n"}
-            Powered by Passion
-          </Text>
+              Powered by Passion
+            </Text>
 
           </ScrollView>
         )}
@@ -137,10 +147,22 @@ export default class SettingsMain extends React.Component {
     this.wait(500).then(this.setState({ refreshing: false }))
   }
 
-  sendEmailVerification = () => {
-    ShowNotSupportedAlert()
-    //probably wanna use this here:
-    //auth().currentUser.sendEmailVerification() 
+  sendEmailVerification = async () => {
+    try {
+      this.setState({isWaitingForEmailSend: true, verificationEmailError: ""})
+      const func = functions().httpsCallable('sendVerificationEmail');
+      const response = await timedPromise(func(), LONG_TIMEOUT);
+      if (response.data.status != cloudFunctionStatuses.OK) {
+        this.setState({ verificationEmailError: response.data.message })
+        logError(new Error("Problematic sendVerificationEmail function response: " + response.data.message))
+      } 
+      Snackbar.show({ text: 'Email sent!', duration: Snackbar.LENGTH_SHORT });
+    } catch (error) {
+      this.setState({ verificationEmailError: error.message })
+      logError(error)
+    } finally {
+      this.setState({isWaitingForEmailSend: false})
+    }
   }
 }
 

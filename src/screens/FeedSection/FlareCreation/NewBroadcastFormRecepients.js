@@ -5,10 +5,10 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon, Text, ThemeConsumer } from 'react-native-elements';
 import { ClearHeader } from 'reusables/Header';
 import { RecipientListElement } from 'reusables/ListElements';
-import MainLinearGradient from 'reusables/MainLinearGradient';
-import { ProfilePicList } from 'reusables/ProfilePicComponents';
-import { PillButton } from 'reusables/ReusableButtons';
-import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
+import MainLinearGradient from 'reusables/containers/MainLinearGradient';
+import { ProfilePicList } from 'reusables/profiles/ProfilePicComponents';
+import { PillButton } from 'reusables/ui/ReusableButtons';
+import SearchableInfiniteScroll from 'reusables/lists/SearchableInfiniteScroll';
 
 
 export default class NewBroadcastFormRecepients extends React.Component {

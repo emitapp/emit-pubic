@@ -1,5 +1,5 @@
 import React from 'react';
-import MainLinearGradient from 'reusables/MainLinearGradient';
+import MainLinearGradient from 'reusables/containers/MainLinearGradient';
 import { View } from 'react-native';
 import { Button, Text, ThemeConsumer } from 'react-native-elements';
 

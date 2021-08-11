@@ -3,14 +3,14 @@ import { StyleSheet, View, Pressable } from 'react-native';
 import { Button, Text, ThemeConsumer } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ClearHeader } from 'reusables/Header';
-import MainLinearGradient from 'reusables/MainLinearGradient';
+import MainLinearGradient from 'reusables/containers/MainLinearGradient';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MAX_BROADCAST_WINDOW } from 'utils/serverValues';
-import { BannerButton } from 'reusables/ReusableButtons';
+import { BannerButton } from 'reusables/ui/ReusableButtons';
 import S from 'styling'
 import MainTheme from 'styling/mainTheme'
 import { epochToDateString } from 'utils/helpers'
-import ErrorMessageText from 'reusables/ErrorMessageText';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
 
 
 export default class NewBroadcastFormTime extends React.Component {

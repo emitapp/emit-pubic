@@ -4,13 +4,13 @@ import React from 'react';
 import { SafeAreaView, View } from 'react-native';
 import { Overlay } from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
-import ContactsRecommendations from 'reusables/ContactsRecommendationsList';
+import ContactsRecommendations from 'reusables/lists/ContactsRecommendationsList';
 import { RecipientListElement } from 'reusables/ListElements';
-import MutualFriendsList from 'reusables/MutualFriendsList';
-import { MinorActionButton } from 'reusables/ReusableButtons';
-import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
-import SectionInfiniteScroll from 'reusables/SectionInfiniteScroll'
-import FriendReqModal from 'screens/SocialSection/FriendReqModal';
+import MutualFriendsList from 'reusables/lists/MutualFriendsList';
+import { MinorActionButton } from 'reusables/ui/ReusableButtons';
+import SearchableInfiniteScroll from 'reusables/lists/SearchableInfiniteScroll';
+import SectionInfiniteScroll from 'reusables/lists/SectionInfiniteScroll'
+import FriendReqModal from 'reusables/FriendReqModal';
 import mainTheme from 'styling/mainTheme';
 import GroupJoinDialogue from 'screens/SocialSection/UserGroups/GroupJoinDialogue'
 import {showDelayedSnackbar} from 'utils/helpers'

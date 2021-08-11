@@ -1,11 +1,11 @@
 import React from 'react';
 import { FlatList, View, Image, RefreshControl } from 'react-native';
 import { MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
-import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
+import {TimeoutLoadingComponent} from 'reusables/ui/LoadingComponents'
 import {Text} from 'react-native-elements'
-import EmptyState from 'reusables/EmptyState'
+import EmptyState from 'reusables/ui/EmptyState'
 import { Divider } from "react-native-elements"
-import ErrorMessageText from 'reusables/ErrorMessageText';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
 import {logError} from 'utils/helpers'
 
 

@@ -6,23 +6,23 @@ import { FlatList } from 'react-native-gesture-handler'; //This version handles 
 import { Button, Divider, Input, Text, ThemeConsumer } from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
 import Icon from 'react-native-vector-icons/Entypo';
-import ErrorMessageText from 'reusables/ErrorMessageText';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
 import MapView, { Marker } from 'react-native-maps';
 import { ClearHeader } from 'reusables/Header';
 import { LocationListElement } from "reusables/ListElements";
-import { SmallLoadingComponent } from 'reusables/LoadingComponents';
-import MainLinearGradient from 'reusables/MainLinearGradient';
-import { BannerButton, LoadableButton, MinorActionButton } from 'reusables/ReusableButtons';
+import { SmallLoadingComponent } from 'reusables/ui/LoadingComponents';
+import MainLinearGradient from 'reusables/containers/MainLinearGradient';
+import { BannerButton, LoadableButton, MinorActionButton } from 'reusables/ui/ReusableButtons';
 import S from 'styling';
 import { isOnlyWhitespace, logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import * as recentLocFuncs from 'utils/RecentLocationsFunctions';
 import { MAX_LOCATION_NAME_LENGTH } from 'utils/serverValues'
 import { v4 as uuidv4 } from 'uuid';
-import BulgingButton from 'reusables/BulgingButton'
+import BulgingButton from 'reusables/ui/BulgingButton'
 import MatIcon from "react-native-vector-icons/MaterialIcons"
 import PlacesAutocompleteTextInput from 'reusables/PlacesAutocompleteTextInput'
 import { ScrollView } from 'react-native-gesture-handler';
-import DummyVirtualizedView from 'reusables/DummyVirtualizedView';
+import DummyVirtualizedView from 'reusables/containers/DummyVirtualizedView';
 export default class NewBroadcastFormLocation extends React.Component {
 
   constructor(props) {

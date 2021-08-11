@@ -3,7 +3,7 @@ import { StyleSheet, View, Button } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { ThemeConsumer, Text } from 'react-native-elements';
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import FriendReqModal from '../SocialSection/FriendReqModal';
+import FriendReqModal from '../../components/FriendReqModal';
 
 export default class ScanScreen extends Component {
 

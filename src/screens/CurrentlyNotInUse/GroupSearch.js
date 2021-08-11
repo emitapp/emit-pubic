@@ -3,10 +3,10 @@ import database from '@react-native-firebase/database';
 import React from 'react';
 import { View } from 'react-native';
 import { Button, Overlay, Text } from 'react-native-elements';
-import DymanicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
+import DymanicInfiniteScroll from 'reusables/lists/DynamicInfiniteScroll';
 import { UserGroupListElement } from 'reusables/ListElements';
-import { BannerButton, MinorActionButton } from 'reusables/ReusableButtons';
-import SearchableInfiniteScroll from 'reusables/SearchableInfiniteScroll';
+import { BannerButton, MinorActionButton } from 'reusables/ui/ReusableButtons';
+import SearchableInfiniteScroll from 'reusables/lists/SearchableInfiniteScroll';
 import S from 'styling';
 import GroupJoinDialogue from 'screens/SocialSection/UserGroups/GroupJoinDialogue'
 import {showDelayedSnackbar} from 'utils/helpers'

@@ -5,7 +5,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { PERMISSIONS } from 'react-native-permissions';
 import Snackbar from 'react-native-snackbar';
 import Header from 'reusables/Header';
-import { BannerButton } from 'reusables/ReusableButtons';
+import { BannerButton } from 'reusables/ui/ReusableButtons';
 import S from 'styling';
 import { checkAndGetPermissions } from 'utils/AppPermissions';
 import { logError } from 'utils/helpers';

@@ -8,18 +8,18 @@ import { Linking, Platform, View, Pressable } from 'react-native';
 import { Button, Divider, Text, Overlay } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Entypo';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
-import AutolinkText from 'reusables/AutolinkText';
-import LockNotice from 'reusables/BroadcastLockNotice';
-import ErrorMessageText from 'reusables/ErrorMessageText';
-import FlareTimeStatus from 'reusables/FlareTimeStatus';
-import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/LoadingComponents';
-import ProfilePicDisplayer, { ProfilePicList } from 'reusables/ProfilePicComponents';
-import PublicFlareNotice from 'reusables/PublicFlareNotice';
-import FriendReqModal from 'screens/SocialSection/FriendReqModal';
+import AutolinkText from 'reusables/ui/AutolinkText';
+import LockNotice from 'reusables/flares/BroadcastLockNotice';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
+import FlareTimeStatus from 'reusables/flares/FlareTimeStatus';
+import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/ui/LoadingComponents';
+import ProfilePicDisplayer, { ProfilePicList } from 'reusables/profiles/ProfilePicComponents';
+import PublicFlareNotice from 'reusables/flares/PublicFlareNotice';
+import FriendReqModal from 'reusables/FriendReqModal';
 import { analyticsFlareJoined, analyticsFlareLeft, analyticsVideoChatUsed } from 'utils/analyticsFunctions';
 import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, shareFlare, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, responderStatuses } from 'utils/serverValues';
-import { MinorActionButton } from 'reusables/ReusableButtons';
+import { MinorActionButton } from 'reusables/ui/ReusableButtons';
 import { Alert } from 'react-native';
 
 /**

@@ -6,7 +6,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import React from 'react';
 import { View } from 'react-native';
-import {TimeoutLoadingComponent} from 'reusables/LoadingComponents'
+import {TimeoutLoadingComponent} from 'reusables/ui/LoadingComponents'
 
 import S from "styling";
 import { ASYNC_SETUP_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';

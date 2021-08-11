@@ -4,12 +4,12 @@ import React from 'react';
 import { View, Image } from 'react-native';
 import { Text, ThemeConsumer } from 'react-native-elements';
 import AwesomeIcon from 'react-native-vector-icons/dist/FontAwesome';
-import DynamicInfiniteScroll from 'reusables/DynamicInfiniteScroll';
-import EmptyState from 'reusables/EmptyState';
-import ErrorMessageText from 'reusables/ErrorMessageText';
+import DynamicInfiniteScroll from 'reusables/lists/DynamicInfiniteScroll';
+import EmptyState from 'reusables/ui/EmptyState';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
 import { ClearHeader } from 'reusables/Header';
 import { LocationListElement } from "reusables/ListElements";
-import MainLinearGradient from 'reusables/MainLinearGradient';
+import MainLinearGradient from 'reusables/containers/MainLinearGradient';
 import { logError, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import * as recentLocFuncs from 'utils/RecentLocationsFunctions';
 

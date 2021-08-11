@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-elements';
-import ProfilePicChanger from 'reusables/ProfilePicChanger';
+import ProfilePicChanger from 'reusables/profiles/ProfilePicChanger';
 
 export default class AddProfilePic extends React.Component {
 

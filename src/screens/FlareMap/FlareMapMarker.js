@@ -3,9 +3,9 @@ import { Platform } from 'react-native';
 import { View } from 'react-native';
 import { Text, withTheme } from 'react-native-elements';
 import { Callout, Marker } from 'react-native-maps';
-import FlareTimeStatus from 'reusables/FlareTimeStatus';
-import ProfilePicCircle from 'reusables/ProfilePicComponents';
-import PublicFlareNotice from 'reusables/PublicFlareNotice';
+import FlareTimeStatus from 'reusables/flares/FlareTimeStatus';
+import ProfilePicCircle from 'reusables/profiles/ProfilePicComponents';
+import PublicFlareNotice from 'reusables/flares/PublicFlareNotice';
 import NavigationService from 'utils/NavigationService';
 
 

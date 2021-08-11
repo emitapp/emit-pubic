@@ -6,12 +6,15 @@ import functions from '@react-native-firebase/functions';
 import React from 'react';
 import { Dimensions, StyleSheet, Switch, View } from 'react-native';
 import { Button, Overlay, Text, ThemeConsumer } from 'react-native-elements';
-import { TimeoutLoadingComponent } from 'reusables/LoadingComponents';
-import { ProfilePicList, ProfilePicRaw } from 'reusables/ProfilePicComponents';
-import { MinorActionButton } from 'reusables/ReusableButtons';
+import { TimeoutLoadingComponent } from 'reusables/ui/LoadingComponents';
+import { ProfilePicList, ProfilePicRaw } from 'reusables/profiles/ProfilePicComponents';
+import { MinorActionButton } from 'reusables/ui/ReusableButtons';
 import { analyticsFriendAction } from 'utils/analyticsFunctions';
 import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, isValidDBPath, recommentationDocName } from 'utils/serverValues';
+import SchoolDomainBadge from 'reusables/schoolEmail/SchoolDomainBadge';
+import { getSchoolInfoFromDomain } from 'data/schoolDomains';
+import AutofetchingSchoolDomainBadge from 'reusables/schoolEmail/AutofetchingSchoolDomainBadge';
 
 /**
  * This is the standard dialogue for viewing a user if you want the user to 
@@ -101,14 +104,23 @@ class FriendReqDialogue extends React.Component {
                                 <Text h4 h4Style={{ fontWeight: "bold", textAlign: "left" }}>
                                     {this.state.userInfo.displayName}
                                 </Text>
-                                <Text style={{ fontSize: 16, fontStyle: "italic", color: theme.colors.grey1 }}>
-                                    @{this.state.userInfo.username}
-                                </Text>
+                                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                    <AutofetchingSchoolDomainBadge
+                                        uid={this.userUid}
+                                        tooltipMessage={(d) => `@${this.state.userInfo.username} has a verified ${d.shortName} email.`}
+                                        tooltipWidth={200}
+                                        style = {{marginRight: 8}}
+                                    />
+                                    <Text style={{ fontSize: 16, fontStyle: "italic", color: theme.colors.grey1 }}>
+                                        @{this.state.userInfo.username}
+                                    </Text>
+                                </View>
+
                             </View>
                         }
 
                         {(this.state.mutualFriends && this.state.mutualFriends.length > 0) &&
-                            <View style = {{height: 35, width: "100%", marginVertical: 10}}>
+                            <View style={{ height: 35, width: "100%", marginVertical: 10 }}>
                                 <Text>Mutual Friends</Text>
                                 <ProfilePicList diameter={30} uids={this.state.mutualFriends} />
                             </View>
@@ -525,7 +537,7 @@ export default class FriendReqModal extends React.Component {
                 <FriendReqDialogue
                     selectedUserData={this.state.selectedUser}
                     userUid={this.state.selectedUserUid}
-                    mutualFriends = {this.state.mutualFriends}
+                    mutualFriends={this.state.mutualFriends}
                     closeFunction={this.attemptClose}
                     disableClosing={() => this.canBeClosed = false}
                     enableClosing={() => this.canBeClosed = true}

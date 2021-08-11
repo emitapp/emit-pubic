@@ -2,7 +2,7 @@ import * as dev from 'dev/index';
 import React from 'react';
 import { View } from 'react-native';
 import { Button, Overlay } from 'react-native-elements';
-import { MinorActionButton } from 'reusables/ReusableButtons';
+import { MinorActionButton } from 'reusables/ui/ReusableButtons';
 
 interface DevBannerProps {
     onEmulatorButtonPressed: () => void

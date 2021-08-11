@@ -3,10 +3,10 @@ import database from '@react-native-firebase/database';
 import React from 'react';
 import { View } from 'react-native';
 import { withTheme, Text } from 'react-native-elements';
-import ErrorMessageText from 'reusables/ErrorMessageText';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
 import { logError } from 'utils/helpers';
 import FriendRequestPreviewElement from './FriendRequestPreviewElement';
-import { MinorActionButton } from 'reusables/ReusableButtons'
+import { MinorActionButton } from 'reusables/ui/ReusableButtons'
 import NavigationService from 'utils/NavigationService'
 
 class FriendRequestPreviewer extends React.Component {

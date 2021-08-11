@@ -18,7 +18,9 @@ declare module 'react-native-elements' {
         statusBar: string,
 
         gradientStart: string,
-        gradientEnd: string
+        gradientEnd: string,
+
+        softRed: string
     }
 
     export interface FullTheme {
