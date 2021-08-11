@@ -6,8 +6,9 @@ import { FullTheme, Overlay, Text, ThemeProps, withTheme } from 'react-native-el
 import changes from 'data/changeList';
 import { MinorActionButton } from './ReusableButtons';
 import AsyncStorage from '@react-native-community/async-storage';
-import { ASYNC_LAST_LOG_ON_KEY } from 'utils/helpers';
+import { LAST_UPDATE_TIMESTAMP_SEEN, sleep } from 'utils/helpers';
 import Markdown from 'react-native-markdown-display'
+import { events, subscribeToEventRetroactively, unsubscribeToEvent } from 'utils/subcriptionEvents';
 
 type ChangesModalProps = {
 
@@ -15,7 +16,7 @@ type ChangesModalProps = {
 
 interface ChangesModalState {
     isVisible: boolean,
-    lastLogOnTime: number
+    lastSeenTimestamp: number
 }
 
 
@@ -29,11 +30,15 @@ export class ChangesModal extends React.PureComponent<ChangesModalProps & ThemeP
 
     state = {
         isVisible: false,
-        lastLogOnTime: 0,
+        lastSeenTimestamp: 0,
     }
 
     componentDidMount(): void {
-        this.getInitialLogOnTime()
+        subscribeToEventRetroactively(events.SPLASH_SCREEN_DISMISSED, this, this.checkForNewUpdates)
+    }
+
+    componentWillUnmount() : void {
+        unsubscribeToEvent(events.SPLASH_SCREEN_DISMISSED, this)
     }
 
     render(): React.ReactNode {
@@ -83,7 +88,7 @@ export class ChangesModal extends React.PureComponent<ChangesModalProps & ThemeP
                     <ScrollView
                         style={{ flex: 1, width: "100%" }}>
                         {changes.map(change => {
-                            if (this.state.lastLogOnTime > change.timestamp) { return null }
+                            if (this.state.lastSeenTimestamp >= change.timestamp) { return null }
                             return (
                                 <View style={{ marginBottom: 16 }} key={change.change}>
                                     <Markdown style={{ body: theme.Text.style as TextStyle }}>
@@ -99,15 +104,27 @@ export class ChangesModal extends React.PureComponent<ChangesModalProps & ThemeP
         )
     }
 
-    getInitialLogOnTime = async (): Promise<void> => {
-        const MONTH_IN_MILLISECONDS = 2629800000
-        const storedTime = (await AsyncStorage.getItem(ASYNC_LAST_LOG_ON_KEY)) || "0"
-        let time = parseInt(storedTime, 10)
-        if (isNaN(time)) { time = 0 }
-        if (time === 0) {time = Date.now() - MONTH_IN_MILLISECONDS;} //So they don't get flooded with updates...
-        await AsyncStorage.setItem(ASYNC_LAST_LOG_ON_KEY, Date.now().toString())
-        const mostRecentTime = changes[0].timestamp
-        if (mostRecentTime > time) { this.setState({ isVisible: true, lastLogOnTime: time }) }
+    checkForNewUpdates = async (): Promise<void> => {
+        if (!changes.length) return
+        //There's been this bug in iOS where some users can't interact with the UI of the app
+        //when they first open the app, and it started happening after we added this modal.
+        //I suspect it might have to do with the modal being opened too early, 
+        //not investigated, don't have much time atm
+        //TODO: Investigate this ._.
+        await sleep(500)
+        const lastSeenTimestamp = (await AsyncStorage.getItem(LAST_UPDATE_TIMESTAMP_SEEN)) || "0"
+        let time = parseInt(lastSeenTimestamp, 10)
+        if (isNaN(time) || time === 0) {
+            //So they don't get flooded with updates...
+            let recentUpdateIndex = changes.length - 4
+            //In case there aren't that many updates and we get a non-positive number
+            if (recentUpdateIndex <= 0) recentUpdateIndex = changes.length - 1 
+            const relativelyRecentTimestamp = changes[recentUpdateIndex].timestamp
+            time = relativelyRecentTimestamp
+        } 
+        const mostRecentTimestamp = changes[0].timestamp
+        await AsyncStorage.setItem(LAST_UPDATE_TIMESTAMP_SEEN, mostRecentTimestamp.toString())
+        if (mostRecentTimestamp > time) { this.setState({ isVisible: true, lastSeenTimestamp: time }) }
     }
 
     close = (): void => {

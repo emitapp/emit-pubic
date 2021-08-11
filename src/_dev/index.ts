@@ -90,10 +90,10 @@ LogBox.ignoreLogs([
 //******************************  ASYNC STORAGE  ***********************************
 
 import AsyncStorage from '@react-native-community/async-storage';
-import { ASYNC_LAST_LOG_ON_KEY } from 'utils/helpers'
+import { LAST_UPDATE_TIMESTAMP_SEEN } from 'utils/helpers'
 
-export const clearLastLogInTime = () : void => {
-  AsyncStorage.removeItem(ASYNC_LAST_LOG_ON_KEY)
+export const clearUpdateModalHistory = () : void => {
+  AsyncStorage.removeItem(LAST_UPDATE_TIMESTAMP_SEEN)
 }
 
 

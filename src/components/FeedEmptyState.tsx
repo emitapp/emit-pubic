@@ -41,9 +41,9 @@ export default class FeedEmptyState extends React.PureComponent {
 				message="Flares you make and flares visible to you and join will appear here. Go ahead and make one!"
 			>
 				<View style={{ flexDirection: "row", alignContent: "flex-end", justifyContent: "center", marginTop: 16 }}>
-					{this.randomActivities.map(x => {
+					{this.randomActivities.map((x, index) => {
 						return (
-							<ActivityButton activity={x} key={x.name} />
+							<ActivityButton activity={x} key={x.name + index} />
 						)
 					})}
 				</View>

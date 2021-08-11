@@ -35,8 +35,8 @@ export default class DevBanner extends React.PureComponent<DevBannerProps, DevBa
                         onPress={dev.restartJSApp}
                     />
                     <Button
-                        title={"Clear last login time"}
-                        onPress={dev.clearLastLogInTime}
+                        title={"Clear update modal history"}
+                        onPress={dev.clearUpdateModalHistory}
                     />
                     <MinorActionButton title="Close" />
                 </View>

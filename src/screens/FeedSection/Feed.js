@@ -21,6 +21,9 @@ import EmailVerificationBanner from 'reusables/schoolEmail/EmailVerificationBann
 
 export default class ActiveBroadcasts extends React.Component {
 
+  geolocationTimeoutId = 0
+  _isMounted = true
+
   constructor(props) {
     super(props)
     this.emittedTitle = "HOSTING"
@@ -92,6 +95,11 @@ export default class ActiveBroadcasts extends React.Component {
     this.finishSettingUpFeed()
   }
 
+  componentWillUnmount(){
+    this._isMounted = false
+    clearTimeout(this.geolocationTimeoutId)
+  }
+
   render() {
     if (this.state.gettingGeolocation) return (<SmallLoadingComponent />)
     return (
@@ -129,7 +137,10 @@ export default class ActiveBroadcasts extends React.Component {
     //the feed stays on the loading state sometimes. This type of strange behaviour is consistent
     //with some other strange behaviours related to permission asking.
     //No idea why this happens, so this is a quick fix since it really disrupts UX in this case.
-    setTimeout(() => this.setState({gettingGeolocation: false}), 7000) 
+    this.geolocationTimeoutId = setTimeout(() => {
+      this.geolocationTimeoutId = 0
+      this.setState({gettingGeolocation: false})
+    }, 7000) 
     
     try {
       const permissionsGranted = await checkAndGetPermissions({ required: [PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION] })
@@ -178,6 +189,7 @@ export default class ActiveBroadcasts extends React.Component {
       )
     }
 
+    if (!this._isMounted) return
     this.setState({ gettingGeolocation: false })
   }
 

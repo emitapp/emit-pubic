@@ -110,7 +110,9 @@ export default class App extends React.Component {
   }
 
   removeSplashScreen = () => {
-    RNBootSplash.hide({ fade: true }).catch(err => logError(err));
+    RNBootSplash.hide({ fade: true })
+      .then(() => emitEvent(events.SPLASH_SCREEN_DISMISSED))
+      .catch(err => logError(err));
   }
 
   handleAuthChange = async (user) => {

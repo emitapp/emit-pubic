@@ -101,8 +101,8 @@ export const ASKED_CONTACTS_PERMISSIONS = "askedForContacts";
 //Used to contacts caching
 export const CONTACTS_CACHE = "cachedContacts"
 
-//The last time the user logged on (in epoch milliseconds)
-export const ASYNC_LAST_LOG_ON_KEY = "lastlogontime"
+//The last update timestamp the user has seen
+export const LAST_UPDATE_TIMESTAMP_SEEN = "lastUpdateSeen"
 
 
 import DeviceInfo from 'react-native-device-info';
@@ -243,3 +243,9 @@ export function objectDifference(objA : Record<string, unknown>, objB : Record<s
   const setB = new Set(Object.keys(objB))
   return new Set([...setA].filter(x => !setB.has(x)))
 }
+
+
+export function sleep(ms: number) : Promise<void>{
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
