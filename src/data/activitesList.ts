@@ -13,10 +13,11 @@ export const getAllActivities = () : ActivityList => [
     {
         sectionName: "Featured",
         data: [
-            { emoji: "🧪", name: "COVID Test" },
             { emoji: "🥳", name: "Party" },
             { emoji: "🟡", name: "Spikeball" },
             { emoji: "🥏", name: "Frisbee" },
+            { emoji: "🧪", name: "COVID Test" },
+            { emoji: "🛒", name: "Garage Sale"}
         ],
     },
     {
