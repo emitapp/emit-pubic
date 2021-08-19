@@ -10,6 +10,7 @@ import S from 'styling';
 import { checkAndGetPermissions } from 'utils/AppPermissions';
 import { logError } from 'utils/helpers';
 import {GetGeolocation} from 'utils/geo/GeolocationFunctions'
+import { reverseGeocodeToOSM } from 'utils/geo/OpenStreetMapsApi';
 
 export default class LocationSelector extends React.Component {
 
@@ -22,24 +23,35 @@ export default class LocationSelector extends React.Component {
       region: null,
       //Give the marker a defualt location of 0,0 if there isnt a provided value
       markerLocation: params.pin ? { ...params.pin } : { latitude: 0, longitude: 0 },
-      usingDefaultLocation: params.pin ? false : true
+      usingDefaultLocation: params.pin ? false : true,
+      address: params.locationName
     }
   }
 
 
   static navigationOptions = Header("Location Selector")
 
-  componentDidMount() {
+  async componentDidMount() {
     if (this.state.usingDefaultLocation)
-      this.getCurrentLocation()
+      this.getInitialLocation()
     else {
+      const lng = this.state.markerLocation.longitude
+      const lat = this.state.markerLocation.latitude
+
+      let address = this.state.address
+      if (!address) {
+        const geoObject = await reverseGeocodeToOSM({latitude: lat, longitude: lng})
+        address = geoObject.name
+      }
+
       this.setState({
         region: {
-          longitude: this.state.markerLocation.longitude,
-          latitude: this.state.markerLocation.latitude,
+          longitude: lng,
+          latitude: lat,
           longitudeDelta: 0.01,
           latitudeDelta: 0.01
-        }
+        },
+        address: address
       })
     }
   }
@@ -47,17 +59,18 @@ export default class LocationSelector extends React.Component {
   render() {
     return (
       <View style={S.styles.containerFlexStart}>
-        <Text style={{ fontWeight: "bold", marginBottom: 8 }}>Hold and drag the pin to the location of the flare</Text>
+        <Text style={{ fontWeight: "bold", marginBottom: 8 }}>{this.state.address}</Text>
         <MapView
           style={{ width: "100%", flex: 1 }}
           showsUserLocation={true}
           loadingEnabled={true}
           onRegionChangeComplete={region => this.setState({ region })}
-          region={this.state.region}>
-          <Marker draggable
+          region={this.state.region}
+          onPress={e => this.moveMarker(e.nativeEvent)}
+          >
+          <Marker
             coordinate={this.state.markerLocation}
-            onDragEnd={(e) => this.setState({ markerLocation: e.nativeEvent.coordinate })}
-            pinColor="green"
+            pinColor="red"
             title="Where you'll be"
             description="Receivers of this broadcast will be able to see this pin"
           />
@@ -71,12 +84,19 @@ export default class LocationSelector extends React.Component {
     )
   }
 
+  moveMarker = async (tapEvent) => {
+    this.setState({
+      markerLocation: tapEvent.coordinate,
+      address: (await reverseGeocodeToOSM(tapEvent.coordinate)).name 
+    })
+  }
+
   saveLocation = () => {
-    this.props.navigation.state.params.callback(this.state.markerLocation)
+    this.props.navigation.state.params.callback(this.state.markerLocation, this.state.address)
     this.props.navigation.goBack()
   }
 
-  getCurrentLocation = async () => {
+  getInitialLocation = async () => {
     try {
       const permissionsGranted = await checkAndGetPermissions({ required: [PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION] })
       if (!permissionsGranted) {
@@ -86,7 +106,7 @@ export default class LocationSelector extends React.Component {
         });
         return
       }
-      GetGeolocation(this.updateMapRegion)
+      GetGeolocation(this.initialLocationCallback)
     } catch (err) {
       Snackbar.show({
         text: 'An error occurred when trying to get your location',
@@ -96,11 +116,18 @@ export default class LocationSelector extends React.Component {
     }
   }
 
-  updateMapRegion = (position) => {
+  initialLocationCallback = async (position) => {
+    const lat = position.coords.latitude
+    const lng = position.coords.longitude
+    let address = this.state.address
+    if (!address) {
+      const geoObject = await reverseGeocodeToOSM({latitude: lat, longitude: lng})
+      address = geoObject.name
+    }
     this.setState({
       region: {
-        longitude: position.coords.longitude,
-        latitude: position.coords.latitude,
+        longitude: lng,
+        latitude: lat,
         longitudeDelta: 0.01,
         latitudeDelta: 0.01
       },
@@ -108,7 +135,8 @@ export default class LocationSelector extends React.Component {
         longitude: position.coords.longitude,
         latitude: position.coords.latitude,
       },
-      usingDefaultLocation: false
+      usingDefaultLocation: false,
+      address: address
     })
   }
 }

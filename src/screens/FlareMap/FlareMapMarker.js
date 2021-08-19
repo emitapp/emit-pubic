@@ -61,7 +61,7 @@ class FlareMapMarker extends React.PureComponent {
                 <View style={{
                     backgroundColor: "white",
                     padding: 8 * multiplier, borderRadius: 20 * multiplier,
-                    borderColor: this.props.theme.colors.primary,
+                    borderColor: this.getBorderColor(flare),
                     borderWidth: 2
                 }}>
                     <Text style={{ fontSize: 30 * multiplier }}>{flare.emoji}</Text>
@@ -82,6 +82,11 @@ class FlareMapMarker extends React.PureComponent {
                 </Callout>
             </Marker>
         )
+    }
+
+    getBorderColor = (flare) => {
+        if (Date.now() < flare.startingTime) return this.props.theme.colors.grey3
+        return this.props.theme.colors.primary
     }
 }
 

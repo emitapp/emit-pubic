@@ -23,15 +23,18 @@ import MatIcon from "react-native-vector-icons/MaterialIcons"
 import PlacesAutocompleteTextInput from 'reusables/PlacesAutocompleteTextInput'
 import { ScrollView } from 'react-native-gesture-handler';
 import DummyVirtualizedView from 'reusables/containers/DummyVirtualizedView';
+import { PERMISSIONS } from 'react-native-permissions';
+import { checkAndGetPermissions } from 'utils/AppPermissions';
+import { GetGeolocation } from 'utils/geo/GeolocationFunctions'
+import { reverseGeocodeToOSM } from 'utils/geo/OpenStreetMapsApi';
 export default class NewBroadcastFormLocation extends React.Component {
 
   constructor(props) {
     super(props)
     this.navigationParams = props.navigation.state.params.bundle
     this.isPublicFlare = props.navigation.state.params.isPublicFlare
-
     this.state = {
-      locationName: this.navigationParams.location, //Default: ""
+      locationName: this.navigationParams.location || "",
       locationPin: null,
       recentLocations: [],
       errorMessage: null,
@@ -43,11 +46,28 @@ export default class NewBroadcastFormLocation extends React.Component {
 
   static navigationOptions = ClearHeader("New Flare")
 
-  componentDidMount() {
+  async componentDidMount() {
     const { navigation } = this.props;
     this.focusListener = navigation.addListener('didFocus', () => {
       this.setState({}) //Just call for a rerender (this is used when we come back from the location picker map)
     });
+
+    if (!this.state.locationPin) {
+      try {
+        const permissionsGranted = await checkAndGetPermissions({ required: [PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION] })
+        if (!permissionsGranted) return
+        GetGeolocation(this.givePinInitialLocation)
+      } catch (err) {
+        logError(err)
+      }
+    } else {
+      try {
+        this.getInitialAddressName(this.state.locationPin.latitude, this.state.locationPin.longitude)
+      } catch (err) {
+        logError(err)
+      }
+    }
+
     recentLocFuncs.getRecentLocations()
       .then(recentLocations => this.setState({ recentLocations }))
       .catch(err => {
@@ -85,7 +105,7 @@ export default class NewBroadcastFormLocation extends React.Component {
 
               <PlacesAutocompleteTextInput
                 onLocationChosen={(p) => this.setState({ locationPin: p.coords })}
-                searchBarPlaceholder="That Super Awesome Place"
+                searchBarPlaceholder={this.state.locationName || "That Super Awesome Place"}
                 onTextChange={locationName => this.setState({ locationName })}
                 errorMessage={this.state.locationName.length > MAX_LOCATION_NAME_LENGTH ? "Too long" : undefined}
                 clearOnChoice={false}
@@ -102,8 +122,9 @@ export default class NewBroadcastFormLocation extends React.Component {
                   } : null}
                   onPress={() => this.props.navigation.navigate("LocationSelector",
                     {
-                      callback: (geo) => this.setState({ locationPin: geo }),
-                      pin: this.state.locationPin
+                      callback: (geo, addr) => this.setState({ locationPin: geo, locationName: addr }),
+                      pin: this.state.locationPin,
+                      address: this.locationName
                     })}
                   zoomEnabled={false}
                   scrollEnabled={false}
@@ -117,6 +138,7 @@ export default class NewBroadcastFormLocation extends React.Component {
                   {this.state.locationPin != null &&
                     <Marker
                       coordinate={this.state.locationPin}
+                      pinColor="red"
                     />
                   }
                 </MapView>
@@ -275,5 +297,19 @@ export default class NewBroadcastFormLocation extends React.Component {
     let { locationName, locationPin } = this.state
     if (isOnlyWhitespace(locationName) && !locationPin) return false
     return true
+  }
+
+  givePinInitialLocation = (position) => {
+    const lat = position.coords.latitude
+    const lng = position.coords.longitude
+    const locationPin = { latitude: lat, longitude: lng }
+    this.setState({ locationPin })
+    this.getInitialAddressName(lat, lng)
+  }
+
+  getInitialAddressName = async (lat, lng) => {
+    const geoObject = await reverseGeocodeToOSM({ latitude: lat, longitude: lng })
+    const locationName = geoObject.name
+    this.setState({ locationName })
   }
 }

@@ -3,24 +3,22 @@ import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 import functions from '@react-native-firebase/functions';
 import React from 'react';
-import { ScrollView } from 'react-native';
-import { Linking, Platform, View, Pressable } from 'react-native';
-import { Button, Divider, Text, Overlay } from 'react-native-elements';
+import { Alert, Linking, Platform, Pressable, ScrollView, View } from 'react-native';
+import { Button, Divider, Overlay, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Entypo';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
-import AutolinkText from 'reusables/ui/AutolinkText';
 import LockNotice from 'reusables/flares/BroadcastLockNotice';
-import ErrorMessageText from 'reusables/ui/ErrorMessageText';
 import FlareTimeStatus from 'reusables/flares/FlareTimeStatus';
-import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/ui/LoadingComponents';
-import ProfilePicDisplayer, { ProfilePicList } from 'reusables/profiles/ProfilePicComponents';
 import PublicFlareNotice from 'reusables/flares/PublicFlareNotice';
 import FriendReqModal from 'reusables/FriendReqModal';
+import ProfilePicDisplayer, { ProfilePicList } from 'reusables/profiles/ProfilePicComponents';
+import AutolinkText from 'reusables/ui/AutolinkText';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
+import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/ui/LoadingComponents';
+import { MinorActionButton } from 'reusables/ui/ReusableButtons';
 import { analyticsFlareJoined, analyticsFlareLeft, analyticsVideoChatUsed } from 'utils/analyticsFunctions';
 import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, shareFlare, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, responderStatuses } from 'utils/serverValues';
-import { MinorActionButton } from 'reusables/ui/ReusableButtons';
-import { Alert } from 'react-native';
 
 /**
  * Class for viewing info about a broadcast.
@@ -223,7 +221,9 @@ export default class FlareViewer extends React.Component {
           type="clear"
         />
 
-        {/* //TODO: Support editign and deletion for public flares */}
+        {/* 
+        //TODO: Support editign and deletion for public flares */
+        }
         {(this.isFlareOwner && !this.isPublicFlare) && <Button
           icon={<AwesomeIcon name="ellipsis-h" size={18} color="grey" />}
           containerStyle={{ position: 'absolute', top: 8, right: 0 }}
@@ -406,7 +406,8 @@ export default class FlareViewer extends React.Component {
     this.props.navigation.navigate('NewBroadcastForm', {
       needUserConfirmation: false,
       broadcastSnippet: this.broadcastSnippet,
-      isEditing: true
+      isEditing: true,
+      isPublicFlare: this.isPublicFlare
     })
   }
 
@@ -417,8 +418,8 @@ export default class FlareViewer extends React.Component {
         onPress: async () => {
           this.setState({ isFlareOptionsModalVisible: false, isModalVisible: true })
           try {
-            let params = { ownerUid: this.broadcastSnippet.owner.uid, uid: this.broadcastSnippet.uid }
-            let broadcastFunction = functions().httpsCallable('deleteBroadcast');
+            let params = { ownerUid: this.broadcastSnippet.owner.uid, flareUid: this.broadcastSnippet.uid }
+            let broadcastFunction = functions().httpsCallable(this.isPublicFlare ? 'deletePublicFlare' : 'deleteBroadcast');
             const response = await timedPromise(broadcastFunction(params), LONG_TIMEOUT);
             if (response.data.status === cloudFunctionStatuses.OK) {
               this.props.navigation.navigate('Feed')

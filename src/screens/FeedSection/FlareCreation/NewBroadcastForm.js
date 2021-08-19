@@ -19,6 +19,7 @@ import S from 'styling';
 import { analyticsLogFlareCreation } from 'utils/analyticsFunctions';
 import { epochToDateString, isOnlyWhitespace, logError, LONG_TIMEOUT, objectDifference, showDelayedSnackbar, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, MAX_BROADCAST_NOTE_LENGTH } from 'utils/serverValues';
+import { reverseGeocodeToOSM } from 'utils/geo/OpenStreetMapsApi';
 
 
 class NewBroadcastForm extends React.Component {
@@ -30,6 +31,7 @@ class NewBroadcastForm extends React.Component {
     this.isEditing = this.props.navigation.getParam('isEditing');
     this.broadcastSnippet = this.props.navigation.getParam('broadcastSnippet');
     let prechosenActivity = this.props.navigation.getParam('activity');
+    const isPublicFlare = this.props.navigation.getParam('isPublicFlare') ?? false;
 
 
     this.passableBroadcastInfo = { // All toggleable broadcast information
@@ -39,7 +41,7 @@ class NewBroadcastForm extends React.Component {
       startingTime: 0,
       startingTimeRelative: true,
       location: "",
-      geolocation: null,
+      geolocation: this.props.navigation.getParam('coordinates'),
       duration: null,
       durationText: "1 hour",
       note: "",
@@ -63,7 +65,7 @@ class NewBroadcastForm extends React.Component {
         passableBroadcastInfo: this.passableBroadcastInfo,
         isModalVisible: false,
         errorMessage: null,
-        isPublicFlare: false,
+        isPublicFlare: isPublicFlare,
 
         isRecurring: false,
         recurringDays: [],
@@ -72,14 +74,22 @@ class NewBroadcastForm extends React.Component {
 
   static navigationOptions = ClearHeader("New Flare");
 
-  componentDidMount() {
+  async componentDidMount() {
     const { navigation } = this.props;
     this.focusListener = navigation.addListener('didFocus', () => {
       this.setState({}) //Just call for a rerender
     });
 
+    const geolocation = this.passableBroadcastInfo.geolocation
+    if (geolocation) {
+      const geoObject = await reverseGeocodeToOSM(geolocation)
+      this.passableBroadcastInfo = { ...this.state.passableBroadcastInfo,
+          location: geoObject.name}
+      this.setState({ passableBroadcastInfo : this.passableBroadcastInfo });
+    }
+
     if (this.isEditing && this.broadcastSnippet) {
-      this.getInitalBroadcastInformation()
+      this.getInitialBroadcastInformation()
     }
   }
 
@@ -140,7 +150,7 @@ class NewBroadcastForm extends React.Component {
                       textStyle={{ fontSize: 16, fontWeight: "bold", color: "white" }}
                       checked={this.state.isPublicFlare}
                       containerStyle={{ alignSelf: "flex-start", padding: 0, marginBottom: 0 }}
-                      onIconPress={() => this.setState({ isPublicFlare: !this.state.isPublicFlare })}
+                      onPress={() => this.setState({ isPublicFlare: !this.state.isPublicFlare })}
                       checkedColor="white"
                       uncheckedColor="white"
                     />
@@ -314,6 +324,7 @@ class NewBroadcastForm extends React.Component {
 
                     <FormSubtitle title="Max Responders" />
 
+                    {/* //If you add a new button, be sure to change this.isCustomResponderValue */}
                     <ScrollView
                       containerStyle={{ flexDirection: "row" }}
                       style={{ flex: 1 }}
@@ -364,7 +375,7 @@ class NewBroadcastForm extends React.Component {
 
                     {this.state.passableBroadcastInfo.customMaxResponders &&
                       <Input
-                        value={this.state.passableBroadcastInfo.maxResponders}
+                        value={this.state.passableBroadcastInfo.maxResponders.toString()}
                         containerStyle={{ marginTop: 8 }}
                         inputContainerStyle={{ backgroundColor: "white" }}
                         keyboardType="number-pad"
@@ -416,6 +427,7 @@ class NewBroadcastForm extends React.Component {
           icon={flareInfo.geolocation ?
             <Icon name="location-on" size={20} color="white" />
             : null}
+          selection={{start:0}} //for very long location names, this makes the input show the beginning, not the end
         />
       </>
     )
@@ -480,7 +492,6 @@ class NewBroadcastForm extends React.Component {
         startingTimeRelative: flareInfo.startingTimeRelative,
         location: flareInfo.location,
         duration: flareInfo.duration || 1000 * 60 * 60,
-        customMaxResponders: flareInfo.customMaxResponders,
         maxResponders: flareInfo.maxResponders ? parseInt(flareInfo.maxResponders) : null,
         recurringDays: this.state.recurringDays,
       }
@@ -488,14 +499,17 @@ class NewBroadcastForm extends React.Component {
       if (!isPublicFlare && !this.addRecepientInformation(params)) return;
       if (flareInfo.geolocation) params.geolocation = flareInfo.geolocation
       if (flareInfo.note) params.note = flareInfo.note
-      if (this.isEditing) {
+
+      if (!isPublicFlare && this.isEditing) {
         params.broadcastUid = this.broadcastSnippet.uid;
         params.friendsToRemove = Array.from(objectDifference(this.recepientFriendsOriginal, flareInfo.recepientFriends))
         params.groupsToRemove = Array.from(objectDifference(this.recepientGroupsOriginal, flareInfo.recepientGroups))
       }
 
+      if (this.isEditing && isPublicFlare) params.originalFlareUid = this.broadcastSnippet.uid
+ 
       let methodName = ""
-      if (this.isEditing) methodName = "modifyActiveBroadcast"
+      if (this.isEditing) methodName = isPublicFlare ? "editPublicFlare" : "modifyActiveBroadcast"
       else methodName = isPublicFlare ? "createPublicFlare" : 'createActiveBroadcast'
       const response = await timedPromise(functions().httpsCallable(methodName)(params), LONG_TIMEOUT);
 
@@ -520,9 +534,8 @@ class NewBroadcastForm extends React.Component {
     this.setState({ isModalVisible: false })
   }
 
-  getInitalBroadcastInformation = async () => {
+  getInitialBroadcastInformation = async () => {
     try {
-
       this.passableBroadcastInfo = {
         emojiSelected: this.broadcastSnippet.emoji,
         activitySelected: this.broadcastSnippet.activity,
@@ -535,26 +548,39 @@ class NewBroadcastForm extends React.Component {
         note: this.broadcastSnippet.note ? this.broadcastSnippet.note : ""
       }
 
-      let ref = database().ref(`/activeBroadcasts/${auth().currentUser.uid}/additionalParams/${this.broadcastSnippet.uid}`)
-      const snapshot = await ref.once('value')
-      if (!snapshot.exists()) {
-        logError(new Error("Snapshot of flare parameters not found"))
-        return;
+      if (this.state.isPublicFlare) {
+        const maxRes = this.broadcastSnippet.maxResponders
+        this.passableBroadcastInfo = {
+          ...this.passableBroadcastInfo,
+          customMaxResponders: this.isCustomResponderValue(maxRes),
+          maxResponders: maxRes ? maxRes : "",
+          startingTimeRelative: false
+        }
+      } else {
+        let ref = database().ref(`/activeBroadcasts/${auth().currentUser.uid}/additionalParams/${this.broadcastSnippet.uid}`)
+        const snapshot = await ref.once('value')
+        
+        if (!snapshot.exists()) {
+          logError(new Error("Snapshot of flare parameters not found"))
+          return;
+        }
+
+        let broadcastAdditionalData = snapshot.val();
+        const maxRes = broadcastAdditionalData.maxResponders
+        this.passableBroadcastInfo = {
+          ...this.passableBroadcastInfo,
+          startingTimeRelative: false,
+          allFriends: broadcastAdditionalData.allFriends,
+          recepientFriends: broadcastAdditionalData.friendRecepients ? broadcastAdditionalData.friendRecepients : {},
+          recepientGroups: broadcastAdditionalData.groupRecepients ? broadcastAdditionalData.groupRecepients : {},
+          customMaxResponders: this.isCustomResponderValue(maxRes),
+          maxResponders: maxRes ? maxRes : ""
+        }
+
+        this.recepientFriendsOriginal = this.passableBroadcastInfo.recepientFriends
+        this.recepientGroupsOriginal = this.passableBroadcastInfo.recepientGroups
       }
 
-      let broadcastAdditionalData = snapshot.val();
-      this.passableBroadcastInfo = {
-        ...this.passableBroadcastInfo,
-        startingTimeRelative: false,
-        allFriends: broadcastAdditionalData.allFriends,
-        recepientFriends: broadcastAdditionalData.friendRecepients ? broadcastAdditionalData.friendRecepients : {},
-        recepientGroups: broadcastAdditionalData.groupRecepients ? broadcastAdditionalData.groupRecepients : {},
-        customMaxResponders: broadcastAdditionalData.customMaxResponders,
-        maxResponders: broadcastAdditionalData.maxResponders ? broadcastAdditionalData.maxResponders : ""
-      }
-
-      this.recepientFriendsOriginal = this.passableBroadcastInfo.recepientFriends
-      this.recepientGroupsOriginal = this.passableBroadcastInfo.recepientGroups
 
       this.state.recurringDays = this.broadcastSnippet.recurringDays || [];
 
@@ -627,6 +653,10 @@ class NewBroadcastForm extends React.Component {
   provideErrorFeedback = (errorMessage) => {
     this.setState({ errorMessage })
     showDelayedSnackbar(errorMessage)
+  }
+
+  isCustomResponderValue = (maxRes) => {
+    return !(!maxRes || maxRes == "2" || maxRes == "5" || maxRes == "10")
   }
 }
 

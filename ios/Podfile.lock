@@ -430,7 +430,7 @@ PODS:
     - React-Core
   - react-native-safe-area-context (3.1.9):
     - React-Core
-  - react-native-ultimate-config (3.1.1):
+  - react-native-ultimate-config (3.3.4):
     - React
   - react-native-webview (11.2.3):
     - React-Core
@@ -940,7 +940,7 @@ SPEC CHECKSUMS:
   react-native-maps: f4b89da81626ad7f151a8bfcb79733295d31ce5c
   react-native-netinfo: 0212ce8604e88edf686f1481b925b17a42a52449
   react-native-safe-area-context: b6e0e284002381d2ff29fa4fff42b4d8282e3c94
-  react-native-ultimate-config: 0578ad8093801f4d1bfd88cf93babf7264317fd9
+  react-native-ultimate-config: ce215b54420306a82821895649463b00d01b9b2f
   react-native-webview: 6520e3e7b4933de76b95ef542c8d7115cf45b68e
   React-RCTActionSheet: 89a0ca9f4a06c1f93c26067af074ccdce0f40336
   React-RCTAnimation: 1bde3ecc0c104c55df246eda516e0deb03c4e49b

@@ -3,7 +3,7 @@ import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 import { geohashQueryBounds } from 'geofire-common';
 import React from 'react';
-import { SafeAreaView, View } from 'react-native';
+import { SafeAreaView, View, TouchableOpacity } from 'react-native';
 import { Button, Text } from 'react-native-elements';
 import MapView from 'react-native-maps';
 import { PERMISSIONS } from 'react-native-permissions';
@@ -12,7 +12,7 @@ import Header from 'reusables/Header';
 import EmailVerificationBanner from 'reusables/schoolEmail/EmailVerificationBanner';
 import S from 'styling';
 import { checkAndGetPermissions } from 'utils/AppPermissions';
-import { GetGeolocation, isFalsePositiveNearbyFlare, PUBLIC_FLARE_RADIUS_IN_M } from 'utils/geo/GeolocationFunctions';
+import { GetGeolocation, isFalsePositiveNearbyFlare, metersToMiles, PUBLIC_FLARE_RADIUS_IN_M } from 'utils/geo/GeolocationFunctions';
 import { logError } from 'utils/helpers';
 import FlareMarker from './FlareMapMarker';
 
@@ -24,15 +24,16 @@ export default class FlareMaps extends React.Component {
   constructor(props) {
     super(props)
 
-    this.metersToMiles = 0.000621371;
     this.defaultLatitudeDelta = 0.13
     this.defaultLongitudeDelta = 0.13
+    this.sendFlareMarkerRef = null
 
     this.state = {
       region: {
         latitude: 0, longitude: 0,
         longitudeDelta: this.defaultLongitudeDelta, latitudeDelta: this.defaultLatitudeDelta
       },
+      tapCoordinates: {latitude: 0, longitude: 0},
       userPosition: { latitude: 0, longitude: 0 },
       nearbyFlares: [],
       regionGeneration: 0,
@@ -67,7 +68,7 @@ export default class FlareMaps extends React.Component {
           </View>
           <Text style={{ textAlign: "center", marginHorizontal: 8, marginBottom: 4 }}>
             Flares on your feed with location information will show up on this map!
-            {" "}Radius: {Math.round(PUBLIC_FLARE_RADIUS_IN_M * this.metersToMiles)} miles
+            {" "}Radius: {Math.round(metersToMiles(PUBLIC_FLARE_RADIUS_IN_M))} miles
           </Text>
           <EmailVerificationBanner />
           <MapView
@@ -81,7 +82,27 @@ export default class FlareMaps extends React.Component {
             showsPointsOfInterest={false}
             // For somre reason the two props below aren't taking effect until a marker's callback is pressed
             showsMyLocationButton={true}
-            toolbarEnabled={true}>
+            toolbarEnabled={true}
+            onPress={e => this.renderSendFlareButton(e.nativeEvent)}
+            >
+            <MapView.Marker
+                coordinate={{
+                    latitude: this.state.tapCoordinates.latitude || 0,
+                    longitude: this.state.tapCoordinates.longitude || 0
+                }}
+                ref={ref => this.sendFlareMarkerRef = ref}
+                pinColor={ 'red' }
+                onCalloutPress={() => this.props.navigation.navigate('NewBroadcastForm', {
+                  coordinates: {latitude: this.state.tapCoordinates.latitude, longitude: this.state.tapCoordinates.longitude},
+                  isPublicFlare: true
+                })}
+            >
+                <MapView.Callout>
+                    <View>
+                        <Text>Send Flare?</Text>
+                    </View>
+                </MapView.Callout>
+            </MapView.Marker>
 
             {this.state.nearbyFlares.map(flare => (
               <FlareMarker
@@ -97,6 +118,12 @@ export default class FlareMaps extends React.Component {
         </View>
       </SafeAreaView>
     )
+  }
+
+  // Waiting for the timeout seems like a hacky workaround to let the callout to be shown, but working with animations is weird...
+  renderSendFlareButton = (tapEvent) => {
+    if (!tapEvent.action || tapEvent.action == "press")
+     this.setState({tapCoordinates: tapEvent.coordinate}, async() => await setTimeout(()=>this.sendFlareMarkerRef.showCallout(), 200))
   }
 
   onRegionChange = async (region) => {
