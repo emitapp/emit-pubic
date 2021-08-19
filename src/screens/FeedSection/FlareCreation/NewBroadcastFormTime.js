@@ -1,16 +1,15 @@
-import React from 'react';
-import { StyleSheet, View, Pressable } from 'react-native';
-import { Button, Text, ThemeConsumer } from 'react-native-elements';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { ClearHeader } from 'reusables/Header';
-import MainLinearGradient from 'reusables/containers/MainLinearGradient';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { MAX_BROADCAST_WINDOW } from 'utils/serverValues';
-import { BannerButton } from 'reusables/ui/ReusableButtons';
-import S from 'styling'
-import MainTheme from 'styling/mainTheme'
-import { epochToDateString } from 'utils/helpers'
+import React from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Button, Text, ThemeConsumer } from 'react-native-elements';
+import MainLinearGradient from 'reusables/containers/MainLinearGradient';
+import { ClearHeader } from 'reusables/Header';
 import ErrorMessageText from 'reusables/ui/ErrorMessageText';
+import { BannerButton } from 'reusables/ui/ReusableButtons';
+import S from 'styling';
+import MainTheme from 'styling/mainTheme';
+import { epochToDateString } from 'utils/helpers';
+import { MAX_BROADCAST_WINDOW } from 'utils/serverValues';
 
 
 export default class NewBroadcastFormTime extends React.Component {
@@ -31,6 +30,7 @@ export default class NewBroadcastFormTime extends React.Component {
             pickerMode: "",
             date: startingDate,
             errorMessage: null,
+            currentTime: new Date()
         }
 
         this.pressedColors = {
@@ -39,9 +39,22 @@ export default class NewBroadcastFormTime extends React.Component {
             innerCircle: MainTheme.colors.primary,
             iconColor: "white"
         }
+
+        this.refreshIntervalID = 0;
     }
 
     static navigationOptions = ClearHeader("New Flare")
+
+    async componentDidMount() {
+        // Refreshes the date every 3 minutes so that clock times don't become irrelevant
+        this.refreshIntervalID = setInterval(() => {
+            this.setState({ currentTime: new Date() });
+        }, 3 * 60 * 1000)
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.refreshIntervalID);
+    }
 
     render() {
         return (
@@ -63,14 +76,14 @@ export default class NewBroadcastFormTime extends React.Component {
                                         {this.generateTimeButton(30, "black")}
                                     </View>
                                     <View style={styles.rowStyle}>
-                                        {this.generateTimeButton(60, "black")}
-                                        {this.generateTimeButton(90, "black")}
-                                        {this.generateTimeButton(60 * 2, "black")}
+                                        {this.generateClockButton(1, 0, "black")}
+                                        {this.generateClockButton(1, 30, "black")}
+                                        {this.generateClockButton(2, 0, "black")}
                                     </View>
                                     <View style={styles.rowStyle}>
-                                        {this.generateTimeButton(60 * 3, "black")}
-                                        {this.generateTimeButton(60 * 4, "black")}
-                                        {this.generateTimeButton(60 * 5, "black")}
+                                        {this.generateClockButton(2, 30, "black")}
+                                        {this.generateClockButton(3, 0, "black")}
+                                        {this.generateClockButton(3, 30, "black")}
                                     </View>
 
                                     {!this.state.showingCustom &&
@@ -143,6 +156,57 @@ export default class NewBroadcastFormTime extends React.Component {
                 onPress={() => this.saveStandardTime(timeText, MILLIPERMIN * minutes)}
             />
         )
+    }
+
+    generateClockButton = (hoursModifier, minuteModifier, color) => {
+        let timeCopy = new Date(this.state.currentTime)
+        let hours = this.state.currentTime.getHours() + hoursModifier
+        let minutesTens = 0
+        const round = this.clockRound(this.state.currentTime.getMinutes() + minuteModifier)
+        switch (round) {
+            case 1:
+                minutesTens = 3;
+                timeCopy.setMinutes(30)
+                break;
+            case 2:
+                hours += 1;
+                timeCopy.setMinutes(0)
+                break;
+            case 3:
+                hours += 1;
+                minutesTens = 3;
+                timeCopy.setMinutes(30)
+                break;
+            default:
+                timeCopy.setMinutes(0)
+                break;
+        }
+
+        let buttonText = hours % 12 + ":" + minutesTens + "0" + (hours >= 12 && hours < 24 ? "pm" : "am")
+        timeCopy.setMilliseconds(0)
+        timeCopy.setSeconds(0)
+        timeCopy.setHours(0)
+        timeCopy.setTime(timeCopy.getTime() + hours * 60 * 60 * 1000)
+        return (
+            <TimeButton
+                color={color}
+                text={buttonText}
+                onPress={() => this.clockButtonOnPress(timeCopy)}
+            />
+        )
+    }
+
+    // Helper function specifically for generateClockButton - returns 0 for 0-14, 1 for 15-44, 2 for 45-74 and 3 for 75 to 90
+    clockRound = (number) => {
+        return Math.round(number / 30)
+    }
+
+    clockButtonOnPress = (time) => {
+        this.props.navigation.state.params.startingTimeText = epochToDateString(time)
+        this.props.navigation.state.params.startingTime = time.getTime()
+        this.props.navigation.state.params.startingTimeRelative = false
+        this.props.navigation.state.params.isStartingSameTime = false
+        this.props.navigation.goBack()
     }
 
     setDate = (event, newDate) => {

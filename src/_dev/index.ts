@@ -83,7 +83,8 @@ import { LogBox } from 'react-native'
 LogBox.ignoreLogs([
   'Require cycle:', //TODO: investigate these warnings eventually
   'Remote debugger is in a background tab', //Not needed if you use "Maintain Priority in debugger, but here anyway",
-  'Usage of "messaging().registerDeviceForRemoteMessages()" is not required', //Am afraid of iOS so better dafe than sorry to use the extra call haha
+  'Usage of "messaging().registerDeviceForRemoteMessages()" is not required', //Am afraid of iOS so better safe than sorry to use the extra call haha
+  'Setting a timer for a long period of time', //https://stackoverflow.com/a/49886834 and https://github.com/facebook/react-native/issues/12981#issuecomment-652745831
 ])
 
 
