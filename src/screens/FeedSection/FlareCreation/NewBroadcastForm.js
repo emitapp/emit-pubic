@@ -233,8 +233,6 @@ class NewBroadcastForm extends React.Component {
 
                     {!this.isEditing &&
 
-
-
                       <View style={{ marginTop: -20 }}>
                         <CheckBox
                           title='Recurring Flare'

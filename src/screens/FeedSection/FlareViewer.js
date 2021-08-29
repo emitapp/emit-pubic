@@ -221,10 +221,7 @@ export default class FlareViewer extends React.Component {
           type="clear"
         />
 
-        {/* 
-        //TODO: Support editign and deletion for public flares */
-        }
-        {(this.isFlareOwner && !this.isPublicFlare) && <Button
+        {this.isFlareOwner && <Button
           icon={<AwesomeIcon name="ellipsis-h" size={18} color="grey" />}
           containerStyle={{ position: 'absolute', top: 8, right: 0 }}
           onPress={() => this.setState({ isFlareOptionsModalVisible: true })}

@@ -18,6 +18,10 @@ type changeList = Array<{
  */
 const changes : changeList = [
     {
+        timestamp: 1630268531000,
+        change: "It's now possible to edit and delete public flares! ✏️",
+    },
+    {
         timestamp: 1628695869300,
         change: "Users can now verify their school email addresses to get **school badges**! This is a precursor to school-specific flares, coming soon! 🎓",
     },

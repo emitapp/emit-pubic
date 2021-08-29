@@ -124,7 +124,10 @@ export default class NewBroadcastFormLocation extends React.Component {
                   } : null}
                   onPress={() => this.props.navigation.navigate("LocationSelector",
                     {
-                      callback: (geo, addr) => this.setState({ locationPin: geo, locationName: addr }),
+                      callback: (geo, addr) => {
+                        this.searchBar.setSearchBarValueExternal(addr)
+                        this.setState({ locationPin: geo, locationName: addr })
+                      },
                       pin: this.state.locationPin,
                       address: this.locationName
                     })}
