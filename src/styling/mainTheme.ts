@@ -133,6 +133,7 @@ const theme : Partial<FullTheme> = {
         },
         inputStyle:{
             fontFamily: "NunitoSans-Regular",
+            color: "black"
         },
     },
 

@@ -34,7 +34,7 @@ class NewBroadcastForm extends React.Component {
     const isPublicFlare = this.props.navigation.getParam('isPublicFlare') ?? false;
 
 
-    this.passableBroadcastInfo = { // All toggleable broadcast information
+    const _passableBroadcastInfo = { // All toggleable broadcast information
       emojiSelected: prechosenActivity?.emoji || "",
       activitySelected: prechosenActivity?.name || "",
       startingTimeText: "Now",
@@ -54,7 +54,7 @@ class NewBroadcastForm extends React.Component {
       maxResponders: "",
     }
 
-    this.broadcastInfoPrototype = { ...this.passableBroadcastInfo }
+    this.broadcastInfoPrototype = { ... _passableBroadcastInfo }
 
     //Useful info for editing flares (gotten from the server when needed)...
     this.recepientFriendsOriginal = {},
@@ -62,7 +62,7 @@ class NewBroadcastForm extends React.Component {
 
       this.state = {
         showingMore: false,
-        passableBroadcastInfo: this.passableBroadcastInfo,
+        passableBroadcastInfo: _passableBroadcastInfo,
         isModalVisible: false,
         errorMessage: null,
         isPublicFlare: isPublicFlare,
@@ -80,12 +80,10 @@ class NewBroadcastForm extends React.Component {
       this.setState({}) //Just call for a rerender
     });
 
-    const geolocation = this.passableBroadcastInfo.geolocation
+    const geolocation = this.state.passableBroadcastInfo.geolocation
     if (geolocation) {
       const geoObject = await reverseGeocodeToOSM(geolocation)
-      this.passableBroadcastInfo = { ...this.state.passableBroadcastInfo,
-          location: geoObject.name}
-      this.setState({ passableBroadcastInfo : this.passableBroadcastInfo });
+      this.setState({ passableBroadcastInfo : {...this.state.passableBroadcastInfo, location: geoObject.name} });
     }
 
     if (this.isEditing && this.broadcastSnippet) {
@@ -135,7 +133,7 @@ class NewBroadcastForm extends React.Component {
 
                 <FormSubtitle title="What" />
                 <FormInput
-                  onPress={() => this.props.navigation.navigate("NewBroadcastFormActivity", this.passableBroadcastInfo)}
+                  onPress={() => this.props.navigation.navigate("NewBroadcastFormActivity", this.state.passableBroadcastInfo)}
                   placeholder="Select an activity">
                   <Text style={{ fontSize: 18 }}>{flareInfo.emojiSelected}</Text>
                   {flareInfo.activitySelected && <Text> </Text>}
@@ -199,7 +197,7 @@ class NewBroadcastForm extends React.Component {
                 }
 
                 <FormInput
-                  onPress={() => this.props.navigation.navigate("NewBroadcastFormTime", this.passableBroadcastInfo)}
+                  onPress={() => this.props.navigation.navigate("NewBroadcastFormTime", this.state.passableBroadcastInfo)}
                   value={flareInfo.startingTimeText}
                   errorMessage={flareInfo.duration ? "" : "By default your flares will last 1 hour after they're sent."}
                   errorStyle={{ color: "white" }}
@@ -226,7 +224,7 @@ class NewBroadcastForm extends React.Component {
                     <FormSubtitle title="Duration" />
 
                     <FormInput
-                      onPress={() => this.props.navigation.navigate("NewBroadcastFormDuration", this.passableBroadcastInfo)}
+                      onPress={() => this.props.navigation.navigate("NewBroadcastFormDuration", this.state.passableBroadcastInfo)}
                       value={flareInfo.durationText}
                     />
 
@@ -419,7 +417,7 @@ class NewBroadcastForm extends React.Component {
         <FormSubtitle title="Place" />
         <FormInput
           onPress={() => this.props.navigation.navigate("NewBroadcastFormLocation", {
-            bundle: this.passableBroadcastInfo,
+            bundle: this.state.passableBroadcastInfo,
             isPublicFlare: this.state.isPublicFlare
           })}
           placeholder="Where are you going?"
@@ -536,7 +534,7 @@ class NewBroadcastForm extends React.Component {
 
   getInitialBroadcastInformation = async () => {
     try {
-      this.passableBroadcastInfo = {
+      const newPassableBroadcastInfo = {
         emojiSelected: this.broadcastSnippet.emoji,
         activitySelected: this.broadcastSnippet.activity,
         startingTime: this.broadcastSnippet.startingTime,
@@ -550,12 +548,10 @@ class NewBroadcastForm extends React.Component {
 
       if (this.state.isPublicFlare) {
         const maxRes = this.broadcastSnippet.maxResponders
-        this.passableBroadcastInfo = {
-          ...this.passableBroadcastInfo,
-          customMaxResponders: this.isCustomResponderValue(maxRes),
-          maxResponders: maxRes ? maxRes : "",
-          startingTimeRelative: false
-        }
+        newPassableBroadcastInfo.customMaxResponders = this.isCustomResponderValue(maxRes),
+        newPassableBroadcastInfo.maxResponders = maxRes ? maxRes : "",
+        newPassableBroadcastInfo.startingTimeRelative = false
+
       } else {
         let ref = database().ref(`/activeBroadcasts/${auth().currentUser.uid}/additionalParams/${this.broadcastSnippet.uid}`)
         const snapshot = await ref.once('value')
@@ -567,25 +563,22 @@ class NewBroadcastForm extends React.Component {
 
         let broadcastAdditionalData = snapshot.val();
         const maxRes = broadcastAdditionalData.maxResponders
-        this.passableBroadcastInfo = {
-          ...this.passableBroadcastInfo,
-          startingTimeRelative: false,
-          allFriends: broadcastAdditionalData.allFriends,
-          recepientFriends: broadcastAdditionalData.friendRecepients ? broadcastAdditionalData.friendRecepients : {},
-          recepientGroups: broadcastAdditionalData.groupRecepients ? broadcastAdditionalData.groupRecepients : {},
-          customMaxResponders: this.isCustomResponderValue(maxRes),
-          maxResponders: maxRes ? maxRes : ""
-        }
+        newPassableBroadcastInfo.startingTimeRelative = false,
+        newPassableBroadcastInfo.allFriends = broadcastAdditionalData.allFriends,
+        newPassableBroadcastInfo.recepientFriends = broadcastAdditionalData.friendRecepients ? broadcastAdditionalData.friendRecepients : {},
+        newPassableBroadcastInfo.recepientGroups = broadcastAdditionalData.groupRecepients ? broadcastAdditionalData.groupRecepients : {},
+        newPassableBroadcastInfo.customMaxResponders = this.isCustomResponderValue(maxRes),
+        newPassableBroadcastInfo.maxResponders = maxRes ? maxRes : ""
 
-        this.recepientFriendsOriginal = this.passableBroadcastInfo.recepientFriends
-        this.recepientGroupsOriginal = this.passableBroadcastInfo.recepientGroups
+        this.recepientFriendsOriginal = newPassableBroadcastInfo.recepientFriends
+        this.recepientGroupsOriginal = newPassableBroadcastInfo.recepientGroups
       }
 
 
       this.state.recurringDays = this.broadcastSnippet.recurringDays || [];
 
-      this.broadcastInfoPrototype = { ...this.passableBroadcastInfo }
-      this.setState({ passableBroadcastInfo: this.passableBroadcastInfo })
+      this.broadcastInfoPrototype = { ...newPassableBroadcastInfo }
+      this.setState({ passableBroadcastInfo: newPassableBroadcastInfo })
 
     } catch (e) {
       logError(e)

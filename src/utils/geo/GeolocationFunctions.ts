@@ -11,22 +11,45 @@ export type Coordinates = {
   latitude: number
 }
 
+type _callbackBundle = {
+  success: Geolocation.SuccessCallback,
+  error: Geolocation.ErrorCallback
+}
+
+let _callbackQueue : _callbackBundle[] = []
+let _gettingCurrentPosition = false
+
 /**
  * Its recommended that you call this along with recordLocationToBackend
  * Uses Snackbar for error reporting by default
  * @param {*} onSuccess 
  * @param {*} onError 
  */
+ //The current version of this getCurrentPosition can only handle one call at a time
+ //but there are places in the app where it si called rapidly. 
 export const GetGeolocation = (onSuccess: Geolocation.SuccessCallback, onError = handleGeolocationError) : void => {
-  Geolocation.getCurrentPosition(
-    onSuccess,
-    onError,
-    { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-  );
+  _callbackQueue.push({success: onSuccess, error: onError})
+
+  if (!_gettingCurrentPosition){
+    _gettingCurrentPosition = true
+    Geolocation.getCurrentPosition(
+      (p) => {
+        _callbackQueue.forEach(bundle => bundle.success(p))
+        _callbackQueue = []
+        _gettingCurrentPosition = false
+      },
+      (e) => {
+        _callbackQueue.forEach(bundle => bundle.error(e))
+        _callbackQueue = []
+        _gettingCurrentPosition = false
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+    );
+  }
+
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
-export const handleGeolocationError = (error: any) : void => {
+export const handleGeolocationError = (error: Geolocation.GeoError) : void => {
   const code = error.code
   let message = ""
   switch (code) {

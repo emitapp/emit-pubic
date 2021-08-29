@@ -144,7 +144,7 @@ export default class PlacesAutocompleteText extends React.PureComponent<PlacesAu
     )
   }
 
-  getInitialCoordinates = async (): Promise<void> => {
+  getInitialCoordinates = (): void => {
     GetGeolocation(
       (pos) => this.setState({
         coordinates: {
@@ -211,6 +211,13 @@ export default class PlacesAutocompleteText extends React.PureComponent<PlacesAu
   }
 
   setSearchBarValue = (val: string) : void => {
+    this.setState({ textInput: val })
+    this.props.onTextChange && this.props.onTextChange(val)
+  }
+
+  //Right now its just a copy of setSearchBarValue but if setSearchBarValue ever changes
+  //we don't want those side effects to reflect on this func, which is for external calls
+  setSearchBarValueExternal = (val: string) : void => {
     this.setState({ textInput: val })
     this.props.onTextChange && this.props.onTextChange(val)
   }

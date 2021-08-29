@@ -40,6 +40,7 @@ export default class NewBroadcastFormLocation extends React.Component {
       errorMessage: null,
       savingLocation: false,
     }
+    this.searchBar = null
 
     if (this.navigationParams.geolocation) this.state.locationPin = this.navigationParams.geolocation
   }
@@ -105,11 +106,12 @@ export default class NewBroadcastFormLocation extends React.Component {
 
               <PlacesAutocompleteTextInput
                 onLocationChosen={(p) => this.setState({ locationPin: p.coords })}
-                searchBarPlaceholder={this.state.locationName || "That Super Awesome Place"}
+                searchBarPlaceholder={"That Super Awesome Place"}
                 onTextChange={locationName => this.setState({ locationName })}
                 errorMessage={this.state.locationName.length > MAX_LOCATION_NAME_LENGTH ? "Too long" : undefined}
                 clearOnChoice={false}
                 initialTextValue={this.state.locationName}
+                ref = {r => this.searchBar = r}
               />
 
               <View style={{ width: "80%", height: 250, alignSelf: "center" }}>
@@ -311,5 +313,6 @@ export default class NewBroadcastFormLocation extends React.Component {
     const geoObject = await reverseGeocodeToOSM({ latitude: lat, longitude: lng })
     const locationName = geoObject.name
     this.setState({ locationName })
+    this.searchBar.setSearchBarValueExternal(locationName)
   }
 }
