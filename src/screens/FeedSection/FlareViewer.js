@@ -137,9 +137,9 @@ export default class FlareViewer extends React.Component {
             <View style={{ alignItems: "center", marginBottom: 25, marginTop: 25 }}>
 
               <View style={{ flexDirection: "row" }}>
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: -16, marginBottom: 8, marginRight: 8 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: -16, marginBottom: 8, marginHorizontal: 64}}>
                   <Text style={{ fontSize: 36 }}>{broadcastData.emoji}</Text>
-                  <Text style={{ fontSize: 24 }}>{broadcastData.activity}</Text>
+                  <Text style={{ fontSize: 24, textAlign: "center" }}>{broadcastData.activity}</Text>
                 </View>
               </View>
 
@@ -215,8 +215,8 @@ export default class FlareViewer extends React.Component {
         {broadcastData && this.displayBroadcastAction()}
 
         <Button
-          icon={<AwesomeIcon name="share-square" size={30} color="grey" />}
-          containerStyle={{ position: 'absolute', top: 8, left: 8 }}
+          icon={<AwesomeIcon name="share-square" size={20} color="grey" />}
+          containerStyle={{ position: 'absolute', top: 8, left: 0 }}
           onPress={() => shareFlare(this.broadcastSnippet)}
           type="clear"
         />
