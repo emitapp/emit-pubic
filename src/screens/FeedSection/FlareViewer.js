@@ -18,7 +18,7 @@ import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/ui/Loadi
 import { MinorActionButton } from 'reusables/ui/ReusableButtons';
 import { analyticsFlareJoined, analyticsFlareLeft, analyticsVideoChatUsed } from 'utils/analyticsFunctions';
 import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, shareFlare, timedPromise } from 'utils/helpers';
-import { cloudFunctionStatuses, responderStatuses } from 'utils/serverValues';
+import { cloudFunctionStatuses, PUBLIC_FLARE_COL_GROUP, responderStatuses } from 'utils/serverValues';
 
 /**
  * Class for viewing info about a broadcast.
@@ -50,8 +50,19 @@ export default class FlareViewer extends React.Component {
   }
 
   componentDidMount = () => {
+
+    let domainHash = ""
+    if(this.isPublicFlare){
+      domainHash = this.broadcastSnippet.hashedDomain
+      if (!domainHash){
+        this.setState({ errorMessage: "Missing domain info!" })
+        return
+      }
+    }
+
     if (this.isPublicFlare && !this.isFlareOwner) {
-      this.unsubscriber = firestore().collection("publicFlares").doc(this.broadcastSnippet.uid).onSnapshot({
+      const ref = firestore().collection("publicFlares").doc(domainHash).collection(PUBLIC_FLARE_COL_GROUP)
+      this.unsubscriber = ref.doc(this.broadcastSnippet.uid).onSnapshot({
         error: (err) => {
           this.setState({ errorMessage: err.message })
           logError(err)
@@ -159,7 +170,7 @@ export default class FlareViewer extends React.Component {
               }
 
               <FlareTimeStatus item={broadcastData} fullInfo center />
-              {this.isPublicFlare && <PublicFlareNotice style={{ marginTop: 8 }} />}
+              {this.isPublicFlare && <PublicFlareNotice flareInfo = {broadcastData} style={{ marginTop: 8 }} />}
             </View>
 
             <Divider style={{ marginBottom: 8 }} />

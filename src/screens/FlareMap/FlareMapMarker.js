@@ -74,7 +74,7 @@ class FlareMapMarker extends React.PureComponent {
                             <Text style={{ color: this.props.theme.colors.grey3 }}>@{flare.owner.username}</Text>
                         </View>
                         <Text style={{ fontWeight: "bold" }}>{flare.activity}</Text>
-                        {flare.isPublicFlare && <PublicFlareNotice />}
+                        {flare.isPublicFlare && <PublicFlareNotice flareInfo = {flare} />}
                         <Text>{flare.location}</Text>
                         <FlareTimeStatus item={flare} />
                         <Text style={{ color: this.props.theme.colors.primary, marginTop: 8, }}>Click to see more</Text>

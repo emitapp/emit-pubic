@@ -4,7 +4,7 @@ import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import FlareTimeStatus from 'reusables/flares/FlareTimeStatus';
 import ProfilePicDisplayer from 'reusables/profiles/ProfilePicComponents';
-import PublicFlareService from 'reusables/flares/PublicFlareNotice';
+import PublicFlareNotice from 'reusables/flares/PublicFlareNotice';
 import RecurringFlareNotice from 'reusables/flares/RecurringFlareNotice';
 import NavigationService from 'utils/NavigationService';
 
@@ -71,7 +71,7 @@ export default class FeedElement extends React.Component {
 
         <View style={{ marginHorizontal: 8, marginTop: 4 }}>
           {this.props.item.groupInfo && <Text style={{ fontStyle: "italic" }}>Sent via {this.props.item.groupInfo.name} group</Text>}
-          {this.props.isPublicFlare && <PublicFlareService />}
+          {this.props.isPublicFlare && <PublicFlareNotice flareInfo = {item} />}
         </View>
 
         <View style={{ marginLeft: 8 }}>

@@ -15,6 +15,9 @@ import { checkAndGetPermissions } from 'utils/AppPermissions';
 import { GetGeolocation, isFalsePositiveNearbyFlare, metersToMiles, PUBLIC_FLARE_RADIUS_IN_M } from 'utils/geo/GeolocationFunctions';
 import { logError } from 'utils/helpers';
 import FlareMarker from './FlareMapMarker';
+import { DEFAULT_DOMAIN_HASH, SHORT_PUBLIC_FLARE_COL_GROUP } from 'utils/serverValues';
+import { getOrgoHashAssociatedWithUser } from 'utils/orgosAndDomains';
+
 
 //TODO: Consider getting styles (Google maps only) from:
 //https://mapstyle.withgoogle.com/
@@ -33,7 +36,7 @@ export default class FlareMaps extends React.Component {
         latitude: 0, longitude: 0,
         longitudeDelta: this.defaultLongitudeDelta, latitudeDelta: this.defaultLatitudeDelta
       },
-      tapCoordinates: {latitude: 0, longitude: 0},
+      tapCoordinates: { latitude: 0, longitude: 0 },
       userPosition: { latitude: 0, longitude: 0 },
       nearbyFlares: [],
       regionGeneration: 0,
@@ -84,24 +87,24 @@ export default class FlareMaps extends React.Component {
             showsMyLocationButton={true}
             toolbarEnabled={true}
             onPress={e => this.renderSendFlareButton(e.nativeEvent)}
-            >
+          >
             <MapView.Marker
-                coordinate={{
-                    latitude: this.state.tapCoordinates.latitude || 0,
-                    longitude: this.state.tapCoordinates.longitude || 0
-                }}
-                ref={ref => this.sendFlareMarkerRef = ref}
-                pinColor={ 'red' }
-                onCalloutPress={() => this.props.navigation.navigate('NewBroadcastForm', {
-                  coordinates: {latitude: this.state.tapCoordinates.latitude, longitude: this.state.tapCoordinates.longitude},
-                  isPublicFlare: true
-                })}
+              coordinate={{
+                latitude: this.state.tapCoordinates.latitude || 0,
+                longitude: this.state.tapCoordinates.longitude || 0
+              }}
+              ref={ref => this.sendFlareMarkerRef = ref}
+              pinColor={'red'}
+              onCalloutPress={() => this.props.navigation.navigate('NewBroadcastForm', {
+                coordinates: { latitude: this.state.tapCoordinates.latitude, longitude: this.state.tapCoordinates.longitude },
+                isPublicFlare: true
+              })}
             >
-                <MapView.Callout>
-                    <View>
-                        <Text>Send Flare?</Text>
-                    </View>
-                </MapView.Callout>
+              <MapView.Callout>
+                <View>
+                  <Text>Send Flare?</Text>
+                </View>
+              </MapView.Callout>
             </MapView.Marker>
 
             {this.state.nearbyFlares.map(flare => (
@@ -123,7 +126,7 @@ export default class FlareMaps extends React.Component {
   // Waiting for the timeout seems like a hacky workaround to let the callout to be shown, but working with animations is weird...
   renderSendFlareButton = (tapEvent) => {
     if (!tapEvent.action || tapEvent.action == "press")
-     this.setState({tapCoordinates: tapEvent.coordinate}, async() => await setTimeout(()=>this.sendFlareMarkerRef.showCallout(), 200))
+      this.setState({ tapCoordinates: tapEvent.coordinate }, async () => await setTimeout(() => this.sendFlareMarkerRef.showCallout(), 200))
   }
 
   onRegionChange = async (region) => {
@@ -183,7 +186,7 @@ export default class FlareMaps extends React.Component {
     })
   }
 
-  setFlareListeners = () => {
+  setFlareListeners = async () => {
     const { userPosition } = this.state
     const center = [userPosition.latitude, userPosition.longitude];
     // Each item in 'bounds' represents a startAt/endAt pair. We have to issue
@@ -191,18 +194,40 @@ export default class FlareMaps extends React.Component {
     // depending on overlap, but in most cases there are 4.
     const bounds = geohashQueryBounds(center, PUBLIC_FLARE_RADIUS_IN_M);
     const feedRef = database().ref(`/feeds/${auth().currentUser.uid}`).orderByChild("geoHash")
-    const publicRef = firestore().collection("shortenedPublicFlares").orderBy("geoHash")
+
+    const defaultDomainFirestoreRef = firestore()
+      .collection("shortenedPublicFlares")
+      .doc(DEFAULT_DOMAIN_HASH).collection(SHORT_PUBLIC_FLARE_COL_GROUP).orderBy("geoHash")
+
+    let hashedDomainFirestoreRef = null
+
+    const hash = await getOrgoHashAssociatedWithUser(auth().currentUser.uid)
+    if (hash) {
+      hashedDomainFirestoreRef = firestore()
+        .collection("shortenedPublicFlares")
+        .doc(hash).collection(SHORT_PUBLIC_FLARE_COL_GROUP).orderBy("geoHash")
+    }
+
 
     for (const b of bounds) {
       const newFeedRef = feedRef.startAt(b[0]).endAt(b[1]).limitToFirst(10);
       this.rtdbRefs.push(newFeedRef)
       newFeedRef.on("value", snap => this.onRTDBUpdate(snap, b, center))
 
-      const newFirestoreRef = publicRef.startAt(b[0]).endAt(b[1]).limit(10)
+      let newFirestoreRef = defaultDomainFirestoreRef.startAt(b[0]).endAt(b[1]).limit(10)
       this.firestoreUnsubscribeFuncs.push(newFirestoreRef.onSnapshot({
         error: logError,
         next: snap => this.onFirestoreUpdate(snap, b, center)
       }))
+
+      if (hashedDomainFirestoreRef) {
+        newFirestoreRef = hashedDomainFirestoreRef.startAt(b[0]).endAt(b[1]).limit(10)
+        this.firestoreUnsubscribeFuncs.push(newFirestoreRef.onSnapshot({
+          error: logError,
+          next: snap => this.onFirestoreUpdate(snap, b, center)
+        }))
+      }
+
     }
   }
 
@@ -226,7 +251,7 @@ export default class FlareMaps extends React.Component {
   }
 
   //dataList should be an array of objects...
-    // We have to filter out a few false positives due to GeoHash
+  // We have to filter out a few false positives due to GeoHash
   // accuracy, but most will match
   removeFalsePositives = (dataList, center) => {
     const goodDatapoints = []

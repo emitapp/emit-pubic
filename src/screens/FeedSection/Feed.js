@@ -3,21 +3,21 @@ import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 import { geohashQueryBounds } from 'geofire-common';
 import React from 'react';
-import { Image, View } from 'react-native';
-import { Button } from 'react-native-elements';
+import { View } from 'react-native';
 import { PERMISSIONS } from 'react-native-permissions';
-import ErrorMessageText from 'reusables/ui/ErrorMessageText';
 import FeedEmptyState from 'reusables/FeedEmptyState';
-import { SmallLoadingComponent } from 'reusables/ui/LoadingComponents';
 import MergedSectionInfiniteScroll from 'reusables/lists/MergedSectionInfiniteScroll';
+import EmailVerificationBanner from 'reusables/schoolEmail/EmailVerificationBanner';
+import ErrorMessageText from 'reusables/ui/ErrorMessageText';
+import { SmallLoadingComponent } from 'reusables/ui/LoadingComponents';
 import S from 'styling';
 import { checkAndGetPermissions } from 'utils/AppPermissions';
-import { GetGeolocation, PUBLIC_FLARE_RADIUS_IN_M, isFalsePositiveNearbyFlare, RecordLocationToBackend } from 'utils/geo/GeolocationFunctions';
+import { GetGeolocation, isFalsePositiveNearbyFlare, PUBLIC_FLARE_RADIUS_IN_M, RecordLocationToBackend } from 'utils/geo/GeolocationFunctions';
 import { logError } from 'utils/helpers';
-import { responderStatuses } from 'utils/serverValues';
+import { getOrgoHashAssociatedWithUser } from 'utils/orgosAndDomains';
+import { DEFAULT_DOMAIN_HASH, PUBLIC_FLARE_COL_GROUP, responderStatuses, SHORT_PUBLIC_FLARE_COL_GROUP } from 'utils/serverValues';
 import EmittedFlareElement from './EmittedFlareElement';
 import FeedElement from './FeedElement';
-import EmailVerificationBanner from 'reusables/schoolEmail/EmailVerificationBanner';
 
 export default class ActiveBroadcasts extends React.Component {
 
@@ -40,7 +40,7 @@ export default class ActiveBroadcasts extends React.Component {
         endingPoint: null
       },
       {
-        ref: firestore().collection("publicFlares").where('owner.uid', '==', auth().currentUser.uid),
+        ref: firestore().collectionGroup(PUBLIC_FLARE_COL_GROUP).where('owner.uid', '==', auth().currentUser.uid),
         whereConditionProvided: true,
         title: this.emittedTitle,
         isFirestore: true,
@@ -167,26 +167,31 @@ export default class ActiveBroadcasts extends React.Component {
     }
   }
 
-  addRefsForPublicFlares = (coords) => {
+  addRefsForPublicFlares = async (coords) => {
     const { longitude, latitude } = coords
     const center = [latitude, longitude];
     this.geolocation = center
     const bounds = geohashQueryBounds(center, PUBLIC_FLARE_RADIUS_IN_M);
+    const hash = await getOrgoHashAssociatedWithUser(auth().currentUser.uid)
+    const allDomains = [DEFAULT_DOMAIN_HASH]
+    if (hash) allDomains.push(hash)
 
     for (const b of bounds) {
-      this.dbrefs.push(
-        {
-          ref: firestore().collection("shortenedPublicFlares"),
-          orderBy: ["geoHash"],
-          title: this.upcomingTitle,
-          isFirestore: true,
-          filter: this.isValidPublicFlare,
-          tag: "public",
-          startingPoint: b[0],
-          endingPoint: b[1],
-          limit: 10
-        },
-      )
+      for (const domain of allDomains){
+        this.dbrefs.push(
+          {
+            ref: firestore().collection("shortenedPublicFlares").doc(domain).collection(SHORT_PUBLIC_FLARE_COL_GROUP),
+            orderBy: ["geoHash"],
+            title: this.upcomingTitle,
+            isFirestore: true,
+            filter: this.isValidPublicFlare,
+            tag: "public",
+            startingPoint: b[0],
+            endingPoint: b[1],
+            limit: 10
+          },
+        )
+      }
     }
 
     if (!this._isMounted) return

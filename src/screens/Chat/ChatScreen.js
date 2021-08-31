@@ -27,9 +27,11 @@ export default class ChatScreen extends React.Component {
     this.broadcastData = this.props.navigation.getParam('broadcast', { uid: " ", owner: { uid: "xxx" } })
     this.isPublicFlare = this.props.navigation.getParam('isPublicFlare', false)
     this.ownerID = this.broadcastData.owner.uid
+
+    //TODO: have a contingency for when hashedDomain is missing for any reason...
     this.chatrefPath =
       this.isPublicFlare ?
-        `/publicFlareChats/${this.broadcastData.uid}` :
+        `/publicFlareChats/${this.broadcastData.hashedDomain}/${this.broadcastData.uid}` :
         `/activeBroadcasts/${this.ownerID}/chats/${this.broadcastData.uid}`
 
 

@@ -67,3 +67,9 @@ export const recommentationDocName = (user1Uid, user2Uid) => {
     const second = first == user1Uid ? user2Uid : user1Uid
     return first + "&&" + second
 }
+
+export const DEFAULT_DOMAIN_HASH = "_open_"
+export const SHORT_PUBLIC_FLARE_COL_GROUP = "public_flares_short"
+export const PUBLIC_FLARE_COL_GROUP = "public_flares"
+
+

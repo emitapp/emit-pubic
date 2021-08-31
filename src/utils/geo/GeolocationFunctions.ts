@@ -4,6 +4,7 @@ import Snackbar from 'react-native-snackbar';
 import { geohashForLocation } from 'geofire-common'
 import auth from '@react-native-firebase/auth'
 import database from '@react-native-firebase/database'
+import firestore from '@react-native-firebase/firestore'
 import { logError } from '../helpers';
 
 export type Coordinates = {
@@ -101,10 +102,12 @@ export const RecordLocationToBackend = async (geolocation : GeoCoordinates) : Pr
     const preferenceSnap = await database().ref(`userLocationUploadPreference/${auth().currentUser?.uid}`).once("value")
     let shouldUpload = DEFAULT_LOCATION_UPLOADING_PREFERENCE;
     if (preferenceSnap.exists()) {shouldUpload = preferenceSnap.val()}
-    if (shouldUpload)
-      {await database().ref(`userLocationGeoHashes/${auth().currentUser?.uid}`).set(
-        { geoHash, geolocation: {latitude, longitude} }
-      )}
+    if (shouldUpload){
+      await firestore().doc(`publicFlareUserMetadataPrivate/${auth().currentUser?.uid}`).set(
+        { geoHash, geolocation: {latitude, longitude} },
+        {merge: true}
+      )
+    }
   } catch (err) {
     logError(err, false)
   }

@@ -13,7 +13,6 @@ import { analyticsFriendAction } from 'utils/analyticsFunctions';
 import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, isValidDBPath, recommentationDocName } from 'utils/serverValues';
 import SchoolDomainBadge from 'reusables/schoolEmail/SchoolDomainBadge';
-import { getSchoolInfoFromDomain } from 'data/schoolDomains';
 import AutofetchingSchoolDomainBadge from 'reusables/schoolEmail/AutofetchingSchoolDomainBadge';
 
 /**

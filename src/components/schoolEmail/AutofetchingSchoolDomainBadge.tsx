@@ -1,8 +1,8 @@
-import React from 'react';
-import { default as SchoolDomainBadge, SchoolDomainBadgeProps } from './SchoolDomainBadge';
-import firestore from '@react-native-firebase/firestore';
-import { logError } from 'utils/helpers';
 import { getSchoolInfoFromDomain } from 'data/schoolDomains';
+import React from 'react';
+import { logError } from 'utils/helpers';
+import { getOrgoAssociatedWithUser } from 'utils/orgosAndDomains';
+import { default as SchoolDomainBadge, SchoolDomainBadgeProps } from './SchoolDomainBadge';
 
 interface AutofetchingSchoolDomainBadgeProps {
     uid: string
@@ -14,13 +14,9 @@ export default class AutofetchingSchoolDomainBadge extends React.PureComponent<S
         domainFromFirebase: null as string | null
     }
 
-    componentDidMount(){
-        firestore().collection("extraUserInfo").doc(this.props.uid).get()
-            .then(doc => {
-                if (doc.exists){
-                    this.setState({domainFromFirebase: doc.data()?.lastVerifiedEmailDomain ?? null})
-                }
-            })
+    componentDidMount() : void{
+        getOrgoAssociatedWithUser(this.props.uid)
+            .then(domain => this.setState({domainFromFirebase: domain}))
             .catch(err => logError(err))
     }
 

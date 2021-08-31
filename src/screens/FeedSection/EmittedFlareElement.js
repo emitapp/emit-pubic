@@ -5,7 +5,7 @@ import Ionicon from 'react-native-vector-icons/Ionicons';
 import FlareTimeStatus from 'reusables/flares/FlareTimeStatus';
 import S from 'styling';
 import NavigationService from 'utils/NavigationService';
-import PublicFlareService from 'reusables/flares/PublicFlareNotice';
+import PublicFlareNotice from 'reusables/flares/PublicFlareNotice';
 
 export default class EmittedFlareElement extends React.PureComponent {
   render() {
@@ -21,7 +21,7 @@ export default class EmittedFlareElement extends React.PureComponent {
               <Text style={{ fontSize: 40, marginHorizontal: 8 }}>{item.emoji}</Text>
               <View style={{ justifyContent: "center" }}>
                 <Text style={{ fontSize: 20 }}>{item.activity}</Text>
-                {isPublicFlare && <PublicFlareService />}
+                {isPublicFlare && <PublicFlareNotice flareInfo = {item} />}
                 {item.recurringDays?.length > 0 &&
                   <Text>Recurring: {item.recurringDays.join("/")} </Text>
                 }

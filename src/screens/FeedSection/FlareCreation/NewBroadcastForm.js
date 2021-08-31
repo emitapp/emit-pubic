@@ -20,6 +20,8 @@ import { analyticsLogFlareCreation } from 'utils/analyticsFunctions';
 import { epochToDateString, isOnlyWhitespace, logError, LONG_TIMEOUT, objectDifference, showDelayedSnackbar, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, MAX_BROADCAST_NOTE_LENGTH } from 'utils/serverValues';
 import { reverseGeocodeToOSM } from 'utils/geo/OpenStreetMapsApi';
+import { getOrgoAssociatedWithUser } from 'utils/orgosAndDomains';
+import { getSchoolInfoFromDomain } from 'data/schoolDomains';
 
 
 class NewBroadcastForm extends React.Component {
@@ -52,9 +54,11 @@ class NewBroadcastForm extends React.Component {
 
       customMaxResponders: false,
       maxResponders: "",
+
+      domainLocked: false
     }
 
-    this.broadcastInfoPrototype = { ... _passableBroadcastInfo }
+    this.broadcastInfoPrototype = { ..._passableBroadcastInfo }
 
     //Useful info for editing flares (gotten from the server when needed)...
     this.recepientFriendsOriginal = {},
@@ -69,6 +73,8 @@ class NewBroadcastForm extends React.Component {
 
         isRecurring: false,
         recurringDays: [],
+
+        userDomain: ""
       }
   }
 
@@ -83,12 +89,16 @@ class NewBroadcastForm extends React.Component {
     const geolocation = this.state.passableBroadcastInfo.geolocation
     if (geolocation) {
       const geoObject = await reverseGeocodeToOSM(geolocation)
-      this.setState({ passableBroadcastInfo : {...this.state.passableBroadcastInfo, location: geoObject.name} });
+      this.setState({ passableBroadcastInfo: { ...this.state.passableBroadcastInfo, location: geoObject.name } });
     }
 
     if (this.isEditing && this.broadcastSnippet) {
       this.getInitialBroadcastInformation()
     }
+
+    getOrgoAssociatedWithUser(auth().currentUser.uid)
+      .then(domain => this.setState({userDomain: domain ?? ""}))
+      .catch(e => logError(e))
   }
 
 
@@ -103,7 +113,8 @@ class NewBroadcastForm extends React.Component {
   }
 
   render() {
-    const { passableBroadcastInfo: flareInfo } = this.state
+    const { passableBroadcastInfo: flareInfo, userDomain } = this.state
+    const domainInfo = userDomain ? getSchoolInfoFromDomain(userDomain) : null
     return (
       <ThemeConsumer>
         {({ theme }) => (
@@ -126,7 +137,7 @@ class NewBroadcastForm extends React.Component {
                   style={{ color: '#2900BD', fontWeight: "bold" }} />
 
                 {(this.isEditing && this.state.recurringDays?.length > 0) &&
-                  <Text style = {{color: "white"}}>
+                  <Text style={{ color: "white" }}>
                     We noticed this is a recurring flare! Changes will only affect this occurence.
                   </Text>
                 }
@@ -317,6 +328,23 @@ class NewBroadcastForm extends React.Component {
                       </View>
                     }
 
+                    {(domainInfo && this.state.isPublicFlare) && (
+                      <CheckBox
+                        title={`${domainInfo.shortName} users only`}
+                        fontFamily="NunitoSans-Regular"
+                        textStyle={{ fontSize: 16, fontWeight: "bold", color: "white" }}
+                        checked={this.state.passableBroadcastInfo.domainLocked}
+                        containerStyle={{ alignSelf: "flex-start", padding: 0, marginBottom: 0 }}
+                        onPress={() => this.setState({
+                          passableBroadcastInfo: {
+                            ...this.state.passableBroadcastInfo,
+                            domainLocked: !this.state.passableBroadcastInfo.domainLocked
+                          }
+                        })}
+                        checkedColor="white"
+                        uncheckedColor="white"
+                      />
+                    )}
 
                     <FormSubtitle title="Max Responders" />
 
@@ -423,7 +451,7 @@ class NewBroadcastForm extends React.Component {
           icon={flareInfo.geolocation ?
             <Icon name="location-on" size={20} color="white" />
             : null}
-          selection={{start:0}} //for very long location names, this makes the input show the beginning, not the end
+          selection={{ start: 0 }} //for very long location names, this makes the input show the beginning, not the end
         />
       </>
     )
@@ -492,6 +520,7 @@ class NewBroadcastForm extends React.Component {
         recurringDays: this.state.recurringDays,
       }
 
+      if (isPublicFlare) params.domainLocked = this.state.passableBroadcastInfo.domainLocked
       if (!isPublicFlare && !this.addRecepientInformation(params)) return;
       if (flareInfo.geolocation) params.geolocation = flareInfo.geolocation
       if (flareInfo.note) params.note = flareInfo.note
@@ -503,7 +532,7 @@ class NewBroadcastForm extends React.Component {
       }
 
       if (this.isEditing && isPublicFlare) params.originalFlareUid = this.broadcastSnippet.uid
- 
+
       let methodName = ""
       if (this.isEditing) methodName = isPublicFlare ? "editPublicFlare" : "modifyActiveBroadcast"
       else methodName = isPublicFlare ? "createPublicFlare" : 'createActiveBroadcast'
@@ -546,14 +575,15 @@ class NewBroadcastForm extends React.Component {
 
       if (this.state.isPublicFlare) {
         const maxRes = this.broadcastSnippet.maxResponders
-        newPassableBroadcastInfo.customMaxResponders = this.isCustomResponderValue(maxRes),
-        newPassableBroadcastInfo.maxResponders = maxRes ? maxRes : "",
+        newPassableBroadcastInfo.customMaxResponders = this.isCustomResponderValue(maxRes)
+        newPassableBroadcastInfo.maxResponders = maxRes ? maxRes : ""
         newPassableBroadcastInfo.startingTimeRelative = false
+        newPassableBroadcastInfo.domainLocked = typeof this.broadcastSnippet.domain == "string"
 
       } else {
         let ref = database().ref(`/activeBroadcasts/${auth().currentUser.uid}/additionalParams/${this.broadcastSnippet.uid}`)
         const snapshot = await ref.once('value')
-        
+
         if (!snapshot.exists()) {
           logError(new Error("Snapshot of flare parameters not found"))
           return;
@@ -561,11 +591,11 @@ class NewBroadcastForm extends React.Component {
 
         let broadcastAdditionalData = snapshot.val();
         const maxRes = broadcastAdditionalData.maxResponders
-        newPassableBroadcastInfo.startingTimeRelative = false,
-        newPassableBroadcastInfo.allFriends = broadcastAdditionalData.allFriends,
-        newPassableBroadcastInfo.recepientFriends = broadcastAdditionalData.friendRecepients ? broadcastAdditionalData.friendRecepients : {},
-        newPassableBroadcastInfo.recepientGroups = broadcastAdditionalData.groupRecepients ? broadcastAdditionalData.groupRecepients : {},
-        newPassableBroadcastInfo.customMaxResponders = this.isCustomResponderValue(maxRes),
+        newPassableBroadcastInfo.startingTimeRelative = false
+        newPassableBroadcastInfo.allFriends = broadcastAdditionalData.allFriends
+        newPassableBroadcastInfo.recepientFriends = broadcastAdditionalData.friendRecepients ? broadcastAdditionalData.friendRecepients : {}
+        newPassableBroadcastInfo.recepientGroups = broadcastAdditionalData.groupRecepients ? broadcastAdditionalData.groupRecepients : {}
+        newPassableBroadcastInfo.customMaxResponders = this.isCustomResponderValue(maxRes)
         newPassableBroadcastInfo.maxResponders = maxRes ? maxRes : ""
 
         this.recepientFriendsOriginal = newPassableBroadcastInfo.recepientFriends
