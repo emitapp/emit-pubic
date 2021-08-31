@@ -217,23 +217,23 @@ export default class FlareMaps extends React.Component {
       let newFirestoreRef = defaultDomainFirestoreRef.startAt(b[0]).endAt(b[1]).limit(10)
       this.firestoreUnsubscribeFuncs.push(newFirestoreRef.onSnapshot({
         error: logError,
-        next: snap => this.onFirestoreUpdate(snap, b, center)
+        next: snap => this.onFirestoreUpdate(snap, b, center, DEFAULT_DOMAIN_HASH)
       }))
 
       if (hashedDomainFirestoreRef) {
         newFirestoreRef = hashedDomainFirestoreRef.startAt(b[0]).endAt(b[1]).limit(10)
         this.firestoreUnsubscribeFuncs.push(newFirestoreRef.onSnapshot({
           error: logError,
-          next: snap => this.onFirestoreUpdate(snap, b, center)
+          next: snap => this.onFirestoreUpdate(snap, b, center, hash)
         }))
       }
 
     }
   }
 
-  onFirestoreUpdate = (snap, b, center) => {
+  onFirestoreUpdate = (snap, b, center, hash) => {
     //the [] tag is actually important for updateMapWithNewData()
-    const key = "[fb]" + b.toString()
+    const key = "[fb]" + b.toString() + hash
     let docs = snap.docs.map(x => { return { ...x.data(), uid: x.id } })
     docs = this.removeFalsePositives(docs, center)
     this.flareData[key] = docs

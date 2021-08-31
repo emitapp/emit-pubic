@@ -25,7 +25,7 @@ export default class EmailVerificationBanner extends PureComponent {
     return (
       <Pressable style={{ ...styles.banner }} onPress={() => NavigationService.navigate("SettingsMain")}>
         <Text style = {styles.text} adjustsFontSizeToFit={true} numberOfLines={1}>
-          Verify your {shortName} email to see {shortName}-only flares (coming soon).
+          Verify your {shortName} email to see {shortName}-only flares.
         </Text>
       </Pressable>
     );
