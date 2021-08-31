@@ -43,7 +43,7 @@ export default class EmittedFlareElement extends React.PureComponent {
 
           {(item.locked || item.location) &&
             <View style={{ marginHorizontal: 8 }}>
-              <Text style={{ fontSize: 16 }}>{item.location}</Text>
+              <Text style={{ fontSize: 16 }} numberOfLines = {2}>{item.location}</Text>
               {item.locked &&
                 <View style={{
                   flexDirection: "row", alignItems: "center", borderColor: "grey",

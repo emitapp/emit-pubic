@@ -1,6 +1,6 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { View } from 'react-native';
+import { View, Text as RNText } from 'react-native';
 import { Text, withTheme } from 'react-native-elements';
 import { Callout, Marker } from 'react-native-maps';
 import FlareTimeStatus from 'reusables/flares/FlareTimeStatus';
@@ -75,7 +75,8 @@ class FlareMapMarker extends React.PureComponent {
                         </View>
                         <Text style={{ fontWeight: "bold" }}>{flare.activity}</Text>
                         {flare.isPublicFlare && <PublicFlareNotice flareInfo = {flare} />}
-                        <Text>{flare.location}</Text>
+                        {/* Ellipses are broken for react-native-elements text for some reason */}
+                        <RNText numberOfLines = {2} style = {{margin: 4}}>{flare.location}</RNText> 
                         <FlareTimeStatus item={flare} />
                         <Text style={{ color: this.props.theme.colors.primary, marginTop: 8, }}>Click to see more</Text>
                     </View>
