@@ -182,7 +182,8 @@ export default class NewBroadcastFormTime extends React.Component {
                 break;
         }
 
-        let buttonText = hours % 12 + ":" + minutesTens + "0" + (hours >= 12 && hours < 24 ? "pm" : "am")
+        let hourTime = hours % 12
+        let buttonText = (hourTime == 0 ? 12 : hourTime) + ":" + minutesTens + "0" + (hours >= 12 && hours < 24 ? "pm" : "am")
         timeCopy.setMilliseconds(0)
         timeCopy.setSeconds(0)
         timeCopy.setHours(0)
