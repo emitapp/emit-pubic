@@ -6,6 +6,8 @@ import CircularView from 'reusables/containers/CircularView';
 import EmptyState from 'reusables/ui/EmptyState';
 import { Activity, getAllActivities } from 'data/activitesList';
 import NavigationService from 'utils/NavigationService';
+import Emoji from 'reusables/ui/Emoji'
+
 
 export default class FeedEmptyState extends React.PureComponent {
 
@@ -63,7 +65,7 @@ class ActivityButton extends React.PureComponent<{ activity: Activity }> {
 				onPress={() => NavigationService.navigate('NewBroadcastForm', { needUserConfirmation: false, activity: this.props.activity })}
 			>
 				<CircularView diameter={50} style={{ borderColor: "grey", borderWidth: 1 }}>
-					<Text style={{ fontSize: 20 }}>{this.props.activity.emoji}</Text>
+					<Emoji size = {20} style={{ marginHorizontal: 8 }} emoji = {this.props.activity.emoji}/>
 				</CircularView>
 				<Text style={{ textAlign: "center", fontSize: 15, color: "grey" }}>{this.props.activity.name}</Text>
 			</Pressable>

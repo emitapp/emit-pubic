@@ -2059,6 +2059,11 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
   integrity sha512-l42BggppR6zLmpfU6fq9HEa2oGPEI8yrSPL3GITjfRInppYFahObbIQOQK3UGxEnyQpltZLaPe75046NOZQikw==
 
+"@types/twemoji-parser@^13.1.1":
+  version "13.1.1"
+  resolved "https://registry.yarnpkg.com/@types/twemoji-parser/-/twemoji-parser-13.1.1.tgz#71e8a30cc542c51a893ee6583c401b56ad605b9f"
+  integrity sha512-KhGr5xLxf8XCITgMMG8CIHpnZ5EzbVFPmStoEPd6KqtX7Lc7pc7OZyicfcWJgPv68lq/+y52zu+S5A58oOdVJw==
+
 "@types/uuid@^8.3.1":
   version "8.3.1"
   resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.1.tgz#1a32969cf8f0364b3d8c8af9cc3555b7805df14f"
@@ -10142,6 +10147,11 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
+
+twemoji-parser@^13.1.0:
+  version "13.1.0"
+  resolved "https://registry.yarnpkg.com/twemoji-parser/-/twemoji-parser-13.1.0.tgz#65e7e449c59258791b22ac0b37077349127e3ea4"
+  integrity sha512-AQOzLJpYlpWMy8n+0ATyKKZzWlZBJN+G0C+5lhX7Ftc2PeEVdUU/7ns2Pn2vVje26AIZ/OHwFoUbdv6YYD/wGg==
 
 type-check@~0.3.2:
   version "0.3.2"

@@ -19,6 +19,7 @@ import { MinorActionButton } from 'reusables/ui/ReusableButtons';
 import { analyticsFlareJoined, analyticsFlareLeft, analyticsVideoChatUsed } from 'utils/analyticsFunctions';
 import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, shareFlare, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, PUBLIC_FLARE_COL_GROUP, responderStatuses } from 'utils/serverValues';
+import Emoji from 'reusables/ui/Emoji'
 
 /**
  * Class for viewing info about a broadcast.
@@ -52,9 +53,9 @@ export default class FlareViewer extends React.Component {
   componentDidMount = () => {
 
     let domainHash = ""
-    if(this.isPublicFlare){
+    if (this.isPublicFlare) {
       domainHash = this.broadcastSnippet.hashedDomain
-      if (!domainHash){
+      if (!domainHash) {
         this.setState({ errorMessage: "Missing domain info!" })
         return
       }
@@ -148,8 +149,8 @@ export default class FlareViewer extends React.Component {
             <View style={{ alignItems: "center", marginBottom: 25, marginTop: 25 }}>
 
               <View style={{ flexDirection: "row" }}>
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: -16, marginBottom: 8, marginHorizontal: 64}}>
-                  <Text style={{ fontSize: 36 }}>{broadcastData.emoji}</Text>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: -16, marginBottom: 8, marginHorizontal: 64 }}>
+                  <Emoji size={36} emoji={broadcastData.emoji} />
                   <Text style={{ fontSize: 24, textAlign: "center" }}>{broadcastData.activity}</Text>
                 </View>
               </View>
@@ -170,7 +171,7 @@ export default class FlareViewer extends React.Component {
               }
 
               <FlareTimeStatus item={broadcastData} fullInfo center />
-              {this.isPublicFlare && <PublicFlareNotice flareInfo = {broadcastData} style={{ marginTop: 8 }} />}
+              {this.isPublicFlare && <PublicFlareNotice flareInfo={broadcastData} style={{ marginTop: 8 }} />}
             </View>
 
             <Divider style={{ marginBottom: 8 }} />

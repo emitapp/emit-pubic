@@ -22,7 +22,7 @@ import { cloudFunctionStatuses, MAX_BROADCAST_NOTE_LENGTH } from 'utils/serverVa
 import { reverseGeocodeToOSM } from 'utils/geo/OpenStreetMapsApi';
 import { getOrgoAssociatedWithUser } from 'utils/orgosAndDomains';
 import { getSchoolInfoFromDomain } from 'data/schoolDomains';
-
+import Emoji from 'reusables/ui/Emoji'
 
 class NewBroadcastForm extends React.Component {
 
@@ -146,7 +146,7 @@ class NewBroadcastForm extends React.Component {
                 <FormInput
                   onPress={() => this.props.navigation.navigate("NewBroadcastFormActivity", this.state.passableBroadcastInfo)}
                   placeholder="Select an activity">
-                  <Text style={{ fontSize: 18 }}>{flareInfo.emojiSelected}</Text>
+                  <Emoji size = {18} emoji = {flareInfo.emojiSelected}/>
                   {flareInfo.activitySelected && <Text> </Text>}
                   <Text style={{ fontSize: 18 }} >{flareInfo.activitySelected}</Text>
                 </FormInput>

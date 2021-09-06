@@ -7,6 +7,7 @@ import FlareTimeStatus from 'reusables/flares/FlareTimeStatus';
 import ProfilePicCircle from 'reusables/profiles/ProfilePicComponents';
 import PublicFlareNotice from 'reusables/flares/PublicFlareNotice';
 import NavigationService from 'utils/NavigationService';
+import Emoji from 'reusables/ui/Emoji'
 
 
 // Design inspired by:
@@ -64,7 +65,7 @@ class FlareMapMarker extends React.PureComponent {
                     borderColor: this.getBorderColor(flare),
                     borderWidth: 2
                 }}>
-                    <Text style={{ fontSize: 30 * multiplier }}>{flare.emoji}</Text>
+                    <Emoji size = { 30 * multiplier} emoji = {flare.emoji}/>
                 </View>
                 <Callout onPress={() => NavigationService.push("FlareViewer", { broadcast: flare, isPublicFlare: flare.isPublicFlare })}>
                     <View style={{ width: 200, alignItems: "center" }}>

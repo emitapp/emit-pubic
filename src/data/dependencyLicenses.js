@@ -403,6 +403,10 @@ export default
         "licenseUrl": "https://github.com/Richi2293/rn-falcon-app-intro/raw/master/LICENSE",
         "parents": "emit"
     },
+    "twemoji-parser@13.1.0": {
+        "licenses": "MIT",
+        "parents": "emit"
+    },
     "uuid@8.3.2": {
         "licenses": "MIT",
         "repository": "https://github.com/uuidjs/uuid",

@@ -7,6 +7,7 @@ import ProfilePicDisplayer from 'reusables/profiles/ProfilePicComponents';
 import PublicFlareNotice from 'reusables/flares/PublicFlareNotice';
 import RecurringFlareNotice from 'reusables/flares/RecurringFlareNotice';
 import NavigationService from 'utils/NavigationService';
+import Emoji from 'reusables/ui/Emoji'
 
 /**
  * Component for each event in a feed. Maintains state for
@@ -49,7 +50,7 @@ export default class FeedElement extends React.Component {
 
           {/* Emoji, profile pic, activity name */}
           <View style={{ flexDirection: "row", flex: 1 }}>
-            <Text style={{ fontSize: 36, marginHorizontal: 8 }}>{item.emoji}</Text>
+            <Emoji size = {36} style={{ marginHorizontal: 8 }} emoji = {item.emoji}/>
             {/* flexShrink important to prevent flare activity from bleeding out of parent  */}
             <View style={{ justifyContent: "center", flexShrink: 1}}> 
               <Text style={{ fontSize: 18 }}>{item.activity}</Text>

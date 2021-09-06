@@ -6,6 +6,7 @@ import FlareTimeStatus from 'reusables/flares/FlareTimeStatus';
 import S from 'styling';
 import NavigationService from 'utils/NavigationService';
 import PublicFlareNotice from 'reusables/flares/PublicFlareNotice';
+import Emoji from 'reusables/ui/Emoji'
 
 export default class EmittedFlareElement extends React.PureComponent {
   render() {
@@ -18,7 +19,7 @@ export default class EmittedFlareElement extends React.PureComponent {
 
           <View style={{ flexDirection: "row" }}>
             <View style={{ flexDirection: "row", flex: 1, alignItems: "center" }}>
-              <Text style={{ fontSize: 40, marginHorizontal: 8 }}>{item.emoji}</Text>
+              <Emoji size={40} style={{ marginHorizontal: 8 }} emoji={item.emoji} />
               {/* flexShrink important to prevent flare activity from bleeding out of parent  */}
               <View style={{ justifyContent: "center", flexShrink: 1 }}>
                 <Text style={{ fontSize: 20 }}>{item.activity} </Text>

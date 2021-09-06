@@ -12,6 +12,7 @@ import functions from '@react-native-firebase/functions';
 import { LoadableButton } from 'reusables/ui/ReusableButtons';
 import ErrorMessageText from 'reusables/ui/ErrorMessageText';
 import { cloudFunctionStatuses } from 'utils/serverValues';
+import Emoji from 'reusables/ui/Emoji'
 
 
 
@@ -234,7 +235,7 @@ export class ActivityListElement extends React.PureComponent {
         style={{ ...S.styles.listElement, ...this.props.style }}
         onPress={onPress}>
         <View style={{ marginLeft: 8, flexDirection: "row", alignItems: 'center' }}>
-          <Text style={{ fontSize: 16 }}>{emoji}</Text>
+          <Emoji size={16} emoji={emoji} />
           <Text style={{ marginLeft: 6, fontSize: 18, flex: 1 }} >{activityName}</Text>
           {info && <MoreInformationTooltip message={info} title={activityName}
             style={{ padding: 0, marginTop: 0, marginHorizontal: 8 }} />}
@@ -250,7 +251,7 @@ export class ActivityListElement extends React.PureComponent {
  * Required props: text
  * Optional props: style
  */
- export class RecurringFlareElement extends React.PureComponent {
+export class RecurringFlareElement extends React.PureComponent {
 
   constructor(props) {
     super(props)
@@ -262,7 +263,7 @@ export class ActivityListElement extends React.PureComponent {
 
   cancelRecurringFlare = async (flareUid, ownerUid) => {
     try {
-      this.setState({waitingForCloudFunc: true})
+      this.setState({ waitingForCloudFunc: true })
       let params = {
         flareUid: flareUid,
         ownerUid: ownerUid
@@ -272,19 +273,19 @@ export class ActivityListElement extends React.PureComponent {
       if (response.data.status != cloudFunctionStatuses.OK) {
         // this.setState({ message: response.data.message })
         logError(new Error("Problematic deleteRecurringFlare function response: " + response.data.message))
-      } 
+      }
     } catch (error) {
       this.setState({ message: error.message })
       logError(error)
     } finally {
-      this.setState({waitingForCloudFunc: false})
+      this.setState({ waitingForCloudFunc: false })
     }
   }
   render() {
     return (
       <View
         style={{ marginVertical: 8, marginLeft: 8 }}>
-        <ErrorMessageText message = {this.state.message} />
+        <ErrorMessageText message={this.state.message} />
         <View style={{ flexDirection: "row" }}>
           <View style={{ flexDirection: "row", flex: 1 }}>
             <Text style={{ fontSize: 36, marginHorizontal: 8 }}>{this.props.item.emoji}</Text>
@@ -297,10 +298,10 @@ export class ActivityListElement extends React.PureComponent {
               <Text style={{ fontSize: 18 }}>{this.props.item.frequency}</Text>
             </View>
           </View>
-          <LoadableButton  
-                title="Cancel" 
-                onPress={() => this.cancelRecurringFlare(this.props.item.originalFlareUid, this.props.item.owner.uid)} 
-                isLoading = {this.state.waitingForCloudFunc} />
+          <LoadableButton
+            title="Cancel"
+            onPress={() => this.cancelRecurringFlare(this.props.item.originalFlareUid, this.props.item.owner.uid)}
+            isLoading={this.state.waitingForCloudFunc} />
         </View>
         <View style={{ marginHorizontal: 8, marginTop: 4 }}>
           {this.props.item.groupInfo && <Text style={{ fontStyle: "italic" }}>Sent via {this.props.item.groupInfo.name} group</Text>}
@@ -312,4 +313,4 @@ export class ActivityListElement extends React.PureComponent {
       </View>
     )
   }
-} 
+}

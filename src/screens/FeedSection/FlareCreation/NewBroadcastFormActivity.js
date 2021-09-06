@@ -11,6 +11,7 @@ import { MinorActionButton } from 'reusables/ui/ReusableButtons';
 import { getAllActivities } from 'data/activitesList';
 import { analyticsLogSearch } from 'utils/analyticsFunctions';
 import {analyticsCustomActivity} from 'utils/analyticsFunctions'
+import Emoji from 'reusables/ui/Emoji'
 
 export default class NewBroadcastFormActivity extends React.Component {
 
@@ -39,7 +40,7 @@ export default class NewBroadcastFormActivity extends React.Component {
                 isVisible={this.state.gettingCustom}>
                 <>
                   <Text style={{ textAlign: "center", fontSize: 20, justifyContent: "center", fontWeight: "bold" }}>
-                    <Text style={{ fontSize: 40 }}>{this.state.defaultEmoji} </Text>
+                    <Emoji size = {40} emoji = {this.state.defaultEmoji}/>
                     {this.state.query}
                   </Text>
 
