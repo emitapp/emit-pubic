@@ -155,8 +155,9 @@ export default class SettingsMain extends React.Component {
       if (response.data.status != cloudFunctionStatuses.OK) {
         this.setState({ verificationEmailError: response.data.message })
         logError(new Error("Problematic sendVerificationEmail function response: " + response.data.message))
-      } 
-      Snackbar.show({ text: 'Email sent!', duration: Snackbar.LENGTH_SHORT });
+      } else {
+        Snackbar.show({ text: 'Email sent!', duration: Snackbar.LENGTH_SHORT });
+      }
     } catch (error) {
       this.setState({ verificationEmailError: error.message })
       logError(error)
