@@ -50,7 +50,8 @@ export default class FeedElement extends React.Component {
           {/* Emoji, profile pic, activity name */}
           <View style={{ flexDirection: "row", flex: 1 }}>
             <Text style={{ fontSize: 36, marginHorizontal: 8 }}>{item.emoji}</Text>
-            <View style={{ justifyContent: "center" }}>
+            {/* flexShrink important to prevent flare activity from bleeding out of parent  */}
+            <View style={{ justifyContent: "center", flexShrink: 1}}> 
               <Text style={{ fontSize: 18 }}>{item.activity}</Text>
               <View style={{ flexDirection: 'row' }}>
                 <ProfilePicDisplayer diameter={22} uid={this.props.item.owner.uid} style={{ marginRight: 10 }} />

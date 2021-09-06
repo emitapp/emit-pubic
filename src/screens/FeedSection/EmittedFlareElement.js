@@ -19,9 +19,10 @@ export default class EmittedFlareElement extends React.PureComponent {
           <View style={{ flexDirection: "row" }}>
             <View style={{ flexDirection: "row", flex: 1, alignItems: "center" }}>
               <Text style={{ fontSize: 40, marginHorizontal: 8 }}>{item.emoji}</Text>
-              <View style={{ justifyContent: "center" }}>
-                <Text style={{ fontSize: 20 }}>{item.activity}</Text>
-                {isPublicFlare && <PublicFlareNotice flareInfo = {item} />}
+              {/* flexShrink important to prevent flare activity from bleeding out of parent  */}
+              <View style={{ justifyContent: "center", flexShrink: 1 }}>
+                <Text style={{ fontSize: 20 }}>{item.activity} </Text>
+                {isPublicFlare && <PublicFlareNotice flareInfo={item} />}
                 {item.recurringDays?.length > 0 &&
                   <Text>Recurring: {item.recurringDays.join("/")} </Text>
                 }
@@ -43,7 +44,7 @@ export default class EmittedFlareElement extends React.PureComponent {
 
           {(item.locked || item.location) &&
             <View style={{ marginHorizontal: 8 }}>
-              <Text style={{ fontSize: 16 }} numberOfLines = {2}>{item.location}</Text>
+              <Text style={{ fontSize: 16 }} numberOfLines={2}>{item.location}</Text>
               {item.locked &&
                 <View style={{
                   flexDirection: "row", alignItems: "center", borderColor: "grey",
