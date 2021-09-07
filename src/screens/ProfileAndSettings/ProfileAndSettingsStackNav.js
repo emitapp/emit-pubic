@@ -10,6 +10,7 @@ import AccountManagementScreen from './AccountManagementScreen'
 import ContactSupportPage from './ContactSupportPage'
 import NotificationSettings from './NotificationSettings'
 import LegalNotices from './LegalNotices'
+import AppAppearanceSettings from './AppAppearanceSettings'
 
 //Profile
 import QRScanner from '../ProfileAndSettings/QRFriendAdder';
@@ -31,7 +32,8 @@ const Navigator = createStackNavigator(
     QRScanner,
     ProfileScreen,
     FriendRequests,
-    RecurringFlaresViewer
+    RecurringFlaresViewer,
+    AppAppearanceSettings
   },
   {
     initialRouteName: 'ProfileScreen',

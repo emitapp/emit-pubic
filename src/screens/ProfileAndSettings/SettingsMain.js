@@ -94,10 +94,16 @@ export default class SettingsMain extends React.Component {
                 onPress={() => this.props.navigation.navigate("AccountManagementScreen")}
               />
               <SettingSectionButton
-                title="Contact Emit"
+                title="Contact Us"
                 icon={<FontAwesomeIcon name="paper-plane" />}
                 color={theme.colors.grey0}
                 onPress={() => this.props.navigation.navigate("ContactSupportPage")}
+              />
+              <SettingSectionButton
+                title="App Appearance"
+                icon={<MaterialIcon name="palette-outline" />}
+                color={theme.colors.grey0}
+                onPress={() => this.props.navigation.navigate("AppAppearanceSettings")}
               />
               <SettingSectionButton
                 title="Legal"
@@ -149,7 +155,7 @@ export default class SettingsMain extends React.Component {
 
   sendEmailVerification = async () => {
     try {
-      this.setState({isWaitingForEmailSend: true, verificationEmailError: ""})
+      this.setState({ isWaitingForEmailSend: true, verificationEmailError: "" })
       const func = functions().httpsCallable('sendVerificationEmail');
       const response = await timedPromise(func(), LONG_TIMEOUT);
       if (response.data.status != cloudFunctionStatuses.OK) {
@@ -162,7 +168,7 @@ export default class SettingsMain extends React.Component {
       this.setState({ verificationEmailError: error.message })
       logError(error)
     } finally {
-      this.setState({isWaitingForEmailSend: false})
+      this.setState({ isWaitingForEmailSend: false })
     }
   }
 }

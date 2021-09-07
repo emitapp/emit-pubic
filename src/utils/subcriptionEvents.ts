@@ -14,19 +14,22 @@ interface subscriptionListElement {
 export enum events {
     PROFILE_PIC_CHANGE = "changedProfilePic",
     SPLASH_SCREEN_DISMISSED = "splashScreenDismissed",
-    NEW_AUTH = "newAuth"
+    NEW_AUTH = "newAuth",
+    EMOJI_SETTINGS_CHANGED = "emojiSettingsChanged"
 }
 
 export const subscribers: Record<events, Array<subscriptionListElement>> = {
     [events.PROFILE_PIC_CHANGE]: [],
     [events.SPLASH_SCREEN_DISMISSED]: [],
-    [events.NEW_AUTH]: []
+    [events.NEW_AUTH]: [],
+    [events.EMOJI_SETTINGS_CHANGED]: []
 }
 
 export const eventCounts: Record<events, number> = {
     [events.PROFILE_PIC_CHANGE]: 0,
     [events.SPLASH_SCREEN_DISMISSED]: 0,
-    [events.NEW_AUTH]: 0
+    [events.NEW_AUTH]: 0,
+    [events.EMOJI_SETTINGS_CHANGED]: 0
 }
 
 

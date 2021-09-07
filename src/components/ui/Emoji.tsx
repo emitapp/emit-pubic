@@ -1,6 +1,9 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import React, { ReactNode } from 'react';
-import { Image, Platform, Text, ViewProps } from 'react-native';
+import { Image, Text, ViewProps } from 'react-native';
 import { AssetType, parse } from 'twemoji-parser';
+import { logError, SHOULD_USE_TWEMOJIS } from 'utils/helpers';
+import { events, subscribeToEvent, unsubscribeToEvent } from 'utils/subcriptionEvents';
 
 /**
  * The standard way to show flare emojis. Twemojis are supported but currently disabled
@@ -8,40 +11,44 @@ import { AssetType, parse } from 'twemoji-parser';
 //TODO: Doesn't have a proper way to make sure that the input is just one emoji due to unicode dark magic
 //TODO: Consider using svgs instead of pngs (for twemoji)
 //TODO: ios emojis a bit smaller...
-
-type Platforms = "ios" | "android" | "windows" | "macos" | "web"
-
 interface EmojiProps {
   emoji: string,
-  _platform: Platforms, //This is only for testing purposes
   size: number
 }
 
 interface EmojiState {
   twemojiUrl: string,
-  twemojiEmoji: string, //This is only for testing purposes
+  twemojiEmoji: string, //This is only for testing purposes,
+  shouldUseTwemoji: boolean
 }
 
 const DEFAULT_EMOJI = "🔥"
+const DEFAULT_SHOULD_USE_TWEMOJI = false
 
 export default class Emoji extends React.PureComponent<EmojiProps & ViewProps, EmojiState> {
   static defaultProps: EmojiProps = {
     emoji: DEFAULT_EMOJI,
-    _platform: Platform.OS,
     size: 30
   }
 
-  state = {
+  state: EmojiState = {
     twemojiUrl: "",
-    twemojiEmoji: ""
+    twemojiEmoji: "",
+    shouldUseTwemoji: DEFAULT_SHOULD_USE_TWEMOJI
   }
 
   initialize = (): void => {
     const assetType: AssetType = 'png'
     const options = { assetType }
-    let entities = parse(this.props.emoji, options);
+    let entities = parse(this.props.emoji.trim(), options);
     if (!entities.length || !entities[0].url) entities = parse(DEFAULT_EMOJI, options);
     this.setState({ twemojiUrl: entities[0].url, twemojiEmoji: entities[0].text })
+  }
+
+  getTwemojiPreference = (): void => {
+    AsyncStorage.getItem(SHOULD_USE_TWEMOJIS)
+      .then(pref => this.setState({shouldUseTwemoji: pref !== null}))
+      .catch(e => logError(e))
   }
 
   componentDidUpdate(): void {
@@ -50,17 +57,24 @@ export default class Emoji extends React.PureComponent<EmojiProps & ViewProps, E
 
   componentDidMount(): void {
     this.initialize()
+    this.getTwemojiPreference()
+    subscribeToEvent(events.EMOJI_SETTINGS_CHANGED, this, this.getTwemojiPreference)
+  }
+
+  componentWillUnmount() : void {
+    unsubscribeToEvent(events.EMOJI_SETTINGS_CHANGED, this)
   }
 
 
   render(): ReactNode {
     if (!this.state) return null
     const { emoji, style, size, ...otherProps } = this.props
-    if (this.shouldUseTwemojis() && this.state.twemojiUrl) {
+    if (this.state.shouldUseTwemoji && this.state.twemojiUrl) {
+      const imageSize = size * 1.15 //best guess based on looks; styling dimensions and font size not 1:1
       return (
         <Image
           source={{ uri: this.state.twemojiUrl }}
-          style={{ height: size, width: size, ...(style as Record<string, string | number>) }}
+          style={{ height: imageSize, width: imageSize, ...(style as Record<string, string | number>) }}
           resizeMode="contain"
           {...otherProps} />
       )
@@ -77,11 +91,5 @@ export default class Emoji extends React.PureComponent<EmojiProps & ViewProps, E
         </Text>
       )
     }
-  }
-
-  shouldUseTwemojis = (): boolean => {
-    return false
-    //   if (__DEV__ && this.props._platform) return this.props._platform == "android"
-    //   return false
   }
 }

@@ -104,6 +104,9 @@ export const CONTACTS_CACHE = "cachedContacts"
 //The last update timestamp the user has seen
 export const LAST_UPDATE_TIMESTAMP_SEEN = "lastUpdateSeen"
 
+//Whether or not the user wants Emit to use twemojis
+export const SHOULD_USE_TWEMOJIS = "emojisShouldBeTwemojis"
+
 
 import DeviceInfo from 'react-native-device-info';
 import { Platform } from 'react-native'
