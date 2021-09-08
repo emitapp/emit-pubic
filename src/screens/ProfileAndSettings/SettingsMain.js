@@ -59,7 +59,7 @@ export default class SettingsMain extends React.Component {
               <Text>
                 {currentUser.email}
               </Text>
-              <Text>
+              {/* <Text>
                 Your email is {currentUser.emailVerified ? "" : "not"} verified
               </Text>
               <ErrorMessageText message={this.state.verificationEmailError} />
@@ -71,7 +71,7 @@ export default class SettingsMain extends React.Component {
                   containerStyle={{ margin: 0 }}
                   isLoading={this.state.isWaitingForEmailSend}
                 />
-              }
+              } */}
             </View>
 
             <View style={styles.section}>

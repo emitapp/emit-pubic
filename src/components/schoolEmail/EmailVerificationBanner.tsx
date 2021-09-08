@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+//*THIS IS VERY VERY TEMPORARY
+
 import auth from '@react-native-firebase/auth';
 import { getSchoolInfoFromDomain } from 'data/schoolDomains';
 import React, { PureComponent, ReactNode } from 'react';
@@ -20,15 +25,16 @@ export default class EmailVerificationBanner extends PureComponent {
   }
 
   render() : ReactNode | null {
-    if (!this.shouldShowBanner()) return null;
-    const shortName = getSchoolInfoFromDomain(this.getDomain()).shortName
-    return (
-      <Pressable style={{ ...styles.banner }} onPress={() => NavigationService.navigate("SettingsMain")}>
-        <Text style = {styles.text} adjustsFontSizeToFit={true} numberOfLines={1}>
-          Verify your {shortName} email to see {shortName}-only flares.
-        </Text>
-      </Pressable>
-    );
+    return null
+    // if (!this.shouldShowBanner()) return null;
+    // const shortName = getSchoolInfoFromDomain(this.getDomain()).shortName
+    // return (
+    //   <Pressable style={{ ...styles.banner }} onPress={() => NavigationService.navigate("SettingsMain")}>
+    //     <Text style = {styles.text} adjustsFontSizeToFit={true} numberOfLines={1}>
+    //       Verify your {shortName} email to see {shortName}-only flares.
+    //     </Text>
+    //   </Pressable>
+    // );
   }
 
   shouldShowBanner = (): boolean => {
