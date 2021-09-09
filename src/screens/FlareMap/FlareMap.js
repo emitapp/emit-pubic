@@ -19,6 +19,9 @@ import { DEFAULT_DOMAIN_HASH, SHORT_PUBLIC_FLARE_COL_GROUP } from 'utils/serverV
 import { getOrgoHashAssociatedWithUser } from 'utils/orgosAndDomains';
 
 
+const DEFAULT_LAT_DELTA = 0.015
+const DEFAULT_LON_DELTA = 0.015
+
 //TODO: Consider getting styles (Google maps only) from:
 //https://mapstyle.withgoogle.com/
 //https://snazzymaps.com/
@@ -27,15 +30,15 @@ export default class FlareMaps extends React.Component {
   constructor(props) {
     super(props)
 
-    this.defaultLatitudeDelta = 0.13
-    this.defaultLongitudeDelta = 0.13
     this.sendFlareMarkerRef = null
 
+    //Its important to make the region null at first, and only start setting it
+    //after the map has finished its initialization. Otherwise, there are data
+    //races in the map's _onChange and componentDidUpdate functions, and 
+    //the map may skip the render update when the user's position is put into state.
+    //(using initialRegion also doesn't help, and the map always checks region before initialRegion anyways)
     this.state = {
-      region: {
-        latitude: 0, longitude: 0,
-        longitudeDelta: this.defaultLongitudeDelta, latitudeDelta: this.defaultLatitudeDelta
-      },
+      region: null,
       tapCoordinates: { latitude: 0, longitude: 0 },
       userPosition: { latitude: 0, longitude: 0 },
       nearbyFlares: [],
@@ -50,11 +53,7 @@ export default class FlareMaps extends React.Component {
     this.mapRef = null
   }
 
-  static navigationOptions = Header("Flare Map")
-
-  componentDidMount() {
-    this.getCurrentLocation()
-  }
+  static navigationOptions = Header("Flare Map")  
 
   componentWillUnmount() {
     this.rtdbRefs.forEach(ref => ref.off())
@@ -83,7 +82,9 @@ export default class FlareMaps extends React.Component {
             region={this.state.region}
             customMapStyle={this.mapStyle}
             showsPointsOfInterest={false}
-            // For somre reason the two props below aren't taking effect until a marker's callback is pressed
+            onMapReady={this.getCurrentLocation}
+            // For some reason the two props below aren't taking effect 
+            // until a marker's callback is pressed
             showsMyLocationButton={true}
             toolbarEnabled={true}
             onPress={e => this.renderSendFlareButton(e.nativeEvent)}
@@ -130,6 +131,7 @@ export default class FlareMaps extends React.Component {
   }
 
   onRegionChange = async (region) => {
+    console.log("onRegionChange")
     try {
       const { altitude, zoom } = await this.mapRef.getCamera()
       this.setState(prevState => ({ regionGeneration: prevState.regionGeneration + 1, region, altitude, zoom }))
@@ -165,8 +167,8 @@ export default class FlareMaps extends React.Component {
       region: {
         longitude: position.coords.longitude,
         latitude: position.coords.latitude,
-        longitudeDelta: this.defaultLongitudeDelta,
-        latitudeDelta: this.defaultLatitudeDelta
+        longitudeDelta: DEFAULT_LON_DELTA,
+        latitudeDelta: DEFAULT_LAT_DELTA
       },
       userPosition: {
         longitude: position.coords.longitude,
@@ -180,8 +182,8 @@ export default class FlareMaps extends React.Component {
       region: {
         longitude: this.state.userPosition.longitude,
         latitude: this.state.userPosition.latitude,
-        longitudeDelta: 0.01,
-        latitudeDelta: 0.01
+        longitudeDelta: DEFAULT_LON_DELTA ,
+        latitudeDelta: DEFAULT_LAT_DELTA 
       }
     })
   }
