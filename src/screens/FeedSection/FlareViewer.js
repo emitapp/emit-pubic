@@ -52,7 +52,7 @@ export default class FlareViewer extends React.Component {
 
   componentDidMount = () => {
 
-    analyticsFlareViewed()
+    if (!this.isFlareOwner) analyticsFlareViewed()
 
     let domainHash = ""
     if (this.isPublicFlare) {
