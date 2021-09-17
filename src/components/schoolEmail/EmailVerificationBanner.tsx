@@ -26,15 +26,15 @@ export default class EmailVerificationBanner extends PureComponent {
 
   render() : ReactNode | null {
     return null
-    // if (!this.shouldShowBanner()) return null;
-    // const shortName = getSchoolInfoFromDomain(this.getDomain()).shortName
-    // return (
-    //   <Pressable style={{ ...styles.banner }} onPress={() => NavigationService.navigate("SettingsMain")}>
-    //     <Text style = {styles.text} adjustsFontSizeToFit={true} numberOfLines={1}>
-    //       Verify your {shortName} email to see {shortName}-only flares.
-    //     </Text>
-    //   </Pressable>
-    // );
+    if (!this.shouldShowBanner()) return null;
+    const shortName = getSchoolInfoFromDomain(this.getDomain()).shortName
+    return (
+      <Pressable style={{ ...styles.banner }} onPress={() => NavigationService.navigate("SettingsMain")}>
+        <Text style = {styles.text} adjustsFontSizeToFit={true} numberOfLines={1}>
+          Verify your {shortName} email to see {shortName}-only flares.
+        </Text>
+      </Pressable>
+    );
   }
 
   shouldShowBanner = (): boolean => {

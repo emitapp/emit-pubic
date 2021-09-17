@@ -254,6 +254,7 @@ export default class Main extends React.Component {
         await AsyncStorage.setItem(ASYNC_TOKEN_KEY, fcmToken)
       }
     } catch (err) {
+      console.log("hi")
       if (err.name != "timeout") logError(err)
     }
   }

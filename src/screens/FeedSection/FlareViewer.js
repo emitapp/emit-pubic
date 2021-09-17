@@ -16,7 +16,7 @@ import AutolinkText from 'reusables/ui/AutolinkText';
 import ErrorMessageText from 'reusables/ui/ErrorMessageText';
 import { DefaultLoadingModal, TimeoutLoadingComponent } from 'reusables/ui/LoadingComponents';
 import { MinorActionButton } from 'reusables/ui/ReusableButtons';
-import { analyticsFlareJoined, analyticsFlareLeft, analyticsVideoChatUsed } from 'utils/analyticsFunctions';
+import { analyticsFlareJoined, analyticsFlareLeft, analyticsFlareViewed, analyticsVideoChatUsed } from 'utils/analyticsFunctions';
 import { logError, LONG_TIMEOUT, MEDIUM_TIMEOUT, shareFlare, timedPromise } from 'utils/helpers';
 import { cloudFunctionStatuses, PUBLIC_FLARE_COL_GROUP, responderStatuses } from 'utils/serverValues';
 import Emoji from 'reusables/ui/Emoji'
@@ -51,6 +51,8 @@ export default class FlareViewer extends React.Component {
   }
 
   componentDidMount = () => {
+
+    analyticsFlareViewed()
 
     let domainHash = ""
     if (this.isPublicFlare) {

@@ -129,6 +129,10 @@ export const analyticsFlareLeft = (flareInfo) => {
     _recordFlareResponse(false, flareInfo)
 }
 
+export const analyticsFlareViewed = () => {
+    analytics().logEvent("flare_viewed").catch(err => logError(err))
+} 
+
 //TODO: Improve this tracking of chat to allow us to better understand when they're using it
 export const analyticsChatMessageSent = (userUid, flareInfo) => {
     analytics().logEvent("chat_message_sent", { userUid, flareUid: flareInfo.uid })
