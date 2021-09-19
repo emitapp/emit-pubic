@@ -55,7 +55,7 @@ export const handleNotificationOpened = (message) => {
         broadcast.uid = message.data.associatedFlareId;
         NavigationService.reset("FeedStackNav", 1,
           [{ routeName: 'Feed' },
-          { routeName: 'FlareViewer', params: { broadcast: broadcast, isOwner: true } }
+          { routeName: 'FlareViewer', params: { broadcast: broadcast } }
           ])
       }, function (e) {
         console.log("Read failed: " + e.code);
@@ -83,7 +83,7 @@ export const handleNotificationOpened = (message) => {
         broadcast.uid = message.data.associatedFlareId;
         NavigationService.reset("FeedStackNav", 2,
           [{ routeName: 'Feed' },
-          { routeName: 'FlareViewer', params: { broadcast: broadcast, isOwner: true } },
+          { routeName: 'FlareViewer', params: { broadcast: broadcast } },
           { routeName: 'ChatScreen', params: { broadcast: broadcast } }
           ])
       }, function (e) {

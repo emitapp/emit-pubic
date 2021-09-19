@@ -14,7 +14,7 @@ export default class EmittedFlareElement extends React.PureComponent {
     return (
       <TouchableOpacity
         style={{ ...S.styles.listElement, paddingVertical: 4 }}
-        onPress={() => NavigationService.push("FlareViewer", { broadcast: item, isOwner: true, isPublicFlare })}>
+        onPress={() => NavigationService.push("FlareViewer", { broadcast: item, isPublicFlare })}>
         <View style={{ flexDirection: "column", flex: 1 }}>
 
           <View style={{ flexDirection: "row" }}>

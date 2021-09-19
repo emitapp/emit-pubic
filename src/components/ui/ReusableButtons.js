@@ -1,4 +1,5 @@
 import React from 'react';
+import {Platform} from 'react-native'
 import { Button, withTheme, Icon, Text } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
@@ -34,7 +35,7 @@ class BannerButtonComponent extends React.PureComponent {
         const backgroundColor = this.props.color ?? theme.colors.bannerButton
         return (
             <TouchableOpacity
-                containerStyle={{ height: 50, width: "100%" }}
+                containerStyle={{ height: Platform.OS === 'ios' ? 70 : 50, width: "100%" }}
                 style={[{
                     height: "100%",
                     width: "100%",

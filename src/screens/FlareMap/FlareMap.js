@@ -131,7 +131,6 @@ export default class FlareMaps extends React.Component {
   }
 
   onRegionChange = async (region) => {
-    console.log("onRegionChange")
     try {
       const { altitude, zoom } = await this.mapRef.getCamera()
       this.setState(prevState => ({ regionGeneration: prevState.regionGeneration + 1, region, altitude, zoom }))

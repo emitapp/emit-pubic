@@ -241,7 +241,7 @@ export default class NewBroadcastFormLocation extends React.Component {
     this.setState({ savingLocation: true, errorMessage: null })
     let location = { name: locationName.trim() }
     if (this.state.locationPin !== null) location.geolocation = this.state.locationPin
-
+    
     try {
       await timedPromise(
         database().ref(`/savedLocations/${auth().currentUser.uid}`).push(location),

@@ -1,16 +1,11 @@
 import React from 'react';
-import { StyleSheet, View, Pressable } from 'react-native';
-import { Button, Text, ThemeConsumer } from 'react-native-elements';
-import { ClearHeader } from 'reusables/Header';
+import { Keyboard, Pressable, StyleSheet, View } from 'react-native';
+import { Button, Input, Text, ThemeConsumer } from 'react-native-elements';
 import MainLinearGradient from 'reusables/containers/MainLinearGradient';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { MAX_BROADCAST_WINDOW } from 'utils/serverValues';
-import { BannerButton } from 'reusables/ui/ReusableButtons';
-import S from 'styling'
-import { epochToDateString } from 'utils/helpers'
-import ErrorMessageText from 'reusables/ui/ErrorMessageText';
+import { ClearHeader } from 'reusables/Header';
+import Snackbar from 'react-native-snackbar';
 
-
+const MILLI_PER_MIN = 1000 * 60
 export default class NewBroadcastFormDuration extends React.Component {
 
   constructor(props) {
@@ -19,7 +14,10 @@ export default class NewBroadcastFormDuration extends React.Component {
     this.state = {
       showingCustom: false,
       date: null,
-      errorMessage: null
+      errorMessage: null,
+      usingCustom: false,
+      customMinutes: "0",
+      customHours: "0"
     }
   }
 
@@ -37,20 +35,47 @@ export default class NewBroadcastFormDuration extends React.Component {
               </Text>
               <View style={{ flex: 1, marginHorizontal: 16, alignItems: "center" }}>
                 <View style={styles.rowStyle}>
-                  {this.generateTimeButton(10, "black")}
-                  {this.generateTimeButton(20, "black")}
                   {this.generateTimeButton(30, "black")}
-                </View>
-                <View style={styles.rowStyle}>
-                  {this.generateTimeButton(40, "black")}
-                  {this.generateTimeButton(50, "black")}
                   {this.generateTimeButton(60, "black")}
+                  {this.generateTimeButton(60 * 1.5, "black")}
                 </View>
                 <View style={styles.rowStyle}>
                   {this.generateTimeButton(60 * 2, "black")}
+                  {this.generateTimeButton(60 * 2.5, "black")}
                   {this.generateTimeButton(60 * 3, "black")}
-                  {this.generateTimeButton(60 * 5, "black")}
                 </View>
+                <View style={styles.rowStyle}>
+                  {this.generateTimeButton(60 * 4, "black")}
+                  {this.generateTimeButton(60 * 5, "black")}
+                  {this.generateTimeButton(60 * 6, "black")}
+                </View>
+
+                <Button title="Custom" onPress={() => this.setState({ usingCustom: !this.state.usingCustom })} />
+                {this.state.usingCustom &&
+                  <>
+                    <View style={{ flexDirection: "row" }}>
+                      <Input
+                        keyboardType='number-pad'
+                        label="hours"
+                        enablesReturnKeyAutomatically
+                        containerStyle={{ flex: 1 }}
+                        value={this.state.customHours}
+                        onChangeText={(customHours) => this.setState({ customHours })}
+                        errorMessage={this.getCustomHourError()}
+                      />
+                      <Input
+                        keyboardType='number-pad'
+                        label="minutes"
+                        containerStyle={{ flex: 1 }}
+                        value={this.state.customMinutes}
+                        onChangeText={(customMinutes) => this.setState({ customMinutes })}
+                        errorMessage={this.getCustomMinuteError()}
+                      />
+                    </View>
+
+                    <Button title="Done" onPress={this.saveCustomDuration} />
+                  </>
+                }
               </View>
             </View>
           </MainLinearGradient>
@@ -60,16 +85,11 @@ export default class NewBroadcastFormDuration extends React.Component {
   }
 
   generateTimeButton = (minutes, color) => {
-    let MILLI_PER_MIN = 1000 * 60
     let buttonText = ""
-    let timeText = ""
-    if (minutes < 60) {
-      buttonText = `${minutes} mins`
-      timeText = `${minutes} minutes`
-    } else {
-      buttonText = `${minutes / 60} hours`
-      timeText = `${minutes / 60} hours`
-    }
+    const timeText = this.createFormTextFromMinutes(minutes)
+
+    if (minutes < 60) buttonText = `${minutes} mins`
+    else buttonText = `${minutes / 60} hours`
     return (
       <TimeButton
         color={color}
@@ -85,6 +105,51 @@ export default class NewBroadcastFormDuration extends React.Component {
     this.props.navigation.state.params.durationText = timeText
     this.props.navigation.state.params.duration = millis
     this.props.navigation.goBack()
+  }
+
+  saveCustomDuration = () => {
+    Keyboard.dismiss()
+    if (this.getCustomHourError() || this.getCustomMinuteError()) {
+      Snackbar.show({
+        text: `Invalid duration. Check again!`,
+        duration: Snackbar.LENGTH_SHORT
+      });
+      return
+    }
+
+    const parsedHours = parseInt(this.state.customMinutes)
+    const parsedMinutes = parseInt(this.state.customMinutes)
+    const totalMins = parsedHours * 60 + parsedMinutes;
+    if (totalMins == 0) {
+      Snackbar.show({
+        text: `Your flare has no duration!`,
+        duration: Snackbar.LENGTH_SHORT
+      });
+      return
+    }
+
+    let text = this.createFormTextFromMinutes(totalMins)
+    this.saveDuration(text, totalMins * MILLI_PER_MIN)
+  }
+
+
+
+  getCustomMinuteError = () => {
+    const parsedInput = parseInt(this.state.customMinutes)
+    if (isNaN(parsedInput)) return "Invalid Input!"
+    if (parsedInput > 59 || parsedInput < 0) return "Must be between 0 and 59!"
+  }
+
+  getCustomHourError = () => {
+    const parsedInput = parseInt(this.state.customHours)
+    if (isNaN(parsedInput)) return "Invalid Input!"
+    if (parsedInput < 0) return "Must be non-negative"
+  }
+
+  createFormTextFromMinutes = (mins) => {
+    if (mins < 60) return `${mins} minutes`
+    else if (mins % 60) return `${Math.floor(mins / 60)} hours, ${mins % 60} minutes`
+    else return `${Math.floor(mins / 60)} hours`
   }
 }
 

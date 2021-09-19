@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import React, { ReactNode } from 'react';
-import { Image, Text, ViewProps } from 'react-native';
+import { Image, Platform, Text, ViewProps } from 'react-native';
 import { AssetType, parse } from 'twemoji-parser';
 import { logError, SHOULD_USE_TWEMOJIS } from 'utils/helpers';
 import { events, subscribeToEvent, unsubscribeToEvent } from 'utils/subcriptionEvents';
@@ -79,11 +79,16 @@ export default class Emoji extends React.PureComponent<EmojiProps & ViewProps, E
           {...otherProps} />
       )
     } else {
+      const increasedSize = size * ( Platform.OS === "ios" ? 1.2 : 1.4);
       return (
-        //Chose these props to truncate emojis that aren't 
+        //Chose these props to also handle emojis that aren't 
         //supported by the device and are hence represented as more than 1 emoji
         <Text
-          style={{ fontSize: size, width: size * 1.4, ...(style as Record<string, string | number>) }}
+          style={{ 
+            fontSize: 100, height: increasedSize, 
+            textAlign: "center", ...(style as Record<string, string | number>) 
+          }}
+          adjustsFontSizeToFit
           numberOfLines={1}
           ellipsizeMode="clip"
           {...otherProps}>

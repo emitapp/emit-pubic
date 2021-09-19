@@ -23,6 +23,7 @@ import { reverseGeocodeToOSM } from 'utils/geo/OpenStreetMapsApi';
 import { getOrgoAssociatedWithUser } from 'utils/orgosAndDomains';
 import { getSchoolInfoFromDomain } from 'data/schoolDomains';
 import Emoji from 'reusables/ui/Emoji'
+import theme from "styling/mainTheme"
 
 class NewBroadcastForm extends React.Component {
 
@@ -97,7 +98,7 @@ class NewBroadcastForm extends React.Component {
     }
 
     getOrgoAssociatedWithUser(auth().currentUser.uid)
-      .then(domain => this.setState({userDomain: domain ?? ""}))
+      .then(domain => this.setState({ userDomain: domain ?? "" }))
       .catch(e => logError(e))
   }
 
@@ -144,12 +145,16 @@ class NewBroadcastForm extends React.Component {
 
                 <FormSubtitle title="What" />
                 <FormInput
+                  icon={!!this.state.passableBroadcastInfo.emojiSelected &&
+                    <View style={{ backgroundColor: "white", padding: 6, borderRadius: 6 }}>
+                      <Emoji size={20} emoji={flareInfo.emojiSelected} />
+                    </View>
+                  }
                   onPress={() => this.props.navigation.navigate("NewBroadcastFormActivity", this.state.passableBroadcastInfo)}
                   placeholder="Select an activity">
-                  <Emoji size = {18} emoji = {flareInfo.emojiSelected}/>
-                  {flareInfo.activitySelected && <Text> </Text>}
                   <Text style={{ fontSize: 18 }} >{flareInfo.activitySelected}</Text>
                 </FormInput>
+
 
                 {!this.isEditing &&
                   <View style={{ marginLeft: 24, marginBottom: 8 }}>
@@ -187,7 +192,7 @@ class NewBroadcastForm extends React.Component {
                         return this.props.navigation.navigate("NewBroadcastFormRecepients",
                           { data: flareInfo })
                       }}>
-                        <Icon style={{ marginTop: -3 }} size={44} color="white" name="add-circle-outline"></Icon>
+                        <Icon style={{ marginTop: -3 }} size={55} color="white" name="add-circle-outline"></Icon>
                       </TouchableOpacity>
                     </View>
                   </>
@@ -449,7 +454,7 @@ class NewBroadcastForm extends React.Component {
           placeholder="Where are you going?"
           value={flareInfo.location}
           icon={flareInfo.geolocation ?
-            <Icon name="location-on" size={20} color="white" />
+            <Icon name="location-on" size={25} color="white" />
             : null}
           selection={{ start: 0 }} //for very long location names, this makes the input show the beginning, not the end
         />
@@ -688,8 +693,10 @@ class FormInput extends React.PureComponent {
   render() {
     const { onPress, icon, ...otherProps } = this.props
     return (
-      <View style={{ flexDirection: "row", width: "100%", height: "auto", alignItems: "center", marginBottom: 8 }}>
-        {icon}
+      <View style={{ flexDirection: "row", width: "100%", height: "auto", alignItems: "center", marginBottom: 8, }}>
+        <View style={{ alignSelf: "flex-start", marginTop: 3 }}>
+          {icon}
+        </View>
         <View style={{ flex: 1 }}>
           <TouchableOpacity onPress={onPress} style={{ height: "auto", flexDirection: "row" }}>
             <View pointerEvents='none' style={{ width: "100%" }}>

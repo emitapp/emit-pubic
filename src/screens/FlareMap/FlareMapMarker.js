@@ -74,7 +74,7 @@ class FlareMapMarker extends React.PureComponent {
                             <Text> <ProfilePicCircle uid={flare.owner.uid} diameter={35} /> </Text>
                             <Text style={{ color: this.props.theme.colors.grey3 }}>@{flare.owner.username}</Text>
                         </View>
-                        <Text style={{ fontWeight: "bold" }}>{flare.activity}</Text>
+                        <Text style={{ fontWeight: "bold", textAlign: "center" }}>{flare.activity}</Text>
                         {flare.isPublicFlare && <PublicFlareNotice flareInfo = {flare} />}
                         {/* Ellipses are broken for react-native-elements text for some reason */}
                         <RNText numberOfLines = {2} style = {{margin: 4}}>{flare.location}</RNText> 

@@ -32,7 +32,7 @@ export default class FlareViewer extends React.Component {
 
     this.broadcastSnippet = this.props.navigation.getParam('broadcast', { uid: " ", owner: { uid: " " } })
     this.isPublicFlare = this.props.navigation.getParam('isPublicFlare', false)
-    this.isFlareOwner = this.props.navigation.getParam("isOwner", false)
+    this.isFlareOwner = auth().currentUser.uid == this.broadcastSnippet.owner.uid
 
     this.state = {
       attendees: [],

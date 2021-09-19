@@ -55,7 +55,7 @@ export const getAllActivities = () : ActivityList => [
                 emoji: "🏎️", name: "Rocket League",
                 info: "A popular video game that combines rocket powered cars with soccer. Best for 2 to 8 people.",
             },
-            { emoji: "♟", name: "Chess" },
+            { emoji: "♟️", name: "Chess" },
             { emoji: "♠️", name: "Cards" },
             {
                 emoji: "🤭", name: "Cards Against Humanity",
