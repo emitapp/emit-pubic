@@ -117,7 +117,7 @@ export default class NewBroadcastFormDuration extends React.Component {
       return
     }
 
-    const parsedHours = parseInt(this.state.customMinutes)
+    const parsedHours = parseInt(this.state.customHours)
     const parsedMinutes = parseInt(this.state.customMinutes)
     const totalMins = parsedHours * 60 + parsedMinutes;
     if (totalMins == 0) {
