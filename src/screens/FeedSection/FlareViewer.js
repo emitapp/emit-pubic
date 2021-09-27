@@ -186,7 +186,7 @@ export default class FlareViewer extends React.Component {
                   {broadcastData.geolocation &&
                     <Button
                       icon={<Icon name="location-pin" size={20} color="white" />}
-                      title=" View on Map"
+                      title={` View on ${Platform.OS == "android" ? "Google" : "Apple"} Maps`}
                       onPress={this.openLocationOnMap}
                       containerStyle={{ marginRight: 8, marginLeft: 0 }}
                     />}
