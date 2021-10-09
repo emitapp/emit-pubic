@@ -61,7 +61,7 @@ export default class AccountSetUp extends React.Component {
                 <Text h4
                   style={{ marginVertical: 8, fontWeight: 'bold' }}>
                   Account Setup
-                  </Text>
+                </Text>
 
                 <ErrorMessageText message={this.state.errorMessage} />
 
@@ -70,7 +70,7 @@ export default class AccountSetUp extends React.Component {
                     <Text style={{ marginBottom: 8 }}>
                       <Text style={{ fontWeight: "bold" }}>Display Name {"\n"}</Text>
                       What do you want your friends to call you?
-                      </Text>
+                    </Text>
                   }
                   autoCapitalize="none"
                   placeholder="John Doe"
@@ -89,15 +89,16 @@ export default class AccountSetUp extends React.Component {
                   label={
                     <Text style={{ marginBottom: 8 }}>
                       <Text style={{ fontWeight: "bold" }}>Username {"\n"}</Text>
-                        Your username is how your friends add you on Emit.
-                      </Text>
+                      Your username is how your friends add you on Emit.
+                    </Text>
                   }
                   autoCapitalize="none"
                   placeholder="the_real_john"
                   onChangeText={username => {
+                    const trimmedUsername = username?.trim()
                     let usernameError = null
-                    if (username && !validUsername(username, false)) usernameError = "Your username can only have A-Z, a-z, 0-9, underscores or hyphens"
-                    else if (username.length > MAX_USERNAME_LENGTH) usernameError = "Your username is too long"
+                    if (trimmedUsername && !validUsername(trimmedUsername, false)) usernameError = "Your username can only have A-Z, a-z, 0-9, underscores or hyphens"
+                    else if (trimmedUsername.length > MAX_USERNAME_LENGTH) usernameError = "Your username is too long"
                     this.setState({ username, usernameError })
                   }}
                   value={this.state.username}
@@ -154,6 +155,9 @@ export default class AccountSetUp extends React.Component {
   finishUserSetUp = async () => {
     try {
       this.setState({ errorMessage: "" })
+      const trimmedUsername = this.state.username?.trim()
+      const trimmedDisplayName = this.state.displayName?.trim()
+
       if (this.state.phonenumberInput && !this.phoneInput.isValidNumber(this.state.fullPhoneNumberInput)) {
         this.setState({ errorMessage: "Invalid phone number!" })
         return;
@@ -162,7 +166,7 @@ export default class AccountSetUp extends React.Component {
         this.setState({ errorMessage: "Invalid display name! Either too short or too long" })
         return;
       }
-      if (!validUsername(this.state.username)) {
+      if (!validUsername(trimmedUsername)) {
         this.setState({ errorMessage: "Invalid username! It's either too long, too short or contains invalid characters" })
         return;
       }
@@ -170,7 +174,7 @@ export default class AccountSetUp extends React.Component {
 
 
       this.setState({ isModalVisible: true })
-      const usernameRef = database().ref(`/usernames/${this.state.username.normalize("NFKC").toLowerCase()}`);
+      const usernameRef = database().ref(`/usernames/${trimmedUsername.normalize("NFKC").toLowerCase()}`);
       const currentUsernameOwnerSnap = await timedPromise(usernameRef.once('value'), LONG_TIMEOUT)
 
       if (currentUsernameOwnerSnap.exists() &&
@@ -181,8 +185,8 @@ export default class AccountSetUp extends React.Component {
       }
 
       const args = {
-        displayName: this.state.displayName,
-        username: this.state.username
+        displayName: trimmedDisplayName,
+        username: trimmedUsername
       }
       if (this.state.phonenumberInput) {
         args.telephone = this.state.fullPhoneNumberInput

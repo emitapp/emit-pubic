@@ -254,7 +254,6 @@ export default class Main extends React.Component {
         await AsyncStorage.setItem(ASYNC_TOKEN_KEY, fcmToken)
       }
     } catch (err) {
-      console.log("hi")
       if (err.name != "timeout") logError(err)
     }
   }
@@ -375,13 +374,17 @@ class FlareCreationButton extends React.PureComponent {
 //This was done becuase tab bar elements are completely
 //killed and reinstantiated with every navigation, 
 //so the profile pic kept on flashing
-class TabBarProfilePic extends React.PureComponent {
+export class TabBarProfilePic extends React.PureComponent {
 
   static imageData = null
 
+  static resetTabBarProfilePicImageRef = () => {
+    TabBarProfilePic.imageData = null
+  }
+
   componentDidMount() {
     subscribeToEvent(events.PROFILE_PIC_CHANGE, this, () => {
-      TabBarProfilePic.imageData = null
+      TabBarProfilePic.resetTabBarProfilePicImageRef()
       this.pictureComponent.refresh()
     })
   }

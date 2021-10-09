@@ -31,6 +31,7 @@ export interface GoogleAutocompletePrediction {
 export interface GoogleDetailsResponse extends GoogleApiResponseBase {
     html_attributions: string[],
     result: {
+        name?: string
         geometry?: {
             location?: {
                 lat: number,
@@ -82,7 +83,7 @@ export const requestCompletePlaceDataFromGoogle = async (
     queryUrl += `key=${apiKey}&`
     queryUrl += `sessiontoken=${sessionToken}&`
     queryUrl += `language=en&`
-    queryUrl += `fields=geometry`
+    queryUrl += `fields=geometry,name`
 
     const response = (await axios.get(queryUrl)).data as GoogleDetailsResponse
     if (response.status === "OK") {

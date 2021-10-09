@@ -91,6 +91,7 @@ export default class NewBroadcastFormLocation extends React.Component {
               style={{ flex: 1, backgroundColor: "white", width: "100%", borderTopEndRadius: 50, borderTopStartRadius: 50 }}
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{ paddingHorizontal: 16 }}
+              keyboardShouldPersistTaps="handled"
             >
 
               <Text h4 h4Style={{ marginVertical: 8, fontWeight: "bold" }}>

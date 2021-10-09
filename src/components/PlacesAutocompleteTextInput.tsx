@@ -1,6 +1,6 @@
 import { isDevBuild, isQABuild } from 'dev/index';
 import React from 'react';
-import { Image, ListRenderItem, Pressable, StyleSheet, View } from 'react-native';
+import { Image, Keyboard, ListRenderItem, Pressable, StyleSheet, View } from 'react-native';
 import { Divider, SearchBar, Text } from 'react-native-elements';
 //Importing from react-native-gesture-handler since we might be rendering this component
 //in screens that use things like utils/DummyVirtualizedView, and in cases like that
@@ -63,17 +63,19 @@ export default class PlacesAutocompleteText extends React.PureComponent<PlacesAu
         <SearchBar
           onClear={() => {
             this.onSearchBarValueChange("")
-            this.setState({autocompleteData: []})
+            this.setState({ autocompleteData: [] })
           }}
+          selectTextOnFocus
           autoCapitalize="none"
           placeholder={this.props.searchBarPlaceholder}
           onChangeText={this.onSearchBarValueChange}
           value={this.state.textInput}
           containerStyle={{ width: "100%", alignSelf: "center" }}
-          errorMessage = {this.props.errorMessage}
+          errorMessage={this.props.errorMessage}
         />
         <ErrorMessageText message={this.state.errorMessage} />
         <FlatList
+          keyboardShouldPersistTaps="handled"
           nestedScrollEnabled
           keyExtractor={(item) => item.place_id}
           contentContainerStyle={{ width: "100%" }}
@@ -93,9 +95,17 @@ export default class PlacesAutocompleteText extends React.PureComponent<PlacesAu
   renderAutocompleteSuggestion: ListRenderItem<GoogleAutocompletePrediction> =
     ({ item }: { item: GoogleAutocompletePrediction }) => {
       return (
-        <AutosuggestListElement item={item} onPress={this.convertGooglePlaceToOSM} />
+        <AutosuggestListElement
+          item={item}
+          onPress={this.autosuggestListElementOnClick}
+        />
       )
     }
+
+  autosuggestListElementOnClick = (place_id: string) : void => {
+    Keyboard.dismiss()
+    this.convertGooglePlaceToOSM(place_id)
+  }
 
   renderEmptyComponent = (): React.ReactElement | null => {
     if (this.state.autocompleteData.length === 0) { return null }
@@ -182,7 +192,7 @@ export default class PlacesAutocompleteText extends React.PureComponent<PlacesAu
       const googleCoordinates: Coordinates = { latitude: geo.lat, longitude: geo.lng }
       const OSMLocation = await reverseGeocodeToOSM(googleCoordinates)
       this.setState({ autocompleteData: [], nothingFound: false })
-      this.setSearchBarValue( this.props.clearOnChoice ? "" : OSMLocation.name)
+      this.setSearchBarValue(this.props.clearOnChoice ? "" : OSMLocation.name)
       this.clearErrorFeedback()
       this.props.onLocationChosen(OSMLocation)
     } catch (e) {
@@ -210,14 +220,14 @@ export default class PlacesAutocompleteText extends React.PureComponent<PlacesAu
     this.setState({ errorMessage: message })
   }
 
-  setSearchBarValue = (val: string) : void => {
+  setSearchBarValue = (val: string): void => {
     this.setState({ textInput: val })
     this.props.onTextChange && this.props.onTextChange(val)
   }
 
   //Right now its just a copy of setSearchBarValue but if setSearchBarValue ever changes
   //we don't want those side effects to reflect on this func, which is for external calls
-  setSearchBarValueExternal = (val: string) : void => {
+  setSearchBarValueExternal = (val: string): void => {
     this.setState({ textInput: val })
     this.props.onTextChange && this.props.onTextChange(val)
   }

@@ -27,6 +27,7 @@ import { analyticsAppOpen, analyticsScreenVisit, setAnalyticsID } from 'utils/an
 import { ASYNC_SETUP_KEY, ASYNC_TOKEN_KEY, logError, LONG_TIMEOUT, timedPromise } from 'utils/helpers';
 import NavigationService from 'utils/NavigationService';
 import { emitEvent, events } from 'utils/subcriptionEvents';
+import { TabBarProfilePic } from 'screens/MainTabNav'
 
 export default class App extends React.Component {
 
@@ -126,6 +127,7 @@ export default class App extends React.Component {
         crashlytics().setUserId(user.uid).catch(err => logError(err))
         this.refreshAuth()
       }
+      TabBarProfilePic.resetTabBarProfilePicImageRef()
       NavigationService.navigate("AuthDecisionPage")
     } catch (err) {
       logError(err)
@@ -177,7 +179,7 @@ export default class App extends React.Component {
     const lastVerified = currentUser.emailVerified
     await auth().currentUser.reload()
     const newCurrentUser = auth().currentUser
-    if (lastEmail != newCurrentUser?.email || !lastVerified != newCurrentUser?.emailVerified){
+    if (lastEmail != newCurrentUser?.email || !lastVerified != newCurrentUser?.emailVerified) {
       emitEvent(events.NEW_AUTH)
     }
   }
