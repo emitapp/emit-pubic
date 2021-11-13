@@ -25,7 +25,6 @@ export default class EmailVerificationBanner extends PureComponent {
   }
 
   render() : ReactNode | null {
-    return null
     if (!this.shouldShowBanner()) return null;
     const shortName = getSchoolInfoFromDomain(this.getDomain()).shortName
     return (

@@ -228,12 +228,14 @@ export default class FlareViewer extends React.Component {
 
         {broadcastData && this.displayBroadcastAction()}
 
+        {/* Commented out due to Emit end of life (had been broken for public flares for a while now anyways) */}
+        {/* 
         <Button
           icon={<AwesomeIcon name="share-square" size={20} color="grey" />}
           containerStyle={{ position: 'absolute', top: 8, left: 0 }}
           onPress={() => shareFlare(this.broadcastSnippet)}
           type="clear"
-        />
+        /> */}
 
         {this.isFlareOwner && <Button
           icon={<AwesomeIcon name="ellipsis-h" size={18} color="grey" />}

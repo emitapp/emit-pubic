@@ -18,6 +18,10 @@ type changeList = Array<{
  */
 const changes : changeList = [
     {
+        timestamp: 1636657790027,
+        change: "Goodbye! Emit development has come to an end, and the co-founders have moved on to other projects. The app will stay up, but it will no longer get updates. 👋🏾",
+    },
+    {
         timestamp: 1630373735000,
         change: "Once you confirm your email, you can now send flares only other verified students in your college can see! 🗝️",
     },

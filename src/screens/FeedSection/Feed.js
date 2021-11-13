@@ -104,7 +104,8 @@ export default class ActiveBroadcasts extends React.Component {
     if (this.state.gettingGeolocation) return (<SmallLoadingComponent />)
     return (
       <View style={S.styles.containerFlexStart}>
-        <EmailVerificationBanner />
+        {/* Commented out due to Emit end of life. */}
+        {/* <EmailVerificationBanner /> */}
         <ErrorMessageText message={this.state.errorMessage} />
         <MergedSectionInfiniteScroll
           refs={this.dbrefs}

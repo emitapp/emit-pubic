@@ -72,7 +72,8 @@ export default class FlareMaps extends React.Component {
             Flares on your feed with location information will show up on this map!
             {" "}Radius: {Math.round(metersToMiles(PUBLIC_FLARE_RADIUS_IN_M))} miles
           </Text>
-          <EmailVerificationBanner />
+          {/* Commented out due to Emit end of life */}
+          {/* <EmailVerificationBanner /> */}
           <MapView
             ref={r => this.mapRef = r}
             style={{ width: "100%", flex: 1 }}

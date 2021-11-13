@@ -59,11 +59,13 @@ export default class SettingsMain extends React.Component {
               <Text>
                 {currentUser.email}
               </Text>
+              {/* Commented out due to Emit end of life */}
+              {/*
               <Text>
                 Your email is{currentUser.emailVerified ? "" : " not"} verified
               </Text>
               <ErrorMessageText message={this.state.verificationEmailError} />
-              {!currentUser.emailVerified &&
+               {!currentUser.emailVerified &&
                 <LoadableButton
                   title="Send Verification Email"
                   onPress={this.sendEmailVerification}
@@ -71,7 +73,7 @@ export default class SettingsMain extends React.Component {
                   containerStyle={{ margin: 0 }}
                   isLoading={this.state.isWaitingForEmailSend}
                 />
-              }
+              } */}
             </View>
 
             <View style={styles.section}>
@@ -93,12 +95,13 @@ export default class SettingsMain extends React.Component {
                 color={theme.colors.grey0}
                 onPress={() => this.props.navigation.navigate("AccountManagementScreen")}
               />
-              <SettingSectionButton
+              {/* Commented out due to Emit end of life */}
+              {/* <SettingSectionButton
                 title="Contact Us"
                 icon={<FontAwesomeIcon name="paper-plane" />}
                 color={theme.colors.grey0}
                 onPress={() => this.props.navigation.navigate("ContactSupportPage")}
-              />
+              /> */}
               <SettingSectionButton
                 title="App Appearance"
                 icon={<MaterialIcon name="palette-outline" />}
